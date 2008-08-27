@@ -1,0 +1,21 @@
+#summary Overview of FireCell
+
+=Introduction=
+
+FireCell is a game where a player becomes a hacker in a virtual world that has a global network resembling the current internet. The object of the game is to start as a 'newbie' hacker-wannabe, and progress through the game by learning, hacking, and gaining experience from each such event.
+
+The game will be a network based game, with servers hosted somewhere on the internet. Players will be able to communicate with each other, compete against each other, and either co-operate on hacking missions, or interfere with other player's hacking attempts. Players may also be able to hack other players and 'steal' information, programs and other assets (maybe money?).
+
+The game will be presented in an 3D rendered environment, although it should not be required to compete with titles such as Age of Conan, Guildwars, World of Warcraft etc with regards to graphical intensity or environments. At the heart of FireCell is the concept that it is an intelligent game for players that enjoy mental and strategic challenges, against the 'environment' as well as against other players.
+
+=Components=
+
+FireCell will be developed into the following high level components:
+
+- A server component that will manage the core game logic, and provide a 'real time' environment for players to play in, communicate and compete
+- A client component that will form the frontend gateway for players to log in to the game
+    - An initial text-based client will be developed
+    - A second phase graphical client will be developed later
+- The tools component
+    - This component is more of a package for a number of game management, development and design toolsets
+- A Database component that will store state of the world, its players and other persistable entities. It will also act as the storage repository for game configuration data.
