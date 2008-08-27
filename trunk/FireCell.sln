@@ -1,8 +1,18 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FCServer", "FCServer\FCServer.vcproj", "{531260F4-EC1B-4A44-A9DA-CDC2714FE0C2}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
+		{531260F4-EC1B-4A44-A9DA-CDC2714FE0C2}.Debug.ActiveCfg = Debug|Win32
+		{531260F4-EC1B-4A44-A9DA-CDC2714FE0C2}.Debug.Build.0 = Debug|Win32
+		{531260F4-EC1B-4A44-A9DA-CDC2714FE0C2}.Release.ActiveCfg = Release|Win32
+		{531260F4-EC1B-4A44-A9DA-CDC2714FE0C2}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
