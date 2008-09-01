@@ -35,27 +35,17 @@ int CDaemon::Run()
   
   if ( (pid = fork()) < 0 )
   {
+    // something bad happened here...
+    return -1;
   }
   else if ( pid != 0 )
   {
-    return -1;
+    return 0;
   }
   
   setsid();
-  
-  FILE* fp = fopen("output.txt", "w+b");
-  
-  if ( fp )
-  {
-    int i = 0;
-    while ( 1 )
-    {
-      fprintf(fp, "Line %ld\r\n", i++);
-      fflush(fp);
-      sleep(1);
-    }
-    fclose(fp);
-  }
+
+  // execute the harnessed service logic here...
   
   return 0;
 }
