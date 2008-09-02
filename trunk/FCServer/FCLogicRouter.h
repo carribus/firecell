@@ -22,6 +22,9 @@
 
 #include <map>
 #include <vector>
+#ifdef _WIN32
+  #include "../common/pthreads-win32/include/pthread.h"
+#endif
 #include "interfaces/IServiceLogic.h"
 #include "interfaces/ISocketServer.h"
 #include "ClientSocket.h"
@@ -55,6 +58,7 @@ private:
 
   ISocketServer*      m_pSockServer;
   bool                m_bHasConsole;
+  pthread_mutex_t     m_mutexSockets;
   CSocketMap          m_mapSockets;
   CQueuedSocketArray  m_arrQueuedData;
 };

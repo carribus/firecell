@@ -25,12 +25,15 @@ FCLogicRouter::FCLogicRouter(void)
 : m_pSockServer(NULL)
 , m_bHasConsole(false)
 {
+  // initialize the mutex
+  pthread_mutex_init(&m_mutexSockets, NULL);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 FCLogicRouter::~FCLogicRouter(void)
 {
+  pthread_mutex_destroy(&m_mutexSockets);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -83,7 +86,10 @@ void FCLogicRouter::OnConnect(FCSOCKET s)
 		printf("%s connected\n", pAddr);
 
 	ClientSocket* pSocket = new ClientSocket(s);
+
+  pthread_mutex_lock(&m_mutexSockets);
 	m_mapSockets[s] = pSocket;
+  pthread_mutex_unlock(&m_mutexSockets);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -99,6 +105,8 @@ void FCLogicRouter::OnDisconnect(FCSOCKET s, FCDWORD dwCode)
 	if ( m_bHasConsole )
 		printf("%s disconnected\n", pAddr);
 
+  pthread_mutex_lock(&m_mutexSockets);
+
   CSocketMap::iterator it = m_mapSockets.find(s);
 	ClientSocket* pSocket = NULL;
 
@@ -111,6 +119,9 @@ void FCLogicRouter::OnDisconnect(FCSOCKET s, FCDWORD dwCode)
 			delete pSocket;
 		}
 	}
+
+  pthread_mutex_unlock(&m_mutexSockets);
+
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -120,16 +131,21 @@ void FCLogicRouter::OnDataReceived(FCSOCKET s, FCBYTE* pData, FCINT nLen)
   if ( m_bHasConsole )
     printf("[DATA_IN-%ld bytes] %s\n", nLen, pData);
 
+  pthread_mutex_lock(&m_mutexSockets);
+
 	ClientSocket* pSocket = NULL;
 	CSocketMap::iterator it = m_mapSockets.find(s);
 
-  if ( it == m_mapSockets.end())
-		return;
-  pSocket = it->second;
-	if ( !pSocket )
-		return;
+  if ( it != m_mapSockets.end())
+  {
+    pSocket = it->second;
+	  if ( pSocket )
+    {
+	    // add the received data to the socket's stream
+	    pSocket->AddData(pData, nLen);
+      m_arrQueuedData.push_back(pSocket);
+    }
+  }
 
-	// add the received data to the socket's stream
-	pSocket->AddData(pData, nLen);
-  m_arrQueuedData.push_back(pSocket);
+  pthread_mutex_unlock(&m_mutexSockets);
 }

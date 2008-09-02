@@ -114,7 +114,6 @@ protected:
 	SC_HANDLE						  m_serviceHandle;			// the service's handle
 	char* 							  m_lpszServiceName;
 	char* 							  m_lpszServiceDesc;
-	static int						m_nRefCnt;
 	static int						m_nStatusCount;				// number of service status handles being stored
 	static stSvcStatus**	m_ppStatus;					  // array for the status handles
   HANDLE                m_hThread;
