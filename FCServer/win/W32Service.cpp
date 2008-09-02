@@ -28,10 +28,6 @@ int CW32Service::m_nStatusCount = 0;
 
 ///////////////////////////////////////////////////////////////////////
 
-int CW32Service::m_nRefCnt = 0;
-
-///////////////////////////////////////////////////////////////////////
-
 bool CW32Service::m_bRunAsApp = false;
 
 ///////////////////////////////////////////////////////////////////////
@@ -50,7 +46,6 @@ CW32Service::CW32Service(const char* lpMachineName, const char* lpDataBaseName, 
 {
 	memset(m_arrDispatchTable, 0, sizeof(SERVICE_TABLE_ENTRY)*2);
 	m_scmHandle = OpenSCManager( lpMachineName, lpDataBaseName, dwDesiredAccess );
-	m_nRefCnt++;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -65,9 +60,7 @@ CW32Service::~CW32Service()
 		CloseServiceHandle( m_scmHandle );
 	if ( m_serviceHandle )
 		CloseServiceHandle( m_serviceHandle );
-	m_nRefCnt--;
-	if ( !m_nRefCnt )
-		CleanupMemory();
+	CleanupMemory();
 }
 
 ///////////////////////////////////////////////////////////////////////
