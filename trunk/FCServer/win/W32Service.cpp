@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <windows.h>
+#include <process.h>
 #include <conio.h>
 #include "w32service.h"
 
@@ -43,6 +44,8 @@ CW32Service::CW32Service(const char* lpMachineName, const char* lpDataBaseName, 
 : m_lpszServiceDesc(NULL)
 , m_serviceHandle(NULL)
 , m_lpszServiceName(NULL)
+, m_hThread(0)
+, m_hThrdEvent(0)
 , m_pLogic(NULL)
 {
 	memset(m_arrDispatchTable, 0, sizeof(SERVICE_TABLE_ENTRY)*2);
@@ -80,7 +83,14 @@ DWORD CW32Service::Initialise(void* pParam)
     if ( !pThis->m_pLogic )
       return 0;
 
-    pThis->m_pLogic->Start();
+    // create the event
+    pThis->m_hThrdEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+
+    unsigned int nID;
+    if ( !(pThis->m_hThread = (HANDLE)_beginthreadex(NULL, 0, CW32Service::ThreadFunction, pThis, 0, &nID)) )
+    {
+      return 0;
+    }
   }
   else
   {
@@ -94,6 +104,7 @@ DWORD CW32Service::Initialise(void* pParam)
     {
       printf(".");
     }
+    pThis->m_pLogic->Stop();
   }
 
   return 0;
@@ -310,7 +321,8 @@ int CW32Service::ISRV_Stop()
   if ( !m_pLogic )
     return -1;
 
-  // TODO: Flesh this out
+  SetEvent(m_hThrdEvent);
+  WaitForSingleObject(m_hThread, INFINITE);
 
   return 0;
 }
@@ -572,11 +584,30 @@ DWORD WINAPI CW32Service::_serviceHandler(DWORD dwControl, DWORD dwEventType, LP
 }
 
 ///////////////////////////////////////////////////////////////////////
+
+unsigned int CW32Service::ThreadFunction(void* pParam)
+{
+  CW32Service* pThis = (CW32Service*) pParam;
+
+  if ( !pThis )
+    return 0;
+
+  pThis->m_pLogic->Start();
+  while ( WaitForSingleObject( pThis->m_hThrdEvent, 500) == WAIT_TIMEOUT )
+  {
+    ;
+  }
+
+  return 0;
+}
+
+///////////////////////////////////////////////////////////////////////
 // EVENT HANDLERS BELOW... be afraid... be VERY afraid...
 ///////////////////////////////////////////////////////////////////////
 
 bool CW32Service::OnServiceStop(const CW32Service::stSvcStatus* pStatus)
 {
+  ISRV_Stop();
 	return true;
 }
 

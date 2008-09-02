@@ -104,6 +104,8 @@ protected:
 	static DWORD WINAPI		_serviceHandler(DWORD dwControl, DWORD dwEventType, LPVOID lpEventData, LPVOID lpContext);
 	void							    CleanupMemory();
 
+  static unsigned int WINAPI   ThreadFunction(void*);
+
 	// Attributes
   static bool           m_bRunAsApp;
 	bool							    m_bInitialised;
@@ -115,6 +117,8 @@ protected:
 	static int						m_nRefCnt;
 	static int						m_nStatusCount;				// number of service status handles being stored
 	static stSvcStatus**	m_ppStatus;					  // array for the status handles
+  HANDLE                m_hThread;
+  HANDLE                m_hThrdEvent;
 
   IServiceLogic*        m_pLogic;
 };
