@@ -298,6 +298,9 @@ int CW32Service::ISRV_Run(void* pData)
   if ( !m_pLogic )
     return -1;
 
+  // indicate whether the logic module can output to the console
+  m_pLogic->HasConsole( m_bRunAsApp );
+
   if ( m_bRunAsApp )
   {
     Initialise(this);

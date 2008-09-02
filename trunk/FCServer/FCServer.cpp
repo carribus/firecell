@@ -21,6 +21,8 @@
 #include "../common/fctypes.h"
 #ifdef _WIN32
   #include "win/W32Service.h"
+  // include the the Visual Studio compatible Structured Exception handling version of the pthreads-win32 library
+  #pragma comment(lib, "../common/pthreads-win32/lib/pthreadVSE2.lib")
 #else
   #include "linux/Daemon.h"
 #endif//_WIN32

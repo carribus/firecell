@@ -12,13 +12,14 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="Debug"
+			OutputDirectory="..\bin\Debug"
 			IntermediateDirectory="Debug"
 			ConfigurationType="1"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -40,7 +41,9 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="Copying pthreads-win32 dll to bin\debug folder"
+				CommandLine="copy &quot;..\common\pthreads-win32\lib\pthreadVSE2.dll&quot; $(OutDir)"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -60,7 +63,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="Release"
+			OutputDirectory="..\bin\Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="1"
 			CharacterSet="2">
@@ -86,7 +89,9 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="Copying pthreads-win32 dll to bin\debug folder"
+				CommandLine="copy &quot;..\common\pthreads-win32\lib\pthreadVSE2.dll&quot; $(OutDir)"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -113,6 +118,9 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
+				RelativePath=".\ClientSocket.cpp">
+			</File>
+			<File
 				RelativePath="..\common\CmdLineInfo.cpp">
 			</File>
 			<File
@@ -132,6 +140,12 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+			<File
+				RelativePath="..\common\binstream.h">
+			</File>
+			<File
+				RelativePath=".\ClientSocket.h">
+			</File>
 			<File
 				RelativePath="..\common\CmdLineInfo.h">
 			</File>

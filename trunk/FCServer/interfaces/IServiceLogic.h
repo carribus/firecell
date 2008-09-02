@@ -26,6 +26,7 @@ struct IServiceLogic
   virtual void Free() = 0;
   virtual int Start(void) = 0;
   virtual int Stop(void) = 0;
+  virtual void HasConsole(bool bHasConsole) = 0;
 };
 
 #endif//_ISERVICELOGIC_H_

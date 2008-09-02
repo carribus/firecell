@@ -20,13 +20,18 @@
 #ifndef _FCLOGICROUTER_H_
 #define _FCLOGICROUTER_H_
 
+#include <map>
+#include <vector>
 #include "interfaces/IServiceLogic.h"
 #include "interfaces/ISocketServer.h"
-
+#include "ClientSocket.h"
 
 class FCLogicRouter : public IServiceLogic
                     , public ISocketServerSink
 {
+  typedef std::map<FCSOCKET, ClientSocket*> CSocketMap;
+  typedef std::vector<ClientSocket*> CQueuedSocketArray;
+
 public:
   FCLogicRouter(void);
   ~FCLogicRouter(void);
@@ -37,6 +42,7 @@ public:
   void Free();
   int Start();
   int Stop();
+  void HasConsole(bool bHasConsole)               { m_bHasConsole = bHasConsole; }
 
   //
   // ISocketServerSink implementation
@@ -47,7 +53,10 @@ public:
 
 private:
 
-  ISocketServer*                m_pSockServer;
+  ISocketServer*      m_pSockServer;
+  bool                m_bHasConsole;
+  CSocketMap          m_mapSockets;
+  CQueuedSocketArray  m_arrQueuedData;
 };
 
 #endif//_FCLOGICROUTER_H_
