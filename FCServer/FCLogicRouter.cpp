@@ -23,6 +23,7 @@
 
 FCLogicRouter::FCLogicRouter(void)
 : m_pSockServer(NULL)
+, m_bHasConsole(false)
 {
 }
 
@@ -78,13 +79,11 @@ void FCLogicRouter::OnConnect(FCSOCKET s)
 	getpeername(s, (sockaddr*)&addr, &nSize);
 	char* pAddr = inet_ntoa( *(in_addr*) &addr.sin_addr );
 
-  // TODO: Need to add sockets to a map for quick lookups
-//	if ( m_bRunAsApp )
+	if ( m_bHasConsole )
 		printf("%s connected\n", pAddr);
-/*
+
 	ClientSocket* pSocket = new ClientSocket(s);
 	m_mapSockets[s] = pSocket;
-*/
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -97,42 +96,40 @@ void FCLogicRouter::OnDisconnect(FCSOCKET s, FCDWORD dwCode)
 	getpeername(s, (sockaddr*)&addr, &nSize);
 	char* pAddr = inet_ntoa( *(in_addr*) &addr.sin_addr );
 
-  // TODO: Need to remove sockets from the socket map
-
-//	if ( m_bRunAsApp )
+	if ( m_bHasConsole )
 		printf("%s disconnected\n", pAddr);
-/*
-	CSocketMap::CPair* pPair = m_mapSockets.Lookup(s);
+
+  CSocketMap::iterator it = m_mapSockets.find(s);
 	ClientSocket* pSocket = NULL;
 
-	if ( pPair )
+  if ( it != m_mapSockets.end() )
 	{
-		if ( (pSocket = m_mapSockets.GetValueAt(pPair)) )
+    pSocket = it->second;
+		if ( pSocket )
 		{
-//			CNSUserMgr::Instance().RemoveUser( pSocket->GetUser() );
-			m_mapSockets.RemoveKey(s);
+			m_mapSockets.erase(it);
 			delete pSocket;
 		}
 	}
-*/
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void FCLogicRouter::OnDataReceived(FCSOCKET s, FCBYTE* pData, FCINT nLen)
 {
-  printf("[DATA_IN-%ld bytes] %s\n", nLen, pData);
-/*
-	ClientSocket* pSocket = NULL;
-	CSocketMap::CPair* pPair = m_mapSockets.Lookup(s);
+  if ( m_bHasConsole )
+    printf("[DATA_IN-%ld bytes] %s\n", nLen, pData);
 
-	if ( !pPair )
+	ClientSocket* pSocket = NULL;
+	CSocketMap::iterator it = m_mapSockets.find(s);
+
+  if ( it == m_mapSockets.end())
 		return;
-	if ( !(pSocket = m_mapSockets.GetValueAt(pPair)) )
+  pSocket = it->second;
+	if ( !pSocket )
 		return;
 
 	// add the received data to the socket's stream
 	pSocket->AddData(pData, nLen);
-	m_arrQueuedData.Add(pSocket);
-*/
+  m_arrQueuedData.push_back(pSocket);
 }
