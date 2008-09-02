@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "fctypes.h"
+#include "fcfuncs.h"
 #include "CmdLineInfo.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -123,7 +124,7 @@ bool CCmdLineInfo::IsSwitchPresent(const char* lpszSwitch)
 		if ( IsSwitch(i) )
 		{
 			pArg = m_ppArgs[i];
-			if ( !strcmpi( &pArg[1], lpszSwitch) )
+			if ( !fcstrcmpi( &pArg[1], lpszSwitch) )
 				return true;
 		}
 	}
@@ -144,7 +145,7 @@ int CCmdLineInfo::GetSwitchIndex(const char* lpszSwitch)
 		if ( IsSwitch(i) )
 		{
 			pArg = m_ppArgs[i];
-			if ( !strcmpi( &pArg[1], lpszSwitch) )
+			if ( !fcstrcmpi( &pArg[1], lpszSwitch) )
 				return i;
 		}
 	}
@@ -159,7 +160,6 @@ int CCmdLineInfo::GetSwitchCount()
 	if ( !m_ppArgs )
 		return 0;
 
-	const char*		pSwitch = m_lpszSwitches;
 	int			nCount = 0;
 
 	for ( int i = 0; i < m_nArgCount; i++ )

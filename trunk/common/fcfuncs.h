@@ -17,30 +17,13 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _DAEMON_H_
-#define _DAEMON_H_
+#ifndef _FCFUNCS_H_
+#define _FCFUNCS_H_
 
-#include "../interfaces/IService.h"
-#include "../interfaces/IServiceLogic.h"
+#ifdef _WIN32
+  #define fcstrcmpi strcmpi
+#else
+  #define fcstrcmpi strcasecmp
+#endif
 
-class CDaemon : public IService
-{
-public:
-  CDaemon();
-  virtual ~CDaemon();
-  
-  //
-  // IService Implementation
-  bool ISRV_AttachLogic(IServiceLogic* pLogic);
-  void ISRV_RunAsApp(bool bAsApp);
-  int ISRV_Run(void* pData);
-  int ISRV_Stop();
-  
-private:
-  
-  bool                  m_bRunAsApp;
-  IServiceLogic*        m_pLogic;  
-};
-
-#endif//_DAEMON_H_
-
+#endif//_FCFUNCS_H_
