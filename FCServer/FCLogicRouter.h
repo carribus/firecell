@@ -19,18 +19,35 @@
 */
 #ifndef _FCLOGICROUTER_H_
 #define _FCLOGICROUTER_H_
+
 #include "interfaces/IServiceLogic.h"
+#include "interfaces/ISocketServer.h"
+
 
 class FCLogicRouter : public IServiceLogic
+                    , public ISocketServerSink
 {
 public:
   FCLogicRouter(void);
   ~FCLogicRouter(void);
 
+  //
+  // IServiceLogic implementation
   const char* GetName()                           { return "FireCell Router Service"; }
   void Free();
   int Start();
   int Stop();
+
+  //
+  // ISocketServerSink implementation
+	void OnConnect(FCSOCKET s);
+	void OnDisconnect(FCSOCKET s, FCDWORD dwCode);
+	void OnDataReceived(FCSOCKET s, FCBYTE* pData, FCINT nLen);
+
+
+private:
+
+  ISocketServer*                m_pSockServer;
 };
 
 #endif//_FCLOGICROUTER_H_

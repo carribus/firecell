@@ -46,4 +46,6 @@
 #define FCCSTR        const FCSTR
 #define FCCWSTR       const FCWSTR
 
+#define FCSOCKET      FCUINT
+
 #endif//_FCTYPES_H_
