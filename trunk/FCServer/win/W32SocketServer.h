@@ -21,6 +21,7 @@
 #define _W32SOCKETSERVER_H_
 
 #include <winsock2.h>
+#include <ws2tcpip.h>
 #include "../../common/collections/DataMgr.h"
 #include "../interfaces/ISocketServer.h"
 
