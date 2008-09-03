@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0644A8200E6E73F10045DB31 /* BSDSocketServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0644A81F0E6E73F10045DB31 /* BSDSocketServer.cpp */; };
+		0644A8950E6EA29D0045DB31 /* ClientSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0644A8930E6EA29D0045DB31 /* ClientSocket.cpp */; };
 		06DC94320E6D07C300665D06 /* FCLogicRouter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DC942F0E6D07C300665D06 /* FCLogicRouter.cpp */; };
 		06DC94330E6D07C300665D06 /* FCServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DC94310E6D07C300665D06 /* FCServer.cpp */; };
 		06DC94370E6D07CF00665D06 /* CmdLineInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DC94340E6D07CF00665D06 /* CmdLineInfo.cpp */; };
@@ -28,6 +30,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0644A81E0E6E73F10045DB31 /* BSDSocketServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSDSocketServer.h; path = linux/BSDSocketServer.h; sourceTree = "<group>"; };
+		0644A81F0E6E73F10045DB31 /* BSDSocketServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BSDSocketServer.cpp; path = linux/BSDSocketServer.cpp; sourceTree = "<group>"; };
+		0644A8620E6E8B2F0045DB31 /* binstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = binstream.h; path = ../common/binstream.h; sourceTree = SOURCE_ROOT; };
+		0644A8930E6EA29D0045DB31 /* ClientSocket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ClientSocket.cpp; sourceTree = "<group>"; };
+		0644A8940E6EA29D0045DB31 /* ClientSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClientSocket.h; sourceTree = "<group>"; };
 		06DC942F0E6D07C300665D06 /* FCLogicRouter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FCLogicRouter.cpp; sourceTree = "<group>"; };
 		06DC94300E6D07C300665D06 /* FCLogicRouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLogicRouter.h; sourceTree = "<group>"; };
 		06DC94310E6D07C300665D06 /* FCServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FCServer.cpp; sourceTree = "<group>"; };
@@ -67,6 +74,9 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				0644A8930E6EA29D0045DB31 /* ClientSocket.cpp */,
+				0644A8940E6EA29D0045DB31 /* ClientSocket.h */,
+				0644A8620E6E8B2F0045DB31 /* binstream.h */,
 				06DC943A0E6D07E900665D06 /* Daemon.cpp */,
 				06DC943B0E6D07E900665D06 /* Daemon.h */,
 				06DC94380E6D07DD00665D06 /* IService.h */,
@@ -78,6 +88,8 @@
 				06DC94300E6D07C300665D06 /* FCLogicRouter.h */,
 				06DC94310E6D07C300665D06 /* FCServer.cpp */,
 				06DC94510E6D0B6000665D06 /* fcfuncs.h */,
+				0644A81E0E6E73F10045DB31 /* BSDSocketServer.h */,
+				0644A81F0E6E73F10045DB31 /* BSDSocketServer.cpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -145,6 +157,8 @@
 				06DC94330E6D07C300665D06 /* FCServer.cpp in Sources */,
 				06DC94370E6D07CF00665D06 /* CmdLineInfo.cpp in Sources */,
 				06DC943C0E6D07E900665D06 /* Daemon.cpp in Sources */,
+				0644A8200E6E73F10045DB31 /* BSDSocketServer.cpp in Sources */,
+				0644A8950E6EA29D0045DB31 /* ClientSocket.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

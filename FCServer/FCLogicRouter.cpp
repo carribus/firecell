@@ -79,7 +79,7 @@ void FCLogicRouter::OnConnect(FCSOCKET s)
 	sockaddr_in addr;
 	int nSize = sizeof(addr);
 
-	getpeername(s, (sockaddr*)&addr, &nSize);
+	getpeername(s, (sockaddr*)&addr, (socklen_t*)&nSize);
 	char* pAddr = inet_ntoa( *(in_addr*) &addr.sin_addr );
 
 	if ( m_bHasConsole )
@@ -99,7 +99,7 @@ void FCLogicRouter::OnDisconnect(FCSOCKET s, FCDWORD dwCode)
 	sockaddr_in addr;
 	int nSize = sizeof(addr);
 
-	getpeername(s, (sockaddr*)&addr, &nSize);
+	getpeername(s, (sockaddr*)&addr, (socklen_t*)&nSize);
 	char* pAddr = inet_ntoa( *(in_addr*) &addr.sin_addr );
 
 	if ( m_bHasConsole )
