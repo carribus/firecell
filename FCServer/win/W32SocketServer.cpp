@@ -198,7 +198,6 @@ void CW32SocketServer::UnregisterSink(ISocketServerSink* pSink)
 
 bool CW32SocketServer::IsSinkRegistered(ISocketServerSink* pSink)
 {
-	m_arrSinks.Lock();
 	int nCount = m_arrSinks.GetSize();
 
 	for ( int i = 0; i < nCount; i++ )
