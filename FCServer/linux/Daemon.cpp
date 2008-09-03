@@ -59,6 +59,11 @@ void CDaemon::ISRV_RunAsApp(bool bAsApp)
 
 int CDaemon::ISRV_Run(void* pData)
 {
+  if ( !m_pLogic )
+    return 0;
+  
+  m_pLogic->HasConsole(m_bRunAsApp);
+
   if ( !m_bRunAsApp )
   {
     pid_t pid;
@@ -83,9 +88,6 @@ int CDaemon::ISRV_Run(void* pData)
   }
   else
   {
-    if ( !m_pLogic )
-      return 0;
-    
     m_pLogic->Start();
 
     printf("Press 'q' to stop...\n");

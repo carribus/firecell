@@ -71,6 +71,8 @@ bool BSDSocketServer::CSocketPool::AddSocket(int nIndex, FCSOCKET s)
       m_nFdsMax = s;
     
     m_dwSocketCount++;
+    
+    bResult = true;
   }
   
   return bResult;
@@ -130,7 +132,7 @@ void BSDSocketServer::Initialize(FCCSTR lpszBindToAddress, FCSHORT sPortToBind)
   }
   else
   {
-    hostent* pLocalHost = gethostbyname(NULL);
+    hostent* pLocalHost = gethostbyname("localhost");
     m_lpszServer = strdup( inet_ntoa( *(in_addr*)*pLocalHost->h_addr_list) );
   }
   m_sPort = sPortToBind;
@@ -190,7 +192,6 @@ void BSDSocketServer::UnregisterSink(ISocketServerSink* pSink)
 
 bool BSDSocketServer::IsSinkRegistered(ISocketServerSink* pSink)
 {
-  m_arrSinks.Lock();
   int nCount = m_arrSinks.GetSize();
   
   for ( int i = 0; i < nCount; i++ )
@@ -203,7 +204,8 @@ bool BSDSocketServer::IsSinkRegistered(ISocketServerSink* pSink)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-
+#include <stdio.h>
+#include <errno.h>
 bool BSDSocketServer::StartListening()
 {
   if ( !(m_sockListener = socket( PF_INET, SOCK_STREAM, 0 )) )
@@ -211,15 +213,21 @@ bool BSDSocketServer::StartListening()
     return false;
   }
   
+  // make sure we can reuse the address if we need to
+  int yes = 1;
+  int nRet = setsockopt( m_sockListener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int) );
+  
 	sockaddr_in addr;
   
 	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = INADDR_ANY; //inet_addr(m_lpszServer);
+	addr.sin_addr.s_addr = inet_addr(m_lpszServer);
 	addr.sin_port = htons(m_sPort);
 	memset( addr.sin_zero, 0, sizeof(addr.sin_zero) );
   
-	if ( bind( m_sockListener, (sockaddr*)&addr, sizeof(addr) ) != 0 )
+  nRet = bind( m_sockListener, (sockaddr*)&addr, sizeof(addr) );
+	if ( nRet != 0 )
 	{
+    perror("Failed to bind");
 		// an error occurred
 		return false;
 	}
@@ -229,7 +237,7 @@ bool BSDSocketServer::StartListening()
     return false;
   }
   
-  int nRet = pthread_create( &m_hListenThrd, NULL, thrdListenServer, (void*)this );
+  nRet = pthread_create( &m_hListenThrd, NULL, thrdListenServer, (void*)this );
   if ( nRet != 0 )
   {
     // failed to start the thread...
@@ -344,7 +352,6 @@ void BSDSocketServer::DestroyPool(CSocketPool*& pPool)
     if ( m_socketPools.GetAt(i) == pPool )
     {
       m_socketPools.RemoveAt(i);
-      delete pPool;
       pPool = NULL;
       break;
     }
@@ -396,7 +403,6 @@ void BSDSocketServer::OnClientSocketClosed(stClientSocket* pSocket, FCDWORD dwEr
 	if ( pPool->GetSocketCount() == 0 )
 	{
 		DestroyPool(pPool);
-    delete pPool;
 	}
   m_dwActiveConnections--;
 }
@@ -418,8 +424,8 @@ void* BSDSocketServer::thrdListenServer(void* pParam)
   
   FD_SET( pThis->m_sockListener, &master_fds );
   
-  // setup the 500ms delay for select( ) 
-  tv.tv_sec = 0;
+  // setup the 2500ms delay for select( ) 
+  tv.tv_sec = 2;
   tv.tv_usec = 500000;
   
   // flag the thread to run
@@ -460,8 +466,8 @@ void* BSDSocketServer::thrdClientServer(void* pParam)
   
   FD_ZERO(&read_fds);
   
-  // setup the 500ms timeout for the select( )
-  tv.tv_sec = 0;
+  // setup the 2500ms timeout for the select( )
+  tv.tv_sec = 2;
   tv.tv_usec = 500000;
   
   while ( pThis->m_bRun && pPool->GetSocketCount() )
@@ -475,7 +481,7 @@ void* BSDSocketServer::thrdClientServer(void* pParam)
       break;
     }
     
-    for ( int i = 0; i < fdMax; i++ )
+    for ( int i = 0; i <= fdMax; i++ )
     {
       if ( FD_ISSET(i, &read_fds) )
       {
@@ -495,19 +501,8 @@ void* BSDSocketServer::thrdClientServer(void* pParam)
         
         if ( pSocket )
         {
-          // handle data from the client
-          if ( (nBytes = recv(i, buf, sizeof(buf), 0)) <= 0 )
-          {
-            // an error occurred or the connection was closed by the client
-            pThis->OnClientSocketClosed(pSocket, 0);;
-            
-            close(i);
-          }
-          else
-          {
-            // got some data
-            pThis->OnDataReceived(pSocket);
-          }
+          // got some data
+          pThis->OnDataReceived(pSocket);
         }
       }
     }
