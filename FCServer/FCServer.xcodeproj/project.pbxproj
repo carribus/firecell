@@ -1,0 +1,226 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 44;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		06DC94320E6D07C300665D06 /* FCLogicRouter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DC942F0E6D07C300665D06 /* FCLogicRouter.cpp */; };
+		06DC94330E6D07C300665D06 /* FCServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DC94310E6D07C300665D06 /* FCServer.cpp */; };
+		06DC94370E6D07CF00665D06 /* CmdLineInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DC94340E6D07CF00665D06 /* CmdLineInfo.cpp */; };
+		06DC943C0E6D07E900665D06 /* Daemon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DC943A0E6D07E900665D06 /* Daemon.cpp */; };
+		8DD76FB00486AB0100D96B5E /* FCServer.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6A0FF2C0290799A04C91782 /* FCServer.1 */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76FAF0486AB0100D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				8DD76FB00486AB0100D96B5E /* FCServer.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		06DC942F0E6D07C300665D06 /* FCLogicRouter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FCLogicRouter.cpp; sourceTree = "<group>"; };
+		06DC94300E6D07C300665D06 /* FCLogicRouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLogicRouter.h; sourceTree = "<group>"; };
+		06DC94310E6D07C300665D06 /* FCServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FCServer.cpp; sourceTree = "<group>"; };
+		06DC94340E6D07CF00665D06 /* CmdLineInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CmdLineInfo.cpp; path = ../common/CmdLineInfo.cpp; sourceTree = SOURCE_ROOT; };
+		06DC94350E6D07CF00665D06 /* CmdLineInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CmdLineInfo.h; path = ../common/CmdLineInfo.h; sourceTree = SOURCE_ROOT; };
+		06DC94360E6D07CF00665D06 /* fctypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fctypes.h; path = ../common/fctypes.h; sourceTree = SOURCE_ROOT; };
+		06DC94380E6D07DD00665D06 /* IService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IService.h; path = interfaces/IService.h; sourceTree = "<group>"; };
+		06DC94390E6D07DD00665D06 /* IServiceLogic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IServiceLogic.h; path = interfaces/IServiceLogic.h; sourceTree = "<group>"; };
+		06DC943A0E6D07E900665D06 /* Daemon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Daemon.cpp; path = linux/Daemon.cpp; sourceTree = "<group>"; };
+		06DC943B0E6D07E900665D06 /* Daemon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Daemon.h; path = linux/Daemon.h; sourceTree = "<group>"; };
+		06DC94510E6D0B6000665D06 /* fcfuncs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fcfuncs.h; path = ../common/fcfuncs.h; sourceTree = SOURCE_ROOT; };
+		8DD76FB20486AB0100D96B5E /* FCServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FCServer; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6A0FF2C0290799A04C91782 /* FCServer.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = FCServer.1; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76FAD0486AB0100D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* FCServer */ = {
+			isa = PBXGroup;
+			children = (
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6A0FF2B0290797F04C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = FCServer;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				06DC943A0E6D07E900665D06 /* Daemon.cpp */,
+				06DC943B0E6D07E900665D06 /* Daemon.h */,
+				06DC94380E6D07DD00665D06 /* IService.h */,
+				06DC94390E6D07DD00665D06 /* IServiceLogic.h */,
+				06DC94340E6D07CF00665D06 /* CmdLineInfo.cpp */,
+				06DC94350E6D07CF00665D06 /* CmdLineInfo.h */,
+				06DC94360E6D07CF00665D06 /* fctypes.h */,
+				06DC942F0E6D07C300665D06 /* FCLogicRouter.cpp */,
+				06DC94300E6D07C300665D06 /* FCLogicRouter.h */,
+				06DC94310E6D07C300665D06 /* FCServer.cpp */,
+				06DC94510E6D0B6000665D06 /* fcfuncs.h */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76FB20486AB0100D96B5E /* FCServer */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6A0FF2B0290797F04C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				C6A0FF2C0290799A04C91782 /* FCServer.1 */,
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8DD76FA90486AB0100D96B5E /* FCServer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB928508733DD80010E9CD /* Build configuration list for PBXNativeTarget "FCServer" */;
+			buildPhases = (
+				8DD76FAB0486AB0100D96B5E /* Sources */,
+				8DD76FAD0486AB0100D96B5E /* Frameworks */,
+				8DD76FAF0486AB0100D96B5E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FCServer;
+			productInstallPath = "$(HOME)/bin";
+			productName = FCServer;
+			productReference = 8DD76FB20486AB0100D96B5E /* FCServer */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "FCServer" */;
+			compatibilityVersion = "Xcode 3.0";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* FCServer */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8DD76FA90486AB0100D96B5E /* FCServer */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76FAB0486AB0100D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06DC94320E6D07C300665D06 /* FCLogicRouter.cpp in Sources */,
+				06DC94330E6D07C300665D06 /* FCServer.cpp in Sources */,
+				06DC94370E6D07CF00665D06 /* CmdLineInfo.cpp in Sources */,
+				06DC943C0E6D07E900665D06 /* Daemon.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB928608733DD80010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = FCServer;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		1DEB928708733DD80010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = FCServer;
+			};
+			name = Release;
+		};
+		1DEB928A08733DD80010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+			};
+			name = Debug;
+		};
+		1DEB928B08733DD80010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB928508733DD80010E9CD /* Build configuration list for PBXNativeTarget "FCServer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB928608733DD80010E9CD /* Debug */,
+				1DEB928708733DD80010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "FCServer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB928A08733DD80010E9CD /* Debug */,
+				1DEB928B08733DD80010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
