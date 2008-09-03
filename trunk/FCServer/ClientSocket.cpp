@@ -20,6 +20,7 @@
 #ifdef _WIN32
   #include <winsock2.h>
 #else
+  #include <sys/socket.h>
 #endif//_WIN32
 #include "../common/binstream.h"
 #include "ClientSocket.h"

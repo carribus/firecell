@@ -20,8 +20,13 @@
 #ifndef _BSDSOCKETSERVER_H_
 #define _BSDSOCKETSERVER_H_
 
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <pthread.h>
 #include "../../common/fctypes.h"
+#include "../../common/collections/datamgr.h"
 #include "../interfaces/ISocketServer.h"
 
 #define HANDLE void*
@@ -51,13 +56,15 @@ class BSDSocketServer : public ISocketServer
 		CSocketPool(BSDSocketServer* pOwner);
 		~CSocketPool();
     
-		BSDSocketServer* GetOwner()             { return m_pOwner; }
-		void SetThreadHandle(HANDLE hThrd)			{ m_hPoolThrd = hThrd; }
-		pthread_t GetThreadHandle()					    { return m_hPoolThrd; }
+		BSDSocketServer* GetOwner()               { return m_pOwner; }
+		void SetThreadHandle(pthread_t hThrd)     { m_hPoolThrd = hThrd; }
+		pthread_t GetThreadHandle()               { return m_hPoolThrd; }
 		FCDWORD HasAvailableSlots()					      { return MAX_WAIT_SOCKETS - m_dwSocketCount; }
 		FCDWORD GetSocketCount()						      { return m_dwSocketCount; }
+    fd_set GetFDS()                           { return m_fdsSockets; }
+    int GetMaxFDS()                           { return m_nFdsMax; }
 		stClientSocket* GetSocket(int nIndex);
-		bool AddSocket(int nIndex, FCSOCKET s, HANDLE hEvent);
+		bool AddSocket(int nIndex, FCSOCKET s);
 		void RemoveSocket(stClientSocket* pSocket);
     
 	private:
@@ -65,6 +72,8 @@ class BSDSocketServer : public ISocketServer
 		pthread_t m_hPoolThrd;
 		FCDWORD m_dwSocketCount;
 		stClientSocket	m_sockets[MAX_WAIT_SOCKETS];
+    fd_set m_fdsSockets;
+    int m_nFdsMax;
 	};
   
 public:
@@ -83,12 +92,34 @@ public:
   
 private:
   
+  bool IsSinkRegistered(ISocketServerSink* pSink);
+  bool StartListening();
+  bool AcceptConnection();
+  bool AddConnectionToPool(FCSOCKET s);
+  void DestroyPool(CSocketPool*& pPool);
+  
+  // threads
+  static void* thrdListenServer(void* pParam);
+  static void* thrdClientServer(void* pParam);
+  
 	// event handlers
 	void OnDataReceived(stClientSocket* pSocket);
 	void OnClientSocketClosed(stClientSocket* pSocket, FCDWORD dwErrorCode);
   
+  FCSTR               m_lpszServer;
+  FCSHORT             m_sPort;
+  // listener objects
+  FCSOCKET            m_sockListener;
+  pthread_t           m_hListenThrd;
+  pthread_cond_t      m_hListenEvent;
+  // client socket pools
+  CDataMgr< CSocketPool > m_socketPools;
+  // global thread control
+  bool                m_bRun;
   
+  FCDWORD             m_dwActiveConnections;
   
+  CDataMgr< ISocketServerSink, false >    m_arrSinks;
 };
 
 #endif//_BSDSOCKETSERVER_H_

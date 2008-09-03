@@ -21,12 +21,10 @@
 #define _DATAMGR_H_
 
 #ifdef _WIN32
-#include <windows.h>
+  #include "../pthreads-win32/include/pthread.h"
+#else
+  #include <pthread.h>
 #endif//_WIN32
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
 
 template <class Type, bool bManaged = true>
 class CDataMgr  
@@ -36,9 +34,16 @@ public:
 	{
 		m_nNumItems = 0;
 		m_ppData = NULL;
-#ifdef _WIN32
-		InitializeCriticalSection(&m_csLock);
-#endif
+ 
+    pthread_mutexattr_t attr;
+    
+    // define the mutex as a recursive mutex
+    pthread_mutexattr_init(&attr);
+    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+    // initialize the recursive mutex
+    pthread_mutex_init(&m_csLock, &attr);
+    // destroy the mutex attributes object
+    pthread_mutexattr_destroy(&attr);      
 	}
 
 	//////////////////////////////////////////////////////////////////
@@ -50,9 +55,7 @@ public:
 		else
 			RemoveAll();
 
-#ifdef _WIN32
-		DeleteCriticalSection(&m_csLock);
-#endif
+    pthread_mutex_destroy(&m_csLock);
 	}
 
 
@@ -242,14 +245,14 @@ public:
 
 	void Lock()
 	{
-		EnterCriticalSection(&m_csLock);
+    pthread_mutex_lock(&m_csLock);
 	}
 
 	//////////////////////////////////////////////////////////////////
 
 	void Unlock()
 	{
-		LeaveCriticalSection(&m_csLock);
+    pthread_mutex_unlock(&m_csLock);
 	}
 
 	//////////////////////////////////////////////////////////////////
@@ -264,12 +267,10 @@ public:
 	virtual bool					DeleteAt		( int nIndex )			{ return ( Delete ( nIndex ) ); }
 
 protected:
-	int								m_nNumItems;
-	Type**							m_ppData;
+	int                   m_nNumItems;
+	Type**                m_ppData;
 
-#ifdef _WIN32
-	CRITICAL_SECTION				m_csLock;
-#endif
+  pthread_mutex_t         m_csLock;
 };
 
 

@@ -223,7 +223,7 @@ bool CW32SocketServer::StartListening()
 	sockaddr_in addr;
 
 	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = INADDR_ANY; //inet_addr(m_lpszServer);
+	addr.sin_addr.s_addr = INADDR_ANY;
 	addr.sin_port = htons(m_sPort);
 	ZeroMemory( addr.sin_zero, sizeof(addr.sin_zero) );
 
@@ -349,8 +349,10 @@ void CW32SocketServer::DestroyPool(CSocketPool*& pPool)
 	{
 		if ( m_socketPools.GetAt(i) == pPool )
 		{
-			m_socketPools.RemoveAt(i);
-			break;
+      m_socketPools.RemoveAt(i);
+      delete pPool;
+      pPool = NULL;			
+      break;
 		}
 	}
 }
@@ -400,6 +402,7 @@ void CW32SocketServer::OnClientSocketClosed(stClientSocket* pSocket, DWORD dwErr
 	if ( pPool->GetSocketCount() == 0 )
 	{
 		DestroyPool(pPool);
+    delete pPool;
 	}
 	m_dwActiveConnections--;
 }
