@@ -52,7 +52,7 @@ int FCLogicRouter::Start()
   {
     m_pSockServer = new SocketServer;
 
-    m_pSockServer->Initialize(NULL, 5555);
+    m_pSockServer->Initialize(NULL, 6666);
     m_pSockServer->RegisterSink(this);
     m_pSockServer->Start();
   }
