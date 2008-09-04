@@ -18,6 +18,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <string.h>
+#include <stdio.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <netdb.h>
@@ -204,8 +206,7 @@ bool BSDSocketServer::IsSinkRegistered(ISocketServerSink* pSink)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <errno.h>
+
 bool BSDSocketServer::StartListening()
 {
   if ( !(m_sockListener = socket( PF_INET, SOCK_STREAM, 0 )) )

@@ -17,30 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef _CLIENTSOCKET_H_
-#define _CLIENTSOCKET_H_
+#ifndef _THREADING_H_
+#define _THREADING_H_
 
-#include "../common/fctypes.h"
-#include "../common/BinStream.h"
+//
+// include the appropriate library for threading based on OS
+//
+#ifdef _WIN32
+  #include "pthreads-win32/include/pthread.h"
+  #include "pthreads-win32/include/sched.h"
+#else
+  #include <pthread.h>
+  #include <sched.h>
+#endif
 
-typedef CBinStream<FCBYTE, true> NetStream;
-
-class ClientSocket
-{
-public:
-	ClientSocket(FCSOCKET s);
-	virtual ~ClientSocket(void);
-
-	int Send(FCBYTE* pData, FCUINT nLen);
-	int AddData(FCBYTE* pData, FCUINT nLen);
-	CBinStream<FCBYTE, true>& GetDataStream()		{ return m_stream; }
-
-	operator FCSOCKET()							{ return m_sock; }
-
-private:
-
-	FCSOCKET				m_sock;
-	NetStream				m_stream;
-};
-
-#endif//_CLIENTSOCKET_H_
+#endif//_THREADING_H_

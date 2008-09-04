@@ -130,6 +130,12 @@
 				RelativePath=".\FCServer.cpp">
 			</File>
 			<File
+				RelativePath="..\common\inifile.cpp">
+			</File>
+			<File
+				RelativePath="..\common\PacketExtractor.cpp">
+			</File>
+			<File
 				RelativePath=".\win\W32Service.cpp">
 			</File>
 			<File
@@ -156,6 +162,9 @@
 				RelativePath="..\common\fctypes.h">
 			</File>
 			<File
+				RelativePath="..\common\inifile.h">
+			</File>
+			<File
 				RelativePath=".\interfaces\IService.h">
 			</File>
 			<File
@@ -165,7 +174,13 @@
 				RelativePath=".\interfaces\ISocketServer.h">
 			</File>
 			<File
+				RelativePath="..\common\PacketExtractor.h">
+			</File>
+			<File
 				RelativePath=".\SocketServer.h">
+			</File>
+			<File
+				RelativePath="..\common\threading.h">
 			</File>
 			<File
 				RelativePath=".\win\W32Service.h">

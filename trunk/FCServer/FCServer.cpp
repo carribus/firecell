@@ -36,11 +36,53 @@ bool HandleCommandLine(CCmdLineInfo& cmdLine, IService* pService);
 
 ///////////////////////////////////////////////////////////////////////
 
+#include "../common/PacketExtractor.h"
+
 int main(int argc, FCSTR argv[])
 {
   IService* pService = CreateServerObject();
   IServiceLogic* pRouter = new FCLogicRouter;
   CCmdLineInfo  cmdLine(argc, argv);
+
+/*
+  ** TEMPORARY **
+  sample packet definition (for testing purposes only)
+
+  struct stPacket
+  {
+    char  magic[5];         // magic header id (must be 'HELLO'
+    short sVerMajor;        // major version
+    short sVerMinor;        // minor version
+    char pktType            // type of packet
+    long lDataLen;          // length of data
+    char* pData;            // payload of the packet
+  };
+
+  // definition format
+  start of definition = [[
+    start of field      = :
+      field name          = alphanumeric sequence up to next ':'
+    element width start = :
+      element width (size)= value
+    number of elements  = [0..inf] OR
+                          (reference to previous member definition)
+    end of field        = |
+  end of definition   = ]]
+
+  // sample code
+  PacketExtractor extractor;
+
+  const string PKTDEF_SAMPLE = "[" \
+                               ":magic:1:5|" \
+                               ":verMajor:2:1|" \
+                               ":verMinor:2:1|" \
+                               ":pktType:1:1|" \
+                               ":dataLen:4:1|" \
+                               ":data:*dataLen:1|" \
+                               "]";
+
+  extractor.Prepare(PKTDEF_SAMPLE);
+*/
 
   if ( pService )
   {
