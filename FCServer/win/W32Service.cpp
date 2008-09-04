@@ -93,6 +93,7 @@ DWORD CW32Service::Initialise(void* pParam)
       return 0;
 
     pThis->m_pLogic->Start();
+    printf("Press 'q' to stop...\n");
     while ( getch() != 'q' )
     {
       printf(".");

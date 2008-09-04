@@ -21,11 +21,7 @@
 #define _BINSTREAM_H_
 
 #include <memory.h>
-#ifdef _WIN32
-  #include "pthreads-win32/include/pthread.h"
-#else
-  #include <pthread.h>
-#endif
+#include "threading.h"
 
 template <typename T, bool bThreadSafe = false>
 class CBinStream

@@ -21,10 +21,11 @@
 #define _FCLOGICROUTER_H_
 
 #include <map>
-#include <vector>
+#include <queue>
 #ifdef _WIN32
   #include "../common/pthreads-win32/include/pthread.h"
 #endif
+#include "../common/inifile.h"
 #include "interfaces/IServiceLogic.h"
 #include "interfaces/ISocketServer.h"
 #include "ClientSocket.h"
@@ -33,7 +34,7 @@ class FCLogicRouter : public IServiceLogic
                     , public ISocketServerSink
 {
   typedef std::map<FCSOCKET, ClientSocket*> CSocketMap;
-  typedef std::vector<ClientSocket*> CQueuedSocketArray;
+  typedef std::queue<ClientSocket*> CQueuedSocketArray;
 
 public:
   FCLogicRouter(void);
@@ -47,20 +48,33 @@ public:
   int Stop();
   void HasConsole(bool bHasConsole)               { m_bHasConsole = bHasConsole; }
 
+  void StartSocketMonitor();
+  void StopSocketMonitor();
+
   //
   // ISocketServerSink implementation
 	void OnConnect(FCSOCKET s);
 	void OnDisconnect(FCSOCKET s, FCDWORD dwCode);
 	void OnDataReceived(FCSOCKET s, FCBYTE* pData, FCINT nLen);
 
-
 private:
 
+  bool                LoadConfig(FCCSTR strFilename);
+
+  // thread
+  static void*        thrdSocketMonitor(void* pData);
+
+
+  INIFile             m_config;
   ISocketServer*      m_pSockServer;
   bool                m_bHasConsole;
   pthread_mutex_t     m_mutexSockets;
   CSocketMap          m_mapSockets;
+  pthread_mutex_t     m_mutexQueuedData;
   CQueuedSocketArray  m_arrQueuedData;
+
+  pthread_t           m_thrdSockMon;
+  bool                m_bStopSockMon;
 };
 
 #endif//_FCLOGICROUTER_H_
