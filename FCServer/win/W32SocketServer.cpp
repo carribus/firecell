@@ -131,7 +131,7 @@ void CW32SocketServer::Initialize(LPCSTR lpszBindToAddress, short sPortToBind)
 		m_lpszServer = _strdup(lpszBindToAddress);
 	else
 	{
-		hostent* pLocalHost = gethostbyname(NULL);
+		hostent* pLocalHost = gethostbyname("127.0.0.1");
 		m_lpszServer = strdup( inet_ntoa( *(in_addr*)*pLocalHost->h_addr_list) );
 	}
 	m_sPort = sPortToBind;
@@ -349,7 +349,6 @@ void CW32SocketServer::DestroyPool(CSocketPool*& pPool)
 		if ( m_socketPools.GetAt(i) == pPool )
 		{
       m_socketPools.RemoveAt(i);
-      delete pPool;
       pPool = NULL;			
       break;
 		}
@@ -401,7 +400,6 @@ void CW32SocketServer::OnClientSocketClosed(stClientSocket* pSocket, DWORD dwErr
 	if ( pPool->GetSocketCount() == 0 )
 	{
 		DestroyPool(pPool);
-    delete pPool;
 	}
 	m_dwActiveConnections--;
 }
@@ -469,7 +467,7 @@ unsigned WINAPI CW32SocketServer::thrdClientServer(LPVOID pParam)
 
 		// wait for an event to occur
 		dwWaitResult = WSAWaitForMultipleEvents( (DWORD)nIndex, arrHandles, FALSE, 1000, FALSE );
-		if ( (dwWaitResult >= WSA_WAIT_EVENT_0) && (dwWaitResult <= (WSA_WAIT_EVENT_0 + nIndex -1)) )
+		if ( dwWaitResult != WSA_WAIT_FAILED && (dwWaitResult >= WSA_WAIT_EVENT_0) && (dwWaitResult <= (WSA_WAIT_EVENT_0 + nIndex -1)) )
 		{
 			nIndex = dwWaitResult - WSA_WAIT_EVENT_0;
 			if ( (pSocket = arrSockets[nIndex]) )
