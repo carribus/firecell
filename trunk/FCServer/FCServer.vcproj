@@ -136,6 +136,9 @@
 				RelativePath="..\common\PacketExtractor.cpp">
 			</File>
 			<File
+				RelativePath="..\common\PEPacket.cpp">
+			</File>
+			<File
 				RelativePath=".\win\W32Service.cpp">
 			</File>
 			<File
@@ -175,6 +178,9 @@
 			</File>
 			<File
 				RelativePath="..\common\PacketExtractor.h">
+			</File>
+			<File
+				RelativePath="..\common\PEPacket.h">
 			</File>
 			<File
 				RelativePath=".\SocketServer.h">

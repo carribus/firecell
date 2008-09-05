@@ -57,7 +57,8 @@ int FCLogicRouter::Start()
     LoadConfig("FCRouter.conf");
     m_pSockServer = new SocketServer;
 
-    m_pSockServer->Initialize(NULL, m_config.GetValueShort("network", "port"));
+    short sPort = m_config.GetValueShort("network", "port");
+    m_pSockServer->Initialize(NULL, sPort ? sPort : 6666 );
     m_pSockServer->RegisterSink(this);
     m_pSockServer->Start();
 

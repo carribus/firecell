@@ -1,8 +1,28 @@
+/*
+    FireCell Server - The server code for the firecell multiplayer game
+    Copyright (C) 2008  Peter M. Mares
+
+		Contact: carribus@gmail.com
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 #include ".\packetextractor.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
 PacketExtractor::PacketExtractor(void)
+: m_minPktSize(0)
 {
 }
 
@@ -30,17 +50,6 @@ PacketExtractor::~PacketExtractor(void)
       end of field        = |
     end of definition   = ]]
 
-    ------------------------------------------------------------------
-    Constants:
-    ------------------------------------------------------------------
-    #define PKTDEF_START              "[["
-    #define PKTDEF_FIELD_START        ":"
-    #define PKTDEF_ELEMWIDTH_START    PKTDEF_FIELD_START
-    #define PKTDEF_VARNAME_START      "*"
-    #define PKTDEF_ELEMCOUNT_START    PKTDEF_FIELD_START
-    #define PKTDEF_FIELD_END          "|"
-    #define PKTDEF_END                "]]"
-
 ////////////////////////////////////////////////////////////////////////////////////////*/
 bool PacketExtractor::Prepare(string strPacketFormat)
 {
@@ -57,11 +66,15 @@ bool PacketExtractor::Prepare(string strPacketFormat)
       {
       case  PKTDEF_FIELD_START:
         {
+          EPField field;
+
           pos = strPacketFormat.find_first_of( PKTDEF_FIELD_END, offset );
           string strFieldDef = strPacketFormat.substr( offset, pos-offset+1 );
-          EPField field;
+
           ParseFieldDef(strFieldDef, field);
           offset = pos+1;
+
+          AddToExtractionPlan(field);
         }
         break;
 
@@ -77,7 +90,79 @@ bool PacketExtractor::Prepare(string strPacketFormat)
   else
     return false;
 
+  CalculateMinPacketSize();
+
   return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+PEPacket* PacketExtractor::Extract(const char* pSrc, size_t& streamOffset, const size_t streamLen)
+{
+  if ( !pSrc || streamOffset > streamLen || streamLen <= 0 )
+    return NULL;
+  if ( m_ep.empty() )
+    return NULL;
+
+  FieldVector::iterator it;
+  PEPacket* pNewPkt = new PEPacket;
+  EPField field;
+  size_t width, count, refSize, refOffset;
+
+  for ( it = m_ep.begin(); it != m_ep.end() && streamOffset < streamLen; it++ )
+  {
+    // check if we have a fixed element width...
+    if ( !it->elem_width )
+    {
+      // if not, its a width based on a previous field...
+      if ( pNewPkt->FieldExists( it->varRefWidth ) )
+      {
+        refSize = pNewPkt->GetFieldSize( it->varRefWidth );
+        refOffset = pNewPkt->GetFieldOffset( it->varRefWidth );
+        memcpy( (void*)&width, pSrc + refOffset, refSize );
+      }
+    }
+    else 
+      width = it->elem_width;
+
+    // check if we have a fixed element count...
+    if ( !it->elem_count )
+    {
+      // if not, its a count based on a previous field...
+      if ( pNewPkt->FieldExists( it->varRefCount ) )
+      {
+        refSize = pNewPkt->GetFieldSize( it->varRefCount );
+        refOffset = pNewPkt->GetFieldOffset( it->varRefCount );
+        memcpy( (void*)&count, pSrc + refOffset, refSize );
+      }
+    }
+    else
+      count = it->elem_count;
+
+    if ( streamOffset + (count*width) <= streamLen )
+    {
+      pNewPkt->SetField( it->name, streamOffset, width, count );
+      streamOffset += count*width;
+    }
+    else
+    {
+      // move the offset accordingly
+      streamOffset += count*width;
+      break;
+    }
+  }
+
+  if ( it != m_ep.end() )
+  {
+    delete pNewPkt;
+    pNewPkt = NULL;
+  }
+  else
+  {
+    pNewPkt->SetDataBlock( pSrc, streamOffset );
+  }
+
+  return pNewPkt;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -165,3 +250,20 @@ bool PacketExtractor::ReadElement(const char* pSrc, size_t& streamOffset, size_t
   return true;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void PacketExtractor::AddToExtractionPlan(PacketExtractor::EPField& field)
+{
+  m_ep.push_back(field);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void PacketExtractor::CalculateMinPacketSize()
+{
+  m_minPktSize = 0;
+  for ( FieldVector::iterator it = m_ep.begin(); it != m_ep.end(); it++ )
+  {
+    m_minPktSize += it->elem_width * it->elem_count;
+  }
+}
