@@ -53,7 +53,15 @@ public:
 	{
 		if ( bThreadSafe )
     {
-      pthread_mutex_init(&m_mutex, NULL);
+      pthread_mutexattr_t attr;
+      
+      // define the mutex as a recursive mutex
+      pthread_mutexattr_init(&attr);
+      pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+      // initialize the recursive mutex
+      pthread_mutex_init(&m_mutex, &attr);
+      // destroy the mutex attributes object
+      pthread_mutexattr_destroy(&attr);
     }
 		Assign(s.m_pData, s.m_ulLen);
 	}

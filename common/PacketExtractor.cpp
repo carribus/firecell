@@ -107,7 +107,7 @@ PEPacket* PacketExtractor::Extract(const char* pSrc, size_t& streamOffset, const
   FieldVector::iterator it;
   PEPacket* pNewPkt = new PEPacket;
   EPField field;
-  size_t width, count, refSize, refOffset;
+  size_t width, count, refSize, refOffset, origOffset = streamOffset;
 
   for ( it = m_ep.begin(); it != m_ep.end() && streamOffset < streamLen; it++ )
   {
@@ -139,14 +139,16 @@ PEPacket* PacketExtractor::Extract(const char* pSrc, size_t& streamOffset, const
     else
       count = it->elem_count;
 
+    // check if we're still within our stream data range
     if ( streamOffset + (count*width) <= streamLen )
     {
+      // yip, add the field
       pNewPkt->SetField( it->name, streamOffset, width, count );
       streamOffset += count*width;
     }
     else
     {
-      // move the offset accordingly
+      // nope, but lets move the offset accordingly anyway
       streamOffset += count*width;
       break;
     }
@@ -156,6 +158,8 @@ PEPacket* PacketExtractor::Extract(const char* pSrc, size_t& streamOffset, const
   {
     delete pNewPkt;
     pNewPkt = NULL;
+    // reset the offset
+    streamOffset = origOffset;
   }
   else
   {

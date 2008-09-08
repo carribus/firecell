@@ -27,6 +27,8 @@
 
 ClientSocket::ClientSocket(FCSOCKET s)
 : m_sock(s)
+, m_bIsDead(false)
+, m_bLocked(false)
 {
 }
 

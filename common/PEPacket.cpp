@@ -2,6 +2,7 @@
 
 PEPacket::PEPacket(void)
 : m_pDataBlock(NULL)
+, m_dataLen(0)
 {
 }
 
@@ -25,6 +26,21 @@ void PEPacket::SetField(const string& name, size_t offset, size_t elem_width, si
   f.elem_count = elem_count;
 
   m_fields[name] = f;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void PEPacket::SetFieldValue(const string& name, void* pValue)
+{
+  if ( !m_pDataBlock || !pValue )
+    return;
+
+  if ( !FieldExists(name) )
+    return;
+
+  Field f = m_fields[name];
+
+  memcpy( m_pDataBlock + f.offset, pValue, f.elem_count * f.elem_width );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -86,6 +102,41 @@ bool PEPacket::GetField(const string& key, void* pDest, size_t size)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
+bool PEPacket::AddField(const string& key, size_t elem_width, size_t elem_count, void* pDefaultValue)
+{
+  if ( FieldExists(key) )
+    return false;
+
+  Field f = { key, elem_width, elem_count, m_dataLen };
+  size_t prevSize = m_dataLen, fieldSize = elem_width * elem_count;
+
+  m_dataLen += elem_width * elem_count;
+  if ( fieldSize )
+  {
+    if ( m_pDataBlock )
+    {
+      if ( !(m_pDataBlock = (char*)realloc( m_pDataBlock, m_dataLen )) )
+        return false;
+    }
+    else
+    {
+      if ( !(m_pDataBlock = (char*)malloc(m_dataLen)) )
+        return false;
+    }
+  }
+
+  m_fields[key] = f;
+
+  if ( pDefaultValue )
+  {
+    memcpy( m_pDataBlock + prevSize, pDefaultValue, fieldSize );
+  }
+
+  return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
 void PEPacket::SetDataBlock(const char* pData, size_t blockLen)
 {
   if ( !pData || !blockLen )
@@ -93,5 +144,31 @@ void PEPacket::SetDataBlock(const char* pData, size_t blockLen)
 
   m_pDataBlock = (char*)malloc( blockLen );
   memcpy(m_pDataBlock, pData, blockLen);
+  m_dataLen = blockLen;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void PEPacket::GetDataBlock(char*& pData, size_t& blockLen)
+{
+  pData = m_pDataBlock;
+  blockLen = m_dataLen;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void PEPacket::DebugDump()
+{
+  FieldMap::iterator it;
+
+  for ( it = m_fields.begin(); it != m_fields.end(); it++ )
+  {
+    size_t offset = it->second.offset;
+    printf("%s (%ldx%ld): ", it->second.name.c_str(), it->second.elem_width, it->second.elem_count);
+    for ( size_t i = 0; i < it->second.elem_count * it->second.elem_width; i++ )
+    {
+      printf("%0x", (char)*(m_pDataBlock+offset+i));
+    }
+    printf("\n");
+  }
+}

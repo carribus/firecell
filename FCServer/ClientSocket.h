@@ -35,12 +35,21 @@ public:
 	int AddData(FCBYTE* pData, FCUINT nLen);
 	CBinStream<FCBYTE, true>& GetDataStream()		{ return m_stream; }
 
+  void IsDead(bool bDead) { m_bIsDead = bDead; }
+  bool IsDead()           { return m_bIsDead; }
+
+  bool IsLocked()         { return m_bLocked; }
+  void Lock()             { m_bLocked = true; }
+  void Unlock()           { m_bLocked = false; }
+
 	operator FCSOCKET()							{ return m_sock; }
 
 private:
 
 	FCSOCKET				m_sock;
 	NetStream				m_stream;
+  bool            m_bIsDead;
+  bool            m_bLocked;
 };
 
 #endif//_CLIENTSOCKET_H_
