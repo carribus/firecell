@@ -26,6 +26,7 @@
   #include "../common/pthreads-win32/include/pthread.h"
 #endif
 #include "../common/inifile.h"
+#include "../common/PEPacket.h"
 #include "interfaces/IServiceLogic.h"
 #include "interfaces/ISocketServer.h"
 #include "ClientSocket.h"
@@ -34,7 +35,7 @@ class FCLogicRouter : public IServiceLogic
                     , public ISocketServerSink
 {
   typedef std::map<FCSOCKET, ClientSocket*> CSocketMap;
-  typedef std::queue<ClientSocket*> CQueuedSocketArray;
+  typedef std::queue<FCSOCKET> CQueuedSocketArray;
 
 public:
   FCLogicRouter(void);
@@ -60,6 +61,7 @@ public:
 private:
 
   bool                LoadConfig(FCCSTR strFilename);
+  void                ForwardPacket(const PEPacket* pPkt);
 
   // thread
   static void*        thrdSocketMonitor(void* pData);

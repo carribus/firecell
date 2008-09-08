@@ -36,8 +36,6 @@ bool HandleCommandLine(CCmdLineInfo& cmdLine, IService* pService);
 
 ///////////////////////////////////////////////////////////////////////
 
-#include "../common/PacketExtractor.h"
-
 int main(int argc, FCSTR argv[])
 {
   IService* pService = CreateServerObject();

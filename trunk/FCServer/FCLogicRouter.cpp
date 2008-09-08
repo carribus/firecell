@@ -19,6 +19,8 @@
 */
 #include <stdio.h>
 #include "../common/threading.h"
+#include "../common/PacketExtractor.h"
+#include "../common/protocol/fcprotocol.h"
 #include "SocketServer.h"
 #include "FCLogicRouter.h"
 
@@ -142,8 +144,15 @@ void FCLogicRouter::OnDisconnect(FCSOCKET s, FCDWORD dwCode)
     pSocket = it->second;
 		if ( pSocket )
 		{
-			m_mapSockets.erase(it);
-			delete pSocket;
+      if ( !pSocket->IsLocked() )
+      {
+			  m_mapSockets.erase(it);
+			  delete pSocket;
+      }
+      else
+      {
+        pSocket->IsDead(true);
+      }
 		}
 	}
 
@@ -172,7 +181,7 @@ void FCLogicRouter::OnDataReceived(FCSOCKET s, FCBYTE* pData, FCINT nLen)
 	    pSocket->AddData(pData, nLen);
 
       pthread_mutex_lock(&m_mutexQueuedData);
-      m_arrQueuedData.push(pSocket);
+      m_arrQueuedData.push(*pSocket);
       pthread_mutex_unlock(&m_mutexQueuedData);
     }
   }
@@ -192,13 +201,27 @@ bool FCLogicRouter::LoadConfig(FCCSTR strFilename)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCLogicRouter::ForwardPacket(const PEPacket* pPkt)
+{
+  // TODO: write this code :)
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void* FCLogicRouter::thrdSocketMonitor(void* pData)
 {
   FCLogicRouter* pThis = (FCLogicRouter*) pData;
+  FCSOCKET socket;
   ClientSocket* pSocket = NULL;
+  PacketExtractor extractor;
+  PEPacket* pPkt = NULL;
+  size_t offset = 0;
 
   if ( !pThis )
     return NULL;
+
+  // prepare an extraction plan for packets
+  extractor.Prepare( __FCPACKET_DEF );
 
   while ( !pThis->m_bStopSockMon )
   {
@@ -207,15 +230,40 @@ void* FCLogicRouter::thrdSocketMonitor(void* pData)
       //
       // fetch the next socked queued with data
       pthread_mutex_lock( &pThis->m_mutexQueuedData );
-      pSocket = pThis->m_arrQueuedData.front();
+      socket = pThis->m_arrQueuedData.front();
+      // find the CleintSocket object corresponding to this socket
+      pthread_mutex_lock(&pThis->m_mutexSockets);
+      CSocketMap::iterator itSock = pThis->m_mapSockets.find(socket);
+      if ( itSock != pThis->m_mapSockets.end() )
+        pSocket = itSock->second;
+      else
+        pSocket = NULL;
+      pthread_mutex_unlock(&pThis->m_mutexSockets);
+
       pThis->m_arrQueuedData.pop();
       pthread_mutex_unlock( &pThis->m_mutexQueuedData );
 
-      //
-      // get the data stream
-      NetStream& stream = pSocket->GetDataStream();
+      if ( pSocket )
+      {
+        //
+        // get the data stream
+        pSocket->Lock();
+        NetStream& stream = pSocket->GetDataStream();
 
+        if ( (pPkt = extractor.Extract( (const char*)(FCBYTE*)stream, offset, (size_t)stream.GetLength() )) )
+        {
+          pPkt->DebugDump();
+          stream.Delete(0, (unsigned long)offset);
+          offset = 0;
+          pThis->ForwardPacket(pPkt);
+        }
 
+        pSocket->Unlock();
+        if ( pSocket->IsDead() )
+        {
+          pThis->OnDisconnect( (FCSOCKET)(*pSocket), 0 );
+        }
+      }
     }
 
     pthread_mutex_unlock( &pThis->m_mutexQueuedData );
