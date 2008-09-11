@@ -201,7 +201,7 @@ bool FCLogicRouter::LoadConfig(FCCSTR strFilename)
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCLogicRouter::HandlePacket(PEPacket* pPkt)
+void FCLogicRouter::HandlePacket(PEPacket* pPkt, ClientSocket* pSocket)
 {
   bool bHandled = false;
   FCBYTE pktType = 0;
@@ -211,32 +211,32 @@ void FCLogicRouter::HandlePacket(PEPacket* pPkt)
   switch ( pktType )
   {
   case  FCPKT_COMMAND:
-    bHandled = OnCommand(pPkt);
+    bHandled = OnCommand(pPkt, pSocket);
     break;
 
   case  FCPKT_RESPONSE:
-    bHandled = OnResponse(pPkt);
+    bHandled = OnResponse(pPkt, pSocket);
     break;
 
   case  FCPKT_ERROR:
-    bHandled = OnError(pPkt);
+    bHandled = OnError(pPkt, pSocket);
     break;
   }
 
   if ( !bHandled )
-    ForwardPacket(pPkt);
+    ForwardPacket(pPkt, pSocket);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCLogicRouter::ForwardPacket(const PEPacket* pPkt)
+void FCLogicRouter::ForwardPacket(const PEPacket* pPkt, ClientSocket* pSocket)
 {
   // TODO: write this code :)
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-bool FCLogicRouter::OnCommand(PEPacket* pPkt)
+bool FCLogicRouter::OnCommand(PEPacket* pPkt, ClientSocket* pSocket)
 {
   FCSHORT msgID = 0;
   bool bHandled = false;
@@ -246,7 +246,38 @@ bool FCLogicRouter::OnCommand(PEPacket* pPkt)
   switch ( msgID )
   {
   case  FCMSG_INFO_SERVER:
-    bHandled = true;
+    {
+      PEPacket* pResp = new PEPacket;
+      size_t nVal;
+
+      if ( pResp )
+      {
+        unsigned char header[8] = { 0x0A, 0x0A, 0x00, 0x10, 0x00, 0x20, 0x00, 0x40 };
+
+        pResp->AddField("magic", 1, 8, header);
+        pResp->AddField("type", 1, 1, (void*)&FCPKT_RESPONSE);
+        pResp->AddField("msg", 2, 1);
+        pResp->AddField("dataLen", 4, 1);
+
+        pResp->SetFieldValue("msg", (void*)&FCMSG_INFO_SERVER);
+        const char* pVer = "0.05.1.412";
+        nVal = strlen(pVer);
+
+        pResp->AddField("data", 1, nVal, &pVer);
+        pResp->SetFieldValue("dataLen", &nVal);
+
+        // send the packet
+        size_t dataLen = 0;
+        char* pData = NULL;
+
+        pResp->GetDataBlock( pData, dataLen);
+        pSocket->Send( (FCBYTE*)pData, (FCUINT)dataLen );
+
+        delete pResp;
+      }
+
+      bHandled = true;
+    }
     break;
 
   default:
@@ -258,14 +289,14 @@ bool FCLogicRouter::OnCommand(PEPacket* pPkt)
 
 ///////////////////////////////////////////////////////////////////////
 
-bool FCLogicRouter::OnResponse(PEPacket* pPkt)
+bool FCLogicRouter::OnResponse(PEPacket* pPkt, ClientSocket* pSocket)
 {
   return false;
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-bool FCLogicRouter::OnError(PEPacket* pPkt)
+bool FCLogicRouter::OnError(PEPacket* pPkt, ClientSocket* pSocket)
 {
   return false;
 }
@@ -319,7 +350,7 @@ void* FCLogicRouter::thrdSocketMonitor(void* pData)
           pPkt->DebugDump();
           stream.Delete(0, (unsigned long)offset);
           offset = 0;
-          pThis->HandlePacket(pPkt);
+          pThis->HandlePacket(pPkt, pSocket);
         }
 
         pSocket->Unlock();

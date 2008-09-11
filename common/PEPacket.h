@@ -30,6 +30,8 @@ public:
   void SetDataBlock(const char* pData, size_t blockLen);
   void GetDataBlock(char*& pData, size_t& blockLen);
 
+  PEPacket* Clone();
+
   void DebugDump();
 
 private:

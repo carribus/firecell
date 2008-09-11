@@ -61,12 +61,12 @@ public:
 private:
 
   bool                LoadConfig(FCCSTR strFilename);
-  void                HandlePacket(PEPacket* pPkt);
-  void                ForwardPacket(const PEPacket* pPkt);
+  void                HandlePacket(PEPacket* pPkt, ClientSocket* pSocket);
+  void                ForwardPacket(const PEPacket* pPkt, ClientSocket* pSocket);
 
-  bool                OnCommand(PEPacket* pPkt);
-  bool                OnResponse(PEPacket* pPkt);
-  bool                OnError(PEPacket* pPkt);
+  bool                OnCommand(PEPacket* pPkt, ClientSocket* pSocket);
+  bool                OnResponse(PEPacket* pPkt, ClientSocket* pSocket);
+  bool                OnError(PEPacket* pPkt, ClientSocket* pSocket);
 
   // thread
   static void*        thrdSocketMonitor(void* pData);
