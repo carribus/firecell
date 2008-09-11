@@ -36,6 +36,8 @@ private:
   BaseSocket              m_sock;
   bool                    m_bConnected;
   HANDLE                  m_hSockEvent;
+
+  HANDLE                  m_hGameEvent;
 };
 
 #endif//_FCCONTROLLER_H_
