@@ -61,7 +61,12 @@ public:
 private:
 
   bool                LoadConfig(FCCSTR strFilename);
+  void                HandlePacket(PEPacket* pPkt);
   void                ForwardPacket(const PEPacket* pPkt);
+
+  bool                OnCommand(PEPacket* pPkt);
+  bool                OnResponse(PEPacket* pPkt);
+  bool                OnError(PEPacket* pPkt);
 
   // thread
   static void*        thrdSocketMonitor(void* pData);

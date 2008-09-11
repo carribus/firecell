@@ -54,6 +54,12 @@ struct __FCPACKET
   char*           pData;
 };
 
+/*
+ *  Message Identifiers
+ */
+
+const FCSHORT FCMSG_INFO_SERVER                 = 1;
+
 #pragma pack(pop)
 
 #endif//_FCPROTOCOL_H_

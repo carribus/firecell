@@ -32,9 +32,18 @@ FCINT FCController::Run()
   string strServer = "127.0.0.1";
   short port = 6666;
 
-  if ( ConnectToServer(strServer, port) )
+  if ( !ConnectToServer(strServer, port) )
   {
-    RequestServerInfo();
+    return -1;
+  }
+
+  RequestServerInfo();
+
+  // game loop
+  m_hGameEvent = CreateEvent(0, 0, 0, 0);
+  while ( WaitForSingleObject(m_hGameEvent, 250) )
+  {
+
   }
 
   return 0;
@@ -81,10 +90,11 @@ void FCController::CreateBasePacket(PEPacket& pkt, FCBYTE type)
 void FCController::RequestServerInfo()
 {
   PEPacket pkt;
-  int nVal = 1;
+  int nVal;
 
+  printf("Requesting Server Info:\n");
   CreateBasePacket(pkt, FCPKT_COMMAND);
-  pkt.SetFieldValue("msg", &nVal);
+  pkt.SetFieldValue("msg", (void*)&FCMSG_INFO_SERVER);
   nVal = 0;
   pkt.AddField("data", 1, 1, &nVal);
   nVal = 1;

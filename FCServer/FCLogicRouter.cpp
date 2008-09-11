@@ -201,9 +201,73 @@ bool FCLogicRouter::LoadConfig(FCCSTR strFilename)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCLogicRouter::HandlePacket(PEPacket* pPkt)
+{
+  bool bHandled = false;
+  FCBYTE pktType = 0;
+
+  pPkt->GetField("type", &pktType, sizeof(FCBYTE));
+
+  switch ( pktType )
+  {
+  case  FCPKT_COMMAND:
+    bHandled = OnCommand(pPkt);
+    break;
+
+  case  FCPKT_RESPONSE:
+    bHandled = OnResponse(pPkt);
+    break;
+
+  case  FCPKT_ERROR:
+    bHandled = OnError(pPkt);
+    break;
+  }
+
+  if ( !bHandled )
+    ForwardPacket(pPkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void FCLogicRouter::ForwardPacket(const PEPacket* pPkt)
 {
   // TODO: write this code :)
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicRouter::OnCommand(PEPacket* pPkt)
+{
+  FCSHORT msgID = 0;
+  bool bHandled = false;
+
+  pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
+
+  switch ( msgID )
+  {
+  case  FCMSG_INFO_SERVER:
+    bHandled = true;
+    break;
+
+  default:
+    break;
+  }
+
+  return bHandled;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicRouter::OnResponse(PEPacket* pPkt)
+{
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicRouter::OnError(PEPacket* pPkt)
+{
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -255,7 +319,7 @@ void* FCLogicRouter::thrdSocketMonitor(void* pData)
           pPkt->DebugDump();
           stream.Delete(0, (unsigned long)offset);
           offset = 0;
-          pThis->ForwardPacket(pPkt);
+          pThis->HandlePacket(pPkt);
         }
 
         pSocket->Unlock();
