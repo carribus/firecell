@@ -73,11 +73,7 @@ bool FCController::ConnectToServer(string server, short port)
 
 void FCController::CreateBasePacket(PEPacket& pkt, FCBYTE type)
 {
-  __FCPACKET p;
   unsigned char header[8] = { 0x0A, 0x0A, 0x00, 0x10, 0x00, 0x20, 0x00, 0x40 };
-
-  memcpy(p.magic, header, 8);
-  p.pktType = type;
 
   pkt.AddField("magic", 1, 8, header);
   pkt.AddField("type", 1, 1, &type);
@@ -142,4 +138,5 @@ void FCController::OnDisconnected(BaseSocket* pSocket, int nErrorCode)
 
 void FCController::OnDataReceived(BaseSocket* pSocket, BYTE* pData, int nLen)
 {
+  printf("DATA RECEIVED [%ld bytes]\n", nLen);
 }

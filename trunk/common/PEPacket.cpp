@@ -157,6 +157,25 @@ void PEPacket::GetDataBlock(char*& pData, size_t& blockLen)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
+PEPacket* PEPacket::Clone()
+{
+  PEPacket* pClone = NULL;
+
+  if ( !m_pDataBlock || !m_dataLen )
+    return pClone;
+
+  pClone = new PEPacket;
+
+  pClone->m_dataLen = m_dataLen;
+  pClone->m_fields = m_fields;
+  pClone->m_pDataBlock = (char*)malloc( m_dataLen );
+  memcpy( pClone->m_pDataBlock, m_pDataBlock, m_dataLen );
+
+  return pClone;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
 void PEPacket::DebugDump()
 {
   FieldMap::iterator it;
