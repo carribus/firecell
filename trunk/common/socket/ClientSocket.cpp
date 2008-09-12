@@ -22,7 +22,7 @@
 #else
   #include <sys/socket.h>
 #endif//_WIN32
-#include "../common/binstream.h"
+#include "../binstream.h"
 #include "ClientSocket.h"
 
 ClientSocket::ClientSocket(FCSOCKET s)

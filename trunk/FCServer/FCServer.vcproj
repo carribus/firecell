@@ -118,7 +118,7 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath=".\ClientSocket.cpp">
+				RelativePath="..\common\socket\ClientSocket.cpp">
 			</File>
 			<File
 				RelativePath="..\common\CmdLineInfo.cpp">
@@ -142,10 +142,10 @@
 				RelativePath="..\common\PEPacketHelper.cpp">
 			</File>
 			<File
-				RelativePath=".\win\W32Service.cpp">
+				RelativePath="..\common\daemon\win\W32Service.cpp">
 			</File>
 			<File
-				RelativePath=".\win\W32SocketServer.cpp">
+				RelativePath="..\common\sockserver\win\W32SocketServer.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -156,7 +156,7 @@
 				RelativePath="..\common\binstream.h">
 			</File>
 			<File
-				RelativePath=".\ClientSocket.h">
+				RelativePath="..\common\socket\ClientSocket.h">
 			</File>
 			<File
 				RelativePath="..\common\CmdLineInfo.h">
@@ -192,16 +192,16 @@
 				RelativePath="..\common\PEPacketHelper.h">
 			</File>
 			<File
-				RelativePath=".\SocketServer.h">
+				RelativePath="..\common\SocketServer.h">
 			</File>
 			<File
 				RelativePath="..\common\threading.h">
 			</File>
 			<File
-				RelativePath=".\win\W32Service.h">
+				RelativePath="..\common\daemon\win\W32Service.h">
 			</File>
 			<File
-				RelativePath=".\win\W32SocketServer.h">
+				RelativePath="..\common\sockserver\win\W32SocketServer.h">
 			</File>
 		</Filter>
 		<Filter

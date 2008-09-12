@@ -22,7 +22,7 @@
 #include "../common/PacketExtractor.h"
 #include "../common/PEPacketHelper.h"
 #include "../common/protocol/fcprotocol.h"
-#include "SocketServer.h"
+#include "../common/SocketServer.h"
 #include "FCLogicRouter.h"
 
 FCLogicRouter::FCLogicRouter(void)

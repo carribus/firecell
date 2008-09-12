@@ -22,8 +22,8 @@
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include "../../common/collections/DataMgr.h"
-#include "../interfaces/ISocketServer.h"
+#include "../../collections/DataMgr.h"
+#include "../../interfaces/ISocketServer.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
