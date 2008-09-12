@@ -27,9 +27,9 @@
 #endif
 #include "../common/inifile.h"
 #include "../common/PEPacket.h"
-#include "interfaces/IServiceLogic.h"
-#include "interfaces/ISocketServer.h"
-#include "ClientSocket.h"
+#include "../common/interfaces/IServiceLogic.h"
+#include "../common/interfaces/ISocketServer.h"
+#include "../common/socket/ClientSocket.h"
 
 class FCLogicRouter : public IServiceLogic
                     , public ISocketServerSink

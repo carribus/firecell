@@ -23,8 +23,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <stdio.h>
-#include "../interfaces/IService.h"
-#include "../interfaces/IServiceLogic.h"
+#include "../../interfaces/IService.h"
+#include "../../interfaces/IServiceLogic.h"
 
 typedef	DWORD (*LP_SERVICE_INIT_PROC)(void*);
 

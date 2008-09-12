@@ -20,8 +20,8 @@
 #ifndef _CLIENTSOCKET_H_
 #define _CLIENTSOCKET_H_
 
-#include "../common/fctypes.h"
-#include "../common/BinStream.h"
+#include "../fctypes.h"
+#include "../BinStream.h"
 
 typedef CBinStream<FCBYTE, true> NetStream;
 

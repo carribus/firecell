@@ -20,14 +20,14 @@
 #include <stdio.h>
 #include "../common/fctypes.h"
 #ifdef _WIN32
-  #include "win/W32Service.h"
+  #include "../common/daemon/win/W32Service.h"
   // include the the Visual Studio compatible Structured Exception handling version of the pthreads-win32 library
   #pragma comment(lib, "../common/pthreads-win32/lib/pthreadVSE2.lib")
 #else
-  #include "linux/Daemon.h"
+  #include "../common/daemon/linux/Daemon.h"
 #endif//_WIN32
 #include "../common/cmdlineinfo.h"
-#include "interfaces/IService.h"
+#include "../common/interfaces/IService.h"
 #include "FCLogicRouter.h"
 
 IService* CreateServerObject();
