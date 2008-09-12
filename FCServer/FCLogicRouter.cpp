@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include "../common/threading.h"
 #include "../common/PacketExtractor.h"
+#include "../common/PEPacketHelper.h"
 #include "../common/protocol/fcprotocol.h"
 #include "SocketServer.h"
 #include "FCLogicRouter.h"
@@ -252,19 +253,15 @@ bool FCLogicRouter::OnCommand(PEPacket* pPkt, ClientSocket* pSocket)
 
       if ( pResp )
       {
-        unsigned char header[8] = { 0x0A, 0x0A, 0x00, 0x10, 0x00, 0x20, 0x00, 0x40 };
+        __FCPKT_INFO_SERVER d;
 
-        pResp->AddField("magic", 1, 8, header);
-        pResp->AddField("type", 1, 1, (void*)&FCPKT_RESPONSE);
-        pResp->AddField("msg", 2, 1);
-        pResp->AddField("dataLen", 4, 1);
+        nVal = sizeof(__FCPKT_INFO_SERVER);
+        d.verMajor = 0;
+        d.verMinor = 5;
+        d.connectionCountRouter = m_pSockServer->GetConnectionCount();
 
-        pResp->SetFieldValue("msg", (void*)&FCMSG_INFO_SERVER);
-        const char* pVer = "0.05.1.412";
-        nVal = strlen(pVer);
-
-        pResp->AddField("data", 1, nVal, &pVer);
-        pResp->SetFieldValue("dataLen", &nVal);
+        PEPacketHelper::CreatePacket(*pResp, FCPKT_RESPONSE, msgID);
+        PEPacketHelper::SetPacketData(*pResp, (void*)&d, nVal);
 
         // send the packet
         size_t dataLen = 0;

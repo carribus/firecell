@@ -125,7 +125,16 @@
 				RelativePath=".\FCDisplay.cpp">
 			</File>
 			<File
+				RelativePath="..\common\FCServerObj.cpp">
+			</File>
+			<File
+				RelativePath="..\..\common\PacketExtractor.cpp">
+			</File>
+			<File
 				RelativePath="..\..\common\PEPacket.cpp">
+			</File>
+			<File
+				RelativePath="..\..\common\PEPacketHelper.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -142,7 +151,16 @@
 				RelativePath=".\FCDisplay.h">
 			</File>
 			<File
+				RelativePath="..\common\FCServerObj.h">
+			</File>
+			<File
+				RelativePath="..\..\common\PacketExtractor.h">
+			</File>
+			<File
 				RelativePath="..\..\common\PEPacket.h">
+			</File>
+			<File
+				RelativePath="..\..\common\PEPacketHelper.h">
 			</File>
 		</Filter>
 		<Filter
