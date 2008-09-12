@@ -25,9 +25,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <pthread.h>
-#include "../../common/fctypes.h"
-#include "../../common/collections/datamgr.h"
-#include "../interfaces/ISocketServer.h"
+#include "../../fctypes.h"
+#include "../../collections/datamgr.h"
+#include "../../interfaces/ISocketServer.h"
 
 #define HANDLE void*
 #define MAX_WAIT_SOCKETS  512

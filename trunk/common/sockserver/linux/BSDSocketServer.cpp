@@ -461,8 +461,6 @@ void* BSDSocketServer::thrdClientServer(void* pParam)
 	BSDSocketServer* pThis = pPool->GetOwner();
   stClientSocket* pSocket = NULL;
   fd_set read_fds;
-  int nBytes = 0;
-  char buf[4096];
   timeval tv;
   
   FD_ZERO(&read_fds);

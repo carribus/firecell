@@ -23,8 +23,8 @@
 #include "../fctypes.h"
 
 // ensure 1 byte packing
-#pragma pack(push)
-#pragma pack(1)
+#pragma pack(push, 1)
+//#pragma pack(1)
 
 const FCBYTE      FCPKT_COMMAND = 1;
 const FCBYTE      FCPKT_RESPONSE = 2;

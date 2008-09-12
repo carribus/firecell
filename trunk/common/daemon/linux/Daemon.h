@@ -20,8 +20,8 @@
 #ifndef _DAEMON_H_
 #define _DAEMON_H_
 
-#include "../interfaces/IService.h"
-#include "../interfaces/IServiceLogic.h"
+#include "../../interfaces/IService.h"
+#include "../../interfaces/IServiceLogic.h"
 
 class CDaemon : public IService
 {
