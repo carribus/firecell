@@ -7,12 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0644A8200E6E73F10045DB31 /* BSDSocketServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0644A81F0E6E73F10045DB31 /* BSDSocketServer.cpp */; };
-		0644A8950E6EA29D0045DB31 /* ClientSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0644A8930E6EA29D0045DB31 /* ClientSocket.cpp */; };
 		06DC94320E6D07C300665D06 /* FCLogicRouter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DC942F0E6D07C300665D06 /* FCLogicRouter.cpp */; };
 		06DC94330E6D07C300665D06 /* FCServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DC94310E6D07C300665D06 /* FCServer.cpp */; };
 		06DC94370E6D07CF00665D06 /* CmdLineInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DC94340E6D07CF00665D06 /* CmdLineInfo.cpp */; };
-		06DC943C0E6D07E900665D06 /* Daemon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DC943A0E6D07E900665D06 /* Daemon.cpp */; };
+		06DDAB440E7AA19700B0F797 /* BSDSocketServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DDAB420E7AA19700B0F797 /* BSDSocketServer.cpp */; };
+		06DDAB480E7AA1AB00B0F797 /* ClientSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DDAB460E7AA1AB00B0F797 /* ClientSocket.cpp */; };
+		06DDAB4B0E7AA1BD00B0F797 /* Daemon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DDAB490E7AA1BD00B0F797 /* Daemon.cpp */; };
+		06DDAB5C0E7AA24B00B0F797 /* inifile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DDAB5B0E7AA24B00B0F797 /* inifile.cpp */; };
+		06DDAB710E7AA40E00B0F797 /* PacketExtractor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DDAB6B0E7AA40E00B0F797 /* PacketExtractor.cpp */; };
+		06DDAB720E7AA40E00B0F797 /* PEPacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DDAB6D0E7AA40E00B0F797 /* PEPacket.cpp */; };
+		06DDAB730E7AA40E00B0F797 /* PEPacketHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06DDAB6F0E7AA40E00B0F797 /* PEPacketHelper.cpp */; };
 		8DD76FB00486AB0100D96B5E /* FCServer.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6A0FF2C0290799A04C91782 /* FCServer.1 */; };
 /* End PBXBuildFile section */
 
@@ -31,22 +35,30 @@
 
 /* Begin PBXFileReference section */
 		0643BE8E0E6EA5B7001087CD /* DataMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataMgr.h; path = ../common/collections/DataMgr.h; sourceTree = SOURCE_ROOT; };
-		0644A81E0E6E73F10045DB31 /* BSDSocketServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSDSocketServer.h; path = linux/BSDSocketServer.h; sourceTree = "<group>"; };
-		0644A81F0E6E73F10045DB31 /* BSDSocketServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BSDSocketServer.cpp; path = linux/BSDSocketServer.cpp; sourceTree = "<group>"; };
 		0644A8620E6E8B2F0045DB31 /* binstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = binstream.h; path = ../common/binstream.h; sourceTree = SOURCE_ROOT; };
-		0644A8930E6EA29D0045DB31 /* ClientSocket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ClientSocket.cpp; sourceTree = "<group>"; };
-		0644A8940E6EA29D0045DB31 /* ClientSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClientSocket.h; sourceTree = "<group>"; };
 		06DC942F0E6D07C300665D06 /* FCLogicRouter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FCLogicRouter.cpp; sourceTree = "<group>"; };
 		06DC94300E6D07C300665D06 /* FCLogicRouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLogicRouter.h; sourceTree = "<group>"; };
 		06DC94310E6D07C300665D06 /* FCServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FCServer.cpp; sourceTree = "<group>"; };
 		06DC94340E6D07CF00665D06 /* CmdLineInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CmdLineInfo.cpp; path = ../common/CmdLineInfo.cpp; sourceTree = SOURCE_ROOT; };
 		06DC94350E6D07CF00665D06 /* CmdLineInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CmdLineInfo.h; path = ../common/CmdLineInfo.h; sourceTree = SOURCE_ROOT; };
 		06DC94360E6D07CF00665D06 /* fctypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fctypes.h; path = ../common/fctypes.h; sourceTree = SOURCE_ROOT; };
-		06DC94380E6D07DD00665D06 /* IService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IService.h; path = interfaces/IService.h; sourceTree = "<group>"; };
-		06DC94390E6D07DD00665D06 /* IServiceLogic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IServiceLogic.h; path = interfaces/IServiceLogic.h; sourceTree = "<group>"; };
-		06DC943A0E6D07E900665D06 /* Daemon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Daemon.cpp; path = linux/Daemon.cpp; sourceTree = "<group>"; };
-		06DC943B0E6D07E900665D06 /* Daemon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Daemon.h; path = linux/Daemon.h; sourceTree = "<group>"; };
 		06DC94510E6D0B6000665D06 /* fcfuncs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fcfuncs.h; path = ../common/fcfuncs.h; sourceTree = SOURCE_ROOT; };
+		06DDAB420E7AA19700B0F797 /* BSDSocketServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BSDSocketServer.cpp; path = ../common/sockserver/linux/BSDSocketServer.cpp; sourceTree = SOURCE_ROOT; };
+		06DDAB430E7AA19700B0F797 /* BSDSocketServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSDSocketServer.h; path = ../common/sockserver/linux/BSDSocketServer.h; sourceTree = SOURCE_ROOT; };
+		06DDAB460E7AA1AB00B0F797 /* ClientSocket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ClientSocket.cpp; path = ../common/socket/ClientSocket.cpp; sourceTree = SOURCE_ROOT; };
+		06DDAB470E7AA1AB00B0F797 /* ClientSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClientSocket.h; path = ../common/socket/ClientSocket.h; sourceTree = SOURCE_ROOT; };
+		06DDAB490E7AA1BD00B0F797 /* Daemon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Daemon.cpp; path = ../common/daemon/linux/Daemon.cpp; sourceTree = SOURCE_ROOT; };
+		06DDAB4A0E7AA1BD00B0F797 /* Daemon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Daemon.h; path = ../common/daemon/linux/Daemon.h; sourceTree = SOURCE_ROOT; };
+		06DDAB4C0E7AA1D600B0F797 /* IService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IService.h; path = ../common/interfaces/IService.h; sourceTree = SOURCE_ROOT; };
+		06DDAB4D0E7AA1D600B0F797 /* IServiceLogic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IServiceLogic.h; path = ../common/interfaces/IServiceLogic.h; sourceTree = SOURCE_ROOT; };
+		06DDAB4E0E7AA1D600B0F797 /* ISocketServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ISocketServer.h; path = ../common/interfaces/ISocketServer.h; sourceTree = SOURCE_ROOT; };
+		06DDAB5B0E7AA24B00B0F797 /* inifile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = inifile.cpp; path = ../common/inifile.cpp; sourceTree = SOURCE_ROOT; };
+		06DDAB6B0E7AA40E00B0F797 /* PacketExtractor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PacketExtractor.cpp; path = ../common/PacketExtractor.cpp; sourceTree = SOURCE_ROOT; };
+		06DDAB6C0E7AA40E00B0F797 /* PacketExtractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PacketExtractor.h; path = ../common/PacketExtractor.h; sourceTree = SOURCE_ROOT; };
+		06DDAB6D0E7AA40E00B0F797 /* PEPacket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PEPacket.cpp; path = ../common/PEPacket.cpp; sourceTree = SOURCE_ROOT; };
+		06DDAB6E0E7AA40E00B0F797 /* PEPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEPacket.h; path = ../common/PEPacket.h; sourceTree = SOURCE_ROOT; };
+		06DDAB6F0E7AA40E00B0F797 /* PEPacketHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PEPacketHelper.cpp; path = ../common/PEPacketHelper.cpp; sourceTree = SOURCE_ROOT; };
+		06DDAB700E7AA40E00B0F797 /* PEPacketHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEPacketHelper.h; path = ../common/PEPacketHelper.h; sourceTree = SOURCE_ROOT; };
 		8DD76FB20486AB0100D96B5E /* FCServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FCServer; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6A0FF2C0290799A04C91782 /* FCServer.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = FCServer.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -75,14 +87,24 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				06DDAB6B0E7AA40E00B0F797 /* PacketExtractor.cpp */,
+				06DDAB6C0E7AA40E00B0F797 /* PacketExtractor.h */,
+				06DDAB6D0E7AA40E00B0F797 /* PEPacket.cpp */,
+				06DDAB6E0E7AA40E00B0F797 /* PEPacket.h */,
+				06DDAB6F0E7AA40E00B0F797 /* PEPacketHelper.cpp */,
+				06DDAB700E7AA40E00B0F797 /* PEPacketHelper.h */,
+				06DDAB5B0E7AA24B00B0F797 /* inifile.cpp */,
+				06DDAB4C0E7AA1D600B0F797 /* IService.h */,
+				06DDAB4D0E7AA1D600B0F797 /* IServiceLogic.h */,
+				06DDAB4E0E7AA1D600B0F797 /* ISocketServer.h */,
+				06DDAB490E7AA1BD00B0F797 /* Daemon.cpp */,
+				06DDAB4A0E7AA1BD00B0F797 /* Daemon.h */,
+				06DDAB460E7AA1AB00B0F797 /* ClientSocket.cpp */,
+				06DDAB470E7AA1AB00B0F797 /* ClientSocket.h */,
+				06DDAB420E7AA19700B0F797 /* BSDSocketServer.cpp */,
+				06DDAB430E7AA19700B0F797 /* BSDSocketServer.h */,
 				0643BE8E0E6EA5B7001087CD /* DataMgr.h */,
-				0644A8930E6EA29D0045DB31 /* ClientSocket.cpp */,
-				0644A8940E6EA29D0045DB31 /* ClientSocket.h */,
 				0644A8620E6E8B2F0045DB31 /* binstream.h */,
-				06DC943A0E6D07E900665D06 /* Daemon.cpp */,
-				06DC943B0E6D07E900665D06 /* Daemon.h */,
-				06DC94380E6D07DD00665D06 /* IService.h */,
-				06DC94390E6D07DD00665D06 /* IServiceLogic.h */,
 				06DC94340E6D07CF00665D06 /* CmdLineInfo.cpp */,
 				06DC94350E6D07CF00665D06 /* CmdLineInfo.h */,
 				06DC94360E6D07CF00665D06 /* fctypes.h */,
@@ -90,8 +112,6 @@
 				06DC94300E6D07C300665D06 /* FCLogicRouter.h */,
 				06DC94310E6D07C300665D06 /* FCServer.cpp */,
 				06DC94510E6D0B6000665D06 /* fcfuncs.h */,
-				0644A81E0E6E73F10045DB31 /* BSDSocketServer.h */,
-				0644A81F0E6E73F10045DB31 /* BSDSocketServer.cpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -158,9 +178,13 @@
 				06DC94320E6D07C300665D06 /* FCLogicRouter.cpp in Sources */,
 				06DC94330E6D07C300665D06 /* FCServer.cpp in Sources */,
 				06DC94370E6D07CF00665D06 /* CmdLineInfo.cpp in Sources */,
-				06DC943C0E6D07E900665D06 /* Daemon.cpp in Sources */,
-				0644A8200E6E73F10045DB31 /* BSDSocketServer.cpp in Sources */,
-				0644A8950E6EA29D0045DB31 /* ClientSocket.cpp in Sources */,
+				06DDAB440E7AA19700B0F797 /* BSDSocketServer.cpp in Sources */,
+				06DDAB480E7AA1AB00B0F797 /* ClientSocket.cpp in Sources */,
+				06DDAB4B0E7AA1BD00B0F797 /* Daemon.cpp in Sources */,
+				06DDAB5C0E7AA24B00B0F797 /* inifile.cpp in Sources */,
+				06DDAB710E7AA40E00B0F797 /* PacketExtractor.cpp in Sources */,
+				06DDAB720E7AA40E00B0F797 /* PEPacket.cpp in Sources */,
+				06DDAB730E7AA40E00B0F797 /* PEPacketHelper.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

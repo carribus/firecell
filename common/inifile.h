@@ -20,6 +20,7 @@
 #ifndef _INIFILE_H_
 #define _INIFILE_H_
 
+#include <string>
 #include <map>
 #include <list>
 

@@ -21,7 +21,7 @@
 #include <string>
 #include <cctype>
 #include <fstream>
-#include ".\inifile.h"
+#include "inifile.h"
 
 INIFile::CSection::CSection()
 {
@@ -120,7 +120,8 @@ int INIFile::Load(const string filename)
 INIFile::CSection* INIFile::GetSection(const string name)
 {
   string n = name;
-  std::transform(n.begin(), n.end(), n.begin(), tolower);
+
+  std::transform(n.begin(), n.end(), n.begin(), (int(*)(int))tolower);
   for ( SectionList::iterator it = m_lstSections.begin(); it != m_lstSections.end(); it++ )
   {
     if ( n.compare( (*it)->GetName() ) == 0 )
@@ -208,7 +209,7 @@ bool INIFile::ParseFile(ifstream& f)
 			pSection = new CSection;
 			m_lstSections.push_back(pSection);
       strSection = &buffer[1];
-      std::transform(strSection.begin(), strSection.end(), strSection.begin(), tolower);
+      std::transform(strSection.begin(), strSection.end(), strSection.begin(), (int(*)(int))tolower);
 			pSection->SetName( strSection );
 			continue;
 		}
@@ -220,7 +221,7 @@ bool INIFile::ParseFile(ifstream& f)
 				*pPos2 = '\0';
 				strKey = buffer;
         // make the key lower case
-        std::transform(strKey.begin(), strKey.end(), strKey.begin(), tolower);
+        std::transform(strKey.begin(), strKey.end(), strKey.begin(), (int(*)(int))tolower);
         // trim the key
 				strKey.erase( strKey.find_last_not_of(" \r\n")+1);
 				strVal = pPos2+1;
