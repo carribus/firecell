@@ -36,7 +36,7 @@ const FCBYTE      FCPKT_ERROR = 3;
 
 */
 
-const char* __FCPACKET_DEF = 
+static const char* __FCPACKET_DEF = 
 "[" \
 ":magic:1:8|" \
 ":type:1:1|" \
@@ -59,6 +59,12 @@ struct __FCPACKET
  */
 
 const FCSHORT FCMSG_INFO_SERVER                 = 1;
+struct __FCPKT_INFO_SERVER
+{
+  FCBYTE    verMajor;
+  FCBYTE    verMinor;
+  FCUINT    connectionCountRouter;
+};
 
 #pragma pack(pop)
 
