@@ -74,9 +74,10 @@ string INIFile::CSection::GetKey(int nIndex)
 
 string INIFile::CSection::GetValue(const string key)
 {
-  string strVal;
+  string strVal, strKey = key;
 
-  strVal = m_mapValues[key];
+  std::transform(strKey.begin(), strKey.end(), strKey.begin(), tolower);
+  strVal = m_mapValues[strKey];
 
   return strVal;
 }

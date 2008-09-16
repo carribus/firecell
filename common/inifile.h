@@ -38,6 +38,7 @@ class INIFile
 {
   typedef map< string, string >      ValuesMap;
 
+public:
 	//////////////////////////////////////////////////////////////
 	// class CINIFile::CSection
 	//////////////////////////////////////////////////////////////
@@ -59,7 +60,6 @@ class INIFile
     ValuesMap			m_mapValues;
   };
 
-public:
   INIFile(void);
   virtual ~INIFile(void);
 

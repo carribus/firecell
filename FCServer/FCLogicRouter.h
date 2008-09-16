@@ -22,9 +22,7 @@
 
 #include <map>
 #include <queue>
-#ifdef _WIN32
-  #include "../common/pthreads-win32/include/pthread.h"
-#endif
+#include "../common/threading.h"
 #include "../common/inifile.h"
 #include "../common/PEPacket.h"
 #include "../common/interfaces/IServiceLogic.h"
