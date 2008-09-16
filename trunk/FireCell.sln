@@ -7,6 +7,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FCClient.Console", "Clients
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FCAuthServer", "FCAuthServer\FCAuthServer.vcproj", "{B06BE380-A460-4DE3-869F-685D7C0D00BF}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -21,6 +25,10 @@ Global
 		{FDE3C80C-0C1D-41A6-BAF5-F75C16B91C2A}.Debug.Build.0 = Debug|Win32
 		{FDE3C80C-0C1D-41A6-BAF5-F75C16B91C2A}.Release.ActiveCfg = Release|Win32
 		{FDE3C80C-0C1D-41A6-BAF5-F75C16B91C2A}.Release.Build.0 = Release|Win32
+		{B06BE380-A460-4DE3-869F-685D7C0D00BF}.Debug.ActiveCfg = Debug|Win32
+		{B06BE380-A460-4DE3-869F-685D7C0D00BF}.Debug.Build.0 = Debug|Win32
+		{B06BE380-A460-4DE3-869F-685D7C0D00BF}.Release.ActiveCfg = Release|Win32
+		{B06BE380-A460-4DE3-869F-685D7C0D00BF}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

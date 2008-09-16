@@ -21,13 +21,15 @@
 #include "../common/fctypes.h"
 #ifdef _WIN32
   #include "../common/daemon/win/W32Service.h"
+  // include the the Visual Studio compatible Structured Exception handling version of the pthreads-win32 library
+  #pragma comment(lib, "../common/pthreads-win32/lib/pthreadVSE2.lib")
 #else
   #include "../common/daemon/linux/Daemon.h"
 #endif//_WIN32
-#include "../common/threading.h"
+//#include "../common/threading.h"
 #include "../common/cmdlineinfo.h"
 #include "../common/interfaces/IService.h"
-#include "FCLogicRouter.h"
+#include "FCLogicAuth.h"
 
 IService* CreateServerObject();
 void ReleaseServerObject(IService* pService);
@@ -38,7 +40,7 @@ bool HandleCommandLine(CCmdLineInfo& cmdLine, IService* pService);
 int main(int argc, FCSTR argv[])
 {
   IService* pService = CreateServerObject();
-  IServiceLogic* pLogic = new FCLogicRouter;
+  IServiceLogic* pLogic = new FCLogicAuth;
   CCmdLineInfo  cmdLine(argc, argv);
 
   if ( pService )
