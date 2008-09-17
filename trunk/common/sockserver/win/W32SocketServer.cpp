@@ -262,18 +262,26 @@ bool CW32SocketServer::AcceptConnection()
 	// accept the new connection
 	FCSOCKET s = (FCSOCKET)WSAAccept( m_sockListener, &addrClient, &addrSize, NULL, NULL );
 
+	// fire a notification
+	int nCount = m_arrSinks.GetSize();
+	for ( int i = 0; i < nCount; i++ )
+	{
+		m_arrSinks.GetAt(i)->OnConnect( s );
+	}
+
 	// add the new connection to our pool of client connections
 	if ( AddConnectionToPool(s) )
 	{
 		m_dwActiveConnections++;
-
-		// fire a notification
-		int nCount = m_arrSinks.GetSize();
-		for ( int i = 0; i < nCount; i++ )
-		{
-			m_arrSinks.GetAt(i)->OnConnect( s );
-		}
 	}
+  else
+  {
+	  for ( int i = 0; i < nCount; i++ )
+	  {
+      closesocket( s );
+		  m_arrSinks.GetAt(i)->OnDisconnect( s, -1 );
+	  }
+  }
 	
 	return true;
 }
@@ -360,7 +368,7 @@ void CW32SocketServer::DestroyPool(CSocketPool*& pPool)
 void CW32SocketServer::OnDataReceived(stClientSocket* pSocket)
 {
 	int nBytesRead = 0;
-	char buffer[4096];
+	char buffer[16000];
 
 	ZeroMemory(buffer, sizeof(buffer));
 	nBytesRead = recv( pSocket->s, buffer, sizeof(buffer), 0);

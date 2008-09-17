@@ -30,9 +30,19 @@ FCLogicRouter::FCLogicRouter(void)
 , m_bHasConsole(false)
 , m_bStopSockMon(false)
 {
+/*
+  pthread_mutexattr_t attr;
+  
+  // define the mutex as a recursive mutex
+  pthread_mutexattr_init(&attr);
+  pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+*/
   // initialize the mutex
   pthread_mutex_init(&m_mutexSockets, NULL);
   pthread_mutex_init(&m_mutexQueuedData, NULL);
+  pthread_mutex_init(&m_mutexServices, NULL);
+  // destroy the mutex attributes object
+//  pthread_mutexattr_destroy(&attr);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -41,6 +51,7 @@ FCLogicRouter::~FCLogicRouter(void)
 {
   pthread_mutex_destroy(&m_mutexQueuedData);
   pthread_mutex_destroy(&m_mutexSockets);
+  pthread_mutex_destroy(&m_mutexServices);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -64,6 +75,10 @@ int FCLogicRouter::Start()
     m_pSockServer->Initialize(NULL, sPort ? sPort : 6666 );
     m_pSockServer->RegisterSink(this);
     m_pSockServer->Start();
+    if ( m_bHasConsole )
+    {
+      printf("Accepting connections on port %ld\n", sPort ? sPort : 6666);
+    }
 
     StartSocketMonitor();
   }
@@ -147,6 +162,9 @@ void FCLogicRouter::OnDisconnect(FCSOCKET s, FCDWORD dwCode)
 		{
       if ( !pSocket->IsLocked() )
       {
+        // if this socket represents a service connection, remove it from the services list
+        UnregisterService(pSocket);
+
 			  m_mapSockets.erase(it);
 			  delete pSocket;
       }
@@ -166,18 +184,18 @@ void FCLogicRouter::OnDisconnect(FCSOCKET s, FCDWORD dwCode)
 void FCLogicRouter::OnDataReceived(FCSOCKET s, FCBYTE* pData, FCINT nLen)
 {
   if ( m_bHasConsole )
-    printf("[DATA_IN-%ld bytes] %s\n", nLen, pData);
-
-  pthread_mutex_lock(&m_mutexSockets);
+    printf("[DATA_IN-%ld bytes]\n", nLen);
 
 	ClientSocket* pSocket = NULL;
 	CSocketMap::iterator it = m_mapSockets.find(s);
+  bool bFound = false;
 
   if ( it != m_mapSockets.end())
   {
     pSocket = it->second;
 	  if ( pSocket )
     {
+      bFound = true;
 	    // add the received data to the socket's stream
 	    pSocket->AddData(pData, nLen);
 
@@ -187,7 +205,10 @@ void FCLogicRouter::OnDataReceived(FCSOCKET s, FCBYTE* pData, FCINT nLen)
     }
   }
 
-  pthread_mutex_unlock(&m_mutexSockets);
+  if ( bFound == false )
+  {
+    printf("\n*** DATA RECEIVED BUT NOT ADDED TO SOCKET STREAM\n\n");
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -277,6 +298,18 @@ bool FCLogicRouter::OnCommand(PEPacket* pPkt, ClientSocket* pSocket)
     }
     break;
 
+  case  FCMSG_REGISTER_SERVICE:
+    {
+      size_t dataLen = 0;
+      __FCPKT_REGISTER_SERVER d;
+
+      pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+      pPkt->GetField("data", &d, dataLen);
+
+      RegisterService(d.type, pSocket);
+    }
+    break;
+
   default:
     break;
   }
@@ -296,6 +329,55 @@ bool FCLogicRouter::OnResponse(PEPacket* pPkt, ClientSocket* pSocket)
 bool FCLogicRouter::OnError(PEPacket* pPkt, ClientSocket* pSocket)
 {
   return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicRouter::RegisterService(ServiceType type, ClientSocket* pSocket)
+{
+  if ( !pSocket )
+    return;
+
+  ServiceSocket s;
+
+  // add the socket to the 'connected services' vector
+  s.pSocket = pSocket;
+  s.type = type;
+
+  pthread_mutex_lock(&m_mutexServices);
+  m_arrServices.push_back(s);
+  pthread_mutex_unlock(&m_mutexServices);
+
+  if ( m_bHasConsole )
+    printf("Service registered (type:%ld)\n", type);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicRouter::UnregisterService(ClientSocket* pSocket)
+{
+  if ( !pSocket )
+    return;
+
+  pthread_mutex_lock(&m_mutexServices);
+
+  CServiceSocketArray::iterator it;
+
+  for ( it = m_arrServices.begin(); it != m_arrServices.end(); it++ )
+  {
+    if ( it->pSocket == pSocket )
+    {
+      if ( m_bHasConsole )
+      {
+        printf("Service unregistered (type=%ld)\n", it->type);
+      }
+
+      m_arrServices.erase(it);
+      break;
+    }
+  }
+
+  pthread_mutex_unlock(&m_mutexServices);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -323,7 +405,7 @@ void* FCLogicRouter::thrdSocketMonitor(void* pData)
       // fetch the next socked queued with data
       pthread_mutex_lock( &pThis->m_mutexQueuedData );
       socket = pThis->m_arrQueuedData.front();
-      // find the CleintSocket object corresponding to this socket
+      // find the ClientSocket object corresponding to this socket
       pthread_mutex_lock(&pThis->m_mutexSockets);
       CSocketMap::iterator itSock = pThis->m_mapSockets.find(socket);
       if ( itSock != pThis->m_mapSockets.end() )
@@ -358,7 +440,7 @@ void* FCLogicRouter::thrdSocketMonitor(void* pData)
       }
     }
 
-    pthread_mutex_unlock( &pThis->m_mutexQueuedData );
+//    pthread_mutex_unlock( &pThis->m_mutexQueuedData );
     // sleep 250ms
     sched_yield();
   }

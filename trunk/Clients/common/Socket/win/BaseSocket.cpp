@@ -105,6 +105,7 @@ void BaseSocket::Connect(LPCSTR lpszServer, short sPort)
 	if ( !m_socket )
 		return;
 
+  DWORD dwError;
 	sockaddr_in		addr;
 
 	addr.sin_family = AF_INET;
@@ -116,7 +117,7 @@ void BaseSocket::Connect(LPCSTR lpszServer, short sPort)
 	if ( nResult != 0 && nResult != WSAEWOULDBLOCK )
 	{
 		// Problem occurred here
-		DWORD dwError = WSAGetLastError();
+		dwError = WSAGetLastError();
 	}
 }
 
