@@ -30,6 +30,14 @@ const FCBYTE      FCPKT_COMMAND = 1;
 const FCBYTE      FCPKT_RESPONSE = 2;
 const FCBYTE      FCPKT_ERROR = 3;
 
+enum ServiceType
+{
+  ST_Router,
+  ST_Auth,
+  ST_World,
+  ST_Community
+};
+
 /*
   
   NB: Protocol definitions must be accompanied with an extraction plan.
@@ -40,6 +48,7 @@ static const char* __FCPACKET_DEF =
 "[" \
 ":magic:1:8|" \
 ":type:1:1|" \
+":target:4:1|" \
 ":msg:2:1|" \
 ":dataLen:4:1|" \
 ":data:*dataLen:1|" \
@@ -49,6 +58,7 @@ struct __FCPACKET
 {
   FCBYTE          magic[8];           // must be [0A 0A 00 10 00 20 00 40]
   FCBYTE          pktType;
+  ServiceType     target;             // the target service for the message
   unsigned short  msg;                // msg code
   unsigned long   lDataLen;
   char*           pData;
@@ -64,6 +74,12 @@ struct __FCPKT_INFO_SERVER
   FCBYTE    verMajor;
   FCBYTE    verMinor;
   FCUINT    connectionCountRouter;
+};
+
+const FCSHORT FCMSG_REGISTER_SERVICE            = 2;
+struct __FCPKT_REGISTER_SERVER
+{
+  ServiceType     type;
 };
 
 #pragma pack(pop)

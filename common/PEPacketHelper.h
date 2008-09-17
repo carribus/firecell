@@ -21,6 +21,7 @@
 #define _PEPACKETHELPER_H_
 
 #include "fctypes.h"
+#include "protocol/fcprotocol.h"
 #include "PEPacket.h"
 
 class PEPacketHelper
@@ -29,12 +30,12 @@ public:
   PEPacketHelper(void);
   ~PEPacketHelper(void);
 
-  static void CreatePacket(PEPacket& pkt, FCBYTE type, FCSHORT msgID);
+  static void CreatePacket(PEPacket& pkt, FCBYTE type, FCSHORT msgID, ServiceType target = ST_Router);
   static void SetPacketData(PEPacket& pkt, void* pData, size_t dataLen);
 
 protected:
 
-  static void CreateBasePacket(PEPacket& pkt, FCBYTE type);
+  static void CreateBasePacket(PEPacket& pkt, FCBYTE type, ServiceType target);
 };
 
 #endif//_PEPACKETHELPER_H_

@@ -18,6 +18,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <sstream>
+#include "../common/protocol/fcprotocol.h"
+#include "../common/PEPacket.h"
+#include "../common/PEPacketHelper.h"
 #include "FCLogicAuth.h"
 
 FCLogicAuth::FCLogicAuth(void)
@@ -68,6 +71,65 @@ int FCLogicAuth::Stop()
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCLogicAuth::OnConnected(BaseSocket* pSocket, int nErrorCode)
+{
+  RouterSocket* pSock = (RouterSocket*) pSocket;
+
+  if ( !nErrorCode )
+  {
+    m_mapRouters[ pSock->GetServer() ] = pSock;
+    RegisterServiceWithRouter(pSock);
+  }
+  else
+  {
+    if ( m_bHasConsole )
+      printf("Failed to connect to router (%s:%ld)\n", pSock->GetServer().c_str(), pSock->GetPort());
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicAuth::OnDisconnected(BaseSocket* pSocket, int nErrorCode)
+{
+  RouterSocket* pSock = (RouterSocket*) pSocket;
+
+  // temporary code - we probably need to attempt to reconnect to the dropped router
+  m_mapRouters.erase( pSock->GetServer() );
+  delete pSock;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicAuth::OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen)
+{
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicAuth::RegisterServiceWithRouter(RouterSocket* pSock)
+{
+  if ( !pSock )
+    return;
+
+  PEPacket pkt;
+
+  __FCPKT_REGISTER_SERVER d;
+
+  d.type = ST_Auth;
+
+  PEPacketHelper::CreatePacket( pkt, FCPKT_COMMAND, FCMSG_REGISTER_SERVICE );
+  PEPacketHelper::SetPacketData( pkt, (void*)&d, sizeof(__FCPKT_REGISTER_SERVER) );
+
+  // send the packet
+  size_t dataLen = 0;
+  char* pData = NULL;
+
+  pkt.GetDataBlock( pData, dataLen );
+  pSock->Send( (FCBYTE*)pData, (FCUINT)dataLen );
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCLogicAuth::LoadConfig(FCCSTR strFilename)
 {
   if ( !strFilename )
@@ -100,8 +162,19 @@ bool FCLogicAuth::ConnectToRouters()
         strServer = strValue.substr(0, strValue.find(':'));
         port = atoi( strValue.substr( strValue.find(':')+1, strValue.length() ).c_str() );
 
+        if ( m_bHasConsole )
+          printf("Connecting to router (%s:%ld)\n", strServer.c_str(), port);
 
+        RouterSocket* pSock = new RouterSocket;
+        pSock->SetServer( strServer );
+        pSock->SetPort( port );
+        pSock->Subscribe(this);
+
+        pSock->Create();
+        pSock->Connect(strServer.c_str(), port);
       }
+      else
+        break;
     }
   }
 

@@ -27,12 +27,20 @@
 #include "../common/PEPacket.h"
 #include "../common/interfaces/IServiceLogic.h"
 #include "../common/interfaces/ISocketServer.h"
+#include "../common/protocol/fcprotocol.h"
 #include "../common/socket/ClientSocket.h"
 
 class FCLogicRouter : public IServiceLogic
                     , public ISocketServerSink
 {
+  struct ServiceSocket
+  {
+    ClientSocket* pSocket;
+    ServiceType type;
+  };
+
   typedef std::map<FCSOCKET, ClientSocket*> CSocketMap;
+  typedef std::vector<ServiceSocket> CServiceSocketArray;
   typedef std::queue<FCSOCKET> CQueuedSocketArray;
 
 public:
@@ -66,10 +74,15 @@ private:
   bool                OnResponse(PEPacket* pPkt, ClientSocket* pSocket);
   bool                OnError(PEPacket* pPkt, ClientSocket* pSocket);
 
+  void                RegisterService(ServiceType type, ClientSocket* pSocket);
+  void                UnregisterService(ClientSocket* pSocket);
+
   // thread
   static void*        thrdSocketMonitor(void* pData);
 
-
+  //
+  // Attributes
+  //
   INIFile             m_config;
   ISocketServer*      m_pSockServer;
   bool                m_bHasConsole;
@@ -77,6 +90,9 @@ private:
   CSocketMap          m_mapSockets;
   pthread_mutex_t     m_mutexQueuedData;
   CQueuedSocketArray  m_arrQueuedData;
+
+  pthread_mutex_t     m_mutexServices;
+  CServiceSocketArray m_arrServices;
 
   pthread_t           m_thrdSockMon;
   bool                m_bStopSockMon;

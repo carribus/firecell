@@ -23,7 +23,7 @@ class BaseSocket
 {
 public:
 	BaseSocket(void);
-	~BaseSocket(void);
+	virtual ~BaseSocket(void);
 
 	void Attach(SOCKET s);
 	bool Create(int nType = SOCK_STREAM, long lEvents = FD_CLOSE | FD_READ | FD_WRITE | FD_CONNECT);

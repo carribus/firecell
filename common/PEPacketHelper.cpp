@@ -31,9 +31,9 @@ PEPacketHelper::~PEPacketHelper(void)
 
 ///////////////////////////////////////////////////////////////////////
 
-void PEPacketHelper::CreatePacket(PEPacket& pkt, FCBYTE type, FCSHORT msgID)
+void PEPacketHelper::CreatePacket(PEPacket& pkt, FCBYTE type, FCSHORT msgID, ServiceType target)
 {
-  CreateBasePacket(pkt, type);
+  CreateBasePacket(pkt, type, target);
   pkt.SetFieldValue("msg", &msgID);
 }
 
@@ -50,12 +50,14 @@ void PEPacketHelper::SetPacketData(PEPacket& pkt, void* pData, size_t dataLen)
 
 ///////////////////////////////////////////////////////////////////////
 
-void PEPacketHelper::CreateBasePacket(PEPacket& pkt, FCBYTE type)
+void PEPacketHelper::CreateBasePacket(PEPacket& pkt, FCBYTE type, ServiceType target)
 {
   unsigned char header[8] = { 0x0A, 0x0A, 0x00, 0x10, 0x00, 0x20, 0x00, 0x40 };
 
+  int s = sizeof(target);
   pkt.AddField("magic", 1, 8, header);
   pkt.AddField("type", 1, 1, &type);
+  pkt.AddField("target", 4, 1, &target);
   pkt.AddField("msg", 2, 1);
   pkt.AddField("dataLen", 4, 1);
 }

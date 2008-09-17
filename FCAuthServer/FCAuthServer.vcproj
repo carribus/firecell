@@ -113,6 +113,9 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
+				RelativePath="..\Clients\common\Socket\win\BaseSocket.cpp">
+			</File>
+			<File
 				RelativePath="..\common\CmdLineInfo.cpp">
 			</File>
 			<File
@@ -125,6 +128,12 @@
 				RelativePath="..\common\inifile.cpp">
 			</File>
 			<File
+				RelativePath="..\common\PEPacket.cpp">
+			</File>
+			<File
+				RelativePath="..\common\PEPacketHelper.cpp">
+			</File>
+			<File
 				RelativePath="..\common\daemon\win\W32Service.cpp">
 			</File>
 		</Filter>
@@ -133,6 +142,9 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
+				RelativePath="..\Clients\common\Socket\win\BaseSocket.h">
+			</File>
+			<File
 				RelativePath="..\common\CmdLineInfo.h">
 			</File>
 			<File
@@ -140,6 +152,12 @@
 			</File>
 			<File
 				RelativePath="..\common\inifile.h">
+			</File>
+			<File
+				RelativePath="..\common\PEPacket.h">
+			</File>
+			<File
+				RelativePath="..\common\PEPacketHelper.h">
 			</File>
 			<File
 				RelativePath="..\common\daemon\win\W32Service.h">

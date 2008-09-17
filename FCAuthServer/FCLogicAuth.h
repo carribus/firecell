@@ -30,8 +30,27 @@
 using namespace std;
 
 class FCLogicAuth : public IServiceLogic
+                  , public IBaseSocketSink
 {
-  typedef std::map< string, BaseSocket* > ServiceSocketMap;
+  class RouterSocket : public BaseSocket
+  {
+  public:
+    RouterSocket() {}
+    ~RouterSocket() {}
+
+    void SetServer(string server)             { m_server = server; }
+    string GetServer()                        { return m_server; }
+    void SetPort(short port)                  { m_port = port; }
+    short GetPort()                           { return m_port; }
+
+  private:
+    string              m_server;
+    short               m_port;
+  };
+
+  typedef std::map< string, RouterSocket* > ServiceSocketMap;
+
+
 public:
   FCLogicAuth(void);
   ~FCLogicAuth(void);
@@ -44,7 +63,16 @@ public:
   int Stop();
   void HasConsole(bool bHasConsole)               { m_bHasConsole = bHasConsole; }
 
+  //
+  // IBaseSocketSink implementation
+  void OnAccepted(BaseSocket* pSocket, int nErrorCode) {}
+	void OnConnected(BaseSocket* pSocket, int nErrorCode);
+	void OnDisconnected(BaseSocket* pSocket, int nErrorCode);
+	void OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen);
+
 private:
+
+  void RegisterServiceWithRouter(RouterSocket* pSock);
 
   bool                LoadConfig(FCCSTR strFilename);
   bool                ConnectToRouters();
