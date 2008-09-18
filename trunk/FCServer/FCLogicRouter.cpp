@@ -30,19 +30,10 @@ FCLogicRouter::FCLogicRouter(void)
 , m_bHasConsole(false)
 , m_bStopSockMon(false)
 {
-/*
-  pthread_mutexattr_t attr;
-  
-  // define the mutex as a recursive mutex
-  pthread_mutexattr_init(&attr);
-  pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
-*/
   // initialize the mutex
   pthread_mutex_init(&m_mutexSockets, NULL);
   pthread_mutex_init(&m_mutexQueuedData, NULL);
   pthread_mutex_init(&m_mutexServices, NULL);
-  // destroy the mutex attributes object
-//  pthread_mutexattr_destroy(&attr);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -207,7 +198,8 @@ void FCLogicRouter::OnDataReceived(FCSOCKET s, FCBYTE* pData, FCINT nLen)
 
   if ( bFound == false )
   {
-    printf("\n*** DATA RECEIVED BUT NOT ADDED TO SOCKET STREAM\n\n");
+    if ( m_bHasConsole )
+      printf("\n*** ERROR: DATA RECEIVED BUT NOT ADDED TO SOCKET STREAM\n\n");
   }
 }
 
@@ -311,6 +303,8 @@ bool FCLogicRouter::OnCommand(PEPacket* pPkt, ClientSocket* pSocket)
     break;
 
   default:
+    if ( m_bHasConsole )
+      printf("Unknown Message Received (%ld)\n", msgID);
     break;
   }
 
@@ -339,6 +333,7 @@ void FCLogicRouter::RegisterService(ServiceType type, ClientSocket* pSocket)
     return;
 
   ServiceSocket s;
+  bool bResult = false;
 
   // add the socket to the 'connected services' vector
   s.pSocket = pSocket;
@@ -348,8 +343,13 @@ void FCLogicRouter::RegisterService(ServiceType type, ClientSocket* pSocket)
   m_arrServices.push_back(s);
   pthread_mutex_unlock(&m_mutexServices);
 
+  bResult = true;
+
+  SendServiceRegistrationResponse(pSocket, type, bResult);
+
   if ( m_bHasConsole )
     printf("Service registered (type:%ld)\n", type);
+
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -378,6 +378,27 @@ void FCLogicRouter::UnregisterService(ClientSocket* pSocket)
   }
 
   pthread_mutex_unlock(&m_mutexServices);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicRouter::SendServiceRegistrationResponse(ClientSocket* pSocket, ServiceType type, bool bSucceeded)
+{
+  PEPacket pkt;
+  __FCPKT_REGISTER_SERVER d;
+
+  d.type = type;
+  d.status = bSucceeded;
+
+  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_REGISTER_SERVICE, type);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(__FCPKT_REGISTER_SERVER) );
+
+  // send the packet
+  size_t dataLen = 0;
+  char* pData = NULL;
+
+  pkt.GetDataBlock( pData, dataLen);
+  pSocket->Send( (FCBYTE*)pData, (FCUINT)dataLen );
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -430,6 +451,7 @@ void* FCLogicRouter::thrdSocketMonitor(void* pData)
           stream.Delete(0, (unsigned long)offset);
           offset = 0;
           pThis->HandlePacket(pPkt, pSocket);
+          delete pPkt;
         }
 
         pSocket->Unlock();

@@ -260,17 +260,25 @@ bool BSDSocketServer::AcceptConnection()
   
   if ( s == -1 )
     return false;
-  
+
+  // fire a notification
+  int nCount = m_arrSinks.GetSize();
+  for ( int i = 0; i < nCount; i++ )
+  {
+    m_arrSinks.GetAt(i)->OnConnect( s );
+  }
+
   if ( AddConnectionToPool(s) )
   {
     m_dwActiveConnections++;
-    
-    // fire a notification
-    int nCount = m_arrSinks.GetSize();
-    for ( int i = 0; i < nCount; i++ )
-    {
-      m_arrSinks.GetAt(i)->OnConnect( s );
-    }
+  }
+  else
+  {
+	  for ( int i = 0; i < nCount; i++ )
+	  {
+      close( s );
+		  m_arrSinks.GetAt(i)->OnDisconnect( s, -1 );
+	  }
   }
   
   return true;

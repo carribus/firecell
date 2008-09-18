@@ -80,6 +80,7 @@ const FCSHORT FCMSG_REGISTER_SERVICE            = 2;
 struct __FCPKT_REGISTER_SERVER
 {
   ServiceType     type;
+  bool            status;         // only used in response to indicate whether registration succeeded or not
 };
 
 #pragma pack(pop)

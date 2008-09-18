@@ -22,8 +22,13 @@
 
 #include <string>
 #include <map>
+#include <queue>
+#include "../common/binstream.h"
+#include "../common/threading.h"
+#include "../common/fctypes.h"
 #include "../common/inifile.h"
 #include "../common/PEPacket.h"
+#include "../common/PacketExtractor.h"
 #include "../common/interfaces/IServiceLogic.h"
 #include "../Clients/common/Socket/ClientSocket.h"
 
@@ -42,14 +47,20 @@ class FCLogicAuth : public IServiceLogic
     string GetServer()                        { return m_server; }
     void SetPort(short port)                  { m_port = port; }
     short GetPort()                           { return m_port; }
+    void AddData(FCBYTE* pData, FCULONG len)
+    {
+      m_stream.Concat(pData, len);
+    }
+    CBinStream<FCBYTE, true>& GetDataStream() { return m_stream; }
 
   private:
     string              m_server;
     short               m_port;
+    CBinStream<FCBYTE, true> m_stream;
   };
 
   typedef std::map< string, RouterSocket* > ServiceSocketMap;
-
+  typedef std::queue<FCSOCKET> CQueuedSocketArray;
 
 public:
   FCLogicAuth(void);
@@ -75,11 +86,18 @@ private:
   void RegisterServiceWithRouter(RouterSocket* pSock);
 
   bool                LoadConfig(FCCSTR strFilename);
+  void                HandlePacket(PEPacket* pPkt, BaseSocket* pSocket);
   bool                ConnectToRouters();
+
+  bool                OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
+  bool                OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
+  bool                OnError(PEPacket* pPkt, BaseSocket* pSocket);
+
 
   bool                m_bHasConsole;
   INIFile             m_config;
   ServiceSocketMap    m_mapRouters;
+  PacketExtractor     m_pktExtractor;
 };
 
 #endif//_FCLOGICAUTH_H_
