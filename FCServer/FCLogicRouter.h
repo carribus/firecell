@@ -77,6 +77,8 @@ private:
   void                RegisterService(ServiceType type, ClientSocket* pSocket);
   void                UnregisterService(ClientSocket* pSocket);
 
+  void                SendServiceRegistrationResponse(ClientSocket* pSocket, ServiceType type, bool bSucceeded);
+
   // thread
   static void*        thrdSocketMonitor(void* pData);
 

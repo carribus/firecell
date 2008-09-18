@@ -54,6 +54,9 @@ int FCLogicAuth::Start()
     return -1;
   }
 
+  // initialise the packet extractor
+  m_pktExtractor.Prepare( __FCPACKET_DEF );
+
   // kick off the database object
 
   // connect to the router(s) that we were configured to connect to
@@ -102,6 +105,25 @@ void FCLogicAuth::OnDisconnected(BaseSocket* pSocket, int nErrorCode)
 
 void FCLogicAuth::OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen)
 {
+  if ( m_bHasConsole )
+    printf("[DATA_IN-%ld bytes]\n", nLen);
+
+  PEPacket* pPkt = NULL;
+	RouterSocket* pRouter = (RouterSocket*)pSocket;
+  CBinStream<FCBYTE, true>& stream = pRouter->GetDataStream();
+  size_t offset = 0;
+
+  pRouter->AddData(pData, (FCULONG)nLen);
+
+  if ( (pPkt = m_pktExtractor.Extract( (const char*)(FCBYTE*)stream, offset, (size_t)stream.GetLength() )) )
+  {
+    pPkt->DebugDump();
+    stream.Delete(0, (unsigned long)offset);
+    offset = 0;
+    HandlePacket(pPkt, pSocket);
+    delete pPkt;
+  }
+
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -136,6 +158,31 @@ bool FCLogicAuth::LoadConfig(FCCSTR strFilename)
     return false;
 
  return (m_config.Load(strFilename) == 0);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicAuth::HandlePacket(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  bool bHandled = false;
+  FCBYTE pktType = 0;
+
+  pPkt->GetField("type", &pktType, sizeof(FCBYTE));
+
+  switch ( pktType )
+  {
+  case  FCPKT_COMMAND:
+    bHandled = OnCommand(pPkt, pSocket);
+    break;
+
+  case  FCPKT_RESPONSE:
+    bHandled = OnResponse(pPkt, pSocket);
+    break;
+
+  case  FCPKT_ERROR:
+    bHandled = OnError(pPkt, pSocket);
+    break;
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -179,4 +226,66 @@ bool FCLogicAuth::ConnectToRouters()
   }
 
   return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicAuth::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicAuth::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  RouterSocket* pRouter = (RouterSocket*)pSocket;
+  FCSHORT msgID = 0;
+  bool bHandled = false;
+
+  pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
+
+  switch ( msgID )
+  {
+  case  FCMSG_REGISTER_SERVICE:
+    {
+      __FCPKT_REGISTER_SERVER d;
+      size_t dataLen = 0;
+
+      pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+      pPkt->GetField("data", (void*)&d, dataLen);
+
+      if ( d.type == ST_Auth )
+      {
+        if ( !d.status )
+        {
+          // registration succeeded
+          if ( m_bHasConsole )
+            printf("Service registered with Router (%s:%ld)\n", pRouter->GetServer().c_str(), pRouter->GetPort());
+        }
+        else
+        {
+          // registration failed
+          if ( m_bHasConsole )
+            printf("Service failed to register with Router (%s:%ld)\n", pRouter->GetServer().c_str(), pRouter->GetPort());
+        }
+
+      }
+    }
+    break;
+
+  default:
+    if ( m_bHasConsole )
+      printf("Unknown Message Received (%ld)\n", msgID);
+    break;
+  }
+
+  return bHandled;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicAuth::OnError(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  return false;
 }
