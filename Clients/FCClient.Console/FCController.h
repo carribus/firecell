@@ -61,7 +61,7 @@ protected:
   void OnAccepted(BaseSocket* pSocket, int nErrorCode) {}
 	void OnConnected(BaseSocket* pSocket, int nErrorCode);
 	void OnDisconnected(BaseSocket* pSocket, int nErrorCode);
-	void OnDataReceived(BaseSocket* pSocket, BYTE* pData, int nLen);
+	void OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen);
 
   bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
   bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
