@@ -277,7 +277,7 @@ bool BSDSocketServer::AcceptConnection()
 	  for ( int i = 0; i < nCount; i++ )
 	  {
       close( s );
-		  m_arrSinks.GetAt(i)->OnDisconnect( s, -1 );
+		  m_arrSinks.GetAt(i)->OnDisconnect( s, 0xFFFFFFFF );
 	  }
   }
   
