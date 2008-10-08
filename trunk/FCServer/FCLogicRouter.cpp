@@ -243,9 +243,39 @@ void FCLogicRouter::HandlePacket(PEPacket* pPkt, ClientSocket* pSocket)
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCLogicRouter::ForwardPacket(const PEPacket* pPkt, ClientSocket* pSocket)
+void FCLogicRouter::ForwardPacket(PEPacket* pPkt, ClientSocket* pSocket)
 {
-  // TODO: write this code :)
+  ServiceType target;
+
+  // check if we need to forward the packet first...
+  pPkt->GetField("target", &target, sizeof(ServiceType));
+
+  if ( target != ST_Router )
+  {
+    // locate the service connection for this packet...
+    ClientSocket* pService = GetServiceConnectionByType( target );
+
+    if ( pService )
+    {
+      FCSOCKET s = (FCSOCKET)*pSocket;
+      // when forwarding packets, we swap the target service Identifier with the originating socket descriptor
+      pPkt->SetFieldValue("target", (void*)&s);
+
+      // send the packet on
+      size_t dataLen = 0;
+      char* pData = NULL;
+
+      pPkt->GetDataBlock( pData, dataLen);
+      pService->Send( (FCBYTE*)pData, (FCUINT)dataLen );
+    }
+    else
+    {
+      if ( m_bHasConsole )
+      {
+        printf("Failed to forward packet (reason: Service %ld is not registered)\n", target);
+      }
+    }
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -299,12 +329,15 @@ bool FCLogicRouter::OnCommand(PEPacket* pPkt, ClientSocket* pSocket)
       pPkt->GetField("data", &d, dataLen);
 
       RegisterService(d.type, pSocket);
+      bHandled = true;
     }
     break;
 
   default:
+/*
     if ( m_bHasConsole )
       printf("Unknown Message Received (%ld)\n", msgID);
+*/
     break;
   }
 
@@ -382,6 +415,30 @@ void FCLogicRouter::UnregisterService(ClientSocket* pSocket)
 
 ///////////////////////////////////////////////////////////////////////
 
+ClientSocket* FCLogicRouter::GetServiceConnectionByType(ServiceType type)
+{
+  ClientSocket* pResult = NULL;
+
+  pthread_mutex_lock(&m_mutexServices);
+
+  CServiceSocketArray::iterator it;
+
+  for ( it = m_arrServices.begin(); it != m_arrServices.end(); it++ )
+  {
+    if ( it->type == type )
+    {
+      pResult = it->pSocket;
+      break;
+    }    
+  }
+
+  pthread_mutex_unlock(&m_mutexServices);
+
+  return pResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void FCLogicRouter::SendServiceRegistrationResponse(ClientSocket* pSocket, ServiceType type, bool bSucceeded)
 {
   PEPacket pkt;
@@ -445,7 +502,7 @@ void* FCLogicRouter::thrdSocketMonitor(void* pData)
         pSocket->Lock();
         NetStream& stream = pSocket->GetDataStream();
 
-        if ( (pPkt = extractor.Extract( (const char*)(FCBYTE*)stream, offset, (size_t)stream.GetLength() )) )
+        while ( (pPkt = extractor.Extract( (const char*)(FCBYTE*)stream, offset, (size_t)stream.GetLength() )) )
         {
           pPkt->DebugDump();
           stream.Delete(0, (unsigned long)offset);

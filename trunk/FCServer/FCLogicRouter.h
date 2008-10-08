@@ -68,7 +68,7 @@ private:
 
   bool                LoadConfig(FCCSTR strFilename);
   void                HandlePacket(PEPacket* pPkt, ClientSocket* pSocket);
-  void                ForwardPacket(const PEPacket* pPkt, ClientSocket* pSocket);
+  void                ForwardPacket(PEPacket* pPkt, ClientSocket* pSocket);
 
   bool                OnCommand(PEPacket* pPkt, ClientSocket* pSocket);
   bool                OnResponse(PEPacket* pPkt, ClientSocket* pSocket);
@@ -76,6 +76,7 @@ private:
 
   void                RegisterService(ServiceType type, ClientSocket* pSocket);
   void                UnregisterService(ClientSocket* pSocket);
+  ClientSocket*       GetServiceConnectionByType(ServiceType type);
 
   void                SendServiceRegistrationResponse(ClientSocket* pSocket, ServiceType type, bool bSucceeded);
 
