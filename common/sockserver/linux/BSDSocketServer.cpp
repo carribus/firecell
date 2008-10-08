@@ -123,9 +123,6 @@ BSDSocketServer::~BSDSocketServer()
 void BSDSocketServer::Initialize(FCCSTR lpszBindToAddress, FCSHORT sPortToBind)
 {
   if ( m_lpszServer )
-    free(m_lpszServer);
-
-  if ( m_lpszServer )
   {
     free(m_lpszServer);
     m_lpzsServer = NULl;
@@ -134,6 +131,13 @@ void BSDSocketServer::Initialize(FCCSTR lpszBindToAddress, FCSHORT sPortToBind)
   if ( lpszBindToAddress )
   {
     m_lpszServer = strdup(lpszBindToAddress);
+  }
+  else
+  {
+    char hostname[128];
+
+    gethostname(hostname, sizeof(hostname));
+    m_lpszServer = _strdup(hostname);
   }
 
   m_sPort = sPortToBind;

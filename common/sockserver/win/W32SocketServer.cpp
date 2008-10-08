@@ -135,6 +135,13 @@ void CW32SocketServer::Initialize(LPCSTR lpszBindToAddress, short sPortToBind)
     // an address to bind to has been specified
 		m_lpszServer = _strdup(lpszBindToAddress);
   }
+  else
+  {
+    char hostname[128];
+
+    gethostname(hostname, sizeof(hostname));
+    m_lpszServer = _strdup(hostname);
+  }
 
 	m_sPort = sPortToBind;
 }
@@ -246,6 +253,8 @@ bool CW32SocketServer::StartListening()
 
     break;
   }
+
+  freeaddrinfo(servinfo);
 
   // create the event object
 	m_hListenEvent = WSACreateEvent();
