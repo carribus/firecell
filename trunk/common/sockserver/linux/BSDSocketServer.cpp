@@ -125,19 +125,12 @@ void BSDSocketServer::Initialize(FCCSTR lpszBindToAddress, FCSHORT sPortToBind)
   if ( m_lpszServer )
   {
     free(m_lpszServer);
-    m_lpzsServer = NULl;
+    m_lpszServer = NULL;
   }
 
   if ( lpszBindToAddress )
   {
     m_lpszServer = strdup(lpszBindToAddress);
-  }
-  else
-  {
-    char hostname[128];
-
-    gethostname(hostname, sizeof(hostname));
-    m_lpszServer = _strdup(hostname);
   }
 
   m_sPort = sPortToBind;
@@ -217,7 +210,7 @@ bool BSDSocketServer::StartListening()
   int yes = 1, nRet;
 
   memset(&hints, 0, sizeof(hints));
-  hints.ai_family = AF_UNSPEC;
+  hints.ai_family =  AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_flags = AI_PASSIVE;
 
