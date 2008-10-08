@@ -135,13 +135,6 @@ void CW32SocketServer::Initialize(LPCSTR lpszBindToAddress, short sPortToBind)
     // an address to bind to has been specified
 		m_lpszServer = _strdup(lpszBindToAddress);
   }
-  else
-  {
-    char hostname[128];
-
-    gethostname(hostname, sizeof(hostname));
-    m_lpszServer = _strdup(hostname);
-  }
 
 	m_sPort = sPortToBind;
 }
@@ -224,7 +217,7 @@ bool CW32SocketServer::StartListening()
 {
   addrinfo hints, *servinfo, *p;
   char port[10];
-  int yes = 1;
+  int yes = 1, nRet;
 
   memset(&hints, 0, sizeof(hints));
   hints.ai_family = AF_UNSPEC;
@@ -264,7 +257,7 @@ bool CW32SocketServer::StartListening()
 		return false;
 	}
 
-	listen( m_sockListener, 5 );
+	nRet = listen( m_sockListener, 5 );
 
 	unsigned int nID = 0;
 	if ( !(m_hListenThrd = (HANDLE)_beginthreadex(NULL, 0, thrdListenServer, this, 0, &nID)) )
