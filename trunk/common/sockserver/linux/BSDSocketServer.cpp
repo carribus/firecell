@@ -124,19 +124,18 @@ void BSDSocketServer::Initialize(FCCSTR lpszBindToAddress, FCSHORT sPortToBind)
 {
   if ( m_lpszServer )
     free(m_lpszServer);
-  
+
+  if ( m_lpszServer )
+  {
+    free(m_lpszServer);
+    m_lpzsServer = NULl;
+  }
+
   if ( lpszBindToAddress )
   {
-    hostent* pLocalHost = gethostbyname(lpszBindToAddress);
-//    m_lpszServer = strdup(lpszBindToAddress);
-    m_lpszServer = strdup( inet_ntoa( *(in_addr*)*pLocalHost->h_addr_list) );
-   
+    m_lpszServer = strdup(lpszBindToAddress);
   }
-  else
-  {
-    hostent* pLocalHost = gethostbyname("localhost");
-    m_lpszServer = strdup( inet_ntoa( *(in_addr*)*pLocalHost->h_addr_list) );
-  }
+
   m_sPort = sPortToBind;
 }
 
@@ -211,7 +210,7 @@ bool BSDSocketServer::StartListening()
 {
   addrinfo hints, *servinfo, *p;
   char port[10];
-  int yes = 1;
+  int yes = 1, nRet;
 
   memset(&hints, 0, sizeof(hints));
   hints.ai_family = AF_UNSPEC;
@@ -240,6 +239,8 @@ bool BSDSocketServer::StartListening()
 
     break;
   }
+
+  freeaddrinfo(servinfo);
 
   if ( listen(m_sockListener, 5 ) == -1 )
   {
