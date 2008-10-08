@@ -257,7 +257,7 @@ bool FCLogicAuth::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
 
       if ( d.type == ST_Auth )
       {
-        if ( !d.status )
+        if ( d.status )
         {
           // registration succeeded
           if ( m_bHasConsole )

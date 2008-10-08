@@ -66,6 +66,7 @@ FCINT FCController::Run()
 
   printf("Requesting Server Info: ");
   m_server.RequestServerInfo();
+  m_server.Login("testuser", "testpass");
 
   // game loop
   m_hGameEvent = CreateEvent(0, 0, 0, 0);
