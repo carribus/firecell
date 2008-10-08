@@ -125,15 +125,17 @@ void CW32SocketServer::Initialize(LPCSTR lpszBindToAddress, short sPortToBind)
 	}
 
 	if ( m_lpszServer )
+  {
 		free( m_lpszServer );
+    m_lpszServer = NULL;
+  }
 
 	if ( lpszBindToAddress )
+  {
+    // an address to bind to has been specified
 		m_lpszServer = _strdup(lpszBindToAddress);
-	else
-	{
-		hostent* pLocalHost = gethostbyname("127.0.0.1");
-		m_lpszServer = strdup( inet_ntoa( *(in_addr*)*pLocalHost->h_addr_list) );
-	}
+  }
+
 	m_sPort = sPortToBind;
 }
 
@@ -213,26 +215,39 @@ bool CW32SocketServer::IsSinkRegistered(ISocketServerSink* pSink)
 
 bool CW32SocketServer::StartListening()
 {
-	if ( !(m_sockListener = (FCSOCKET) WSASocket( AF_INET, SOCK_STREAM, IPPROTO_IP, NULL, 0, WSA_FLAG_OVERLAPPED )) )
-	{
-		// an error occurred
-		return false;
-	}
+  addrinfo hints, *servinfo, *p;
+  char port[10];
+  int yes = 1;
 
-	sockaddr_in addr;
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_flags = AI_PASSIVE;
 
-	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = INADDR_ANY;
-	addr.sin_port = htons(m_sPort);
-	ZeroMemory( addr.sin_zero, sizeof(addr.sin_zero) );
+  sprintf(port, "%ld", m_sPort);
+  if ( getaddrinfo(m_lpszServer, port, &hints, &servinfo) == -1 )
+  {
+    return false;
+  }
 
-	if ( bind( m_sockListener, (sockaddr*)&addr, sizeof(addr) ) != 0 )
-	{
-		// an error occurred
-		return false;
-	}
+  for ( p = servinfo; p != NULL; p = p->ai_next )
+  {
+    if ( !(m_sockListener = (FCSOCKET) WSASocket( p->ai_family, p->ai_socktype, p->ai_protocol, NULL, 0, WSA_FLAG_OVERLAPPED )) )
+    {
+      return false;
+    }
 
-	// create the event object
+    setsockopt( m_sockListener, SOL_SOCKET, SO_REUSEADDR, (const char*)&yes, sizeof(int) );
+
+    if ( bind( m_sockListener, p->ai_addr, (int)p->ai_addrlen ) != 0 )
+    {
+      return false;
+    }
+
+    break;
+  }
+
+  // create the event object
 	m_hListenEvent = WSACreateEvent();
 	if ( WSAEventSelect( m_sockListener, m_hListenEvent, FD_ACCEPT | FD_CLOSE ) != 0 )
 	{

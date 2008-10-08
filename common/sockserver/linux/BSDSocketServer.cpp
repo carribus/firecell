@@ -209,30 +209,38 @@ bool BSDSocketServer::IsSinkRegistered(ISocketServerSink* pSink)
 
 bool BSDSocketServer::StartListening()
 {
-  if ( !(m_sockListener = socket( PF_INET, SOCK_STREAM, 0 )) )
+  addrinfo hints, *servinfo, *p;
+  char port[10];
+  int yes = 1;
+
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_flags = AI_PASSIVE;
+
+  sprintf(port, "%ld", m_sPort);
+  if ( getaddrinfo(m_lpszServer, port, &hints, &servinfo) == -1 )
   {
     return false;
   }
-  
-  // make sure we can reuse the address if we need to
-  int yes = 1;
-  int nRet = setsockopt( m_sockListener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int) );
-  
-	sockaddr_in addr;
-  
-	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = inet_addr(m_lpszServer);
-	addr.sin_port = htons(m_sPort);
-	memset( addr.sin_zero, 0, sizeof(addr.sin_zero) );
-  
-  nRet = bind( m_sockListener, (sockaddr*)&addr, sizeof(addr) );
-	if ( nRet != 0 )
-	{
-    perror("Failed to bind");
-		// an error occurred
-		return false;
-	}
-  
+
+  for ( p = servinfo; p != NULL; p = p->ai_next )
+  {
+    if ( !(m_sockListener = (FCSOCKET) socket( p->ai_family, p->ai_socktype, p->ai_protocol)) )
+    {
+      return false;
+    }
+
+    setsockopt( m_sockListener, SOL_SOCKET, SO_REUSEADDR, (const char*)&yes, sizeof(int) );
+
+    if ( bind( m_sockListener, p->ai_addr, (int)p->ai_addrlen ) != 0 )
+    {
+      return false;
+    }
+
+    break;
+  }
+
   if ( listen(m_sockListener, 5 ) == -1 )
   {
     return false;
