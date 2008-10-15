@@ -58,6 +58,12 @@ int FCLogicAuth::Start()
   m_pktExtractor.Prepare( __FCPACKET_DEF );
 
   // kick off the database object
+  if ( m_bHasConsole )
+    printf("Setting up database connection...\n");
+  if ( !ConfigureDatabase() )
+  {
+    return -1;
+  }
 
   // connect to the router(s) that we were configured to connect to
   ConnectToRouters();
@@ -230,9 +236,52 @@ bool FCLogicAuth::ConnectToRouters()
 
 ///////////////////////////////////////////////////////////////////////
 
+bool FCLogicAuth::ConfigureDatabase()
+{
+  string strEngine = "mysql", strDBName = "firecell", strUser, strPass;
+  INIFile::CSection* pSection = m_config.GetSection("Database");
+
+  if ( pSection )
+  {
+    strEngine = pSection->GetValue("engine");
+    strDBName = pSection->GetValue("dbname");
+    strUser = pSection->GetValue("user");
+    strPass = pSection->GetValue("pass");
+  }
+  
+  return m_db.Initialise(strEngine, strDBName, strUser, strPass);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCLogicAuth::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
 {
-  return false;
+  RouterSocket* pRouter = (RouterSocket*) pSocket;
+  FCSHORT msgID = 0;
+  bool bHandled = false;
+
+  pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
+
+  switch ( msgID )
+  {
+  case  FCMSG_LOGIN:
+    {
+      __FCPKT_LOGIN d;
+      size_t dataLen = 0;
+
+      pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+      pPkt->GetField("data", (void*)&d, dataLen);
+
+
+      bHandled = true;
+    }
+    break;
+
+  default:
+    break;
+  }
+
+  return bHandled;
 }
 
 ///////////////////////////////////////////////////////////////////////
