@@ -30,6 +30,7 @@
 #include "../common/PEPacket.h"
 #include "../common/PacketExtractor.h"
 #include "../common/interfaces/IServiceLogic.h"
+#include "../common/database/FCDatabase.h"
 #include "../Clients/common/Socket/ClientSocket.h"
 
 using namespace std;
@@ -85,19 +86,22 @@ private:
 
   void RegisterServiceWithRouter(RouterSocket* pSock);
 
-  bool                LoadConfig(FCCSTR strFilename);
-  void                HandlePacket(PEPacket* pPkt, BaseSocket* pSocket);
-  bool                ConnectToRouters();
+  bool LoadConfig(FCCSTR strFilename);
+  void HandlePacket(PEPacket* pPkt, BaseSocket* pSocket);
+  bool ConnectToRouters();
 
-  bool                OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
-  bool                OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
-  bool                OnError(PEPacket* pPkt, BaseSocket* pSocket);
+  bool ConfigureDatabase();
+
+  bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
+  bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
+  bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
 
 
-  bool                m_bHasConsole;
-  INIFile             m_config;
-  ServiceSocketMap    m_mapRouters;
-  PacketExtractor     m_pktExtractor;
+  bool m_bHasConsole;
+  INIFile m_config;
+  ServiceSocketMap m_mapRouters;
+  PacketExtractor m_pktExtractor;
+  FCDatabase m_db;
 };
 
 #endif//_FCLOGICAUTH_H_
