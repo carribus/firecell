@@ -15,6 +15,8 @@ public:
   bool Connect(std::string server, short port, std::string dbname, std::string user, std::string pass);
   bool Disconnect();
 
+private:
+
 };
 
 #endif//_DBIMYSQL_H_

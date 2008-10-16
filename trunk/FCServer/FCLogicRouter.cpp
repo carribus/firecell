@@ -477,51 +477,58 @@ void* FCLogicRouter::thrdSocketMonitor(void* pData)
 
   while ( !pThis->m_bStopSockMon )
   {
-    while ( !pThis->m_arrQueuedData.empty() )
+    if ( !pThis->m_arrQueuedData.empty() )
     {
-      //
-      // fetch the next socked queued with data
-      pthread_mutex_lock( &pThis->m_mutexQueuedData );
-      socket = pThis->m_arrQueuedData.front();
-      // find the ClientSocket object corresponding to this socket
-      pthread_mutex_lock(&pThis->m_mutexSockets);
-      CSocketMap::iterator itSock = pThis->m_mapSockets.find(socket);
-      if ( itSock != pThis->m_mapSockets.end() )
-        pSocket = itSock->second;
-      else
-        pSocket = NULL;
-      pthread_mutex_unlock(&pThis->m_mutexSockets);
-
-      pThis->m_arrQueuedData.pop();
-      pthread_mutex_unlock( &pThis->m_mutexQueuedData );
-
-      if ( pSocket )
+      while ( !pThis->m_arrQueuedData.empty() )
       {
         //
-        // get the data stream
-        pSocket->Lock();
-        NetStream& stream = pSocket->GetDataStream();
+        // fetch the next socked queued with data
+        pthread_mutex_lock( &pThis->m_mutexQueuedData );
+        socket = pThis->m_arrQueuedData.front();
+        // find the ClientSocket object corresponding to this socket
+        pthread_mutex_lock(&pThis->m_mutexSockets);
+        CSocketMap::iterator itSock = pThis->m_mapSockets.find(socket);
+        if ( itSock != pThis->m_mapSockets.end() )
+          pSocket = itSock->second;
+        else
+          pSocket = NULL;
+        pthread_mutex_unlock(&pThis->m_mutexSockets);
 
-        while ( (pPkt = extractor.Extract( (const char*)(FCBYTE*)stream, offset, (size_t)stream.GetLength() )) )
-        {
-          pPkt->DebugDump();
-          stream.Delete(0, (unsigned long)offset);
-          offset = 0;
-          pThis->HandlePacket(pPkt, pSocket);
-          delete pPkt;
-        }
+        pThis->m_arrQueuedData.pop();
+        pthread_mutex_unlock( &pThis->m_mutexQueuedData );
 
-        pSocket->Unlock();
-        if ( pSocket->IsDead() )
+        if ( pSocket )
         {
-          pThis->OnDisconnect( (FCSOCKET)(*pSocket), 0 );
+          //
+          // get the data stream
+          pSocket->Lock();
+          NetStream& stream = pSocket->GetDataStream();
+
+          while ( (pPkt = extractor.Extract( (const char*)(FCBYTE*)stream, offset, (size_t)stream.GetLength() )) )
+          {
+            pPkt->DebugDump();
+            stream.Delete(0, (unsigned long)offset);
+            offset = 0;
+            pThis->HandlePacket(pPkt, pSocket);
+            delete pPkt;
+          }
+
+          pSocket->Unlock();
+          if ( pSocket->IsDead() )
+          {
+            pThis->OnDisconnect( (FCSOCKET)(*pSocket), 0 );
+          }
         }
       }
     }
-
-//    pthread_mutex_unlock( &pThis->m_mutexQueuedData );
-    // sleep 250ms
-    sched_yield();
+    else
+    {
+#ifdef _WIN32
+      Sleep(100);
+#else
+      usleep(250000);
+#endif
+    }
   }
 
   return 0;
