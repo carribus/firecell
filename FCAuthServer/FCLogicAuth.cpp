@@ -238,18 +238,19 @@ bool FCLogicAuth::ConnectToRouters()
 
 bool FCLogicAuth::ConfigureDatabase()
 {
-  string strEngine = "mysql", strDBName = "firecell", strUser, strPass;
+  string strEngine = "mysql", strServer = "localhost", strDBName = "firecell", strUser, strPass;
   INIFile::CSection* pSection = m_config.GetSection("Database");
 
   if ( pSection )
   {
     strEngine = pSection->GetValue("engine");
+    strServer = pSection->GetValue("server");
     strDBName = pSection->GetValue("dbname");
     strUser = pSection->GetValue("user");
     strPass = pSection->GetValue("pass");
   }
   
-  return m_db.Initialise(strEngine, strDBName, strUser, strPass);
+  return m_db.Initialise(strEngine, strServer, strDBName, strUser, strPass);
 }
 
 ///////////////////////////////////////////////////////////////////////
