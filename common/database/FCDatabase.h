@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "../fctypes.h"
+#include "../INIFile.h"
 #include "../threading.h"
 #include "IDBInterface.h"
 
@@ -23,7 +24,9 @@ private:
    *  PRIVATE: Methods
    */
   IDBInterface* CreateInterface(string strEngine);
+  FCUINT LoadQueries(string strEngine);
   void StartWorkerThreads(FCUINT uiNumThreads);
+  void StopWorkerThreads();
 
   static void* thrdDBWorker(void* pData);
 
@@ -35,6 +38,8 @@ private:
          m_strDBName,
          m_strUser,
          m_strPass;
+
+  INIFile m_queries;
 
   FCUINT m_uiNumThreads;
 

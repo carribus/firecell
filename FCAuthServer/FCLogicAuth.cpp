@@ -60,6 +60,7 @@ int FCLogicAuth::Start()
   // kick off the database object
   if ( m_bHasConsole )
     printf("Setting up database connection...\n");
+
   if ( !ConfigureDatabase() )
   {
     return -1;
@@ -75,6 +76,7 @@ int FCLogicAuth::Start()
 
 int FCLogicAuth::Stop()
 {
+  DisconnectFromRouters();
   return 0;
 }
 
@@ -232,6 +234,23 @@ bool FCLogicAuth::ConnectToRouters()
   }
 
   return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicAuth::DisconnectFromRouters()
+{
+  ServiceSocketMap::iterator it;
+  RouterSocket* pRouter = NULL;
+
+  for ( it = m_mapRouters.begin(); it != m_mapRouters.end(); it++ )
+  {
+    pRouter = it->second;
+    pRouter->Disconnect();
+    delete pRouter;
+  }
+
+  m_mapRouters.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////

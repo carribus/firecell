@@ -35,6 +35,10 @@ BaseSocket::BaseSocket(void)
 BaseSocket::~BaseSocket(void)
 {
 	Disconnect();
+  m_bRun = false;
+  WaitForSingleObject( m_hThrd, INFINITE );
+  CloseHandle(m_hThrd);
+  CloseHandle(m_hEvent);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +85,7 @@ bool BaseSocket::Create(int nType, long lEvents)
 	u_long uArg = 1;
 	ioctlsocket( m_socket, FIONBIO, &uArg );
 
-	m_hEvent = WSACreateEvent();
+  m_hEvent = WSACreateEvent();
 
 	if ( WSAEventSelect( m_socket, m_hEvent, lEvents ) != 0 )
 	{

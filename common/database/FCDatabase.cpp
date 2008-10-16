@@ -1,7 +1,10 @@
+#ifdef _WIN32
+#include <windows.h>
+#endif//_WIN32
 #include <algorithm>
 #include "IDBInterface.h"
 #include "DBIMySql.h"
-#include ".\fcdatabase.h"
+#include "fcdatabase.h"
 
 FCDatabase::FCDatabase(void)
 : m_pDBI(NULL)
@@ -13,6 +16,7 @@ FCDatabase::FCDatabase(void)
 
 FCDatabase::~FCDatabase(void)
 {
+  StopWorkerThreads();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -44,6 +48,7 @@ IDBInterface* FCDatabase::CreateInterface(string strEngine)
   if ( !strEngine.compare("mysql") )
   {
     pi = new DBIMySql;
+    LoadQueries("mysql");
   }
   else
   {
@@ -51,6 +56,27 @@ IDBInterface* FCDatabase::CreateInterface(string strEngine)
   }
 
   return pi;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+FCUINT FCDatabase::LoadQueries(string strEngine)
+{
+  FCUINT uiCount = 0;
+  string filename = "queries_" + strEngine + ".conf";
+  INIFile ini;
+
+  if ( ini.Load( filename.c_str() ) == 0 )
+  {
+    INIFile::CSection* pSection = ini.GetSection( strEngine );
+
+    if ( pSection )
+    {
+      uiCount = (FCUINT) pSection->GetCount();
+    }
+  }
+
+  return uiCount;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -74,6 +100,19 @@ void FCDatabase::StartWorkerThreads(FCUINT uiNumThreads)
       m_threads.push_back(pThread);
       m_uiNumThreads++;
     }
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void FCDatabase::StopWorkerThreads()
+{
+  vector<WorkerThread*>::iterator it;
+
+  for ( it = m_threads.begin(); it != m_threads.end(); it++ )
+  {
+    (*it)->bRunning = false;
+    pthread_join( (*it)->thread, NULL );
   }
 }
 
