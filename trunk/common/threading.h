@@ -32,5 +32,4 @@
   #include <pthread.h>
   #include <sched.h>
 #endif
-
 #endif//_THREADING_H_

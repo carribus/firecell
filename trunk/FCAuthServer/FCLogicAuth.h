@@ -89,6 +89,7 @@ private:
   bool LoadConfig(FCCSTR strFilename);
   void HandlePacket(PEPacket* pPkt, BaseSocket* pSocket);
   bool ConnectToRouters();
+  void DisconnectFromRouters();
 
   bool ConfigureDatabase();
 
