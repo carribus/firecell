@@ -292,6 +292,7 @@ bool FCLogicAuth::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
       pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
       pPkt->GetField("data", (void*)&d, dataLen);
 
+      m_db.ExecuteJob(DBQ_LOAD_ACCOUNT, (void*)(FCSOCKET)pRouter, d.username, d.password);
 
       bHandled = true;
     }

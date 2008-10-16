@@ -1,22 +1,49 @@
+/*
+    FireCell Server - The server code for the firecell multiplayer game
+    Copyright (C) 2008  Peter M. Mares
+
+		Contact: carribus@gmail.com
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 #ifdef _WIN32
 #include <windows.h>
 #endif//_WIN32
 #include <algorithm>
 #include "IDBInterface.h"
-#include "DBIMySql.h"
-#include "fcdatabase.h"
+#include "mysql\DBIMySql.h"
+#include "FCDatabase.h"
 
 FCDatabase::FCDatabase(void)
 : m_pDBI(NULL)
 , m_uiNumThreads(0)
+, m_pQueries(NULL)
 {
+  pthread_mutex_init(&m_mutexJobs, NULL);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
 FCDatabase::~FCDatabase(void)
 {
-  StopWorkerThreads();
+  if ( m_pDBI )
+  {
+    StopWorkerThreads();
+    m_pDBI->Release();
+  }
+
+  pthread_mutex_destroy(&m_mutexJobs);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -35,6 +62,39 @@ bool FCDatabase::Initialise(string strEngine, string server, string dbName, stri
   StartWorkerThreads(uiNumWorkerThreads);
 
   return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+bool FCDatabase::ExecuteJob(const string QueryName, void* pData, ...)
+{
+  if ( !m_pQueries || QueryName.empty() )
+    return false;
+
+  bool bResult = false;
+  string sqlQuery = m_pQueries->GetValue(QueryName);
+
+  if ( !sqlQuery.empty() )
+  {
+    char buffer[32000];
+    size_t queryLen = sqlQuery.length();
+    // check if any variable args were passed in
+    va_list marker = NULL;
+
+    va_start( marker, pData );
+    vsprintf(buffer, sqlQuery.c_str(), marker);
+    va_end(marker);
+
+    sqlQuery = buffer;
+    FCDBJob job(sqlQuery, pData);
+
+    pthread_mutex_lock(&m_mutexJobs);
+    m_jobs.push(job);
+    pthread_mutex_unlock(&m_mutexJobs);
+    bResult = true;
+  }
+
+  return bResult;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -64,15 +124,14 @@ FCUINT FCDatabase::LoadQueries(string strEngine)
 {
   FCUINT uiCount = 0;
   string filename = "queries_" + strEngine + ".conf";
-  INIFile ini;
 
-  if ( ini.Load( filename.c_str() ) == 0 )
+  if ( m_queryFile.Load( filename.c_str() ) == 0 )
   {
-    INIFile::CSection* pSection = ini.GetSection( strEngine );
+    m_pQueries = m_queryFile.GetSection( strEngine );
 
-    if ( pSection )
+    if ( m_pQueries )
     {
-      uiCount = (FCUINT) pSection->GetCount();
+      uiCount = (FCUINT) m_pQueries->GetCount();
     }
   }
 
@@ -126,12 +185,13 @@ void* FCDatabase::thrdDBWorker(void* pData)
   WorkerThread* pThreadObj = (WorkerThread*)pData;
   FCDatabase* pThis = pThreadObj->pThis;
   IDBInterface* pDB = pThis->m_pDBI;
+  IDBConnection* pConn = NULL;
 
   if ( !pDB )
     return NULL;
 
   // attempt to connect to the database
-  if ( !pDB->Connect(pThis->m_strServer, 0, pThis->m_strDBName, pThis->m_strUser, pThis->m_strPass) )
+  if ( !(pConn = pDB->Connect(pThis->m_strServer, 0, pThis->m_strDBName, pThis->m_strUser, pThis->m_strPass)) )
   {
     // failed to connect...
     return NULL;
@@ -142,14 +202,28 @@ void* FCDatabase::thrdDBWorker(void* pData)
   while ( pThreadObj->bRunning )
   {
     // check if there are any jobs for us to execute...
-    // TODO: Complete the code :)
+    while ( pThis->m_jobs.size() )
+    {
+      pthread_mutex_lock(&pThis->m_mutexJobs);
+
+      FCDBJob job = pThis->m_jobs.front();
+      pThis->m_jobs.pop();
+
+      pthread_mutex_unlock(&pThis->m_mutexJobs);
+
+      pConn->Execute(job.GetQuery());
+    }
+
 
 #ifdef _WIN32
-    Sleep(250);
+    Sleep(1000);
 #else
     usleep(250000);
 #endif
   }
+
+  // close the db connection
+  pConn->Disconnect();
 
   return NULL;
 }

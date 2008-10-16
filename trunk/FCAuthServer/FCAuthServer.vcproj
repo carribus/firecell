@@ -126,13 +126,25 @@
 				RelativePath="..\common\CmdLineInfo.cpp">
 			</File>
 			<File
-				RelativePath="..\common\database\DBIMySql.cpp">
+				RelativePath="..\common\database\mysql\DBIMySql.cpp">
+			</File>
+			<File
+				RelativePath="..\common\database\mysql\DBIMySqlConnection.cpp">
+			</File>
+			<File
+				RelativePath="..\common\database\mysql\DBIMySqlResults.cpp">
+			</File>
+			<File
+				RelativePath="..\common\database\mysql\DBIMySqlResultSet.cpp">
 			</File>
 			<File
 				RelativePath=".\FCAuthServer.cpp">
 			</File>
 			<File
 				RelativePath="..\common\database\FCDatabase.cpp">
+			</File>
+			<File
+				RelativePath="..\common\database\FCDBJob.cpp">
 			</File>
 			<File
 				RelativePath=".\FCLogicAuth.cpp">
@@ -164,13 +176,28 @@
 				RelativePath="..\common\CmdLineInfo.h">
 			</File>
 			<File
-				RelativePath="..\common\database\DBIMySql.h">
+				RelativePath="..\common\database\mysql\DBIMySql.h">
+			</File>
+			<File
+				RelativePath="..\common\database\mysql\DBIMySqlConnection.h">
+			</File>
+			<File
+				RelativePath="..\common\database\mysql\DBIMySqlResults.h">
+			</File>
+			<File
+				RelativePath="..\common\database\mysql\DBIMySqlResultSet.h">
 			</File>
 			<File
 				RelativePath="..\common\database\FCDatabase.h">
 			</File>
 			<File
+				RelativePath="..\common\database\FCDBJob.h">
+			</File>
+			<File
 				RelativePath=".\FCLogicAuth.h">
+			</File>
+			<File
+				RelativePath="..\common\fcqueries.h">
 			</File>
 			<File
 				RelativePath="..\common\database\IDBInterface.h">
