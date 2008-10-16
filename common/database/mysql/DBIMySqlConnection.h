@@ -17,21 +17,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef _IDBINTERFACE_H_
-#define _IDBINTERFACE_H_
+#ifndef _DBIMYSQLCONNECTION_H_
+#define _DBIMYSQLCONNECTION_H_
 
-#include <string>
+#ifdef _WIN32
+#include "my_global.h"
+#endif//_WIN32
+#include "mysql.h"
+#include "../IDBInterface.h"
 
-struct IDBConnection
+class DBIMySqlConnection : public IDBConnection
 {
-  virtual bool Execute(const std::string& query) = 0;
-  virtual void Disconnect() = 0;
+public:
+  DBIMySqlConnection(void);
+  ~DBIMySqlConnection(void);
+
+  bool Connect(const std::string& server, short port, const std::string& dbname, const std::string& user, const std::string& pass);
+
+  /*
+   *  IDBConnection implementation
+   */
+  bool Execute(const std::string& query);
+  void Disconnect();
+
+private:
+
+  MYSQL*       m_conn;
 };
 
-struct IDBInterface
-{
-  virtual IDBConnection* Connect(std::string server, short port, std::string dbname, std::string user, std::string pass) = 0;
-  virtual void Release() = 0;
-};
-
-#endif//_IDBINTERFACE_H_
+#endif//_DBIMYSQLCONNECTION_H_
