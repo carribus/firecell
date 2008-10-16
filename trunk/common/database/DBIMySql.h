@@ -12,8 +12,8 @@ public:
   /*
    *  IDBInterface implementation
    */
-  bool Connect(std::string server, short port, std::string dbname, std::string user, std::string pass);
-  bool Disconnect();
+  IDBConnection* Connect(std::string server, short port, std::string dbname, std::string user, std::string pass);
+  void Release();
 
 private:
 
