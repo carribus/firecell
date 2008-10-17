@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "DBIMySqlResultSet.h"
+#include "DBIMySqlResults.h"
 #include "DBIMySqlConnection.h"
 
 DBIMySqlConnection::DBIMySqlConnection(void)
@@ -65,7 +66,7 @@ bool DBIMySqlConnection::Execute(const std::string& query)
 
   bool bResult = true;
   int nResult = mysql_real_query(m_conn, query.c_str(), query.length());
-  DBIMySqlResults* pResults = new DBIMySqlREsults;
+  DBIMySqlResults* pResults = new DBIMySqlResults;
   DBIMySqlResultSet* pResultSet = NULL;
 
   if ( nResult == 0 )     // success

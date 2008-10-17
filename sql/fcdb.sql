@@ -47,5 +47,37 @@ CREATE TABLE `fc_characters` (
 
 /*Data for the table `fc_characters` */
 
+/*Table structure for table `fc_missions` */
+
+DROP TABLE IF EXISTS `fc_missions`;
+
+CREATE TABLE `fc_missions` (
+  `mission_id` int(10) unsigned NOT NULL auto_increment,
+  `name` int(10) unsigned NOT NULL COMMENT 'ID Mission Name',
+  `prelude` int(10) unsigned default NULL COMMENT 'ID of Optional mission prelude text',
+  `description` int(10) unsigned NOT NULL COMMENT 'ID of mission text',
+  `min_level` int(11) default NULL COMMENT 'minimum character level when mission becomes available',
+  `max_level` int(11) default NULL COMMENT 'maximum character level before mission stops being available',
+  `difficulty` smallint(5) unsigned NOT NULL COMMENT 'difficulty rating of the mission (1-10)',
+  PRIMARY KEY  (`mission_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_missions` */
+
+/*Table structure for table `fc_npcs` */
+
+DROP TABLE IF EXISTS `fc_npcs`;
+
+CREATE TABLE `fc_npcs` (
+  `npc_id` bigint(20) unsigned NOT NULL auto_increment,
+  `name` char(64) NOT NULL COMMENT 'NPC''s name',
+  `level` int(10) unsigned NOT NULL COMMENT 'level of the NPC',
+  `email` char(64) default NULL COMMENT 'NPC''s email address (if any)',
+  `phone_number` char(20) default NULL COMMENT 'NPC''s phone number (if any)',
+  PRIMARY KEY  (`npc_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_npcs` */
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
