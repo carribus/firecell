@@ -17,38 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "DBIMySqlResultSet.h"
+#include "DBIResultSet.h"
 
-DBIMySqlResultSet::DBIMySqlResultSet(void)
+DBIResultSet::DBIResultSet(void)
 {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-DBIMySqlResultSet::~DBIMySqlResultSet(void)
+DBIResultSet::~DBIResultSet(void)
 {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void DBIMySqlResultSet::Process(MYSQL_RES* result)
+size_t DBIResultSet::AddColumn(const string& name, unsigned short type)
 {
-  MYSQL_ROW row;
-  unsigned int numFields = mysql_num_fields(result), nField;
-  MYSQL_FIELD* fields = mysql_fetch_fields(result);
+  DBIColumn col;
 
-  // add the fields
-  for ( nField = 0; nField < numFields; nField++ )
-  {
-    AddColumn( fields[nField].name, (unsigned short)fields[nField].type );
-  }
+  col.SetName(name);
+  col.SetType(type);
+  m_columns[name] = col;
 
-  while ( (row = mysql_fetch_row(result)) )
-  {
-    for ( nField = 0; nField < numFields; nField++ )
-    {
-      char* pValue = row[nField];
-      AddColumnDataForRow(fields[nField].name, row[nField]);
-    }
-  }
+  return m_columns.size();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void DBIResultSet::AddColumnDataForRow(const string& name, const string& value)
+{
 }
