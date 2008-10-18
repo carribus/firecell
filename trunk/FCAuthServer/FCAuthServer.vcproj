@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files\MySQL\MySQL Server 5.0\include\&quot;"
+				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\MySQL\MySQL Server 5.0\include\&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -35,7 +35,7 @@
 				AdditionalDependencies="libmysql.lib"
 				OutputFile="$(OutDir)/FCAuthServer.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;C:\Program Files\MySQL\MySQL Server 5.0\lib\debug\&quot;"
+				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\MySQL\MySQL Server 5.0\lib\debug\&quot;"
 				IgnoreAllDefaultLibraries="FALSE"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/FCAuthServer.pdb"
@@ -132,10 +132,10 @@
 				RelativePath="..\common\database\mysql\DBIMySqlConnection.cpp">
 			</File>
 			<File
-				RelativePath="..\common\database\mysql\DBIMySqlResults.cpp">
+				RelativePath="..\common\database\mysql\DBIMySqlResultSet.cpp">
 			</File>
 			<File
-				RelativePath="..\common\database\mysql\DBIMySqlResultSet.cpp">
+				RelativePath="..\common\database\DBIResults.cpp">
 			</File>
 			<File
 				RelativePath="..\common\database\DBIResultSet.cpp">
@@ -185,10 +185,10 @@
 				RelativePath="..\common\database\mysql\DBIMySqlConnection.h">
 			</File>
 			<File
-				RelativePath="..\common\database\mysql\DBIMySqlResults.h">
+				RelativePath="..\common\database\mysql\DBIMySqlResultSet.h">
 			</File>
 			<File
-				RelativePath="..\common\database\mysql\DBIMySqlResultSet.h">
+				RelativePath="..\common\database\DBIResults.h">
 			</File>
 			<File
 				RelativePath="..\common\database\DBIResultSet.h">

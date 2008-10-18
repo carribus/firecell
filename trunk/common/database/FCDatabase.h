@@ -39,7 +39,10 @@ public:
   virtual ~FCDatabase(void);
 
   bool Initialise(string strEngine, string server, string dbName, string user, string pass, FCUINT uiNumWorkerThreads = 2);
+
   bool ExecuteJob(const string QueryName, void* pData, ...);
+  size_t GetCompletedJobCount();
+  bool GetNextCompletedJob(FCDBJob& job);
 
 private:
 
@@ -50,6 +53,8 @@ private:
   FCUINT LoadQueries(string strEngine);
   void StartWorkerThreads(FCUINT uiNumThreads);
   void StopWorkerThreads();
+
+  void JobComplete(FCDBJob& job);
 
   static void* thrdDBWorker(void* pData);
 
@@ -91,6 +96,8 @@ private:
   // outstanding db jobs that have been queued
   pthread_mutex_t m_mutexJobs;
   queue<FCDBJob> m_jobs;
+  pthread_mutex_t m_mutexCompletedJobs;
+  queue<FCDBJob> m_completedJobs;
 };
 
 #endif//_FCDATABASE_H_

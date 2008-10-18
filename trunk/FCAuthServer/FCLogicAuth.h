@@ -60,6 +60,12 @@ class FCLogicAuth : public IServiceLogic
     CBinStream<FCBYTE, true> m_stream;
   };
 
+  struct DBJobContext
+  {
+    RouterSocket* pRouter;
+    FCSOCKET clientSocket;
+  };
+
   typedef std::map< string, RouterSocket* > ServiceSocketMap;
   typedef std::queue<FCSOCKET> CQueuedSocketArray;
 
@@ -92,6 +98,8 @@ private:
   void DisconnectFromRouters();
 
   bool ConfigureDatabase();
+  static void* thrdDBWorker(void* pData);
+  void HandleCompletedDBJob(FCDBJob& job);
 
   bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
   bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
@@ -103,6 +111,8 @@ private:
   ServiceSocketMap m_mapRouters;
   PacketExtractor m_pktExtractor;
   FCDatabase m_db;
+  pthread_t m_thrdDBMon;
+  bool m_bDBMonRunning;
 };
 
 #endif//_FCLOGICAUTH_H_
