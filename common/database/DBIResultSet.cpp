@@ -19,6 +19,18 @@
 */
 #include "DBIResultSet.h"
 
+string DBIResultSet::DBIColumn::GetValue(size_t index)
+{
+  string res;
+
+  if ( index < m_values.size() )
+    res = m_values.at(index);
+
+  return res;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
 DBIResultSet::DBIResultSet(void)
 {
 }
@@ -46,4 +58,29 @@ size_t DBIResultSet::AddColumn(const string& name, unsigned short type)
 
 void DBIResultSet::AddColumnDataForRow(const string& name, const string& value)
 {
+  map<string, DBIColumn >::iterator it = m_columns.find(name);
+
+  if ( it != m_columns.end() )
+  {
+    it->second.AddValue(value);
+  }
+  else
+  {
+    // column couldn't be found... so there's some kind of logic problem...
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+string DBIResultSet::GetValue(const string& name, size_t row)
+{
+  string val;
+  map<string, DBIColumn>::iterator it = m_columns.find(name);
+
+  if ( it != m_columns.end() )
+  {
+    val = it->second.GetValue(row);
+  }
+
+  return val;
 }

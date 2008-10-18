@@ -22,9 +22,11 @@
 
 #include <string>
 
+class DBIResults;
+class FCDBJob;
 struct IDBConnection
 {
-  virtual bool Execute(const std::string& query) = 0;
+  virtual DBIResults* Execute(FCDBJob job) = 0;
   virtual void Disconnect() = 0;
 };
 

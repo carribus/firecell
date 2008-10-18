@@ -36,6 +36,8 @@ protected:
     {
     }
 
+    string GetValue(size_t index);
+    void AddValue(string value)                       { m_values.push_back(value); }
     void SetName(const string& name)                  { m_name = name; }
     string GetName()                                  { return m_name; }
     void SetType(unsigned short type)                 { m_type = type; }
@@ -45,6 +47,7 @@ protected:
 
     string m_name;
     unsigned short m_type;
+    vector<string> m_values;
   };
 
 public:
@@ -53,6 +56,7 @@ public:
 
   size_t AddColumn(const string& name, unsigned short type);
   void AddColumnDataForRow(const string& name, const string& value);
+  string GetValue(const string& name, size_t row);
 
 private:
 

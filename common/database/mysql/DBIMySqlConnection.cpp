@@ -17,8 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "../FCDBJob.h"
+#include "../DBIResults.h"
 #include "DBIMySqlResultSet.h"
-#include "DBIMySqlResults.h"
 #include "DBIMySqlConnection.h"
 
 DBIMySqlConnection::DBIMySqlConnection(void)
@@ -59,14 +60,15 @@ bool DBIMySqlConnection::Connect(const std::string& server, short port, const st
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-bool DBIMySqlConnection::Execute(const std::string& query)
+DBIResults* DBIMySqlConnection::Execute(FCDBJob job)
 {
   if ( !m_conn )
-    return false;
+    return NULL;
 
   bool bResult = true;
+  string query = job.GetQuery();
   int nResult = mysql_real_query(m_conn, query.c_str(), query.length());
-  DBIMySqlResults* pResults = new DBIMySqlResults;
+  DBIResults* pResults = new DBIResults;
   DBIMySqlResultSet* pResultSet = NULL;
 
   if ( nResult == 0 )     // success
@@ -101,11 +103,13 @@ bool DBIMySqlConnection::Execute(const std::string& query)
   }
   else
   {
+    delete pResults;
+    pResults = NULL;
     // error handling ..
     bResult = false;
   }
 
-  return true;
+  return pResults;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

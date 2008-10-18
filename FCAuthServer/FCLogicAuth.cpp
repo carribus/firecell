@@ -25,6 +25,7 @@
 
 FCLogicAuth::FCLogicAuth(void)
 : m_bHasConsole(false)
+, m_bDBMonRunning(false)
 {
 }
 
@@ -268,8 +269,97 @@ bool FCLogicAuth::ConfigureDatabase()
     strUser = pSection->GetValue("user");
     strPass = pSection->GetValue("pass");
   }
-  
+
+  // start the database monitoring thread to monitor for any results that may become available
+  if ( pthread_create( &m_thrdDBMon, NULL, thrdDBWorker, (void*)this ) != 0 )
+  {
+    return false;
+  }
+
   return m_db.Initialise(strEngine, strServer, strDBName, strUser, strPass);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void* FCLogicAuth::thrdDBWorker(void* pData)
+{
+  FCLogicAuth* pThis = (FCLogicAuth*)pData;
+  FCDBJob job;
+
+  if ( !pThis )
+    return NULL;
+
+  pThis->m_bDBMonRunning = true;
+
+  while ( pThis->m_bDBMonRunning )
+  {
+    while ( pThis->m_db.GetCompletedJobCount() )
+    {
+      pThis->m_db.GetNextCompletedJob(job);
+      pThis->HandleCompletedDBJob(job);
+    }
+#ifdef _WIN32
+    Sleep(250);
+#else
+    usleep(250000);
+#endif
+  }
+
+  return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicAuth::HandleCompletedDBJob(FCDBJob& job)
+{
+  string jobRef = job.GetReference();
+  DBIResults* pResults = job.GetResults();
+  DBIResultSet* pResultSet = NULL;
+  DBJobContext* pCtx = (DBJobContext*)job.GetData();
+
+  while ( pResults->GetCount() )
+  {
+    if ( (pResultSet = pResults->GetNextResultSet()) )
+    {
+      if ( !jobRef.compare( DBQ_LOAD_ACCOUNT ) )
+      {
+        RouterSocket* pSock = pCtx->pRouter;
+
+        if ( pSock )
+        {
+          PEPacket pkt;
+          string strAccID;
+
+          __FCPKT_LOGIN_RESP d;
+
+          strAccID = pResultSet->GetValue( "account_id", 0 );
+
+          d.loginStatus = strAccID.length() > 0 ? 1 : 0;
+
+          PEPacketHelper::CreatePacket( pkt, FCPKT_RESPONSE, FCMSG_LOGIN );
+          PEPacketHelper::SetPacketData( pkt, (void*)&d, sizeof(__FCPKT_LOGIN_RESP) );
+
+          pkt.SetFieldValue("target", &pCtx->clientSocket);
+
+          // send the packet
+          size_t dataLen = 0;
+          char* pData = NULL;
+
+          pkt.GetDataBlock( pData, dataLen );
+          pSock->Send( (FCBYTE*)pData, (FCUINT)dataLen );
+        }
+      }
+      else if ( !jobRef.compare( DBQ_LOAD_CHARACTER_IDS ) )
+      {
+      }
+
+      // clear the result set
+      delete pResultSet;
+    }
+  }
+
+  delete pCtx;
+  delete pResults;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -278,9 +368,12 @@ bool FCLogicAuth::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
 {
   RouterSocket* pRouter = (RouterSocket*) pSocket;
   FCSHORT msgID = 0;
+  FCSOCKET clientSock = 0;
+  DBJobContext* pCtx = NULL;
   bool bHandled = false;
 
   pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
+  pPkt->GetField("target",  &clientSock, sizeof(FCSOCKET));
 
   switch ( msgID )
   {
@@ -292,7 +385,11 @@ bool FCLogicAuth::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
       pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
       pPkt->GetField("data", (void*)&d, dataLen);
 
-      m_db.ExecuteJob(DBQ_LOAD_ACCOUNT, (void*)(FCSOCKET)pRouter, d.username, d.password);
+      pCtx = new DBJobContext;
+      pCtx->clientSocket = clientSock;
+      pCtx->pRouter = pRouter;
+
+      m_db.ExecuteJob(DBQ_LOAD_ACCOUNT, (void*)pCtx, d.username, d.password);
 
       bHandled = true;
     }

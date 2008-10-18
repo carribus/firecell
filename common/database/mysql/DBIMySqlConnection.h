@@ -37,7 +37,7 @@ public:
   /*
    *  IDBConnection implementation
    */
-  bool Execute(const std::string& query);
+  DBIResults* Execute(FCDBJob job);
   void Disconnect();
 
 private:

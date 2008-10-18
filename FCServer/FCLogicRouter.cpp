@@ -348,6 +348,7 @@ bool FCLogicRouter::OnCommand(PEPacket* pPkt, ClientSocket* pSocket)
 
 bool FCLogicRouter::OnResponse(PEPacket* pPkt, ClientSocket* pSocket)
 {
+
   return false;
 }
 
