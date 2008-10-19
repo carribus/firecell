@@ -21,23 +21,22 @@
 #include "../common/protocol/fcprotocol.h"
 #include "../common/PEPacket.h"
 #include "../common/PEPacketHelper.h"
-#include "FCLogicAuth.h"
+#include "FCLogicWorld.h"
 
-FCLogicAuth::FCLogicAuth(void)
+FCLogicWorld::FCLogicWorld(void)
 : m_bHasConsole(false)
-, m_bDBMonRunning(false)
 {
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-FCLogicAuth::~FCLogicAuth(void)
+FCLogicWorld::~FCLogicWorld(void)
 {
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCLogicAuth::Free()
+void FCLogicWorld::Free()
 {
   Stop();
   delete this;
@@ -45,19 +44,19 @@ void FCLogicAuth::Free()
 
 ///////////////////////////////////////////////////////////////////////
 
-int FCLogicAuth::Start()
+int FCLogicWorld::Start()
 {
   // load the configuration
-  if ( !LoadConfig("FCAuth.conf") )
+  if ( !LoadConfig("FCWorld.conf") )
   {
     if ( m_bHasConsole )
-      printf("Failed to load FCauth.conf configuration file\n");
+      printf("Failed to load FCWorld.conf configuration file\n");
     return -1;
   }
 
   // initialise the packet extractor
   m_pktExtractor.Prepare( __FCPACKET_DEF );
-
+/*
   // kick off the database object
   if ( m_bHasConsole )
     printf("Setting up database connection...\n");
@@ -66,7 +65,7 @@ int FCLogicAuth::Start()
   {
     return -1;
   }
-
+*/
   // connect to the router(s) that we were configured to connect to
   ConnectToRouters();
 
@@ -75,7 +74,7 @@ int FCLogicAuth::Start()
 
 ///////////////////////////////////////////////////////////////////////
 
-int FCLogicAuth::Stop()
+int FCLogicWorld::Stop()
 {
   DisconnectFromRouters();
   return 0;
@@ -83,7 +82,7 @@ int FCLogicAuth::Stop()
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCLogicAuth::OnConnected(BaseSocket* pSocket, int nErrorCode)
+void FCLogicWorld::OnConnected(BaseSocket* pSocket, int nErrorCode)
 {
   RouterSocket* pSock = (RouterSocket*) pSocket;
 
@@ -101,7 +100,7 @@ void FCLogicAuth::OnConnected(BaseSocket* pSocket, int nErrorCode)
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCLogicAuth::OnDisconnected(BaseSocket* pSocket, int nErrorCode)
+void FCLogicWorld::OnDisconnected(BaseSocket* pSocket, int nErrorCode)
 {
   RouterSocket* pSock = (RouterSocket*) pSocket;
 
@@ -112,7 +111,7 @@ void FCLogicAuth::OnDisconnected(BaseSocket* pSocket, int nErrorCode)
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCLogicAuth::OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen)
+void FCLogicWorld::OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen)
 {
 //  if ( m_bHasConsole )
 //    printf("[DATA_IN-%ld bytes]\n", nLen);
@@ -137,7 +136,7 @@ void FCLogicAuth::OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen)
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCLogicAuth::RegisterServiceWithRouter(RouterSocket* pSock)
+void FCLogicWorld::RegisterServiceWithRouter(RouterSocket* pSock)
 {
   if ( !pSock )
     return;
@@ -146,7 +145,7 @@ void FCLogicAuth::RegisterServiceWithRouter(RouterSocket* pSock)
 
   __FCPKT_REGISTER_SERVER d;
 
-  d.type = ST_Auth;
+  d.type = ST_World;
 
   PEPacketHelper::CreatePacket( pkt, FCPKT_COMMAND, FCMSG_REGISTER_SERVICE );
   PEPacketHelper::SetPacketData( pkt, (void*)&d, sizeof(__FCPKT_REGISTER_SERVER) );
@@ -161,7 +160,7 @@ void FCLogicAuth::RegisterServiceWithRouter(RouterSocket* pSock)
 
 ///////////////////////////////////////////////////////////////////////
 
-bool FCLogicAuth::LoadConfig(FCCSTR strFilename)
+bool FCLogicWorld::LoadConfig(FCCSTR strFilename)
 {
   if ( !strFilename )
     return false;
@@ -171,7 +170,7 @@ bool FCLogicAuth::LoadConfig(FCCSTR strFilename)
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCLogicAuth::HandlePacket(PEPacket* pPkt, BaseSocket* pSocket)
+void FCLogicWorld::HandlePacket(PEPacket* pPkt, BaseSocket* pSocket)
 {
   bool bHandled = false;
   FCBYTE pktType = 0;
@@ -196,7 +195,7 @@ void FCLogicAuth::HandlePacket(PEPacket* pPkt, BaseSocket* pSocket)
 
 ///////////////////////////////////////////////////////////////////////
 
-bool FCLogicAuth::ConnectToRouters()
+bool FCLogicWorld::ConnectToRouters()
 {
   bool bResult = false;
   int nRouterCount = 0;
@@ -239,7 +238,7 @@ bool FCLogicAuth::ConnectToRouters()
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCLogicAuth::DisconnectFromRouters()
+void FCLogicWorld::DisconnectFromRouters()
 {
   ServiceSocketMap::iterator it;
   RouterSocket* pRouter = NULL;
@@ -256,125 +255,17 @@ void FCLogicAuth::DisconnectFromRouters()
 
 ///////////////////////////////////////////////////////////////////////
 
-bool FCLogicAuth::ConfigureDatabase()
-{
-  string strEngine = "mysql", strServer = "localhost", strDBName = "firecell", strUser, strPass;
-  INIFile::CSection* pSection = m_config.GetSection("Database");
-
-  if ( pSection )
-  {
-    strEngine = pSection->GetValue("engine");
-    strServer = pSection->GetValue("server");
-    strDBName = pSection->GetValue("dbname");
-    strUser = pSection->GetValue("user");
-    strPass = pSection->GetValue("pass");
-  }
-
-  // start the database monitoring thread to monitor for any results that may become available
-  if ( pthread_create( &m_thrdDBMon, NULL, thrdDBWorker, (void*)this ) != 0 )
-  {
-    return false;
-  }
-
-  return m_db.Initialise(strEngine, strServer, strDBName, strUser, strPass);
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void* FCLogicAuth::thrdDBWorker(void* pData)
-{
-  FCLogicAuth* pThis = (FCLogicAuth*)pData;
-  FCDBJob job;
-
-  if ( !pThis )
-    return NULL;
-
-  pThis->m_bDBMonRunning = true;
-
-  while ( pThis->m_bDBMonRunning )
-  {
-    while ( pThis->m_db.GetCompletedJobCount() )
-    {
-      pThis->m_db.GetNextCompletedJob(job);
-      pThis->HandleCompletedDBJob(job);
-    }
-#ifdef _WIN32
-    Sleep(250);
-#else
-    usleep(250000);
-#endif
-  }
-
-  return NULL;
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void FCLogicAuth::HandleCompletedDBJob(FCDBJob& job)
-{
-  string jobRef = job.GetReference();
-  DBIResults* pResults = job.GetResults();
-  DBIResultSet* pResultSet = NULL;
-  DBJobContext* pCtx = (DBJobContext*)job.GetData();
-
-  while ( pResults && pResults->GetCount() )
-  {
-    if ( (pResultSet = pResults->GetNextResultSet()) )
-    {
-      if ( !jobRef.compare( DBQ_LOAD_ACCOUNT ) )
-      {
-        RouterSocket* pSock = pCtx->pRouter;
-
-        if ( pSock )
-        {
-          PEPacket pkt;
-          string strAccID;
-
-          __FCPKT_LOGIN_RESP d;
-
-          strAccID = pResultSet->GetValue( "account_id", 0 );
-
-          d.loginStatus = strAccID.length() > 0 ? 1 : 0;
-
-          PEPacketHelper::CreatePacket( pkt, FCPKT_RESPONSE, FCMSG_LOGIN );
-          PEPacketHelper::SetPacketData( pkt, (void*)&d, sizeof(__FCPKT_LOGIN_RESP) );
-
-          pkt.SetFieldValue("target", &pCtx->clientSocket);
-
-          // send the packet
-          size_t dataLen = 0;
-          char* pData = NULL;
-
-          pkt.GetDataBlock( pData, dataLen );
-          pSock->Send( (FCBYTE*)pData, (FCUINT)dataLen );
-        }
-      }
-      else if ( !jobRef.compare( DBQ_LOAD_CHARACTER_IDS ) )
-      {
-      }
-
-      // clear the result set
-      delete pResultSet;
-    }
-  }
-
-  delete pCtx;
-  delete pResults;
-}
-
-///////////////////////////////////////////////////////////////////////
-
-bool FCLogicAuth::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
+bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
 {
   RouterSocket* pRouter = (RouterSocket*) pSocket;
   FCSHORT msgID = 0;
   FCSOCKET clientSock = 0;
-  DBJobContext* pCtx = NULL;
+//  DBJobContext* pCtx = NULL;
   bool bHandled = false;
 
   pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
   pPkt->GetField("target",  &clientSock, sizeof(FCSOCKET));
-
+/*
   switch ( msgID )
   {
   case  FCMSG_LOGIN:
@@ -398,13 +289,13 @@ bool FCLogicAuth::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
   default:
     break;
   }
-
+*/
   return bHandled;
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-bool FCLogicAuth::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
+bool FCLogicWorld::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
 {
   RouterSocket* pRouter = (RouterSocket*)pSocket;
   FCSHORT msgID = 0;
@@ -452,7 +343,7 @@ bool FCLogicAuth::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
 
 ///////////////////////////////////////////////////////////////////////
 
-bool FCLogicAuth::OnError(PEPacket* pPkt, BaseSocket* pSocket)
+bool FCLogicWorld::OnError(PEPacket* pPkt, BaseSocket* pSocket)
 {
   return false;
 }

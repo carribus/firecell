@@ -197,6 +197,7 @@ PEPacket* PEPacket::Clone()
 
 void PEPacket::DebugDump()
 {
+#ifdef _VERBOSE_PACKET_DUMPS
   FieldMap::iterator it;
 
   for ( it = m_fields.begin(); it != m_fields.end(); it++ )
@@ -209,4 +210,5 @@ void PEPacket::DebugDump()
     }
     printf("\n");
   }
+#endif//_VERBOSE_PACKET_DUMPS
 }

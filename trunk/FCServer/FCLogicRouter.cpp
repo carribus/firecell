@@ -174,8 +174,8 @@ void FCLogicRouter::OnDisconnect(FCSOCKET s, FCDWORD dwCode)
 
 void FCLogicRouter::OnDataReceived(FCSOCKET s, FCBYTE* pData, FCINT nLen)
 {
-  if ( m_bHasConsole )
-    printf("[DATA_IN-%ld bytes]\n", nLen);
+//  if ( m_bHasConsole )
+//    printf("[DATA_IN-%ld bytes]\n", nLen);
 
 	ClientSocket* pSocket = NULL;
 	CSocketMap::iterator it = m_mapSockets.find(s);
