@@ -230,6 +230,7 @@ bool FCController::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     return false;
 
   FCSHORT msgID;
+  size_t dataLen;
   bool bHandled = false;
 
   pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
@@ -237,7 +238,6 @@ bool FCController::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
   {
   case  FCMSG_INFO_SERVER:
     {
-      size_t dataLen;
       __FCPKT_INFO_SERVER d;
 
       pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
@@ -245,6 +245,19 @@ bool FCController::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
       printf("\n\n\tv%d.%d\n" \
              "\t%ld Connections\n\n", d.verMajor, d.verMinor, d.connectionCountRouter);
       bHandled = true;
+    }
+    break;
+
+  case  FCMSG_LOGIN:
+    {
+      __FCPKT_LOGIN_RESP d;
+
+      pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+      pPkt->GetField("data", &d, dataLen);
+      if ( d.loginStatus == 1 )
+        printf("Login successful\n");
+      else
+        printf("Login failed\n");
     }
     break;
 

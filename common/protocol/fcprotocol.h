@@ -35,7 +35,8 @@ enum ServiceType
   ST_Router,
   ST_Auth,
   ST_World,
-  ST_Community
+  ST_Community,
+  ST_Client       // this should always be the last in the enum
 };
 
 /*
