@@ -21,6 +21,7 @@
 #define _DBIMYSQL_H_
 
 #include <vector>
+#include "../../threading.h"
 #include "DBIMySqlConnection.h"
 #include "../IDBInterface.h"
 
@@ -40,6 +41,7 @@ public:
 
 private:
 
+  pthread_mutex_t                 m_mutexConns;
   vector<DBIMySqlConnection*>     m_connections;
 };
 

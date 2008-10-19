@@ -29,6 +29,7 @@
 
 DBIMySql::DBIMySql(void)
 {
+  pthread_mutex_init(&m_mutexConns, NULL);
   // initialise the mysql library
   mysql_library_init(0, NULL, NULL);
 }
@@ -38,6 +39,7 @@ DBIMySql::DBIMySql(void)
 DBIMySql::~DBIMySql(void)
 {
   // delete the connections
+  pthread_mutex_lock(&m_mutexConns);
   vector<DBIMySqlConnection*>::iterator it;
 
   for ( it = m_connections.begin(); it != m_connections.end(); it++ )
@@ -45,6 +47,9 @@ DBIMySql::~DBIMySql(void)
     delete *it;
   }
   m_connections.clear();
+  pthread_mutex_unlock(&m_mutexConns);
+
+  pthread_mutex_destroy(&m_mutexConns);
 
   // close the mysql library
   mysql_library_end();
@@ -68,7 +73,9 @@ IDBConnection* DBIMySql::Connect(std::string server, short port, std::string dbn
   }
   else
   {
+    pthread_mutex_lock(&m_mutexConns);
     m_connections.push_back(pConn);
+    pthread_mutex_unlock(&m_mutexConns);
   }
 
   return pConn;

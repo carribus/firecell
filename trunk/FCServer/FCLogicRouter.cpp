@@ -119,7 +119,7 @@ void FCLogicRouter::OnConnect(FCSOCKET s)
 	char* pAddr = inet_ntoa( *(in_addr*) &addr.sin_addr );
 
 	if ( m_bHasConsole )
-		printf("%s connected\n", pAddr);
+    printf("%s connected (SOCKET: %ld)\n", pAddr, s);
 
 	ClientSocket* pSocket = new ClientSocket(s);
 
@@ -253,9 +253,9 @@ void FCLogicRouter::ForwardPacket(PEPacket* pPkt, ClientSocket* pSocket)
   if ( target != ST_Router )
   {
     // locate the service connection for this packet...
-    ClientSocket* pService = GetServiceConnectionByType( target );
+    ClientSocket* pTargetNode = GetServiceConnectionByType( target );
 
-    if ( pService )
+    if ( pTargetNode )
     {
       FCSOCKET s = (FCSOCKET)*pSocket;
       // when forwarding packets, we swap the target service Identifier with the originating socket descriptor
@@ -266,13 +266,28 @@ void FCLogicRouter::ForwardPacket(PEPacket* pPkt, ClientSocket* pSocket)
       char* pData = NULL;
 
       pPkt->GetDataBlock( pData, dataLen);
-      pService->Send( (FCBYTE*)pData, (FCUINT)dataLen );
+      pTargetNode->Send( (FCBYTE*)pData, (FCUINT)dataLen );
     }
     else
     {
-      if ( m_bHasConsole )
+      if ( (pTargetNode = GetClientConnection( (FCSOCKET)target )) )
       {
-        printf("Failed to forward packet (reason: Service %ld is not registered)\n", target);
+        target = ST_Client;
+        pPkt->SetFieldValue("target", (void*)&target);
+
+        // send the packet on
+        size_t dataLen = 0;
+        char* pData = NULL;
+
+        pPkt->GetDataBlock( pData, dataLen);
+        pTargetNode->Send( (FCBYTE*)pData, (FCUINT)dataLen );
+      }
+      else
+      {
+        if ( m_bHasConsole )
+        {
+          printf("Failed to forward packet (reason: Service or Client %ld is not registered)\n", target);
+        }
       }
     }
   }
@@ -436,6 +451,26 @@ ClientSocket* FCLogicRouter::GetServiceConnectionByType(ServiceType type)
   pthread_mutex_unlock(&m_mutexServices);
 
   return pResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+ClientSocket* FCLogicRouter::GetClientConnection(FCSOCKET s)
+{
+  ClientSocket* pClient = NULL;
+
+  pthread_mutex_lock(&m_mutexSockets);
+
+  CSocketMap::iterator it = m_mapSockets.find(s);
+
+  if ( it != m_mapSockets.end() )
+  {
+    pClient = it->second;
+  }
+
+  pthread_mutex_unlock(&m_mutexSockets);
+
+  return pClient;
 }
 
 ///////////////////////////////////////////////////////////////////////
