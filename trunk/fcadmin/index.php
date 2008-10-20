@@ -1,4 +1,21 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+<?php
+  require_once dirname(__FILE__)."/config.php";
+  require_once dirname(__FILE__)."/ifcadminapp.php";
+  require_once dirname(__FILE__)."/db/mysqldb.php";
+  require_once dirname(__FILE__)."/apps/itemmanager.php";
+  
+  session_start();
+  
+  $db = new MySQLDB();
+  $app = NULL;
+  
+  if ( !$db->Connect($DB_SERVER, $DB_DATABASE, $DB_USER, $DB_PASSWORD) )
+  {
+    die("Failed to connect to database");
+  }
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"    
 	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 
 <html lang="en" xml:lang="en">
@@ -19,7 +36,36 @@
 	</div>
 
   <div id="content">
-	
+<?php
+  $accountType= $_SESSION["acctype"];
+  if ( $accountType < 2 || $accountType == NULL )
+  {
+?>	
+    <center>
+    <br/>Login required:
+    <form name="login" action="actions/login.php" method="post">
+      <table id="logintable">
+        <tr>
+          <td align="right">Username:</td>
+          <td><input class="fcedit" name="name" value="" type="text" /></td>
+        </tr>
+        <tr>
+          <td align="right">Password:</td>
+          <td><input class="fcedit" name="password" value="" type="password" /></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><input class="fcbutton" name="Login" value="Login" type="submit" /></td>
+        </tr>
+      </table>
+    </form>
+    </center>
+
+<?php
+  }
+  else
+  {
+?>
 		<!-- The Navigation Panel !-->
     <div id="sidepanel">
       <h2><a href="index.php">Home</a></h2>
@@ -32,6 +78,7 @@
     	<h2>Server Management</h2>
       <ul class="tools">
         <li><a href="?a=users">User Management</a></li>
+        <li><a href="actions/logout.php">Logout</a></li>
       </ul>
     </div> <!-- /sidepanel !-->
   
@@ -43,10 +90,10 @@
        */
        $appname = $_GET["a"];
        
-        echo $appname;
        switch ( $appname )
        {
        case "items":
+				$app = new ItemsManagerApp();
         break;
         
        case "missions":
@@ -58,9 +105,28 @@
        case "users":
         break;
        }
+       
+       if ( strlen($appname) > 0 )
+       {
+         if ( $app instanceof IFCAdminApp )
+         {
+           $app->init($db);
+           $app->render();
+         }
+         else
+         {
+           echo "Requested app class does not implement IFCAdminApp interface!";
+         }
+       }
+       else
+       {
+         echo "No app found for this request!";
+       }
     ?>
     </div> <!-- /APPPANEL !-->
-		
+<?php
+  }
+?>		
 		<!-- footer... !-->
     <div id="foot">
       FireCell Administration System by Peter Mares, 2008
