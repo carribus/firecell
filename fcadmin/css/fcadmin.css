@@ -1,0 +1,137 @@
+* 
+{
+	margin: 0;
+	padding: 0;
+}
+
+html 
+{
+	background: #ddd;
+}
+body 
+{
+}
+
+#bodyContainer
+{
+	margin: 1em 10%;
+	padding: 1em 3em;
+	font: 80%/1.4 tahoma, arial, helvetica, lucida sans, sans-serif;
+	border: 1px solid #999;
+	background: #eee;
+	position: relative;
+}
+
+#head 
+{
+	padding-bottom: 0em;
+	border-bottom: 1px solid #999;
+  font-size: 1.6em;
+  font-weight: bold;
+	height: 35px;
+  clear: right;
+}
+
+#content
+{
+  width:auto;
+}
+
+#sidepanel
+{
+  width: auto;
+  padding-right: 10px;
+  padding-bottom: 1em;
+  float: left;
+  border-right: 1px solid #999;
+}
+
+#apppanel
+{
+  width: auto;
+  overflow: hidden;
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-bottom: 1em;
+}
+
+#foot 
+{
+	text-align: center;
+	margin-top: 1.8em;
+	border-top: 1px solid #999;
+	padding-top: 1em;
+	font-size: 0.85em;
+  clear: left;
+}
+
+.utility {
+	position: absolute;
+	right: 4em;
+	top: 30px;
+  font-weight: normal;
+	font-size: 9px;
+}
+.utility li {
+	display: inline;
+}
+
+h2 {
+	margin: 0.8em 0 0 0;
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#head ul li, dl ul li, #foot li {
+	list-style: none;
+	display: inline;
+	margin: 0;
+	padding: 0 0.2em;
+}
+
+ul.aliases, ul.projects, ul.tools {
+	list-style: none;
+	line-height: 24px;
+}
+ul.aliases a, ul.projects a, ul.tools a {
+	padding-left: 22px;
+}
+dl {
+	margin: 0;
+	padding: 0;
+}
+dt {
+	font-weight: bold;
+	text-align: right;
+	width: 11em;
+	clear: both;
+}
+dd {
+	margin: -1.35em 0 0 12em;
+	padding-bottom: 0.4em;
+	overflow: auto;
+}
+dd ul li {
+	float: left;
+	display: block;
+	width: 16.5%;
+	margin: 0;
+	padding: 0 0 0 20px;
+	line-height: 1.6;
+}
+a {
+	color: #024378;
+	font-weight: bold;
+	text-decoration: none;
+}
+a:hover {
+	color: #04569A;
+	text-decoration: underline;
+}
+
