@@ -47,18 +47,37 @@ CREATE TABLE `fc_characters` (
 
 /*Data for the table `fc_characters` */
 
+/*Table structure for table `fc_items` */
+
+DROP TABLE IF EXISTS `fc_items`;
+
+CREATE TABLE `fc_items` (
+  `item_id` bigint(20) unsigned NOT NULL auto_increment,
+  `item_name` char(64) NOT NULL,
+  `itemtype_id` int(10) unsigned NOT NULL COMMENT 'type of item (tb_itemtypes)',
+  `description` text,
+  `min_level` int(10) unsigned NOT NULL COMMENT 'minimum level that this item can be created for',
+  `max_level` int(10) unsigned default NULL COMMENT 'maximum level that this item can be created for',
+  PRIMARY KEY  (`item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_items` */
+
 /*Table structure for table `fc_missions` */
 
 DROP TABLE IF EXISTS `fc_missions`;
 
 CREATE TABLE `fc_missions` (
   `mission_id` int(10) unsigned NOT NULL auto_increment,
+  `parentmission_id` int(10) unsigned default NULL COMMENT 'Parent ID for sub quests of a main mission',
   `name` int(10) unsigned NOT NULL COMMENT 'ID Mission Name',
   `prelude` int(10) unsigned default NULL COMMENT 'ID of Optional mission prelude text',
   `description` int(10) unsigned NOT NULL COMMENT 'ID of mission text',
   `min_level` int(11) default NULL COMMENT 'minimum character level when mission becomes available',
   `max_level` int(11) default NULL COMMENT 'maximum character level before mission stops being available',
   `difficulty` smallint(5) unsigned NOT NULL COMMENT 'difficulty rating of the mission (1-10)',
+  `success_event_id` int(10) unsigned NOT NULL COMMENT 'event that will indicate success of a mission',
+  `failure_event_id` int(10) unsigned default NULL COMMENT '[optional] event that will cause mission to fail',
   PRIMARY KEY  (`mission_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
