@@ -1,3 +1,7 @@
+/*
+ *  FireCell administration system style sheet
+ *  Written by Peter Mares, 2008
+ */
 * 
 {
 	margin: 0;
@@ -65,59 +69,76 @@ body
   clear: left;
 }
 
-.utility {
+.utility 
+{
 	position: absolute;
 	right: 4em;
 	top: 30px;
   font-weight: normal;
 	font-size: 9px;
 }
-.utility li {
+
+.utility li 
+{
 	display: inline;
 }
 
-h2 {
+h2 
+{
 	margin: 0.8em 0 0 0;
   font-size: 1.3em;
   font-weight: bold;
 }
 
-ul {
+ul 
+{
 	list-style: none;
 	margin: 0;
 	padding: 0;
 }
 
-#head ul li, dl ul li, #foot li {
+#head ul li, dl ul li, #foot li 
+{
 	list-style: none;
 	display: inline;
 	margin: 0;
 	padding: 0 0.2em;
 }
 
-ul.aliases, ul.projects, ul.tools {
+ul.aliases, ul.projects, ul.tools 
+{
 	list-style: none;
 	line-height: 24px;
 }
-ul.aliases a, ul.projects a, ul.tools a {
+
+ul.aliases a, ul.projects a, ul.tools a 
+{
 	padding-left: 22px;
 }
-dl {
+
+dl 
+{
 	margin: 0;
 	padding: 0;
 }
-dt {
+
+dt 
+{
 	font-weight: bold;
 	text-align: right;
 	width: 11em;
 	clear: both;
 }
-dd {
+
+dd 
+{
 	margin: -1.35em 0 0 12em;
 	padding-bottom: 0.4em;
 	overflow: auto;
 }
-dd ul li {
+
+dd ul li 
+{
 	float: left;
 	display: block;
 	width: 16.5%;
@@ -125,13 +146,40 @@ dd ul li {
 	padding: 0 0 0 20px;
 	line-height: 1.6;
 }
-a {
+
+a 
+{
 	color: #024378;
 	font-weight: bold;
 	text-decoration: none;
 }
-a:hover {
+
+a:hover 
+{
 	color: #04569A;
 	text-decoration: underline;
 }
 
+#logintable
+{
+  width: 33%;
+  margin-top: 1em;
+  padding: 10px;  
+  border: solid 1px #999;
+  background-color: white;
+}
+
+.fcedit
+{
+  width:100%;
+  height: 1.2em;
+  border: solid 1px #999;
+  color: #228;
+}
+
+.fcbutton
+{
+  border: solid 1px #999;
+  padding-left: 5px;
+  padding-right: 5px;
+}
