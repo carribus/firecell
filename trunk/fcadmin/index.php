@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 
@@ -20,6 +19,8 @@
 	</div>
 
   <div id="content">
+	
+		<!-- The Navigation Panel !-->
     <div id="sidepanel">
       <h2><a href="index.php">Home</a></h2>
       <h2>World Tools</h2>
@@ -32,8 +33,9 @@
       <ul class="tools">
         <li><a href="?a=users">User Management</a></li>
       </ul>
-    </div> <!-- sidepanel !-->
-    
+    </div> <!-- /sidepanel !-->
+  
+		<!-- The application panel area (where all the functionality goes) !-->
     <div id="apppanel">
     <?php
       /*
@@ -57,11 +59,13 @@
         break;
        }
     ?>
-    </div> <!-- APPPANEL !-->
+    </div> <!-- /APPPANEL !-->
+		
+		<!-- footer... !-->
     <div id="foot">
       FireCell Administration System by Peter Mares, 2008
     </div>
-  </div> <!-- CONTENT !-->
+  </div> <!-- /CONTENT !-->
 </div>  
 </body>
 </html>
