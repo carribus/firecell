@@ -70,7 +70,7 @@ class UserManagerApp implements IFCAdminApp
   public function render()
   {
     $startIndex = $this->currentPage * $this->itemsPerPage;
-    echo "Listing ".$this->numUsers." users:<br/>";
+    
     
     echo "<table class=\"tableUsers\" cellspacing=\"0\">";
     echo "<tr><th>ID</th><th>Account Name</th><th>Password</th><th>Type</th><th>Created</th>";
@@ -85,6 +85,7 @@ class UserManagerApp implements IFCAdminApp
       echo "</tr>";
     }
     echo "</table>";
+    echo "<br/>".$i." users listed";
   }
 
   /////////////////////////////////////////////////////////////////////////////////
