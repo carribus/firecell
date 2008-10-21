@@ -24,12 +24,27 @@ CREATE TABLE `fc_accounts` (
   `acc_name` char(64) NOT NULL COMMENT 'account name',
   `acc_password` char(64) NOT NULL COMMENT 'account password',
   `created` datetime NOT NULL COMMENT 'datetime of account creation',
+  `acc_type` smallint(5) unsigned NOT NULL default '0' COMMENT 'type of account (see fc_accounttypes)',
   PRIMARY KEY  (`account_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_accounts` */
 
-insert  into `fc_accounts`(`account_id`,`acc_name`,`acc_password`,`created`) values (1,'root','toor','2008-10-16 14:24:52');
+insert  into `fc_accounts`(`account_id`,`acc_name`,`acc_password`,`created`,`acc_type`) values (1,'root','toor','2008-10-16 14:24:52',0);
+
+/*Table structure for table `fc_accounttypes` */
+
+DROP TABLE IF EXISTS `fc_accounttypes`;
+
+CREATE TABLE `fc_accounttypes` (
+  `accounttype_level` smallint(5) unsigned NOT NULL,
+  `name` varchar(32) NOT NULL,
+  PRIMARY KEY  (`accounttype_level`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_accounttypes` */
+
+insert  into `fc_accounttypes`(`accounttype_level`,`name`) values (0,'Guest'),(1,'Normal'),(2,'GM'),(3,'Administrator');
 
 /*Table structure for table `fc_characters` */
 
@@ -78,6 +93,8 @@ CREATE TABLE `fc_missions` (
   `difficulty` smallint(5) unsigned NOT NULL COMMENT 'difficulty rating of the mission (1-10)',
   `success_event_id` int(10) unsigned NOT NULL COMMENT 'event that will indicate success of a mission',
   `failure_event_id` int(10) unsigned default NULL COMMENT '[optional] event that will cause mission to fail',
+  `success_count` smallint(5) unsigned NOT NULL default '1' COMMENT 'Number of times the success event needs to fire to succeed in the mission',
+  `failure_count` smallint(5) unsigned NOT NULL default '1' COMMENT 'number of times the failure event needs to fire to fail the mission',
   PRIMARY KEY  (`mission_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
