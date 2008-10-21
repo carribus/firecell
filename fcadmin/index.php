@@ -37,32 +37,32 @@
 	</div>
 
   <div id="content">
-<?php
-  $accountType= $_SESSION["acctype"];
-  if ( $accountType < 2 || $accountType == NULL )
-  {
-?>	
-    <center>
-    <br/>Login required:
-    <form name="login" action="actions/login.php" method="post">
-      <table id="logintable">
-        <tr>
-          <td align="right">Username:</td>
-          <td><input class="fcedit" name="name" value="" type="text" /></td>
-        </tr>
-        <tr>
-          <td align="right">Password:</td>
-          <td><input class="fcedit" name="password" value="" type="password" /></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td><input class="fcbutton" name="Login" value="Login" type="submit" /></td>
-        </tr>
-      </table>
-    </form>
-    </center>
+  <?php
+    $accountType= $_SESSION["acctype"];
+    if ( $accountType < 2 || $accountType == NULL )
+    {
+  ?>	
+      <center>
+      <br/>Login required:
+      <form name="login" action="actions/login.php" method="post">
+        <table id="logintable">
+          <tr>
+            <td align="right">Username:</td>
+            <td><input class="fcedit" name="name" value="" type="text" /></td>
+          </tr>
+          <tr>
+            <td align="right">Password:</td>
+            <td><input class="fcedit" name="password" value="" type="password" /></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td><input class="fcbutton" name="Login" value="Login" type="submit" /></td>
+          </tr>
+        </table>
+      </form>
+      </center>
 
-<?php
+  <?php
   }
   else
   {
