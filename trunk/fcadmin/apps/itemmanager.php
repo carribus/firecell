@@ -26,7 +26,10 @@ class ItemsManagerApp implements IFCAdminApp
     if ( !$this->db->Connect($DB_SERVER, $DB_DATABASE, $DB_USER, $DB_PASSWORD) )
     {
       echo "Failed to connect to the database!";
+      return false;
     }
+    
+    return true;
   }
   
   /////////////////////////////////////////////////////////////////////////////////

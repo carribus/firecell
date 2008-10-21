@@ -3,6 +3,7 @@
   require_once dirname(__FILE__)."/ifcadminapp.php";
   require_once dirname(__FILE__)."/db/mysqldb.php";
   require_once dirname(__FILE__)."/apps/itemmanager.php";
+  require_once dirname(__FILE__)."/apps/usermanager.php";
   
   session_start();
   
@@ -93,7 +94,7 @@
        switch ( $appname )
        {
        case "items":
-				$app = new ItemsManagerApp();
+			  $app = new ItemsManagerApp();
         break;
         
        case "missions":
@@ -103,6 +104,7 @@
         break;
         
        case "users":
+        $app = new UserManagerApp();
         break;
        }
        
@@ -110,8 +112,14 @@
        {
          if ( $app instanceof IFCAdminApp )
          {
-           $app->init($db);
-           $app->render();
+           if ( $app->init($db) == true )
+           {
+             $app->render();
+           }
+           else
+           {
+             echo "Failed to initialise the requested application!";
+           }
          }
          else
          {

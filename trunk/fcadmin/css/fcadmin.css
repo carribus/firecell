@@ -151,7 +151,7 @@ a
 {
 	color: #024378;
 	font-weight: bold;
-	text-decoration: none;
+	text-decoration: underline;
 }
 
 a:hover 
@@ -182,4 +182,32 @@ a:hover
   border: solid 1px #999;
   padding-left: 5px;
   padding-right: 5px;
+}
+
+.tableUsers
+{
+  width: 100%;
+  border-right: solid 1px #999;
+}
+
+.tableUsers th
+{
+  background-color: black;
+  color: white;
+  border-bottom: solid 1px #999;
+  border-top: solid 1px #999;
+  border-left: solid 1px #999;
+  padding-bottom: 3px;
+  padding-left: 5px;
+  padding-right: 5px;
+  text-align: left;
+}
+
+.tableUsers td
+{
+  padding-left: 5px;
+  padding-right: 5px;
+  text-align: left;
+  border-left: solid 1px #999;
+  border-bottom: solid 1px #999;
 }
