@@ -21,16 +21,17 @@ DROP TABLE IF EXISTS `fc_accounts`;
 
 CREATE TABLE `fc_accounts` (
   `account_id` bigint(20) unsigned NOT NULL auto_increment,
-  `acc_name` char(64) NOT NULL COMMENT 'account name',
-  `acc_password` char(64) NOT NULL COMMENT 'account password',
+  `acc_name` varchar(64) NOT NULL COMMENT 'account name',
+  `acc_password` varchar(64) NOT NULL COMMENT 'account password',
   `created` datetime NOT NULL COMMENT 'datetime of account creation',
   `acc_type` smallint(5) unsigned NOT NULL default '0' COMMENT 'type of account (see fc_accounttypes)',
+  `email` varchar(64) NOT NULL,
   PRIMARY KEY  (`account_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_accounts` */
 
-insert  into `fc_accounts`(`account_id`,`acc_name`,`acc_password`,`created`,`acc_type`) values (1,'root','toor','2008-10-16 14:24:52',0);
+insert  into `fc_accounts`(`account_id`,`acc_name`,`acc_password`,`created`,`acc_type`,`email`) values (1,'root','toor','2008-10-16 14:24:52',3,'root@fcell.org'),(2,'testuser','test','2008-10-21 13:26:00',1,'test@fcell.org');
 
 /*Table structure for table `fc_accounttypes` */
 
