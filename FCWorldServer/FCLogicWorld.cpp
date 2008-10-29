@@ -23,8 +23,8 @@
 #include "../common/PEPacketHelper.h"
 #include "FCLogicWorld.h"
 
-FCLogicWorld::FCLogicWorld(void)
-: m_bHasConsole(false)
+FCLogicWorld::FCLogicWorld()
+: ServiceLogicBase("FireCell World Service", false)
 {
 }
 
@@ -46,26 +46,31 @@ void FCLogicWorld::Free()
 
 int FCLogicWorld::Start()
 {
+  string strEngine, strServer, strDBName, strUser, strPass;
+
   // load the configuration
   if ( !LoadConfig("FCWorld.conf") )
   {
-    if ( m_bHasConsole )
+    if ( HasConsole() )
       printf("Failed to load FCWorld.conf configuration file\n");
     return -1;
   }
 
   // initialise the packet extractor
   m_pktExtractor.Prepare( __FCPACKET_DEF );
-/*
+
   // kick off the database object
-  if ( m_bHasConsole )
+  if ( HasConsole() )
     printf("Setting up database connection...\n");
 
-  if ( !ConfigureDatabase() )
+  if ( LoadDBSettingsFromConfig(strEngine, strServer, strDBName, strUser, strPass) )
   {
-    return -1;
+    if ( !ConfigureDatabase(strEngine, strServer, strDBName, strUser, strPass) )
+    {
+      return -1;
+    }
   }
-*/
+
   // connect to the router(s) that we were configured to connect to
   ConnectToRouters();
 
@@ -93,7 +98,7 @@ void FCLogicWorld::OnConnected(BaseSocket* pSocket, int nErrorCode)
   }
   else
   {
-    if ( m_bHasConsole )
+    if ( HasConsole() )
       printf("Failed to connect to router (%s:%ld)\n", pSock->GetServer().c_str(), pSock->GetPort());
   }
 }
@@ -113,7 +118,7 @@ void FCLogicWorld::OnDisconnected(BaseSocket* pSocket, int nErrorCode)
 
 void FCLogicWorld::OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen)
 {
-//  if ( m_bHasConsole )
+//  if ( HasConsole() )
 //    printf("[DATA_IN-%ld bytes]\n", nLen);
 
   PEPacket* pPkt = NULL;
@@ -156,16 +161,6 @@ void FCLogicWorld::RegisterServiceWithRouter(RouterSocket* pSock)
 
   pkt.GetDataBlock( pData, dataLen );
   pSock->Send( (FCBYTE*)pData, (FCUINT)dataLen );
-}
-
-///////////////////////////////////////////////////////////////////////
-
-bool FCLogicWorld::LoadConfig(FCCSTR strFilename)
-{
-  if ( !strFilename )
-    return false;
-
- return (m_config.Load(strFilename) == 0);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -217,7 +212,7 @@ bool FCLogicWorld::ConnectToRouters()
         strServer = strValue.substr(0, strValue.find(':'));
         port = atoi( strValue.substr( strValue.find(':')+1, strValue.length() ).c_str() );
 
-        if ( m_bHasConsole )
+        if ( HasConsole() )
           printf("Connecting to router (%s:%ld)\n", strServer.c_str(), port);
 
         RouterSocket* pSock = new RouterSocket;
@@ -251,6 +246,116 @@ void FCLogicWorld::DisconnectFromRouters()
   }
 
   m_mapRouters.clear();
+}
+
+///////////////////////////////////////////////////////////////////////
+/*
+bool FCLogicAuth::ConfigureDatabase()
+{
+  string strEngine = "mysql", strServer = "localhost", strDBName = "firecell", strUser, strPass;
+  INIFile::CSection* pSection = m_config.GetSection("Database");
+
+  if ( pSection )
+  {
+    strEngine = pSection->GetValue("engine");
+    strServer = pSection->GetValue("server");
+    strDBName = pSection->GetValue("dbname");
+    strUser = pSection->GetValue("user");
+    strPass = pSection->GetValue("pass");
+  }
+
+  // start the database monitoring thread to monitor for any results that may become available
+  if ( pthread_create( &m_thrdDBMon, NULL, thrdDBWorker, (void*)this ) != 0 )
+  {
+    return false;
+  }
+
+  return m_db.Initialise(strEngine, strServer, strDBName, strUser, strPass);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void* FCLogicAuth::thrdDBWorker(void* pData)
+{
+  FCLogicAuth* pThis = (FCLogicAuth*)pData;
+  FCDBJob job;
+
+  if ( !pThis )
+    return NULL;
+
+  pThis->m_bDBMonRunning = true;
+
+  while ( pThis->m_bDBMonRunning )
+  {
+    while ( pThis->m_db.GetCompletedJobCount() )
+    {
+      pThis->m_db.GetNextCompletedJob(job);
+      pThis->HandleCompletedDBJob(job);
+    }
+#ifdef _WIN32
+    Sleep(250);
+#else
+    usleep(250000);
+#endif
+  }
+
+  return NULL;
+}
+*/
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::HandleCompletedDBJob(FCDBJob& job)
+{
+  string jobRef = job.GetReference();
+  DBIResults* pResults = job.GetResults();
+  DBIResultSet* pResultSet = NULL;
+  DBJobContext* pCtx = (DBJobContext*)job.GetData();
+
+  while ( pResults && pResults->GetCount() )
+  {
+    if ( (pResultSet = pResults->GetNextResultSet()) )
+    {
+/*
+      if ( !jobRef.compare( DBQ_LOAD_ACCOUNT ) )
+      {
+        RouterSocket* pSock = pCtx->pRouter;
+
+        if ( pSock )
+        {
+          PEPacket pkt;
+          string strAccID;
+
+          __FCPKT_LOGIN_RESP d;
+
+          strAccID = pResultSet->GetValue( "account_id", 0 );
+
+          d.loginStatus = strAccID.length() > 0 ? 1 : 0;
+
+          PEPacketHelper::CreatePacket( pkt, FCPKT_RESPONSE, FCMSG_LOGIN );
+          PEPacketHelper::SetPacketData( pkt, (void*)&d, sizeof(__FCPKT_LOGIN_RESP) );
+
+          pkt.SetFieldValue("target", &pCtx->clientSocket);
+
+          // send the packet
+          size_t dataLen = 0;
+          char* pData = NULL;
+
+          pkt.GetDataBlock( pData, dataLen );
+          pSock->Send( (FCBYTE*)pData, (FCUINT)dataLen );
+        }
+      }
+      else if ( !jobRef.compare( DBQ_LOAD_CHARACTER_IDS ) )
+      {
+      }
+*/
+
+      // clear the result set
+      delete pResultSet;
+    }
+  }
+
+  delete pCtx;
+  delete pResults;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -318,13 +423,13 @@ bool FCLogicWorld::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
         if ( d.status )
         {
           // registration succeeded
-          if ( m_bHasConsole )
+          if ( HasConsole() )
             printf("Service registered with Router (%s:%ld)\n", pRouter->GetServer().c_str(), pRouter->GetPort());
         }
         else
         {
           // registration failed
-          if ( m_bHasConsole )
+          if ( HasConsole() )
             printf("Service failed to register with Router (%s:%ld)\n", pRouter->GetServer().c_str(), pRouter->GetPort());
         }
 
@@ -333,7 +438,7 @@ bool FCLogicWorld::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     break;
 
   default:
-    if ( m_bHasConsole )
+    if ( HasConsole() )
       printf("Unknown Message Received (%ld)\n", msgID);
     break;
   }

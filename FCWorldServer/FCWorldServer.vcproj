@@ -19,6 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\MySQL\MySQL Server 5.0\include\&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -31,8 +32,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="libmysql.lib"
 				OutputFile="$(OutDir)/FCWorldServer.exe"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\MySQL\MySQL Server 5.0\lib\debug\&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/FCWorldServer.pdb"
 				SubSystem="1"
@@ -66,6 +69,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="&quot;C:\Program Files\MySQL\MySQL Server 5.0\include\&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -137,6 +141,9 @@
 				RelativePath="..\common\PEPacketHelper.cpp">
 			</File>
 			<File
+				RelativePath="..\common\ServiceLogicBase.cpp">
+			</File>
+			<File
 				RelativePath="..\common\daemon\win\W32Service.cpp">
 			</File>
 			<File
@@ -184,6 +191,9 @@
 				RelativePath="..\common\PEPacketHelper.h">
 			</File>
 			<File
+				RelativePath="..\common\ServiceLogicBase.h">
+			</File>
+			<File
 				RelativePath="..\common\daemon\win\W32Service.h">
 			</File>
 			<File
@@ -194,6 +204,54 @@
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
+		</Filter>
+		<Filter
+			Name="Database">
+			<File
+				RelativePath="..\common\database\mysql\DBIMySql.cpp">
+			</File>
+			<File
+				RelativePath="..\common\database\mysql\DBIMySql.h">
+			</File>
+			<File
+				RelativePath="..\common\database\mysql\DBIMySqlConnection.cpp">
+			</File>
+			<File
+				RelativePath="..\common\database\mysql\DBIMySqlConnection.h">
+			</File>
+			<File
+				RelativePath="..\common\database\mysql\DBIMySqlResultSet.cpp">
+			</File>
+			<File
+				RelativePath="..\common\database\mysql\DBIMySqlResultSet.h">
+			</File>
+			<File
+				RelativePath="..\common\database\DBIResults.cpp">
+			</File>
+			<File
+				RelativePath="..\common\database\DBIResults.h">
+			</File>
+			<File
+				RelativePath="..\common\database\DBIResultSet.cpp">
+			</File>
+			<File
+				RelativePath="..\common\database\DBIResultSet.h">
+			</File>
+			<File
+				RelativePath="..\common\database\FCDatabase.cpp">
+			</File>
+			<File
+				RelativePath="..\common\database\FCDatabase.h">
+			</File>
+			<File
+				RelativePath="..\common\database\FCDBJob.cpp">
+			</File>
+			<File
+				RelativePath="..\common\database\FCDBJob.h">
+			</File>
+			<File
+				RelativePath="..\common\database\IDBInterface.h">
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

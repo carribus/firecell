@@ -26,13 +26,12 @@
 #include "../common/binstream.h"
 #include "../common/threading.h"
 #include "../common/fctypes.h"
-#include "../common/inifile.h"
 #include "../common/PEPacket.h"
 #include "../common/PacketExtractor.h"
-#include "../common/interfaces/IServiceLogic.h"
+#include "../common/ServiceLogicBase.h"
 #include "../Clients/common/Socket/ClientSocket.h"
 
-class FCLogicWorld : public IServiceLogic
+class FCLogicWorld : public ServiceLogicBase
                    , public IBaseSocketSink
 
 {
@@ -67,11 +66,9 @@ public:
 
   //
   // IServiceLogic implementation
-  const char* GetName()                           { return "FireCell World Service"; }
   void Free();
   int Start();
   int Stop();
-  void HasConsole(bool bHasConsole)               { m_bHasConsole = bHasConsole; }
 
   //
   // IBaseSocketSink implementation
@@ -84,17 +81,18 @@ private:
 
   void RegisterServiceWithRouter(RouterSocket* pSock);
 
-  bool LoadConfig(FCCSTR strFilename);
   void HandlePacket(PEPacket* pPkt, BaseSocket* pSocket);
   bool ConnectToRouters();
   void DisconnectFromRouters();
-
+/*
+  bool ConfigureDatabase();
+  static void* thrdDBWorker(void* pData);
+  void HandleCompletedDBJob(FCDBJob& job);
+*/
   bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
   bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
 
-  bool m_bHasConsole;
-  INIFile m_config;
   ServiceSocketMap m_mapRouters;
   PacketExtractor m_pktExtractor;
 };
