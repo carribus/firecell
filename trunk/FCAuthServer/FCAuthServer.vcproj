@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\MySQL\MySQL Server 5.0\include\&quot;"
+				AdditionalIncludeDirectories="..\common\mysql\include\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -35,7 +35,7 @@
 				AdditionalDependencies="libmysql.lib"
 				OutputFile="$(OutDir)/FCAuthServer.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\MySQL\MySQL Server 5.0\lib\debug\&quot;"
+				AdditionalLibraryDirectories="..\common\mysql\lib\debug\"
 				IgnoreAllDefaultLibraries="FALSE"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/FCAuthServer.pdb"
@@ -70,7 +70,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;C:\Program Files\MySQL\MySQL Server 5.0\include\&quot;"
+				AdditionalIncludeDirectories="..\common\mysql\include\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -84,7 +84,7 @@
 				AdditionalDependencies="libmysql.lib"
 				OutputFile="$(OutDir)/FCAuthServer.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;c:\Program Fles\MySQL\MySQL Server 5.0\lib\opt\&quot;"
+				AdditionalLibraryDirectories="..\common\mysql\lib\opt\"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
