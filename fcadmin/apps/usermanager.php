@@ -24,6 +24,7 @@ class UserManagerApp implements IFCAdminApp
   private $userData;
   private $query_NumUsers = "SELECT count(*) as c FROM fc_accounts";
   private $query_GetUsers = "SELECT * FROM fc_accounts";
+  private $query_GetUserData = "SELECT * FROM fc_accounts where account_id = ";
   
   public function __construct($itemsPerPage = 50)
   {
@@ -68,14 +69,10 @@ class UserManagerApp implements IFCAdminApp
     }    
     else
     {
-      switch ( $this->userAction )
-      {
-        case  -1:
-          break;
-          
-        default:
-          break;
-      }
+      if ( $this->userAction != -1 )
+        $this->userData = GetUserData( $this->userAction );
+      else
+        $this->userData = NULL;
     }
       
     return true;
@@ -92,15 +89,9 @@ class UserManagerApp implements IFCAdminApp
       $this->render_table($startIndex);    
       $this->render_pages();
     }
-    else if ( $this->userAction == -1 )
+    else 
     {
-      // add a new user
-      echo "Adding a new user not implemented yet";
-    }
-    else
-    {
-      // display the user's details for modification
-      echo "Editing for users not implemented yet (would be editing user id ".$this->userAction;
+      $this->render_userform();
     }
   }
 
@@ -155,6 +146,21 @@ class UserManagerApp implements IFCAdminApp
   }
   
   /////////////////////////////////////////////////////////////////////////////////
+
+  private function render_userform()
+  {
+    $formAction = $this->userAction == -1 ? "newuser" : "edituser";
+    echo "<form name\"userForm\" method=\"post\" action=\"actions/$formAction.php\">";
+    echo "<table>";
+    echo "<tr>";
+    echo "<td>Account name:</td>";
+    echo "<td><input type=\"text\" name=\"username\" class=\"fcedit\"/></td>";
+    echo "</table>";
+    echo "</form>";
+    
+  }
+  
+  /////////////////////////////////////////////////////////////////////////////////
   
   private function GetNumUsers()
   {
@@ -201,6 +207,32 @@ class UserManagerApp implements IFCAdminApp
     }
     
     return $userData;
+  }
+  
+  /////////////////////////////////////////////////////////////////////////////////
+
+  private function GetUserData($userID)
+  {
+    if ( !$this->db )
+      return -1;
+      
+    $user = NULL;
+    $result = $this->db->Execute( $this->query_GetUserData.$userID );
+    if ( $result != NULL )
+    {
+      if ( $line = mysql_fetch_array($result, MYSQL_ASSOC) )
+      {
+        $user = new User();
+        $user->account_id = $line["account_id"];
+        $user->account_name = $line["acc_name"];
+        $user->account_password = $line["acc_password"];
+        $user->account_created = $line["created"];
+        $user->account_type = $line["acc_type"];
+        $user->account_email = $line["email"];
+      }      
+    }
+    
+    return $user;
   }
   
   /////////////////////////////////////////////////////////////////////////////////
