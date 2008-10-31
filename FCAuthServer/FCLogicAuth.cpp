@@ -24,8 +24,7 @@
 #include "FCLogicAuth.h"
 
 FCLogicAuth::FCLogicAuth(void)
-: m_bHasConsole(false)
-, m_bDBMonRunning(false)
+: ServiceLogicBase("FireCell Authentication Service", false)
 {
 }
 
@@ -47,10 +46,12 @@ void FCLogicAuth::Free()
 
 int FCLogicAuth::Start()
 {
+  string strEngine, strServer, strDBName, strUser, strPass;
+
   // load the configuration
   if ( !LoadConfig("FCAuth.conf") )
   {
-    if ( m_bHasConsole )
+    if ( HasConsole() )
       printf("Failed to load FCauth.conf configuration file\n");
     return -1;
   }
@@ -59,12 +60,17 @@ int FCLogicAuth::Start()
   m_pktExtractor.Prepare( __FCPACKET_DEF );
 
   // kick off the database object
-  if ( m_bHasConsole )
+  if ( HasConsole() )
     printf("Setting up database connection...\n");
 
-  if ( !ConfigureDatabase() )
+  if ( LoadDBSettingsFromConfig(strEngine, strServer, strDBName, strUser, strPass) )
   {
-    return -1;
+    if ( !ConfigureDatabase(strEngine, strServer, strDBName, strUser, strPass) )
+    {
+      return -1;
+    }
+
+    RegisterDBHandler(DBQ_LOAD_ACCOUNT, OnDBJob_LoadAccount);
   }
 
   // connect to the router(s) that we were configured to connect to
@@ -79,287 +85,6 @@ int FCLogicAuth::Stop()
 {
   DisconnectFromRouters();
   return 0;
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void FCLogicAuth::OnConnected(BaseSocket* pSocket, int nErrorCode)
-{
-  RouterSocket* pSock = (RouterSocket*) pSocket;
-
-  if ( !nErrorCode )
-  {
-    m_mapRouters[ pSock->GetServer() ] = pSock;
-    RegisterServiceWithRouter(pSock);
-  }
-  else
-  {
-    if ( m_bHasConsole )
-      printf("Failed to connect to router (%s:%ld)\n", pSock->GetServer().c_str(), pSock->GetPort());
-  }
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void FCLogicAuth::OnDisconnected(BaseSocket* pSocket, int nErrorCode)
-{
-  RouterSocket* pSock = (RouterSocket*) pSocket;
-
-  // temporary code - we probably need to attempt to reconnect to the dropped router
-  m_mapRouters.erase( pSock->GetServer() );
-  delete pSock;
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void FCLogicAuth::OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen)
-{
-//  if ( m_bHasConsole )
-//    printf("[DATA_IN-%ld bytes]\n", nLen);
-
-  PEPacket* pPkt = NULL;
-	RouterSocket* pRouter = (RouterSocket*)pSocket;
-  CBinStream<FCBYTE, true>& stream = pRouter->GetDataStream();
-  size_t offset = 0;
-
-  pRouter->AddData(pData, (FCULONG)nLen);
-
-  if ( (pPkt = m_pktExtractor.Extract( (const char*)(FCBYTE*)stream, offset, (size_t)stream.GetLength() )) )
-  {
-    pPkt->DebugDump();
-    stream.Delete(0, (unsigned long)offset);
-    offset = 0;
-    HandlePacket(pPkt, pSocket);
-    delete pPkt;
-  }
-
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void FCLogicAuth::RegisterServiceWithRouter(RouterSocket* pSock)
-{
-  if ( !pSock )
-    return;
-
-  PEPacket pkt;
-
-  __FCPKT_REGISTER_SERVER d;
-
-  d.type = ST_Auth;
-
-  PEPacketHelper::CreatePacket( pkt, FCPKT_COMMAND, FCMSG_REGISTER_SERVICE );
-  PEPacketHelper::SetPacketData( pkt, (void*)&d, sizeof(__FCPKT_REGISTER_SERVER) );
-
-  // send the packet
-  size_t dataLen = 0;
-  char* pData = NULL;
-
-  pkt.GetDataBlock( pData, dataLen );
-  pSock->Send( (FCBYTE*)pData, (FCUINT)dataLen );
-}
-
-///////////////////////////////////////////////////////////////////////
-
-bool FCLogicAuth::LoadConfig(FCCSTR strFilename)
-{
-  if ( !strFilename )
-    return false;
-
- return (m_config.Load(strFilename) == 0);
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void FCLogicAuth::HandlePacket(PEPacket* pPkt, BaseSocket* pSocket)
-{
-  bool bHandled = false;
-  FCBYTE pktType = 0;
-
-  pPkt->GetField("type", &pktType, sizeof(FCBYTE));
-
-  switch ( pktType )
-  {
-  case  FCPKT_COMMAND:
-    bHandled = OnCommand(pPkt, pSocket);
-    break;
-
-  case  FCPKT_RESPONSE:
-    bHandled = OnResponse(pPkt, pSocket);
-    break;
-
-  case  FCPKT_ERROR:
-    bHandled = OnError(pPkt, pSocket);
-    break;
-  }
-}
-
-///////////////////////////////////////////////////////////////////////
-
-bool FCLogicAuth::ConnectToRouters()
-{
-  bool bResult = false;
-  int nRouterCount = 0;
-  string strKey;
-  string strValue, strServer;
-  short port;
-  INIFile::CSection* pSection = m_config.GetSection("Routers");
-
-  if ( pSection )
-  {
-    for ( nRouterCount = 0; ;nRouterCount++ )
-    {
-      stringstream ss;
-      ss << "Router" << nRouterCount;
-      strKey = ss.str();
-      strValue = pSection->GetValue(strKey);
-      if ( !strValue.empty() )
-      {
-        strServer = strValue.substr(0, strValue.find(':'));
-        port = atoi( strValue.substr( strValue.find(':')+1, strValue.length() ).c_str() );
-
-        if ( m_bHasConsole )
-          printf("Connecting to router (%s:%ld)\n", strServer.c_str(), port);
-
-        RouterSocket* pSock = new RouterSocket;
-        pSock->SetServer( strServer );
-        pSock->SetPort( port );
-        pSock->Subscribe(this);
-
-        pSock->Create();
-        pSock->Connect(strServer.c_str(), port);
-      }
-      else
-        break;
-    }
-  }
-
-  return bResult;
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void FCLogicAuth::DisconnectFromRouters()
-{
-  ServiceSocketMap::iterator it;
-  RouterSocket* pRouter = NULL;
-
-  for ( it = m_mapRouters.begin(); it != m_mapRouters.end(); it++ )
-  {
-    pRouter = it->second;
-    pRouter->Disconnect();
-    delete pRouter;
-  }
-
-  m_mapRouters.clear();
-}
-
-///////////////////////////////////////////////////////////////////////
-
-bool FCLogicAuth::ConfigureDatabase()
-{
-  string strEngine = "mysql", strServer = "localhost", strDBName = "firecell", strUser, strPass;
-  INIFile::CSection* pSection = m_config.GetSection("Database");
-
-  if ( pSection )
-  {
-    strEngine = pSection->GetValue("engine");
-    strServer = pSection->GetValue("server");
-    strDBName = pSection->GetValue("dbname");
-    strUser = pSection->GetValue("user");
-    strPass = pSection->GetValue("pass");
-  }
-
-  // start the database monitoring thread to monitor for any results that may become available
-  if ( pthread_create( &m_thrdDBMon, NULL, thrdDBWorker, (void*)this ) != 0 )
-  {
-    return false;
-  }
-
-  return m_db.Initialise(strEngine, strServer, strDBName, strUser, strPass);
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void* FCLogicAuth::thrdDBWorker(void* pData)
-{
-  FCLogicAuth* pThis = (FCLogicAuth*)pData;
-  FCDBJob job;
-
-  if ( !pThis )
-    return NULL;
-
-  pThis->m_bDBMonRunning = true;
-
-  while ( pThis->m_bDBMonRunning )
-  {
-    while ( pThis->m_db.GetCompletedJobCount() )
-    {
-      pThis->m_db.GetNextCompletedJob(job);
-      pThis->HandleCompletedDBJob(job);
-    }
-#ifdef _WIN32
-    Sleep(250);
-#else
-    usleep(250000);
-#endif
-  }
-
-  return NULL;
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void FCLogicAuth::HandleCompletedDBJob(FCDBJob& job)
-{
-  string jobRef = job.GetReference();
-  DBIResults* pResults = job.GetResults();
-  DBIResultSet* pResultSet = NULL;
-  DBJobContext* pCtx = (DBJobContext*)job.GetData();
-
-  while ( pResults && pResults->GetCount() )
-  {
-    if ( (pResultSet = pResults->GetNextResultSet()) )
-    {
-      if ( !jobRef.compare( DBQ_LOAD_ACCOUNT ) )
-      {
-        RouterSocket* pSock = pCtx->pRouter;
-
-        if ( pSock )
-        {
-          PEPacket pkt;
-          string strAccID;
-
-          __FCPKT_LOGIN_RESP d;
-
-          strAccID = pResultSet->GetValue( "account_id", 0 );
-
-          d.loginStatus = strAccID.length() > 0 ? 1 : 0;
-
-          PEPacketHelper::CreatePacket( pkt, FCPKT_RESPONSE, FCMSG_LOGIN );
-          PEPacketHelper::SetPacketData( pkt, (void*)&d, sizeof(__FCPKT_LOGIN_RESP) );
-
-          pkt.SetFieldValue("target", &pCtx->clientSocket);
-
-          // send the packet
-          size_t dataLen = 0;
-          char* pData = NULL;
-
-          pkt.GetDataBlock( pData, dataLen );
-          pSock->Send( (FCBYTE*)pData, (FCUINT)dataLen );
-        }
-      }
-      else if ( !jobRef.compare( DBQ_LOAD_CHARACTER_IDS ) )
-      {
-      }
-
-      // clear the result set
-      delete pResultSet;
-    }
-  }
-
-  delete pCtx;
-  delete pResults;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -386,10 +111,11 @@ bool FCLogicAuth::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
       pPkt->GetField("data", (void*)&d, dataLen);
 
       pCtx = new DBJobContext;
+      pCtx->pThis = this;
       pCtx->clientSocket = clientSock;
       pCtx->pRouter = pRouter;
 
-      m_db.ExecuteJob(DBQ_LOAD_ACCOUNT, (void*)pCtx, d.username, d.password);
+      GetDatabase().ExecuteJob(DBQ_LOAD_ACCOUNT, (void*)pCtx, d.username, d.password);
 
       bHandled = true;
     }
@@ -427,13 +153,13 @@ bool FCLogicAuth::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
         if ( d.status )
         {
           // registration succeeded
-          if ( m_bHasConsole )
+          if ( HasConsole() )
             printf("Service registered with Router (%s:%ld)\n", pRouter->GetServer().c_str(), pRouter->GetPort());
         }
         else
         {
           // registration failed
-          if ( m_bHasConsole )
+          if ( HasConsole() )
             printf("Service failed to register with Router (%s:%ld)\n", pRouter->GetServer().c_str(), pRouter->GetPort());
         }
 
@@ -442,7 +168,7 @@ bool FCLogicAuth::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     break;
 
   default:
-    if ( m_bHasConsole )
+    if ( HasConsole() )
       printf("Unknown Message Received (%ld)\n", msgID);
     break;
   }
@@ -455,4 +181,45 @@ bool FCLogicAuth::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
 bool FCLogicAuth::OnError(PEPacket* pPkt, BaseSocket* pSocket)
 {
   return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicAuth::OnDBJob_LoadAccount(DBIResultSet& resultSet, void*& pContext)
+{
+  DBJobContext* pCtx = (DBJobContext*)pContext;
+  RouterSocket* pSock = pCtx->pRouter;
+
+  if ( pSock )
+  {
+    PEPacket pkt;
+    string strAccID;
+
+    __FCPKT_LOGIN_RESP d;
+
+    strAccID = resultSet.GetValue( "account_id", 0 );
+
+    d.loginStatus = strAccID.length() > 0 ? 1 : 0;
+
+    PEPacketHelper::CreatePacket( pkt, FCPKT_RESPONSE, FCMSG_LOGIN );
+    PEPacketHelper::SetPacketData( pkt, (void*)&d, sizeof(__FCPKT_LOGIN_RESP) );
+
+    pkt.SetFieldValue("target", &pCtx->clientSocket);
+
+    // send the packet
+    size_t dataLen = 0;
+    char* pData = NULL;
+
+    pkt.GetDataBlock( pData, dataLen );
+    pSock->Send( (FCBYTE*)pData, (FCUINT)dataLen );
+  }
+
+//  delete pCtx;
+//  pContext = NULL;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicAuth::OnDBJob_LoadCharacterIDs(DBIResultSet& resultSet, void*& pContext)
+{
 }
