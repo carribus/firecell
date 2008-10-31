@@ -23,96 +23,42 @@
 #include <string>
 #include <map>
 #include <queue>
-#include "../common/binstream.h"
-#include "../common/threading.h"
-#include "../common/fctypes.h"
-#include "../common/inifile.h"
-#include "../common/PEPacket.h"
-#include "../common/PacketExtractor.h"
-#include "../common/interfaces/IServiceLogic.h"
-#include "../common/database/FCDatabase.h"
-#include "../Clients/common/Socket/ClientSocket.h"
+#include "../common/ServiceLogicBase.h"
 
 using namespace std;
 
-class FCLogicAuth : public IServiceLogic
-                  , public IBaseSocketSink
+class FCLogicAuth : public ServiceLogicBase
 {
-  class RouterSocket : public BaseSocket
-  {
-  public:
-    RouterSocket() {}
-    ~RouterSocket() {}
-
-    void SetServer(string server)             { m_server = server; }
-    string GetServer()                        { return m_server; }
-    void SetPort(short port)                  { m_port = port; }
-    short GetPort()                           { return m_port; }
-    void AddData(FCBYTE* pData, FCULONG len)
-    {
-      m_stream.Concat(pData, len);
-    }
-    CBinStream<FCBYTE, true>& GetDataStream() { return m_stream; }
-
-  private:
-    string              m_server;
-    short               m_port;
-    CBinStream<FCBYTE, true> m_stream;
-  };
-
   struct DBJobContext
   {
+    FCLogicAuth* pThis;
     RouterSocket* pRouter;
     FCSOCKET clientSocket;
   };
-
-  typedef std::map< string, RouterSocket* > ServiceSocketMap;
-  typedef std::queue<FCSOCKET> CQueuedSocketArray;
 
 public:
   FCLogicAuth(void);
   ~FCLogicAuth(void);
 
+  ServiceType GetServiceType()                    { return ST_Auth; }
+
   //
   // IServiceLogic implementation
-  const char* GetName()                           { return "FireCell Authentication Service"; }
   void Free();
   int Start();
   int Stop();
-  void HasConsole(bool bHasConsole)               { m_bHasConsole = bHasConsole; }
-
-  //
-  // IBaseSocketSink implementation
-  void OnAccepted(BaseSocket* pSocket, int nErrorCode) {}
-	void OnConnected(BaseSocket* pSocket, int nErrorCode);
-	void OnDisconnected(BaseSocket* pSocket, int nErrorCode);
-	void OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen);
 
 private:
-
-  void RegisterServiceWithRouter(RouterSocket* pSock);
-
-  bool LoadConfig(FCCSTR strFilename);
-  void HandlePacket(PEPacket* pPkt, BaseSocket* pSocket);
-  bool ConnectToRouters();
-  void DisconnectFromRouters();
-
-  bool ConfigureDatabase();
-  static void* thrdDBWorker(void* pData);
-  void HandleCompletedDBJob(FCDBJob& job);
 
   bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
   bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
 
-
-  bool m_bHasConsole;
-  INIFile m_config;
-  ServiceSocketMap m_mapRouters;
-  PacketExtractor m_pktExtractor;
-  FCDatabase m_db;
-  pthread_t m_thrdDBMon;
-  bool m_bDBMonRunning;
+  /*
+   *  DB Job Handlers
+   */
+  static void OnDBJob_LoadAccount(DBIResultSet& resultSet, void*& pContext);
+  static void OnDBJob_LoadCharacterIDs(DBIResultSet& resultSet, void*& pContext);
 };
 
 #endif//_FCLOGICAUTH_H_

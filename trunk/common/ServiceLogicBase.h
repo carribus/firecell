@@ -45,15 +45,8 @@ public:
   typedef std::map< string, RouterSocket* > ServiceSocketMap;
   typedef std::queue<FCSOCKET> CQueuedSocketArray;
 
-/*
-  struct DBJobContext
-  {
-    RouterSocket* pRouter;
-    FCSOCKET clientSocket;
-  };
-*/
   // the void* param is the optional context data that each derived class will pass in on the FCDatabase::ExecuteJob() call
-  typedef void (*DBHANDLERPROC)(DBIResultSet&, void*);
+  typedef void (*DBHANDLERPROC)(DBIResultSet&, void*&);
 
   ServiceLogicBase(const string& serviceName, bool bHasConsole);
   virtual ~ServiceLogicBase(void);
@@ -70,6 +63,8 @@ public:
 	void OnConnected(BaseSocket* pSocket, int nErrorCode);
 	void OnDisconnected(BaseSocket* pSocket, int nErrorCode);
 	void OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen);
+
+  FCDatabase& GetDatabase()                       { return m_db; }
 
   virtual ServiceType GetServiceType() = 0;
 

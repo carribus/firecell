@@ -280,12 +280,24 @@ void ServiceLogicBase::HandleCompletedDBJob(FCDBJob& job)
     if ( (pResultSet = pResults->GetNextResultSet()) )
     {
       // TODO: Try and find a handler for this db context and forward it on....
+      MapDBHandlers::iterator it = m_mapDBHandlers.find( jobRef );
+
+      if ( it != m_mapDBHandlers.end() )
+      {
+        (*it->second)(*pResultSet, pCtx);
+
+        // NOTE: We do not delete the context (pCtx) since it was not created/initialised by us. We expect the db handler to clean up after itself.
+        if ( pCtx != NULL && HasConsole() )
+        {
+          printf("Possible leak of DBJob context: JobRef=%s\n", jobRef.c_str());
+        }
+      }
 
       // clear the result set
       delete pResultSet;
     }
   }
 
-//  delete pCtx;
+  // delete the results object
   delete pResults;
 }
