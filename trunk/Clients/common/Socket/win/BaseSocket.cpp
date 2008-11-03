@@ -173,6 +173,17 @@ int BaseSocket::Send(FCBYTE* pData, int nLen)
 
 ////////////////////////////////////////////////////////////////////////////////////
 
+int BaseSocket::Send(PEPacket* pkt)
+{
+  size_t dataLen = 0;
+  char* pData = NULL;
+
+  pkt->GetDataBlock( pData, dataLen );
+  return Send( (FCBYTE*)pData, (FCUINT)dataLen );
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
 void BaseSocket::OnAccept(int nErrorCode)
 {
 	sockaddr addrClient;

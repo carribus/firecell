@@ -37,6 +37,6 @@
 // ACCOUNT QUERIES
 ////////////////////////////////////////
 #define DBQ_LOAD_ACCOUNT                  "load_account"
-#define DBQ_LOAD_CHARACTER_IDS            "load_character_ids"
+#define DBQ_LOAD_CHARACTER_INFO           "load_characters"
 
 #endif//_FCQUERIES_H_

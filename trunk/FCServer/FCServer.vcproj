@@ -168,6 +168,9 @@
 				RelativePath="..\common\protocol\fcprotocol.h">
 			</File>
 			<File
+				RelativePath="..\common\protocol\fcserverprotocol.h">
+			</File>
+			<File
 				RelativePath="..\common\fctypes.h">
 			</File>
 			<File

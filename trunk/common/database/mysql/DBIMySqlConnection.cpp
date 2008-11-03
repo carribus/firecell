@@ -67,7 +67,7 @@ DBIResults* DBIMySqlConnection::Execute(FCDBJob job)
 
   bool bResult = true;
   string query = job.GetQuery();
-  int nResult = mysql_real_query(m_conn, query.c_str(), query.length());
+  int nResult = mysql_real_query(m_conn, query.c_str(), (unsigned long)query.length());
   DBIResults* pResults = new DBIResults;
   DBIMySqlResultSet* pResultSet = NULL;
 

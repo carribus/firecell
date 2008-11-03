@@ -32,6 +32,7 @@ string DBIResultSet::DBIColumn::GetValue(size_t index)
 //////////////////////////////////////////////////////////////////////////////////////////
 
 DBIResultSet::DBIResultSet(void)
+: m_rowCount(0)
 {
 }
 

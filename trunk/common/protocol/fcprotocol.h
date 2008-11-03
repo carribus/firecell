@@ -21,10 +21,8 @@
 #define _FCPROTOCOL_H_
 
 #include "../fctypes.h"
-
 // ensure 1 byte packing
 #pragma pack(push, 1)
-//#pragma pack(1)
 
 const FCBYTE      FCPKT_COMMAND = 1;
 const FCBYTE      FCPKT_RESPONSE = 2;
@@ -32,12 +30,15 @@ const FCBYTE      FCPKT_ERROR = 3;
 
 enum ServiceType
 {
+  ST_None,
   ST_Router,
   ST_Auth,
   ST_World,
   ST_Community,
   ST_Client       // this should always be the last in the enum
 };
+
+#include "fcserverprotocol.h"
 
 /*
   
@@ -97,9 +98,36 @@ struct __FCPKT_LOGIN
   char password[65];
 };
 
+enum e_LoginStatus
+{
+  LoginFailed = 0,
+  LoginSuccess = 1,
+  LoginAccountLoggedInAlready = 2
+};
+
 struct __FCPKT_LOGIN_RESP
 {
-  FCBYTE loginStatus;
+  e_LoginStatus loginStatus;
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_GETCHARACTERS               = 4;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_CHARACTER_LIST
+{
+  FCBYTE numCharacters;
+
+  struct Character
+  {
+    FCUINT character_id;
+    char name;
+    FCUINT xp;
+    FCUINT level;
+    FCUINT fame_scale;
+    FCBYTE country_id;
+    FCBYTE city_id;
+  };
+  Character characters[12];
 };
 
 #pragma pack(pop)

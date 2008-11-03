@@ -92,11 +92,7 @@ void ServiceLogicBase::RegisterServiceWithRouter(RouterSocket* pSock)
   PEPacketHelper::SetPacketData( pkt, (void*)&d, sizeof(__FCPKT_REGISTER_SERVER) );
 
   // send the packet
-  size_t dataLen = 0;
-  char* pData = NULL;
-
-  pkt.GetDataBlock( pData, dataLen );
-  pSock->Send( (FCBYTE*)pData, (FCUINT)dataLen );
+  pSock->Send(&pkt);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -279,7 +275,7 @@ void ServiceLogicBase::HandleCompletedDBJob(FCDBJob& job)
   {
     if ( (pResultSet = pResults->GetNextResultSet()) )
     {
-      // TODO: Try and find a handler for this db context and forward it on....
+      // Try and find a handler for this db context and forward it on....
       MapDBHandlers::iterator it = m_mapDBHandlers.find( jobRef );
 
       if ( it != m_mapDBHandlers.end() )

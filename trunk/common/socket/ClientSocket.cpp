@@ -57,6 +57,17 @@ int ClientSocket::Send(FCBYTE* pData, FCUINT nLen)
 
 /////////////////////////////////////////////////////////////////////////////////
 
+int ClientSocket::Send(PEPacket* pkt)
+{
+  size_t dataLen = 0;
+  char* pData = NULL;
+
+  pkt->GetDataBlock( pData, dataLen );
+  return Send( (FCBYTE*)pData, (FCUINT)dataLen );
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
 int ClientSocket::AddData(FCBYTE* pData, FCUINT nLen)
 {
 	if ( !pData || !nLen )

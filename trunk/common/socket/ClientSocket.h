@@ -21,6 +21,7 @@
 #define _CLIENTSOCKET_H_
 
 #include "../fctypes.h"
+#include "../PEPacket.h"
 #include "../BinStream.h"
 
 typedef CBinStream<FCBYTE, true> NetStream;
@@ -32,6 +33,7 @@ public:
 	virtual ~ClientSocket(void);
 
 	int Send(FCBYTE* pData, FCUINT nLen);
+  int Send(PEPacket* pkt);
 	int AddData(FCBYTE* pData, FCUINT nLen);
 	CBinStream<FCBYTE, true>& GetDataStream()		{ return m_stream; }
 

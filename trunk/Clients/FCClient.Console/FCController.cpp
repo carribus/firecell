@@ -70,7 +70,7 @@ FCINT FCController::Run()
 
   // game loop
   m_hGameEvent = CreateEvent(0, 0, 0, 0);
-  while ( WaitForSingleObject(m_hGameEvent, 250) )
+  while ( WaitForSingleObject(m_hGameEvent, 250) != WAIT_OBJECT_0 )
   {
     ProcessIncomingData();
     ProcessOutgoingData();
@@ -100,6 +100,17 @@ bool FCController::ConnectToServer(string server, short port)
   dwRes = WaitForSingleObject(m_hSockEvent, INFINITE);
 
   return m_bConnected;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCController::Disconnect()
+{
+  printf("Disconnecting from server...\n");
+
+  m_sock.Disconnect();
+  m_bConnected = false;
+  SetEvent(m_hGameEvent);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -254,10 +265,22 @@ bool FCController::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
 
       pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
       pPkt->GetField("data", &d, dataLen);
-      if ( d.loginStatus == 1 )
-        printf("Login successful\n");
-      else
+      switch ( d.loginStatus )
+      {
+      case  LoginFailed:
         printf("Login failed\n");
+        Disconnect();
+        break;
+
+      case  LoginSuccess:
+        printf("Login successful\n");
+        break;
+
+      case  LoginAccountLoggedInAlready:
+        printf("Login failed - Account is already logged in\n");
+        Disconnect();
+        break;
+      }
     }
     break;
 

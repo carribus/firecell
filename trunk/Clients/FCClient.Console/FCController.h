@@ -49,6 +49,7 @@ public:
 protected:
 
   bool ConnectToServer(string server, short port);
+  void Disconnect();
 
   //
   // Data processing
