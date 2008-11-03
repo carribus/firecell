@@ -57,10 +57,16 @@ public:
   size_t AddColumn(const string& name, unsigned short type);
   void AddColumnDataForRow(const string& name, const string& value);
   string GetValue(const string& name, size_t row);
+  size_t GetRowCount()                                { return m_rowCount; }
+
+protected:
+
+  void SetRowCount(size_t rowCount)                   { m_rowCount = rowCount; }
 
 private:
 
   map< string, DBIColumn >       m_columns;
+  size_t                         m_rowCount;
 };
 
 #endif//_DBIRESULTSET_H_

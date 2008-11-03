@@ -23,6 +23,7 @@
 #include <string>
 #include <map>
 #include <queue>
+#include "Account.h"
 #include "../common/ServiceLogicBase.h"
 
 using namespace std;
@@ -50,6 +51,11 @@ public:
 
 private:
 
+  bool IsAccountLoggedIn(int nAccountID);
+  void AccountLogin(int nAccountID, string strAccountName, int nAccountType, FCUINT clientSocket);
+  void AccountLogout(Account* pAccount);
+  Account* GetAccountByClientSocket(FCUINT clientSocket);
+
   bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
   bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
@@ -58,7 +64,22 @@ private:
    *  DB Job Handlers
    */
   static void OnDBJob_LoadAccount(DBIResultSet& resultSet, void*& pContext);
-  static void OnDBJob_LoadCharacterIDs(DBIResultSet& resultSet, void*& pContext);
+  static void OnDBJob_LoadCharacterInfo(DBIResultSet& resultSet, void*& pContext);
+
+  /*
+   *  Private Members
+   */
+
+  //
+  // Map of accounts that are logged in
+  typedef map<int, Account*> AccountMap;
+  AccountMap m_mapLoggedInAccounts;
+  pthread_mutex_t m_mutexLoggedInAccounts;
+  //
+  // Map of accounts to client sockets on the router
+  typedef map<FCUINT, Account*> ClientSocketAccountMap;
+  ClientSocketAccountMap m_mapSocketToAccount;
+  pthread_mutex_t m_mutexSocketToAccount;
 };
 
 #endif//_FCLOGICAUTH_H_

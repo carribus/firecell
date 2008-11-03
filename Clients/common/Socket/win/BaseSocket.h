@@ -5,6 +5,7 @@
 
 #include <winsock2.h>
 #include "../../../../common/fctypes.h"
+#include "../../../../common/PEPacket.h"
 
 #ifndef interface
 	#define interface struct
@@ -31,6 +32,7 @@ public:
 	void Disconnect();
 	bool Listen(short sPort);
 	int Send(FCBYTE* pData, int nLen);
+  int Send(PEPacket* pkt);
 	void Subscribe(IBaseSocketSink* pSink)						{ m_pSink = pSink; }
 	void Unsubscribe(IBaseSocketSink* pSink)					{ if ( m_pSink == pSink ) m_pSink = NULL; }
 

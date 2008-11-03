@@ -75,9 +75,11 @@ private:
   bool                OnError(PEPacket* pPkt, ClientSocket* pSocket);
 
   void                RegisterService(ServiceType type, ClientSocket* pSocket);
-  void                UnregisterService(ClientSocket* pSocket);
+  bool                UnregisterService(ClientSocket* pSocket);
   ClientSocket*       GetServiceConnectionByType(ServiceType type);
   ClientSocket*       GetClientConnection(FCSOCKET s);
+
+  void                NotifyServicesOfClientDisconnect(ClientSocket* pSocket);
 
   void                SendServiceRegistrationResponse(ClientSocket* pSocket, ServiceType type, bool bSucceeded);
 

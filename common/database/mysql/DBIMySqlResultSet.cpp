@@ -51,4 +51,6 @@ void DBIMySqlResultSet::Process(MYSQL_RES* result)
       AddColumnDataForRow(fields[nField].name, row[nField]);
     }
   }
+
+  SetRowCount( (size_t)mysql_num_rows(result) );
 }

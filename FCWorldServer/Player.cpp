@@ -17,35 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef _FCLOGICWORLD_H_
-#define _FCLOGICWORLD_H_
+#include "Player.h"
 
-#include <string>
-#include <map>
-#include <queue>
-#include "../common/ServiceLogicBase.h"
-
-class FCLogicWorld : public ServiceLogicBase
+Player::Player(void)
+: m_id(0)
+, m_xp(0)
+, m_level(0)
+, m_fameScale(0)
+, m_cityID(0)
+, m_countryID(0)
 {
-public:
-  FCLogicWorld(void);
-  ~FCLogicWorld(void);
+}
 
-  ServiceType GetServiceType()                    { return ST_World; }
-
-  //
-  // IServiceLogic implementation
-  void Free();
-  int Start();
-  int Stop();
-
-private:
-
-  void ConfigureEventSystem();
-
-  bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
-  bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
-  bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
-};
-
-#endif//_FCLOGICWORLD_H_
+Player::~Player(void)
+{
+}

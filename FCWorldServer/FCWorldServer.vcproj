@@ -125,10 +125,16 @@
 				RelativePath="..\common\CmdLineInfo.cpp">
 			</File>
 			<File
+				RelativePath=".\EventSystem.cpp">
+			</File>
+			<File
 				RelativePath=".\FCLogicWorld.cpp">
 			</File>
 			<File
 				RelativePath=".\FCWorldServer.cpp">
+			</File>
+			<File
+				RelativePath=".\InGameIPAddress.cpp">
 			</File>
 			<File
 				RelativePath="..\common\inifile.cpp">
@@ -141,6 +147,9 @@
 			</File>
 			<File
 				RelativePath="..\common\PEPacketHelper.cpp">
+			</File>
+			<File
+				RelativePath=".\Player.cpp">
 			</File>
 			<File
 				RelativePath="..\common\ServiceLogicBase.cpp">
@@ -166,6 +175,9 @@
 				RelativePath="..\common\CmdLineInfo.h">
 			</File>
 			<File
+				RelativePath=".\EventSystem.h">
+			</File>
+			<File
 				RelativePath=".\FCLogicWorld.h">
 			</File>
 			<File
@@ -173,6 +185,12 @@
 			</File>
 			<File
 				RelativePath="..\common\fctypes.h">
+			</File>
+			<File
+				RelativePath=".\IEventSystem.h">
+			</File>
+			<File
+				RelativePath=".\InGameIPAddress.h">
 			</File>
 			<File
 				RelativePath="..\common\inifile.h">
@@ -191,6 +209,9 @@
 			</File>
 			<File
 				RelativePath="..\common\PEPacketHelper.h">
+			</File>
+			<File
+				RelativePath=".\Player.h">
 			</File>
 			<File
 				RelativePath="..\common\ServiceLogicBase.h">

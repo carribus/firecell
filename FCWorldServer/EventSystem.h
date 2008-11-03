@@ -17,35 +17,44 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef _FCLOGICWORLD_H_
-#define _FCLOGICWORLD_H_
+#ifndef _EVENTSYSTEM_H_
+#define _EVENTSYSTEM_H_
 
-#include <string>
-#include <map>
-#include <queue>
-#include "../common/ServiceLogicBase.h"
+#include "../common/threading.h"
+#include "IEventSystem.h"
 
-class FCLogicWorld : public ServiceLogicBase
+class EventSystem : public IEventSystem
 {
+  EventSystem(void);
+  ~EventSystem(void);
+
 public:
-  FCLogicWorld(void);
-  ~FCLogicWorld(void);
 
-  ServiceType GetServiceType()                    { return ST_World; }
+  static EventSystem* GetInstance();
+  static void Shutdown();
 
-  //
-  // IServiceLogic implementation
-  void Free();
-  int Start();
-  int Stop();
+  bool Start();
+
+  /*
+   *  IEventSystem implementation
+   */
+  void Emit(IEventSource* source, IEventTarget* target, IEvent* event);
 
 private:
 
-  void ConfigureEventSystem();
+  /*
+   *  Private methods
+   */
+  static void* thrdEventMgr(void* pData);
 
-  bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
-  bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
-  bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
+  /*
+   *  Private members
+   */
+  static EventSystem* m_pThis;
+
+  pthread_t m_thrdEventMgr;
+  bool m_bThrdRunning;
+
 };
 
-#endif//_FCLOGICWORLD_H_
+#endif//_EVENTSYSTEM_H_

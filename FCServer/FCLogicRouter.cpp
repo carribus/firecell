@@ -154,7 +154,10 @@ void FCLogicRouter::OnDisconnect(FCSOCKET s, FCDWORD dwCode)
       if ( !pSocket->IsLocked() )
       {
         // if this socket represents a service connection, remove it from the services list
-        UnregisterService(pSocket);
+        if ( !UnregisterService(pSocket) )
+        {
+          NotifyServicesOfClientDisconnect(pSocket);
+        }
 
 			  m_mapSockets.erase(it);
 			  delete pSocket;
@@ -403,10 +406,12 @@ void FCLogicRouter::RegisterService(ServiceType type, ClientSocket* pSocket)
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCLogicRouter::UnregisterService(ClientSocket* pSocket)
+bool FCLogicRouter::UnregisterService(ClientSocket* pSocket)
 {
   if ( !pSocket )
-    return;
+    return false;
+
+  bool bResult = false;
 
   pthread_mutex_lock(&m_mutexServices);
 
@@ -422,11 +427,14 @@ void FCLogicRouter::UnregisterService(ClientSocket* pSocket)
       }
 
       m_arrServices.erase(it);
+      bResult = true;
       break;
     }
   }
 
   pthread_mutex_unlock(&m_mutexServices);
+
+  return bResult;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -475,6 +483,31 @@ ClientSocket* FCLogicRouter::GetClientConnection(FCSOCKET s)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCLogicRouter::NotifyServicesOfClientDisconnect(ClientSocket* pSocket)
+{
+  pthread_mutex_lock(&m_mutexServices);
+
+  // create the packet
+  PEPacket pkt;
+  __FCSPKT_CLIENT_DISCONNECT d;
+
+  d.clientSocket = (FCSOCKET)(*pSocket);
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCSMSG_CLIENT_DISCONNECT, ST_None);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(__FCSPKT_CLIENT_DISCONNECT) );
+
+  CServiceSocketArray::iterator it;
+
+  for ( it = m_arrServices.begin(); it != m_arrServices.end(); it++ )
+  {
+    pkt.SetFieldValue("target", (void*)&it->type);
+    it->pSocket->Send(&pkt);
+  }
+
+  pthread_mutex_unlock(&m_mutexServices);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void FCLogicRouter::SendServiceRegistrationResponse(ClientSocket* pSocket, ServiceType type, bool bSucceeded)
 {
   PEPacket pkt;
@@ -487,11 +520,7 @@ void FCLogicRouter::SendServiceRegistrationResponse(ClientSocket* pSocket, Servi
   PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(__FCPKT_REGISTER_SERVER) );
 
   // send the packet
-  size_t dataLen = 0;
-  char* pData = NULL;
-
-  pkt.GetDataBlock( pData, dataLen);
-  pSocket->Send( (FCBYTE*)pData, (FCUINT)dataLen );
+  pSocket->Send(&pkt);
 }
 
 ///////////////////////////////////////////////////////////////////////

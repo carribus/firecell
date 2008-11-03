@@ -19,6 +19,7 @@
 */
 #include "../common/protocol/fcprotocol.h"
 #include "../common/PEPacketHelper.h"
+#include "EventSystem.h"
 #include "FCLogicWorld.h"
 
 FCLogicWorld::FCLogicWorld()
@@ -69,6 +70,9 @@ int FCLogicWorld::Start()
     }
   }
 
+  // get the eventing system up and running
+  ConfigureEventSystem();  
+
   // connect to the router(s) that we were configured to connect to
   ConnectToRouters();
 
@@ -79,8 +83,19 @@ int FCLogicWorld::Start()
 
 int FCLogicWorld::Stop()
 {
+  EventSystem::Shutdown();
   DisconnectFromRouters();
   return 0;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::ConfigureEventSystem()
+{
+  EventSystem* events = EventSystem::GetInstance();
+  FCDatabase& db = GetDatabase();
+
+  events->Start();
 }
 
 ///////////////////////////////////////////////////////////////////////
