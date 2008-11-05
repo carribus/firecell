@@ -58,10 +58,44 @@ CREATE TABLE `fc_characters` (
   `xp` bigint(20) unsigned NOT NULL default '0' COMMENT 'character''s experience points',
   `level` int(10) unsigned NOT NULL default '1' COMMENT 'character''s level',
   `fame_scale` int(11) NOT NULL default '0' COMMENT 'character''s fame/notoriety value',
+  `country_id` int(10) unsigned NOT NULL COMMENT 'country that character is in',
+  `city_id` int(10) unsigned NOT NULL COMMENT 'city that character is in',
+  `is_logged_in` tinyint(1) NOT NULL default '0' COMMENT 'flag that is set when a player logs in and choose a character to play',
   PRIMARY KEY  (`character_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_characters` */
+
+insert  into `fc_characters`(`character_id`,`account_id`,`name`,`xp`,`level`,`fame_scale`,`country_id`,`city_id`,`is_logged_in`) values (1,1,'FireCell_GM',0,1,0,1,1,1),(2,1,'TestCharacter',0,1,0,2,2,1);
+
+/*Table structure for table `fc_cities` */
+
+DROP TABLE IF EXISTS `fc_cities`;
+
+CREATE TABLE `fc_cities` (
+  `city_id` int(10) unsigned NOT NULL auto_increment,
+  `country_id` int(10) unsigned NOT NULL COMMENT 'country that this city belongs to',
+  `name` varchar(64) NOT NULL,
+  PRIMARY KEY  (`city_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_cities` */
+
+insert  into `fc_cities`(`city_id`,`country_id`,`name`) values (1,1,'New York'),(2,2,'Moscow'),(3,3,'Amsterdam'),(4,4,'London'),(5,5,'Sydney'),(6,6,'Beijing'),(7,7,'Johannesburg'),(8,8,'Tokyo'),(9,9,'Abuja'),(10,10,'Paris'),(11,11,'Rio de Janeiro');
+
+/*Table structure for table `fc_countries` */
+
+DROP TABLE IF EXISTS `fc_countries`;
+
+CREATE TABLE `fc_countries` (
+  `country_id` int(10) unsigned NOT NULL auto_increment,
+  `name` varchar(64) NOT NULL,
+  PRIMARY KEY  (`country_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_countries` */
+
+insert  into `fc_countries`(`country_id`,`name`) values (1,'USA'),(2,'Russia'),(3,'Netherlands'),(4,'United Kingdom'),(5,'Australia'),(6,'China'),(7,'South Africa'),(8,'Japan'),(9,'Nigeria'),(10,'France'),(11,'Brazil');
 
 /*Table structure for table `fc_items` */
 

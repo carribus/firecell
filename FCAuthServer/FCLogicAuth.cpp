@@ -77,6 +77,7 @@ int FCLogicAuth::Start()
     // register the DB Job Handlers
     RegisterDBHandler(DBQ_LOAD_ACCOUNT, OnDBJob_LoadAccount);
     RegisterDBHandler(DBQ_LOAD_CHARACTER_INFO, OnDBJob_LoadCharacterInfo);
+    RegisterDBHandler(DBQ_LOGIN_CHARACTER, OnDBJob_LoginCharacter);
   }
 
   // connect to the router(s) that we were configured to connect to
@@ -167,51 +168,35 @@ bool FCLogicAuth::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
 {
   RouterSocket* pRouter = (RouterSocket*) pSocket;
   FCSHORT msgID = 0;
-  FCSOCKET clientSock = 0;
-  DBJobContext* pCtx = NULL;
+  FCSOCKET clientSocket = 0;
   bool bHandled = false;
 
   pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
-  pPkt->GetField("target",  &clientSock, sizeof(FCSOCKET));
+  pPkt->GetField("target",  &clientSocket, sizeof(FCSOCKET));
 
   switch ( msgID )
   {
   case  FCMSG_LOGIN:
     {
-      __FCPKT_LOGIN d;
-      size_t dataLen = 0;
+      bHandled = OnCommandLogin(pPkt, pRouter, clientSocket);
+    }
+    break;
 
-      pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
-      pPkt->GetField("data", (void*)&d, dataLen);
+  case  FCMSG_GETCHARACTERS:
+    {
+      bHandled = OnCommandGetCharacters(pPkt, pRouter, clientSocket);
+    }
+    break;
 
-      pCtx = new DBJobContext;
-      pCtx->pThis = this;
-      pCtx->clientSocket = clientSock;
-      pCtx->pRouter = pRouter;
-
-      GetDatabase().ExecuteJob(DBQ_LOAD_ACCOUNT, (void*)pCtx, d.username, d.password);
-
-      bHandled = true;
+  case  FCMSG_SELECT_CHARACTER:
+    {
+      bHandled = OnCommandSelectCharacter(pPkt, pRouter, clientSocket);
     }
     break;
 
   case  FCSMSG_CLIENT_DISCONNECT:
     {
-      __FCSPKT_CLIENT_DISCONNECT d;
-      size_t dataLen = 0;
-
-      pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
-      pPkt->GetField("data", (void*)&d, dataLen);
-
-      // log the account associated with this client socket out
-      Account* pAccount = GetAccountByClientSocket(d.clientSocket);
-
-      if ( pAccount )
-      {
-        // NOTE: This might be a bit brutal. Possibly investigate the potential of putting the account on a disconnect
-        //       timer, at the end of which we log the account out. This will potentially make reconnects a little easier.
-        AccountLogout( pAccount );
-      }
+      bHandled = OnCommandClientDisconnect(pPkt, pRouter, clientSocket);
     }
     break;
 
@@ -224,40 +209,113 @@ bool FCLogicAuth::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool FCLogicAuth::OnCommandLogin(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCPKT_LOGIN d;
+  size_t dataLen = 0;
+  DBJobContext* pCtx = NULL;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  pCtx = new DBJobContext;
+  pCtx->pThis = this;
+  pCtx->clientSocket = clientSocket;
+  pCtx->pRouter = pSocket;
+
+  GetDatabase().ExecuteJob(DBQ_LOAD_ACCOUNT, (void*)pCtx, d.username, d.password);
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicAuth::OnCommandGetCharacters(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  Account* pAccount = GetAccountByClientSocket(clientSocket);
+  DBJobContext* pCtx = NULL;
+
+  if ( pAccount )
+  {
+    pCtx = new DBJobContext;
+    pCtx->pThis = this;
+    pCtx->clientSocket = clientSocket;
+    pCtx->pRouter = pSocket;
+
+    GetDatabase().ExecuteJob(DBQ_LOAD_CHARACTER_INFO, (void*)pCtx, pAccount->GetID());
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicAuth::OnCommandSelectCharacter(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  Account* pAccount = GetAccountByClientSocket(clientSocket);
+  DBJobContext* pCtx = NULL;
+
+  if ( pAccount )
+  {
+    __FCPKT_SELECT_CHARACTER d;
+    size_t dataLen = 0;
+
+    pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+    pPkt->GetField("data", (void*)&d, dataLen);
+
+    pAccount->SetCurrentCharacterID(d.character_id);
+
+    pCtx = new DBJobContext;
+    pCtx->pThis = this;
+    pCtx->clientSocket = clientSocket;
+    pCtx->pRouter = pSocket;
+
+    GetDatabase().ExecuteJob(DBQ_LOGIN_CHARACTER, (void*)pCtx, pAccount->GetID(), d.character_id, pAccount->GetID(), d.character_id);
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicAuth::OnCommandClientDisconnect(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCSPKT_CLIENT_DISCONNECT d;
+  size_t dataLen = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  // log the account associated with this client socket out
+  Account* pAccount = GetAccountByClientSocket(d.clientSocket);
+
+  if ( pAccount )
+  {
+    // NOTE: This might be a bit brutal. Possibly investigate the potential of putting the account on a disconnect
+    //       timer, at the end of which we log the account out. This will potentially make reconnects a little easier.
+    AccountLogout( pAccount );
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCLogicAuth::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
 {
   RouterSocket* pRouter = (RouterSocket*)pSocket;
   FCSHORT msgID = 0;
+  FCSOCKET clientSocket = 0;
   bool bHandled = false;
 
   pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
+  pPkt->GetField("target",  &clientSocket, sizeof(FCSOCKET));
 
   switch ( msgID )
   {
   case  FCMSG_REGISTER_SERVICE:
     {
-      __FCPKT_REGISTER_SERVER d;
-      size_t dataLen = 0;
-
-      pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
-      pPkt->GetField("data", (void*)&d, dataLen);
-
-      if ( d.type == ST_Auth )
-      {
-        if ( d.status )
-        {
-          // registration succeeded
-          if ( HasConsole() )
-            printf("Service registered with Router (%s:%ld)\n", pRouter->GetServer().c_str(), pRouter->GetPort());
-        }
-        else
-        {
-          // registration failed
-          if ( HasConsole() )
-            printf("Service failed to register with Router (%s:%ld)\n", pRouter->GetServer().c_str(), pRouter->GetPort());
-        }
-
-      }
+      bHandled = OnResponseRegisterService(pPkt, pRouter, clientSocket);
     }
     break;
 
@@ -272,9 +330,74 @@ bool FCLogicAuth::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool FCLogicAuth::OnResponseRegisterService(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCPKT_REGISTER_SERVER d;
+  size_t dataLen = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  if ( d.type == ST_Auth )
+  {
+    if ( d.status )
+    {
+      // registration succeeded
+      if ( HasConsole() )
+        printf("Service registered with Router (%s:%ld)\n", pSocket->GetServer().c_str(), pSocket->GetPort());
+    }
+    else
+    {
+      // registration failed
+      if ( HasConsole() )
+        printf("Service failed to register with Router (%s:%ld)\n", pSocket->GetServer().c_str(), pSocket->GetPort());
+    }
+
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCLogicAuth::OnError(PEPacket* pPkt, BaseSocket* pSocket)
 {
-  return false;
+  RouterSocket* pRouter = (RouterSocket*) pSocket;
+  FCSHORT msgID = 0;
+  FCSOCKET clientSocket = 0;
+  bool bHandled = false;
+
+  pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
+  pPkt->GetField("target",  &clientSocket, sizeof(FCSOCKET));
+
+  switch ( msgID )
+  {
+  case  FCSMSG_CHARACTER_LOGGEDIN:
+    {
+      bHandled = OnErrorSelectCharacter(pPkt, pRouter, clientSocket);
+    }
+    break;
+
+  default:
+    break;
+  }
+
+  return bHandled;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicAuth::OnErrorSelectCharacter(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCSPKT_CHARACTER_LOGGEDIN_ERROR d;
+  size_t dataLen = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  printf("Character Selection failed on World Service (charID=%ld)\n", d.character_id);
+
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -344,14 +467,98 @@ void FCLogicAuth::OnDBJob_LoadCharacterInfo(DBIResultSet& resultSet, void*& pCon
   if ( pSock )
   {
     PEPacket pkt;
+    __FCPKT_CHARACTER_LIST d;
     
+    memset(&d, 0, sizeof(__FCPKT_CHARACTER_LIST));
     // check if the account has any characters created against it
-    if ( resultSet.GetRowCount() )
+    if ( (d.numCharacters = resultSet.GetRowCount()) )
     {
       // there are characters available...
+      for ( size_t i = 0; i < d.numCharacters; i++ )
+      {
+        d.characters[i].character_id = atoi( resultSet.GetValue("character_id", i).c_str() );
+        strncpy( d.characters[i].name, resultSet.GetValue("name", i).c_str(), sizeof(d.characters[i].name)-1 );
+        d.characters[i].xp = atoi( resultSet.GetValue("xp", i).c_str() );
+        d.characters[i].level = atoi( resultSet.GetValue("level", i).c_str() );
+        d.characters[i].fame_scale = atoi( resultSet.GetValue("fame_scale", i).c_str() );
+        d.characters[i].country_id = atoi( resultSet.GetValue("country_id", i).c_str() );
+        d.characters[i].city_id = atoi( resultSet.GetValue("city_id", i).c_str() );
+      }
+    }
 
+    // send the character list
+    PEPacketHelper::CreatePacket( pkt, FCPKT_RESPONSE, FCMSG_GETCHARACTERS );
+    PEPacketHelper::SetPacketData( pkt, (void*)&d, sizeof(__FCPKT_CHARACTER_LIST) );
+    pkt.SetFieldValue("target", &pCtx->clientSocket);
+    pSock->Send(&pkt);
+  }
+
+  delete pCtx;
+  pContext = NULL;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicAuth::OnDBJob_LoginCharacter(DBIResultSet& resultSet, void*& pContext)
+{
+  DBJobContext* pCtx = (DBJobContext*) pContext;
+  RouterSocket* pSock = pCtx->pRouter;
+  FCLogicAuth* pThis = pCtx->pThis;
+
+  if ( !pThis )
+    return;
+
+  FCUINT accountID = atoi( resultSet.GetValue("account_id", 0).c_str() );
+  FCUINT charID = atoi( resultSet.GetValue("character_id", 0).c_str() );
+  bool bLoggedIn = atoi( resultSet.GetValue("is_logged_in", 0).c_str() ) ? true : false;
+  Account* pAccount = pThis->GetAccountByClientSocket( pCtx->clientSocket );
+
+  if ( pAccount )
+  {
+    if ( bLoggedIn )
+    {
+      // select the character onto the account
+      pAccount->SetCurrentCharacterID( charID );
     }
   }
+
+  if ( pSock )
+  {
+    // notify the player of the character selection result
+    PEPacket pkt, pkt2;
+/*
+    __FCPKT_SELECT_CHARACTER_RESP d;
+
+    d.bSuccess = bLoggedIn;
+    d.character_id = charID;
+
+    PEPacketHelper::CreatePacket( pkt, FCPKT_RESPONSE, FCMSG_SELECT_CHARACTER );
+    PEPacketHelper::SetPacketData( pkt, (void*)&d, sizeof(__FCPKT_SELECT_CHARACTER_RESP) );
+    pkt.SetFieldValue("target", &pCtx->clientSocket);
+    pSock->Send(&pkt);
+*/
+    if ( bLoggedIn )
+    {
+      // notify the world service of the character selection
+      __FCSPKT_CHARACTER_LOGGEDIN d2;
+      ServiceType target = ST_World;
+
+      d2.clientSocket = pCtx->clientSocket;
+      d2.account_id = accountID;
+      d2.character_id = charID;
+      strncpy( d2.name, resultSet.GetValue("name", 0).c_str(), sizeof(d2.name) );
+      d2.xp = atoi( resultSet.GetValue("xp", 0).c_str() );
+      d2.level = atoi( resultSet.GetValue("level", 0).c_str() );
+      d2.fame_scale = atoi( resultSet.GetValue("fame_scale", 0).c_str() );
+      d2.country_id = atoi( resultSet.GetValue("country_id", 0).c_str() );
+      d2.city_id = atoi( resultSet.GetValue("city_id", 0).c_str() );
+
+      PEPacketHelper::CreatePacket( pkt2, FCPKT_COMMAND, FCSMSG_CHARACTER_LOGGEDIN );
+      PEPacketHelper::SetPacketData( pkt2, (void*)&d2, sizeof(d2) );
+      pkt2.SetFieldValue("target", (void*)&target);
+      pSock->Send(&pkt2);
+    }
+  }  
 
   delete pCtx;
   pContext = NULL;

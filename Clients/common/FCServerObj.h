@@ -11,6 +11,8 @@ public:
 
   void RequestServerInfo();
   void Login(const char* username, const char* password);
+  void RequestCharacterInfo();
+  void SendCharacterSelection(size_t character_id);
 
   void SetSocket(BaseSocket* pSock)                             { m_pSock = pSock; }
 

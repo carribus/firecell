@@ -400,7 +400,7 @@ void FCLogicRouter::RegisterService(ServiceType type, ClientSocket* pSocket)
   SendServiceRegistrationResponse(pSocket, type, bResult);
 
   if ( m_bHasConsole )
-    printf("Service registered (type:%ld)\n", type);
+    printf("Service registered (type:%s)\n", GetServiceTypeString(type).c_str());
 
 }
 
@@ -423,7 +423,7 @@ bool FCLogicRouter::UnregisterService(ClientSocket* pSocket)
     {
       if ( m_bHasConsole )
       {
-        printf("Service unregistered (type=%ld)\n", it->type);
+        printf("Service unregistered (type:%s)\n", GetServiceTypeString(it->type).c_str());
       }
 
       m_arrServices.erase(it);
@@ -435,6 +435,30 @@ bool FCLogicRouter::UnregisterService(ClientSocket* pSocket)
   pthread_mutex_unlock(&m_mutexServices);
 
   return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+string FCLogicRouter::GetServiceTypeString(ServiceType type)
+{
+  string ret = "<unknown service>";
+
+  switch ( type )
+  {
+  case  ST_Router:
+    ret = "Router";
+    break;
+
+  case  ST_Auth:
+    ret = "Auth";
+    break;
+
+  case  ST_World:
+    ret = "World";
+    break;
+  }
+
+  return ret;
 }
 
 ///////////////////////////////////////////////////////////////////////

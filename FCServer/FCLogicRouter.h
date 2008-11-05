@@ -76,6 +76,7 @@ private:
 
   void                RegisterService(ServiceType type, ClientSocket* pSocket);
   bool                UnregisterService(ClientSocket* pSocket);
+  string              GetServiceTypeString(ServiceType type);
   ClientSocket*       GetServiceConnectionByType(ServiceType type);
   ClientSocket*       GetClientConnection(FCSOCKET s);
 

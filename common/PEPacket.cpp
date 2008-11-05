@@ -29,8 +29,7 @@ PEPacket::PEPacket(void)
 
 PEPacket::~PEPacket(void)
 {
-  if ( m_pDataBlock )
-    free(m_pDataBlock);
+  Empty();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -172,6 +171,19 @@ void PEPacket::GetDataBlock(char*& pData, size_t& blockLen)
 {
   pData = m_pDataBlock;
   blockLen = m_dataLen;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void PEPacket::Empty()
+{
+  m_fields.erase( m_fields.begin(), m_fields.end() );
+  if ( m_pDataBlock )
+  {
+    free( m_pDataBlock );
+    m_pDataBlock = NULL;
+  }
+  m_dataLen = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

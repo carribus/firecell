@@ -20,13 +20,23 @@
 #ifndef _EVENTSYSTEM_H_
 #define _EVENTSYSTEM_H_
 
+#include <queue>
 #include "../common/threading.h"
 #include "IEventSystem.h"
+
+using namespace std;
 
 class EventSystem : public IEventSystem
 {
   EventSystem(void);
   ~EventSystem(void);
+
+  struct InternalEvent
+  {
+    IEventSource* pSource;
+    IEventTarget* pTarget;
+    IEvent* pEvent;
+  };
 
 public:
 
@@ -45,6 +55,11 @@ private:
   /*
    *  Private methods
    */
+  void LockEventQueue();
+  void UnlockEventQueue();
+
+  void ProcessEvent(InternalEvent& ev);
+
   static void* thrdEventMgr(void* pData);
 
   /*
@@ -54,6 +69,9 @@ private:
 
   pthread_t m_thrdEventMgr;
   bool m_bThrdRunning;
+
+  queue<InternalEvent> m_eventQueue;
+  pthread_mutex_t m_mutexQueue;
 
 };
 

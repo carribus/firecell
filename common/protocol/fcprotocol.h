@@ -67,7 +67,7 @@ struct __FCPACKET
 };
 
 /*
- *  Message Identifiers
+ *  Standard Message Identifiers
  */
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +120,7 @@ struct __FCPKT_CHARACTER_LIST
   struct Character
   {
     FCUINT character_id;
-    char name;
+    char name[32];
     FCUINT xp;
     FCUINT level;
     FCUINT fame_scale;
@@ -129,6 +129,21 @@ struct __FCPKT_CHARACTER_LIST
   };
   Character characters[12];
 };
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_SELECT_CHARACTER            = 5;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_SELECT_CHARACTER
+{
+  FCUINT character_id;
+};
+
+struct __FCPKT_SELECT_CHARACTER_RESP
+{
+  FCUINT character_id;
+  e_SelectCharacterStatus status;
+};
+
 
 #pragma pack(pop)
 

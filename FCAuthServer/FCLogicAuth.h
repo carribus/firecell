@@ -57,14 +57,23 @@ private:
   Account* GetAccountByClientSocket(FCUINT clientSocket);
 
   bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnCommandLogin(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
+    bool OnCommandGetCharacters(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
+    bool OnCommandSelectCharacter(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
+    bool OnCommandClientDisconnect(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
+
   bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnResponseRegisterService(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
+
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnErrorSelectCharacter(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
 
   /*
    *  DB Job Handlers
    */
   static void OnDBJob_LoadAccount(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadCharacterInfo(DBIResultSet& resultSet, void*& pContext);
+  static void OnDBJob_LoginCharacter(DBIResultSet& resultSet, void*& pContext);
 
   /*
    *  Private Members

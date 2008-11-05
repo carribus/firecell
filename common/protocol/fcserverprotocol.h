@@ -26,6 +26,16 @@
   FCSERVER_BASE_MSGID + x
 
 /*
+ *  Status enumerations
+ */
+enum e_SelectCharacterStatus
+{
+  CharacterSelectFailed = 0,
+  CharacterSelectSucceeded = 1,
+  CharacterSelectFailedInWorld = 2
+};
+
+/*
  *  Message Identifiers
  */
 
@@ -37,5 +47,27 @@ struct __FCSPKT_CLIENT_DISCONNECT
   FCUINT    clientSocket;
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCSMSG_CHARACTER_LOGGEDIN                = SERVERMSG_ID(2);
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCSPKT_CHARACTER_LOGGEDIN
+{
+  FCSOCKET clientSocket;
+  FCUINT account_id;
+  FCUINT character_id;
+  char name[32];
+  FCUINT xp;
+  FCUINT level;
+  FCINT fame_scale;
+  FCBYTE country_id;
+  FCBYTE city_id;
+};
+
+struct __FCSPKT_CHARACTER_LOGGEDIN_ERROR
+{
+  FCUINT account_id;
+  FCUINT character_id;
+  e_SelectCharacterStatus status;
+};
 
 #endif//_FCSERVERPROTOCOL_H_

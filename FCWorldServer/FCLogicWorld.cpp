@@ -20,6 +20,7 @@
 #include "../common/protocol/fcprotocol.h"
 #include "../common/PEPacketHelper.h"
 #include "EventSystem.h"
+#include "Event.h"
 #include "FCLogicWorld.h"
 
 FCLogicWorld::FCLogicWorld()
@@ -100,42 +101,96 @@ void FCLogicWorld::ConfigureEventSystem()
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCLogicWorld::SendCharacterLoginStatus(FCULONG accountID, FCULONG characterID, e_SelectCharacterStatus status, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  PEPacket pkt;
+  __FCPKT_SELECT_CHARACTER_RESP d;
+
+  // check if the action failed...
+  if ( status != CharacterSelectSucceeded )
+  {
+    ServiceType target = ST_Auth;
+    __FCSPKT_CHARACTER_LOGGEDIN_ERROR dError;
+
+    dError.account_id = accountID;
+    dError.character_id = characterID;
+    dError.status = status;
+
+    PEPacketHelper::CreatePacket(pkt, FCPKT_ERROR, FCSMSG_CHARACTER_LOGGEDIN, ST_Auth);
+    PEPacketHelper::SetPacketData(pkt, (void*)&dError, sizeof(dError));
+
+    pRouter->Send(&pkt);
+
+    pkt.Empty();
+  }
+
+  d.character_id = characterID;
+  d.status = status;
+
+  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_SELECT_CHARACTER, ST_None);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(__FCPKT_SELECT_CHARACTER_RESP));
+
+  // send notification to Client
+  pkt.SetFieldValue("target", (void*)&clientSocket);
+  pRouter->Send(&pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
 {
   RouterSocket* pRouter = (RouterSocket*) pSocket;
   FCSHORT msgID = 0;
   FCSOCKET clientSock = 0;
-//  DBJobContext* pCtx = NULL;
   bool bHandled = false;
 
   pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
   pPkt->GetField("target",  &clientSock, sizeof(FCSOCKET));
-/*
+
   switch ( msgID )
   {
-  case  FCMSG_LOGIN:
+  case  FCSMSG_CHARACTER_LOGGEDIN:
     {
-      __FCPKT_LOGIN d;
-      size_t dataLen = 0;
-
-      pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
-      pPkt->GetField("data", (void*)&d, dataLen);
-
-      pCtx = new DBJobContext;
-      pCtx->clientSocket = clientSock;
-      pCtx->pRouter = pRouter;
-
-      m_db.ExecuteJob(DBQ_LOAD_ACCOUNT, (void*)pCtx, d.username, d.password);
-
-      bHandled = true;
+      bHandled = OnCommandCharacterLoggedIn(pPkt, pRouter, clientSock);
     }
     break;
 
   default:
     break;
   }
-*/
+
   return bHandled;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  __FCSPKT_CHARACTER_LOGGEDIN d;
+  size_t dataLen = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  // create the player's character
+  Player* pPlayer = m_playerMgr.CreatePlayer(d.account_id, d.character_id, d.name, d.xp, d.level, d.fame_scale, d.country_id, d.city_id);
+
+  // if we fail to create or locate an existing player object, then something went terribly wrong...
+  // we need to notify the player of the problem, as well as the auth service
+  if ( !pPlayer )
+  {
+    SendCharacterLoginStatus(d.account_id, d.character_id, CharacterSelectFailedInWorld, pRouter, d.clientSocket);
+  }
+  else
+  {
+    pPlayer->SetClientSocket(d.clientSocket);
+    SendCharacterLoginStatus(d.account_id, d.character_id, CharacterSelectSucceeded, pRouter, d.clientSocket);
+
+    // emit an event for the player logging in
+    EventSystem::GetInstance()->Emit( pPlayer, NULL, new Event(Player::EVT_LoggedIn, (void*)pPlayer) );
+  }
+
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////

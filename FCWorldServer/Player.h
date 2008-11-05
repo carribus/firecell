@@ -22,16 +22,32 @@
 
 #include <string>
 #include "../common/fctypes.h"
+#include "IEventSystem.h"
 #include "InGameIPAddress.h"
 
 using namespace std;
 
-class Player
+class Player : public IEventSource
 {
 public:
+
+  DECLARE_EVENT_SOURCE();
+  DECLARE_EVENT(LoggedIn);
+
   Player(void);
+  Player(FCULONG accountID, FCULONG id, string name, string email, FCULONG xp, FCULONG level, FCINT fameScale, FCULONG cityID, FCULONG countryID, InGameIPAddress* ip);
   ~Player(void);
 
+  /*
+   *  IEventSource implementation
+   */
+  const string& GetType()                 { return Player::EVTSYS_ObjectType; }
+
+  /*
+   *  Public Methods
+   */
+
+  FCULONG GetAccountID()                  { return m_accountID; }
   FCULONG GetID()                         { return m_id; }
   string GetName()                        { return m_name; }
   string GetEmail()                       { return m_email; }
@@ -41,9 +57,23 @@ public:
   FCULONG GetCityID()                     { return m_cityID; }
   FCULONG GetCountryID()                  { return m_countryID; }
   InGameIPAddress& GetIP()                { return m_ip; }
+  FCSOCKET GetClientSocket()              { return m_clientSocket; }
+
+  void SetAccountID(FCULONG id)           { m_accountID = id; }
+  void SetID(FCULONG id)                  { m_id = id; }
+  void SetName(string name)               { m_name = name; }
+  void SetEmail(string email)             { m_email = email; }
+  void SetXP(FCULONG xp)                  { m_xp = xp; }
+  void SetLevel(FCULONG level)            { m_level = level; }
+  void SetFameScale(FCINT scale)          { m_fameScale = scale; }
+  void SetCityID(FCULONG id)              { m_cityID = id; }
+  void SetCountryID(FCULONG id)           { m_countryID = id; }
+  void SetIP(InGameIPAddress& ip)         { m_ip = ip; }
+  void SetClientSocket(FCSOCKET sock)     { m_clientSocket = sock; }
 
 private:
 
+  FCULONG m_accountID;
   FCULONG m_id;
   string m_name;
   string m_email;
@@ -53,6 +83,7 @@ private:
   FCULONG m_cityID;
   FCULONG m_countryID;
   InGameIPAddress m_ip;
+  FCSOCKET m_clientSocket;
 };
 
 #endif//_PLAYER_H_
