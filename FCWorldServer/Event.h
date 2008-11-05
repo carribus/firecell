@@ -31,9 +31,16 @@ public:
   Event(string code, void* param);
   ~Event(void);
 
+  /*
+   *  IEvent implementation
+   */
   string GetCode()                    { return m_code; }
   void* GetParam()                    { return m_param; }
   void Release()                      { delete this; }
+
+  /*
+   *  Public methods
+   */
 
 private:
 

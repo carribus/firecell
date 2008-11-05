@@ -26,12 +26,14 @@
 class PlayerManager
 {
 public:
-  PlayerManager(void);
+  PlayerManager(IEventSystem* pEventSystem = NULL);
   ~PlayerManager(void);
 
   Player* CreatePlayer(FCULONG accountID, FCULONG id, string name, FCULONG xp, FCULONG level, FCINT fame_scale, FCULONG country_id, FCULONG city_id);
   Player* GetPlayerByName(string name);
   Player* GetPlayerByID(FCULONG id);
+
+  void SetEventSystem(IEventSystem* pES)                { m_pEventSystem = pES; }
 
 private:
 
@@ -50,6 +52,8 @@ private:
   typedef map<FCULONG, Player*> PlayerIDMap;
   PlayerIDMap m_mapIDs;
   pthread_mutex_t m_mutexIDs;
+
+  IEventSystem* m_pEventSystem;
 };
 
 #endif//_PLAYERMANAGER_H_

@@ -28,6 +28,7 @@
 using namespace std;
 
 class Player : public IEventSource
+             , public IEventTarget
 {
 public:
 
@@ -42,6 +43,12 @@ public:
    *  IEventSource implementation
    */
   const string& GetType()                 { return Player::EVTSYS_ObjectType; }
+
+  /*
+   *  IEventTarget implementation
+   */
+  void RegisterForEvents(IEventSystem* pEventSystem);
+  void OnEvent(IEventSource* pSource, IEvent* pEvent);
 
   /*
    *  Public Methods

@@ -20,7 +20,9 @@
 #ifndef _EVENTSYSTEM_H_
 #define _EVENTSYSTEM_H_
 
+#include <map>
 #include <queue>
+#include <string>
 #include "../common/threading.h"
 #include "IEventSystem.h"
 
@@ -49,6 +51,7 @@ public:
    *  IEventSystem implementation
    */
   void Emit(IEventSource* source, IEventTarget* target, IEvent* event);
+  void RegisterEventTarget(IEventTarget* pTarget, const string& eventCode);
 
 private:
 
@@ -67,12 +70,24 @@ private:
    */
   static EventSystem* m_pThis;
 
+  /*
+   *  Event pumping thread
+   */
   pthread_t m_thrdEventMgr;
   bool m_bThrdRunning;
 
+  /*
+   *  Event queueing mechanism
+   */
   queue<InternalEvent> m_eventQueue;
   pthread_mutex_t m_mutexQueue;
 
+  /*
+   *  EventTarget pools
+   */
+  typedef vector<IEventTarget*> TargetArray;
+  typedef map<string, TargetArray> EventCodeTargetMap;
+  EventCodeTargetMap m_mapEventCodeTargets;
 };
 
 #endif//_EVENTSYSTEM_H_

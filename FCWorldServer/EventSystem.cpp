@@ -93,6 +93,16 @@ void EventSystem::Emit(IEventSource* source, IEventTarget* target, IEvent* event
 
 ///////////////////////////////////////////////////////////////////////
 
+void EventSystem::RegisterEventTarget(IEventTarget* pTarget, const std::string& eventCode)
+{
+  if ( !pTarget || eventCode.empty() )
+    return;
+
+  m_mapEventCodeTargets[eventCode].push_back(pTarget);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void EventSystem::LockEventQueue()
 {
   pthread_mutex_lock(&m_mutexQueue);
@@ -106,10 +116,29 @@ void EventSystem::UnlockEventQueue()
 }
 
 ///////////////////////////////////////////////////////////////////////
-
+//  ProcessEvent(InternalEvent& ev)
+//
+//  This function is responsible for identifying all the targets
+//  for an event (ev.pEvent) and signalling them with the event
+///////////////////////////////////////////////////////////////////////
 void EventSystem::ProcessEvent(InternalEvent& ev)
 {
+  string evCode = ev.pEvent->GetCode();
+  TargetArray& targets = m_mapEventCodeTargets[evCode];
 
+  // check if the event has been targetted
+  if ( ev.pTarget )
+  {
+    ev.pTarget->OnEvent( ev.pSource, ev.pEvent );
+  }
+  else
+  {
+    // if no specific targetting was done, we find the objects that are registered for this event
+    for ( TargetArray::iterator it = targets.begin(); it != targets.end(); it++ )
+    {
+      (*it)->OnEvent(ev.pSource, ev.pEvent);
+    }
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////
