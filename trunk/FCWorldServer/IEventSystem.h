@@ -36,6 +36,21 @@
   const string objectType::EVT_##eventName = #objectType "." #eventName;
 
 /*
+ *  Forward declarations
+ */
+struct IEventSystem;
+
+/*
+ *  IEvent represents an event object
+ */
+struct IEvent
+{
+  virtual std::string GetCode() = 0;
+  virtual void* GetParam() = 0;
+  virtual void Release() = 0;
+};
+
+/*
  *  IEventSource represents the source object of a specific event.
  */
 struct IEventSource
@@ -48,22 +63,15 @@ struct IEventSource
  */
 struct IEventTarget
 {
+  virtual void RegisterForEvents(IEventSystem*) = 0;
+  virtual void OnEvent(IEventSource*, IEvent*) = 0;
   virtual const std::string& GetType() = 0;
-};
-
-/*
- *  IEvent represents an event object
- */
-struct IEvent
-{
-  virtual std::string GetCode() = 0;
-  virtual void* GetParam() = 0;
-  virtual void Release() = 0;
 };
 
 struct IEventSystem
 {
   virtual void Emit(IEventSource* source, IEventTarget* target, IEvent* event) = 0;
+  virtual void RegisterEventTarget(IEventTarget* pTarget, const std::string& eventCode) = 0;
 };
 
 #endif//_IEVENTSYSTEM_H_

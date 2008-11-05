@@ -57,3 +57,45 @@ Player::Player(FCULONG accountID, FCULONG id, string name, string email, FCULONG
 Player::~Player(void)
 {
 }
+
+///////////////////////////////////////////////////////////////////////
+
+void Player::RegisterForEvents(IEventSystem* pEventSystem)
+{
+  if ( !pEventSystem )
+    return;
+
+  // test listener
+  pEventSystem->RegisterEventTarget(this, Player::EVT_LoggedIn);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
+{
+  string sourceType = pSource->GetType();
+  string eventCode = pEvent->GetCode();
+  string eventName = eventCode.substr(eventCode.find('.')+1, eventCode.length());
+
+  printf("Event [%s] received from source [%s]\n", eventCode.c_str(), pSource->GetType().c_str());
+
+  if ( !sourceType.compare( Player::EVTSYS_ObjectType ) )      // player events
+  {
+    Player* pPlayer = (Player*)pEvent->GetParam();
+
+    // ensure that we do not handle our own event
+    if ( pSource != (IEventSource*)this )
+    {
+      // handle events
+      if ( !eventCode.compare( Player::EVT_LoggedIn ) )
+      {
+      }
+    }
+  }
+  else
+  {
+    printf("Player::OnEvent(): Unknown event received [source:%s / event:%s]\n", sourceType.c_str(), pEvent->GetCode().c_str());
+  }
+
+
+}

@@ -22,7 +22,8 @@
 
 ///////////////////////////////////////////////////////////////////////
 
-PlayerManager::PlayerManager(void)
+PlayerManager::PlayerManager(IEventSystem* pEventSystem)
+: m_pEventSystem(pEventSystem)
 {
   pthread_mutex_init(&m_mutexAliases, NULL);
   pthread_mutex_init(&m_mutexIDs, NULL);
@@ -68,6 +69,10 @@ Player* PlayerManager::CreatePlayer(FCULONG accountID, FCULONG id, string name, 
 
     pthread_mutex_unlock(&m_mutexAliases);
     pthread_mutex_unlock(&m_mutexIDs);
+
+    // register the object with the eventing system
+    pPlayer->RegisterForEvents(m_pEventSystem);
+
   }
   else
   {

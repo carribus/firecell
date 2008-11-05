@@ -72,7 +72,9 @@ int FCLogicWorld::Start()
   }
 
   // get the eventing system up and running
-  ConfigureEventSystem();  
+  ConfigureEventSystem();
+
+  m_playerMgr.SetEventSystem( EventSystem::GetInstance() );
 
   // connect to the router(s) that we were configured to connect to
   ConnectToRouters();
