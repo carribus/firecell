@@ -57,6 +57,7 @@ private:
   // Packet handling functions
   bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
+    bool OnCommandClientDisconnect(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
 
   bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);

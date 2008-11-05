@@ -40,13 +40,16 @@ FCController::~FCController(void)
 
 ///////////////////////////////////////////////////////////////////////
 
-bool FCController::Initialise()
+bool FCController::Initialise(const string& username, const string& password)
 {
   if ( !m_sock.Create() )
   {
     fprintf(stderr, "Failed to create socket\n");
     return false;
   }
+
+  m_username = username;
+  m_password = password;
 
   return true;
 }
@@ -68,7 +71,7 @@ FCINT FCController::Run()
 
   printf("Requesting Server Info: ");
   m_server.RequestServerInfo();
-  m_server.Login("root", "toor");
+  m_server.Login(m_username.c_str(), m_password.c_str());
 
   // game loop
   m_hGameEvent = CreateEvent(0, 0, 0, 0);

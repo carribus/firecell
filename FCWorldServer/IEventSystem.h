@@ -72,6 +72,7 @@ struct IEventSystem
 {
   virtual void Emit(IEventSource* source, IEventTarget* target, IEvent* event) = 0;
   virtual void RegisterEventTarget(IEventTarget* pTarget, const std::string& eventCode) = 0;
+  virtual void UnregisterEventTarget(IEventTarget* pTarget, const std::string& eventCode) = 0;
 };
 
 #endif//_IEVENTSYSTEM_H_

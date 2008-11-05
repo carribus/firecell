@@ -52,6 +52,7 @@ public:
    */
   void Emit(IEventSource* source, IEventTarget* target, IEvent* event);
   void RegisterEventTarget(IEventTarget* pTarget, const string& eventCode);
+  void UnregisterEventTarget(IEventTarget* pTarget, const std::string& eventCode);
 
 private:
 
@@ -86,7 +87,38 @@ private:
    *  EventTarget pools
    */
   typedef vector<IEventTarget*> TargetArray;
-  typedef map<string, TargetArray> EventCodeTargetMap;
+  class SafeTargetArray
+  {
+  public:
+    SafeTargetArray()
+    {
+      pthread_rwlock_init(&m_lock, NULL);
+    }
+
+    ~SafeTargetArray()
+    {
+      pthread_rwlock_destroy(&m_lock);
+    }
+
+    void ReadLock()
+    {
+      pthread_rwlock_rdlock(&m_lock);
+    }
+
+    void Unlock()
+    {
+      pthread_rwlock_unlock(&m_lock);
+    }
+
+    void WriteLock()
+    {
+      pthread_rwlock_wrlock(&m_lock);
+    }
+
+    TargetArray m_targets;
+    pthread_rwlock_t m_lock;
+  };
+  typedef map<string, SafeTargetArray> EventCodeTargetMap;
   EventCodeTargetMap m_mapEventCodeTargets;
 };
 

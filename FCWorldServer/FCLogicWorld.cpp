@@ -21,6 +21,7 @@
 #include "../common/PEPacketHelper.h"
 #include "EventSystem.h"
 #include "Event.h"
+#include "EventWithDisposableData.h"
 #include "FCLogicWorld.h"
 
 FCLogicWorld::FCLogicWorld()
@@ -157,6 +158,12 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  case  FCSMSG_CLIENT_DISCONNECT:
+    {
+      bHandled = OnCommandClientDisconnect(pPkt, pRouter, clientSock);
+    }
+    break;
+
   default:
     break;
   }
@@ -175,7 +182,7 @@ bool FCLogicWorld::OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRou
   pPkt->GetField("data", (void*)&d, dataLen);
 
   // create the player's character
-  Player* pPlayer = m_playerMgr.CreatePlayer(d.account_id, d.character_id, d.name, d.xp, d.level, d.fame_scale, d.country_id, d.city_id);
+  Player* pPlayer = m_playerMgr.CreatePlayer(d.account_id, d.character_id, d.name, d.xp, d.level, d.fame_scale, d.country_id, d.city_id, d.clientSocket);
 
   // if we fail to create or locate an existing player object, then something went terribly wrong...
   // we need to notify the player of the problem, as well as the auth service
@@ -185,11 +192,33 @@ bool FCLogicWorld::OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRou
   }
   else
   {
-    pPlayer->SetClientSocket(d.clientSocket);
     SendCharacterLoginStatus(d.account_id, d.character_id, CharacterSelectSucceeded, pRouter, d.clientSocket);
 
     // emit an event for the player logging in
     EventSystem::GetInstance()->Emit( pPlayer, NULL, new Event(Player::EVT_LoggedIn, (void*)pPlayer) );
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandClientDisconnect(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCSPKT_CLIENT_DISCONNECT d;
+  size_t dataLen = 0;
+  Player* pPlayer = NULL;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  // try and retrieve the player object
+  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(d.clientSocket)) )
+  {
+    Player* pEventData = new Player( *pPlayer );
+    EventSystem::GetInstance()->Emit( NULL, NULL, new EventWithDisposableData<Player>(Player::EVT_LoggedOut, pEventData) );
+
+    m_playerMgr.RemovePlayer(pPlayer);
   }
 
   return true;
