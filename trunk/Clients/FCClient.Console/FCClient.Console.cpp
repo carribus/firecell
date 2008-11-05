@@ -39,12 +39,19 @@ void ShowInfo()
 
 int main(int argc, char* argv[])
 {
+  string username = "root", password = "toor";
+
   ShowInfo();
+
+  if ( argc >= 2 )
+    username = argv[1];
+  if ( argc == 3 )
+    password = argv[2];
 
   FCController game;
   FCDisplay view;
 
-  game.Initialise();
+  game.Initialise(username, password);
   game.Run();
 
 

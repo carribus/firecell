@@ -29,9 +29,11 @@ public:
   PlayerManager(IEventSystem* pEventSystem = NULL);
   ~PlayerManager(void);
 
-  Player* CreatePlayer(FCULONG accountID, FCULONG id, string name, FCULONG xp, FCULONG level, FCINT fame_scale, FCULONG country_id, FCULONG city_id);
+  Player* CreatePlayer(FCULONG accountID, FCULONG id, string name, FCULONG xp, FCULONG level, FCINT fame_scale, FCULONG country_id, FCULONG city_id, FCSOCKET clientSocket);
   Player* GetPlayerByName(string name);
   Player* GetPlayerByID(FCULONG id);
+  Player* GetPlayerByClientSocket(FCSOCKET s);
+  void RemovePlayer(Player*& pPlayer);
 
   void SetEventSystem(IEventSystem* pES)                { m_pEventSystem = pES; }
 
@@ -52,6 +54,14 @@ private:
   typedef map<FCULONG, Player*> PlayerIDMap;
   PlayerIDMap m_mapIDs;
   pthread_mutex_t m_mutexIDs;
+
+  /*
+   *  Map of players by their client socket
+   */ 
+  typedef map<FCSOCKET, Player*> PlayerSocketMap;
+  PlayerSocketMap m_mapClientSockets;
+  pthread_mutex_t m_mutexClientSocks;
+
 
   IEventSystem* m_pEventSystem;
 };

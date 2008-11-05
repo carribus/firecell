@@ -27,6 +27,7 @@ PlayerManager::PlayerManager(IEventSystem* pEventSystem)
 {
   pthread_mutex_init(&m_mutexAliases, NULL);
   pthread_mutex_init(&m_mutexIDs, NULL);
+  pthread_mutex_init(&m_mutexClientSocks, NULL);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -37,11 +38,12 @@ PlayerManager::~PlayerManager(void)
 
   pthread_mutex_destroy(&m_mutexAliases);
   pthread_mutex_destroy(&m_mutexIDs);
+  pthread_mutex_destroy(&m_mutexClientSocks);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-Player* PlayerManager::CreatePlayer(FCULONG accountID, FCULONG id, string name, FCULONG xp, FCULONG level, FCINT fame_scale, FCULONG country_id, FCULONG city_id)
+Player* PlayerManager::CreatePlayer(FCULONG accountID, FCULONG id, string name, FCULONG xp, FCULONG level, FCINT fame_scale, FCULONG country_id, FCULONG city_id, FCSOCKET clientSocket)
 {
   Player* pPlayer = NULL;
 
@@ -60,15 +62,20 @@ Player* PlayerManager::CreatePlayer(FCULONG accountID, FCULONG id, string name, 
                          city_id,                 // character's city
                          NULL);                   // character's in game IP address
 
+    pPlayer->SetClientSocket(clientSocket);
+
     // add it to the maps
     pthread_mutex_lock(&m_mutexAliases);
     pthread_mutex_lock(&m_mutexIDs);
+    pthread_mutex_lock(&m_mutexClientSocks);
 
     m_mapAliases[name] = pPlayer;
     m_mapIDs[id] = pPlayer;
+    m_mapClientSockets[clientSocket] = pPlayer;
 
     pthread_mutex_unlock(&m_mutexAliases);
     pthread_mutex_unlock(&m_mutexIDs);
+    pthread_mutex_unlock(&m_mutexClientSocks);
 
     // register the object with the eventing system
     pPlayer->RegisterForEvents(m_pEventSystem);
@@ -77,6 +84,12 @@ Player* PlayerManager::CreatePlayer(FCULONG accountID, FCULONG id, string name, 
   else
   {
     // player already exists in the manager... just pass this object out
+
+    // update the socket mapping 
+    m_mapClientSockets.erase( pPlayer->GetClientSocket() );
+    m_mapClientSockets[clientSocket] = pPlayer;
+    // update the client socket in the player object
+    pPlayer->SetClientSocket(clientSocket);
   }
 
   return pPlayer;
@@ -108,9 +121,59 @@ Player* PlayerManager::GetPlayerByID(FCULONG id)
 
 ///////////////////////////////////////////////////////////////////////
 
+Player* PlayerManager::GetPlayerByClientSocket(FCSOCKET s)
+{
+  PlayerSocketMap::iterator it = m_mapClientSockets.find(s);
+
+  if ( it != m_mapClientSockets.end() )
+    return it->second;
+
+  return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void PlayerManager::RemovePlayer(Player*& pPlayer)
+{
+  if ( !pPlayer )
+    return;
+
+  pthread_mutex_lock(&m_mutexAliases);
+  pthread_mutex_lock(&m_mutexIDs);
+  pthread_mutex_lock(&m_mutexClientSocks);
+
+  m_mapAliases.erase( pPlayer->GetName() );
+  m_mapIDs.erase( pPlayer->GetID() );
+  m_mapClientSockets.erase( pPlayer->GetClientSocket() );
+
+  delete pPlayer;
+  pPlayer = NULL;
+
+  pthread_mutex_unlock(&m_mutexClientSocks);
+  pthread_mutex_unlock(&m_mutexIDs);
+  pthread_mutex_unlock(&m_mutexAliases);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void PlayerManager::RemoveAllPlayers()
 {
   pthread_mutex_lock(&m_mutexAliases);
+  pthread_mutex_lock(&m_mutexIDs);
+  pthread_mutex_lock(&m_mutexClientSocks);
+
   m_mapAliases.erase( m_mapAliases.begin(), m_mapAliases.end() );
+  m_mapIDs.erase( m_mapIDs.begin(), m_mapIDs.end() );
+
+  PlayerSocketMap::iterator it;
+  for ( it = m_mapClientSockets.begin(); it != m_mapClientSockets.end(); it++ )
+  {
+    delete it->second;
+  }
+  m_mapClientSockets.erase( m_mapClientSockets.begin(), m_mapClientSockets.end() );
+
+  pthread_mutex_unlock(&m_mutexClientSocks);
+  pthread_mutex_unlock(&m_mutexIDs);
   pthread_mutex_unlock(&m_mutexAliases);
+
 }

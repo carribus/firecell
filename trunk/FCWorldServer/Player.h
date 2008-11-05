@@ -34,9 +34,11 @@ public:
 
   DECLARE_EVENT_SOURCE();
   DECLARE_EVENT(LoggedIn);
+  DECLARE_EVENT(LoggedOut);
 
   Player(void);
   Player(FCULONG accountID, FCULONG id, string name, string email, FCULONG xp, FCULONG level, FCINT fameScale, FCULONG cityID, FCULONG countryID, InGameIPAddress* ip);
+  Player(const Player& src);
   ~Player(void);
 
   /*
@@ -91,6 +93,8 @@ private:
   FCULONG m_countryID;
   InGameIPAddress m_ip;
   FCSOCKET m_clientSocket;
+
+  IEventSystem* m_pEventSystem;
 };
 
 #endif//_PLAYER_H_

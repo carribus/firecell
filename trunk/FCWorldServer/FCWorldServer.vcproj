@@ -187,6 +187,9 @@
 				RelativePath=".\EventSystem.h">
 			</File>
 			<File
+				RelativePath=".\EventWithDisposableData.h">
+			</File>
+			<File
 				RelativePath=".\FCLogicWorld.h">
 			</File>
 			<File

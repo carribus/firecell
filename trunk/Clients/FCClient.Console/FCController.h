@@ -43,7 +43,7 @@ public:
   FCController(void);
   virtual ~FCController(void);
 
-  bool Initialise();
+  bool Initialise(const string& username, const string& password);
   FCINT Run();
 
 protected:
@@ -74,6 +74,9 @@ protected:
   bool OnResponseSelectCharacter(PEPacket* pPkt, BaseSocket* pSocket);  
 
 private:
+
+  string                  m_username,
+                          m_password;
 
   FCServerObj             m_server;
   BaseSocket              m_sock;

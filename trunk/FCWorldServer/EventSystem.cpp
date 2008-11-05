@@ -98,7 +98,28 @@ void EventSystem::RegisterEventTarget(IEventTarget* pTarget, const std::string& 
   if ( !pTarget || eventCode.empty() )
     return;
 
-  m_mapEventCodeTargets[eventCode].push_back(pTarget);
+  m_mapEventCodeTargets[eventCode].WriteLock();
+  m_mapEventCodeTargets[eventCode].m_targets.push_back(pTarget);
+  m_mapEventCodeTargets[eventCode].Unlock();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void EventSystem::UnregisterEventTarget(IEventTarget* pTarget, const std::string& eventCode)
+{
+  if ( !pTarget || eventCode.empty() )
+    return;
+
+  m_mapEventCodeTargets[eventCode].WriteLock();
+  for ( TargetArray::iterator it = m_mapEventCodeTargets[eventCode].m_targets.begin(); it != m_mapEventCodeTargets[eventCode].m_targets.end(); it++ )
+  {
+    if ( (*it) == pTarget )
+    {
+      m_mapEventCodeTargets[eventCode].m_targets.erase(it);
+      break;
+    }
+  }
+  m_mapEventCodeTargets[eventCode].Unlock();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -124,7 +145,6 @@ void EventSystem::UnlockEventQueue()
 void EventSystem::ProcessEvent(InternalEvent& ev)
 {
   string evCode = ev.pEvent->GetCode();
-  TargetArray& targets = m_mapEventCodeTargets[evCode];
 
   // check if the event has been targetted
   if ( ev.pTarget )
@@ -133,11 +153,15 @@ void EventSystem::ProcessEvent(InternalEvent& ev)
   }
   else
   {
+    SafeTargetArray& targets = m_mapEventCodeTargets[evCode];
+
+    targets.ReadLock();
     // if no specific targetting was done, we find the objects that are registered for this event
-    for ( TargetArray::iterator it = targets.begin(); it != targets.end(); it++ )
+    for ( TargetArray::iterator it = targets.m_targets.begin(); it != targets.m_targets.end(); it++ )
     {
       (*it)->OnEvent(ev.pSource, ev.pEvent);
     }
+    targets.Unlock();
   }
 }
 

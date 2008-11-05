@@ -21,6 +21,7 @@
 
 DEFINE_EVENT_SOURCE(Player);
 DEFINE_EVENT(Player, LoggedIn);
+DEFINE_EVENT(Player, LoggedOut);
 
 Player::Player(void)
 : m_accountID(0)
@@ -31,7 +32,9 @@ Player::Player(void)
 , m_cityID(0)
 , m_countryID(0)
 , m_clientSocket(0)
+, m_pEventSystem(NULL)
 {
+  printf("Player Object constructing -- ID:%ld, name=%ld, address=%p\n", m_id, m_name, this);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -47,6 +50,7 @@ Player::Player(FCULONG accountID, FCULONG id, string name, string email, FCULONG
 , m_cityID(cityID)
 , m_countryID(countryID)
 , m_clientSocket(0)
+, m_pEventSystem(NULL)
 {
   if ( ip )
     m_ip = *ip;
@@ -54,8 +58,20 @@ Player::Player(FCULONG accountID, FCULONG id, string name, string email, FCULONG
 
 ///////////////////////////////////////////////////////////////////////
 
+Player::Player(const Player& src)
+{
+  *this = src;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 Player::~Player(void)
 {
+  if ( m_pEventSystem )
+  {
+    m_pEventSystem->UnregisterEventTarget(this, Player::EVT_LoggedIn);
+    m_pEventSystem->UnregisterEventTarget(this, Player::EVT_LoggedOut);
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -65,19 +81,22 @@ void Player::RegisterForEvents(IEventSystem* pEventSystem)
   if ( !pEventSystem )
     return;
 
+  m_pEventSystem = pEventSystem;
+
   // test listener
   pEventSystem->RegisterEventTarget(this, Player::EVT_LoggedIn);
+  pEventSystem->RegisterEventTarget(this, Player::EVT_LoggedOut);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
 {
-  string sourceType = pSource->GetType();
+  string sourceType = (pSource ? pSource->GetType() : "World");
   string eventCode = pEvent->GetCode();
   string eventName = eventCode.substr(eventCode.find('.')+1, eventCode.length());
 
-  printf("Event [%s] received from source [%s]\n", eventCode.c_str(), pSource->GetType().c_str());
+  printf("Event [%s] received from source [%s]\n", eventCode.c_str(), sourceType.c_str());
 
   if ( !sourceType.compare( Player::EVTSYS_ObjectType ) )      // player events
   {
