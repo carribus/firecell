@@ -1,0 +1,63 @@
+#summary Description of the *PacketExtractor* and related objects
+
+= Introduction =
+
+The PacketExtractor framework serves as a generic packet collation and extraction mechanism for data streams. In the case of firecell, the mechanism is provided to collate packets coming down the wire.
+
+= Details =
+
+The PacketExtractor framework is comprised of the following classes:
+
+  * PacketExtractor
+  * PEPacket
+  * PEPacketHelper
+
+In order to use the PacketExtractor to collate packets of a certain format, one needs to provide a 'packet definition' to the object. This is done in order to allow the PacketExtractor to prepare an extraction plan for future packets of this format.
+
+The general format of specifying a packet format is as follows:
+{{{
+[<field specification>|<field specification>|..]
+
+<field specification> :: :<fieldname>:<element width>:<element count>
+<fieldname>           :: alphanumeric string
+<element width>       :: literal value, or reference to a <prior fieldname>
+<element count>       :: literal value
+<prior fieldname>     :: *<fieldname>
+}}}
+
+The firecell packet structure can be provided as a sample packet definition:
+
+For the following packet structure (stipulated as a c struct below):
+{{{
+struct __FCPACKET
+{
+  FCBYTE          magic[8];
+  FCBYTE          pktType;
+  ServiceType     target;
+  unsigned short  msg;
+  unsigned long   lDataLen;
+  char*           pData;
+};
+}}}
+
+.. the PacketExtractor packet definition would look as follows:
+{{{
+"[:magic:1:8|:type:1:1|:target:4:1|:msg:2:1|:dataLen:4:1|:data:*dataLen:1|]"
+}}}
+
+Once a definition has been created for future packets, one makes a call to PacketExtractor::Prepare(string definition) passing in the definition.
+
+Once a data stream is available, it can be handed to the PacketExtractor object via the PacketExtractor.Extract( ) function. The function will only look for one packet at a time, and so it is recommended that you create a loop which exits when the Extract() function returns NULL.
+
+A sample loop would look as follows:
+{{{
+PEPacket* pPkt = NULL;
+const char* pData = GetDataStream();
+size_t dataLen = GetDataStreamLen();
+size_t offset = 0;
+
+while ( (pPkt = PacketExtractorObj.Extract( pData, offset, dataLen )) )
+{
+   // handle the packet returned in pPkt
+}
+}}}
