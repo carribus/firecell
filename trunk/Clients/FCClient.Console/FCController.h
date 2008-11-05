@@ -68,6 +68,11 @@ protected:
   bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
 
+  bool OnResponseServiceInfo(PEPacket* pPkt, BaseSocket* pSocket);  
+  bool OnResponseLogin(PEPacket* pPkt, BaseSocket* pSocket);  
+  bool OnResponseGetCharacters(PEPacket* pPkt, BaseSocket* pSocket);  
+  bool OnResponseSelectCharacter(PEPacket* pPkt, BaseSocket* pSocket);  
+
 private:
 
   FCServerObj             m_server;

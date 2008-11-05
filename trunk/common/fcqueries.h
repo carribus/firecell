@@ -38,5 +38,7 @@
 ////////////////////////////////////////
 #define DBQ_LOAD_ACCOUNT                  "load_account"
 #define DBQ_LOAD_CHARACTER_INFO           "load_characters"
+#define DBQ_LOGIN_CHARACTER               "login_character"
+#define DBQ_LOGOUT_CHARACTER              "logout_character"
 
 #endif//_FCQUERIES_H_

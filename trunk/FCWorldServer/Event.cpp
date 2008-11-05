@@ -17,43 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "Player.h"
+#include "Event.h"
 
-DEFINE_EVENT_SOURCE(Player);
-DEFINE_EVENT(Player, LoggedIn);
-
-Player::Player(void)
-: m_accountID(0)
-, m_id(0)
-, m_xp(0)
-, m_level(0)
-, m_fameScale(0)
-, m_cityID(0)
-, m_countryID(0)
-, m_clientSocket(0)
+Event::Event(string code, void* param)
+: m_code(code)
+, m_param(param)
 {
 }
 
-///////////////////////////////////////////////////////////////////////
-
-Player::Player(FCULONG accountID, FCULONG id, string name, string email, FCULONG xp, FCULONG level, FCINT fameScale, FCULONG cityID, FCULONG countryID, InGameIPAddress* ip)
-: m_accountID(accountID)
-, m_id(id)
-, m_name(name)
-, m_email(email)
-, m_xp(xp)
-, m_level(level)
-, m_fameScale(fameScale)
-, m_cityID(cityID)
-, m_countryID(countryID)
-, m_clientSocket(0)
-{
-  if ( ip )
-    m_ip = *ip;
-}
-
-///////////////////////////////////////////////////////////////////////
-
-Player::~Player(void)
+Event::~Event(void)
 {
 }

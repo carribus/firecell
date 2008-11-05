@@ -48,6 +48,7 @@ public:
   bool AddField(const string& key, size_t elem_width, size_t elem_count, void* pDefaultValue = NULL);
   void SetDataBlock(const char* pData, size_t blockLen);
   void GetDataBlock(char*& pData, size_t& blockLen);
+  void Empty();
 
   PEPacket* Clone();
 

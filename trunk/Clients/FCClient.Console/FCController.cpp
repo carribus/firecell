@@ -17,6 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include <conio.h>
+#include <map>
 #include "../../common/protocol/fcprotocol.h"
 #include "../../common/PEPacketHelper.h"
 #include "FCController.h"
@@ -241,7 +243,6 @@ bool FCController::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     return false;
 
   FCSHORT msgID;
-  size_t dataLen;
   bool bHandled = false;
 
   pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
@@ -249,38 +250,25 @@ bool FCController::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
   {
   case  FCMSG_INFO_SERVER:
     {
-      __FCPKT_INFO_SERVER d;
-
-      pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
-      pPkt->GetField("data", &d, dataLen);
-      printf("\n\n\tv%d.%d\n" \
-             "\t%ld Connections\n\n", d.verMajor, d.verMinor, d.connectionCountRouter);
-      bHandled = true;
+      bHandled = OnResponseServiceInfo(pPkt, pSocket);
     }
     break;
 
   case  FCMSG_LOGIN:
     {
-      __FCPKT_LOGIN_RESP d;
+      bHandled = OnResponseLogin(pPkt, pSocket);
+    }
+    break;
 
-      pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
-      pPkt->GetField("data", &d, dataLen);
-      switch ( d.loginStatus )
-      {
-      case  LoginFailed:
-        printf("Login failed\n");
-        Disconnect();
-        break;
+  case  FCMSG_GETCHARACTERS:
+    {
+      bHandled = OnResponseGetCharacters(pPkt, pSocket);
+    }
+    break;
 
-      case  LoginSuccess:
-        printf("Login successful\n");
-        break;
-
-      case  LoginAccountLoggedInAlready:
-        printf("Login failed - Account is already logged in\n");
-        Disconnect();
-        break;
-      }
+  case  FCMSG_SELECT_CHARACTER:
+    {
+      bHandled = OnResponseSelectCharacter(pPkt, pSocket);
     }
     break;
 
@@ -304,6 +292,126 @@ bool FCController::OnError(PEPacket* pPkt, BaseSocket* pSocket)
 
   pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
 
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCController::OnResponseServiceInfo(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_INFO_SERVER d;
+  size_t dataLen;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+  printf("\n\n\tv%d.%d\n" \
+          "\t%ld Connections\n\n", d.verMajor, d.verMinor, d.connectionCountRouter);
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCController::OnResponseLogin(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_LOGIN_RESP d;
+  size_t dataLen;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+  switch ( d.loginStatus )
+  {
+  case  LoginFailed:
+    printf("Login failed\n");
+    Disconnect();
+    break;
+
+  case  LoginSuccess:
+    printf("Login successful\n");
+    m_server.RequestCharacterInfo();
+    break;
+
+  case  LoginAccountLoggedInAlready:
+    printf("Login failed - Account is already logged in\n");
+    Disconnect();
+    break;
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCController::OnResponseGetCharacters(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_CHARACTER_LIST d;
+  size_t dataLen;
+  map<FCUINT, size_t> KeyToCharacterMap;
+  size_t characterSelected = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+
+  if ( d.numCharacters <= 0 )
+  {
+    printf("No characters found for this account!\n");
+  }
+  else
+  {
+    printf("Characters available on account:\n\n");
+    for ( FCUINT i = 0; i < d.numCharacters; i++ )
+    {
+      printf("[%c]\tID: %ld\n" \
+              "\tName: %s\n" \
+              "\tLevel: %ld\n" \
+              "\tXP: %ld\n\n",
+              65+i,
+              d.characters[i].character_id,
+              d.characters[i].name,
+              d.characters[i].level,
+              d.characters[i].xp);
+
+      KeyToCharacterMap[65+i] = d.characters[i].character_id;
+    }
+
+    printf("Select the character you wish to play: ");
+    do
+    {
+      int nKey = getch();
+      map<FCUINT, size_t>::iterator it = KeyToCharacterMap.find(nKey);
+
+      if ( it == KeyToCharacterMap.end() )
+        continue;
+
+      characterSelected = it->second;
+    } while (characterSelected == 0);
+
+    printf("Character %ld\n\n", characterSelected);
+    m_server.SendCharacterSelection(characterSelected);
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCController::OnResponseSelectCharacter(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_SELECT_CHARACTER_RESP d;
+  size_t dataLen;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+
+  if ( d.status == CharacterSelectSucceeded )
+  {
+    printf("Character id:%ld selected\n", d.character_id);
+  }
+  else
+  {
+    printf("Character selection failed (%ld)\n", d.status);
+  }
 
   return true;
 }

@@ -23,6 +23,8 @@
 #include <string>
 #include <map>
 #include <queue>
+#include "Player.h"
+#include "PlayerManager.h"
 #include "../common/ServiceLogicBase.h"
 
 class FCLogicWorld : public ServiceLogicBase
@@ -41,11 +43,29 @@ public:
 
 private:
 
+  /*
+   *  Private methods
+   */
+
   void ConfigureEventSystem();
 
+  //
+  // Packet sending functions
+  void SendCharacterLoginStatus(FCULONG accountID, FCULONG characterID, e_SelectCharacterStatus status, RouterSocket* pRouter, FCSOCKET clientSocket);
+
+  //
+  // Packet handling functions
   bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
+
   bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
+
+  /*
+   *  Private members
+   */
+
+  PlayerManager         m_playerMgr;
 };
 
 #endif//_FCLOGICWORLD_H_

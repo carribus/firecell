@@ -29,12 +29,14 @@ EventSystem* EventSystem::m_pThis = NULL;
 EventSystem::EventSystem(void)
 : m_bThrdRunning(false)
 {
+  pthread_mutex_init(&m_mutexQueue, NULL);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 EventSystem::~EventSystem(void)
 {
+  pthread_mutex_destroy(&m_mutexQueue);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -82,6 +84,32 @@ bool EventSystem::Start()
 
 void EventSystem::Emit(IEventSource* source, IEventTarget* target, IEvent* event)
 {
+  InternalEvent e = { source, target, event };
+
+  LockEventQueue();
+  m_eventQueue.push(e);
+  UnlockEventQueue();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void EventSystem::LockEventQueue()
+{
+  pthread_mutex_lock(&m_mutexQueue);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void EventSystem::UnlockEventQueue()
+{
+  pthread_mutex_unlock(&m_mutexQueue);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void EventSystem::ProcessEvent(InternalEvent& ev)
+{
+
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -89,11 +117,28 @@ void EventSystem::Emit(IEventSource* source, IEventTarget* target, IEvent* event
 void* EventSystem::thrdEventMgr(void* pData)
 {
   EventSystem* pThis = (EventSystem*) pData;
+  queue<InternalEvent>* pQueue = &pThis->m_eventQueue;
+  InternalEvent e;
 
   pThis->m_bThrdRunning = true;
   while ( pThis->m_bThrdRunning )
   {
     // do all event signalling here
+    while ( !pQueue->empty() )
+    {
+      // get the next event
+      e = pQueue->front();
+      
+      pThis->ProcessEvent(e);
+
+      // free the event
+      e.pEvent->Release();
+      
+      // remove the event from the queue
+      pThis->LockEventQueue();
+      pQueue->pop();
+      pThis->UnlockEventQueue();
+    }
 
 #ifdef _WIN32
     Sleep(250);

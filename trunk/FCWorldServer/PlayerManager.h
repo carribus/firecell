@@ -17,43 +17,39 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#ifndef _PLAYERMANAGER_H_
+#define _PLAYERMANAGER_H_
+
+#include <map>
 #include "Player.h"
 
-DEFINE_EVENT_SOURCE(Player);
-DEFINE_EVENT(Player, LoggedIn);
-
-Player::Player(void)
-: m_accountID(0)
-, m_id(0)
-, m_xp(0)
-, m_level(0)
-, m_fameScale(0)
-, m_cityID(0)
-, m_countryID(0)
-, m_clientSocket(0)
+class PlayerManager
 {
-}
+public:
+  PlayerManager(void);
+  ~PlayerManager(void);
 
-///////////////////////////////////////////////////////////////////////
+  Player* CreatePlayer(FCULONG accountID, FCULONG id, string name, FCULONG xp, FCULONG level, FCINT fame_scale, FCULONG country_id, FCULONG city_id);
+  Player* GetPlayerByName(string name);
+  Player* GetPlayerByID(FCULONG id);
 
-Player::Player(FCULONG accountID, FCULONG id, string name, string email, FCULONG xp, FCULONG level, FCINT fameScale, FCULONG cityID, FCULONG countryID, InGameIPAddress* ip)
-: m_accountID(accountID)
-, m_id(id)
-, m_name(name)
-, m_email(email)
-, m_xp(xp)
-, m_level(level)
-, m_fameScale(fameScale)
-, m_cityID(cityID)
-, m_countryID(countryID)
-, m_clientSocket(0)
-{
-  if ( ip )
-    m_ip = *ip;
-}
+private:
 
-///////////////////////////////////////////////////////////////////////
+  void RemoveAllPlayers();
 
-Player::~Player(void)
-{
-}
+  /*
+   *  Map of players by their alias
+   */
+  typedef map<string, Player*> PlayerAliasMap;
+  PlayerAliasMap m_mapAliases;
+  pthread_mutex_t m_mutexAliases;
+
+  /*
+   *  Map of players by their ID
+   */
+  typedef map<FCULONG, Player*> PlayerIDMap;
+  PlayerIDMap m_mapIDs;
+  pthread_mutex_t m_mutexIDs;
+};
+
+#endif//_PLAYERMANAGER_H_

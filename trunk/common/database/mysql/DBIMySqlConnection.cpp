@@ -49,7 +49,7 @@ bool DBIMySqlConnection::Connect(const std::string& server, short port, const st
                             dbname.c_str(),
                             port, 
                             NULL, 
-                            0) )
+                            CLIENT_MULTI_STATEMENTS) )
   {
     // failed to connect to the DB
     return false;
@@ -92,7 +92,7 @@ DBIResults* DBIMySqlConnection::Execute(FCDBJob job)
         if ( mysql_field_count(m_conn) == 0 )
         {
           // query does not return data...
-          // TODO: Fetch the number of affected rows if needs be
+          pResults->SetAffectedRows( mysql_affected_rows(m_conn) );
         }
         else
         {

@@ -12,20 +12,23 @@ public:
   Account(void);
   ~Account(void);
 
-  int GetID()                             { return m_nID; }
-  string GetName()                        { return m_name; }
-  int GetType()                           { return m_nType; }
-  FCUINT GetClientSocket()                { return m_clientSocket; }
-  void SetID(int nID)                     { m_nID = nID; }
-  void SetName(string name)               { m_name = name; }
-  void SetType(int nType)                 { m_nType = nType; }
-  void SetClientSocket(FCUINT clientSocket) { m_clientSocket = clientSocket; }
+  FCUINT GetID()                             { return m_nID; }
+  string GetName()                           { return m_name; }
+  FCUINT GetType()                           { return m_nType; }
+  FCUINT GetCurrentCharacterID()             { return m_currentCharacterID; }
+  FCUINT GetClientSocket()                   { return m_clientSocket; }
+  void SetID(FCUINT nID)                     { m_nID = nID; }
+  void SetName(string name)                  { m_name = name; }
+  void SetType(FCUINT nType)                 { m_nType = nType; }
+  void SetClientSocket(FCUINT clientSocket)  { m_clientSocket = clientSocket; }
+  void SetCurrentCharacterID(FCUINT id)      { m_currentCharacterID = id; }
 
 private:
 
-  int m_nID;
+  FCUINT m_nID;
   string m_name;
-  int m_nType;
+  FCUINT m_nType;
+  FCUINT m_currentCharacterID;
   FCUINT m_clientSocket;
 };
 
