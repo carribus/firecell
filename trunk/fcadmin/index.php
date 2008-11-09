@@ -14,8 +14,8 @@
   {
     die("Failed to connect to database");
   }
-?>
 
+echo <<<HTML
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"    
 	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 
@@ -32,16 +32,16 @@
 	<div id="head">
     FireCell Administration System
   	<ul class="utility">
-  		<li>Version 0.1.01
+  		<li>Version 0.1.03
   	</ul>
 	</div>
 
   <div id="content">
-  <?php
-    $accountType= $_SESSION["acctype"];
-    if ( $accountType < 2 || $accountType == NULL )
-    {
-  ?>	
+HTML;
+  $accountType= $_SESSION["acctype"];
+  if ( $accountType < 2 || $accountType == NULL )
+  {
+echo <<<HTML
       <center>
       <br/>Login required:
       <form name="login" action="actions/login.php" method="post">
@@ -61,12 +61,11 @@
         </table>
       </form>
       </center>
-
-  <?php
+HTML;
   }
   else
   {
-?>
+echo <<<HTML
 		<!-- The Navigation Panel !-->
     <div id="sidepanel">
       <h2><a href="index.php">Home</a></h2>
@@ -85,7 +84,7 @@
   
 		<!-- The application panel area (where all the functionality goes) !-->
     <div id="apppanel">
-    <?php
+HTML;
       /*
        *  Load the relevant app panel per request
        */
@@ -130,11 +129,9 @@
        {
          echo "No app found for this request!";
        }
-    ?>
-    </div> <!-- /APPPANEL !-->
-<?php
+    echo "</div> <!-- /APPPANEL !-->";
   }
-?>		
+echo <<<HTML
 		<!-- footer... !-->
     <div id="foot">
       FireCell Administration System by Peter Mares, 2008
@@ -143,3 +140,5 @@
 </div>  
 </body>
 </html>
+HTML;
+?>
