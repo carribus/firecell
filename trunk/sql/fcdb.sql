@@ -23,7 +23,7 @@ CREATE TABLE `fc_accounts` (
   `account_id` bigint(20) unsigned NOT NULL auto_increment,
   `acc_name` varchar(64) NOT NULL COMMENT 'account name',
   `acc_password` varchar(64) NOT NULL COMMENT 'account password',
-  `created` datetime NOT NULL COMMENT 'datetime of account creation',
+  `created` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT 'datetime of account creation',
   `acc_type` smallint(5) unsigned NOT NULL default '0' COMMENT 'type of account (see fc_accounttypes)',
   `email` varchar(64) NOT NULL,
   PRIMARY KEY  (`account_id`)
@@ -62,11 +62,11 @@ CREATE TABLE `fc_characters` (
   `city_id` int(10) unsigned NOT NULL COMMENT 'city that character is in',
   `is_logged_in` tinyint(1) NOT NULL default '0' COMMENT 'flag that is set when a player logs in and choose a character to play',
   PRIMARY KEY  (`character_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_characters` */
 
-insert  into `fc_characters`(`character_id`,`account_id`,`name`,`xp`,`level`,`fame_scale`,`country_id`,`city_id`,`is_logged_in`) values (1,1,'FireCell_GM',0,1,0,1,1,1),(2,1,'TestCharacter',0,1,0,2,2,1);
+insert  into `fc_characters`(`character_id`,`account_id`,`name`,`xp`,`level`,`fame_scale`,`country_id`,`city_id`,`is_logged_in`) values (1,1,'FireCell_GM',0,1,0,1,1,0),(2,1,'TestCharacter',0,1,0,2,2,0),(3,2,'TestUserCharacter',0,1,0,3,3,0);
 
 /*Table structure for table `fc_cities` */
 
@@ -82,6 +82,22 @@ CREATE TABLE `fc_cities` (
 /*Data for the table `fc_cities` */
 
 insert  into `fc_cities`(`city_id`,`country_id`,`name`) values (1,1,'New York'),(2,2,'Moscow'),(3,3,'Amsterdam'),(4,4,'London'),(5,5,'Sydney'),(6,6,'Beijing'),(7,7,'Johannesburg'),(8,8,'Tokyo'),(9,9,'Abuja'),(10,10,'Paris'),(11,11,'Rio de Janeiro');
+
+/*Table structure for table `fc_computers` */
+
+DROP TABLE IF EXISTS `fc_computers`;
+
+CREATE TABLE `fc_computers` (
+  `computer_id` bigint(20) unsigned NOT NULL auto_increment,
+  `character_id` bigint(20) unsigned NOT NULL COMMENT 'ID of the character this computer belongs ',
+  `processor_id` int(10) unsigned NOT NULL COMMENT 'Processor installed in the computer',
+  `memory_size` int(10) unsigned NOT NULL COMMENT 'Amount of Ram (in MB)',
+  `os_id` int(10) unsigned NOT NULL COMMENT 'Operating system installed on machine',
+  `harddrive_size` bigint(20) unsigned NOT NULL COMMENT 'Amount of storage space on machine',
+  PRIMARY KEY  (`computer_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_computers` */
 
 /*Table structure for table `fc_countries` */
 
@@ -149,6 +165,44 @@ CREATE TABLE `fc_npcs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_npcs` */
+
+/*Table structure for table `fc_operatingsystems` */
+
+DROP TABLE IF EXISTS `fc_operatingsystems`;
+
+CREATE TABLE `fc_operatingsystems` (
+  `os_id` int(10) unsigned NOT NULL auto_increment,
+  `os_name` varchar(32) NOT NULL COMMENT 'Name of OS',
+  `oskernel_id` smallint(5) unsigned NOT NULL COMMENT 'Kernel Type of the OS (this is for software compatibility)',
+  PRIMARY KEY  (`os_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_operatingsystems` */
+
+/*Table structure for table `fc_oskernels` */
+
+DROP TABLE IF EXISTS `fc_oskernels`;
+
+CREATE TABLE `fc_oskernels` (
+  `oskernal_id` smallint(5) unsigned NOT NULL auto_increment,
+  `name` varchar(32) NOT NULL COMMENT 'Name of the operating system kernel',
+  PRIMARY KEY  (`oskernal_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_oskernels` */
+
+/*Table structure for table `fc_processors` */
+
+DROP TABLE IF EXISTS `fc_processors`;
+
+CREATE TABLE `fc_processors` (
+  `processor_id` int(10) unsigned NOT NULL auto_increment,
+  `core_count` smallint(5) unsigned NOT NULL COMMENT 'Number of cores on the processor',
+  `core_speed` smallint(5) unsigned NOT NULL COMMENT 'Speed of cores (GHz)',
+  PRIMARY KEY  (`processor_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_processors` */
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
