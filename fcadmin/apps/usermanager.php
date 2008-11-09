@@ -21,10 +21,10 @@ class UserManagerApp implements IFCAdminApp
   private $currentPage = 0;
   private $numUsers = 0;
   private $numPagesAvailable = 0;
-  private $userData;
+  private $userData = NULL;
   private $query_NumUsers = "SELECT count(*) as c FROM fc_accounts";
   private $query_GetUsers = "SELECT * FROM fc_accounts";
-  private $query_GetUserData = "SELECT * FROM fc_accounts where account_id = ";
+  private $query_GetUser = "SELECT * FROM fc_accounts where account_id = ";
   
   public function __construct($itemsPerPage = 50)
   {
@@ -69,29 +69,46 @@ class UserManagerApp implements IFCAdminApp
     }    
     else
     {
-      if ( $this->userAction != -1 )
-        $this->userData = GetUserData( $this->userAction );
-      else
-        $this->userData = NULL;
+      switch ( $this->userAction )
+      {
+        case  -1:
+          break;
+          
+        default:
+          // load the user in question...
+          $this->userData = $this->GetUser($this->userAction);
+          break;
+      }
     }
       
     return true;
   }
   
   /////////////////////////////////////////////////////////////////////////////////
+  // Rendering functions
+  /////////////////////////////////////////////////////////////////////////////////
   
   public function render()
   {
-    if ( $this->userAction == NULL )
+    // render the list of users
+    if ( $this->userAction == NULL ) 
     {
       $startIndex = $this->currentPage * $this->itemsPerPage;
       $this->render_options();
       $this->render_table($startIndex);    
       $this->render_pages();
     }
-    else 
+    // render a form to add a new user
+    else if ( $this->userAction == -1 ) 
     {
-      $this->render_userform();
+      // add a new user
+      $this->render_userform($this->userAction);
+    }
+    // render a form to edit a user
+    else
+    {
+      // display the user's details for modification
+      $this->render_userform($this->userAction);
     }
   }
 
@@ -108,7 +125,7 @@ class UserManagerApp implements IFCAdminApp
   private function render_table($startIndex)
   {
     echo "<table class=\"tableUsers\" cellspacing=\"0\">";
-    echo "<tr><th>ID</th><th>Account Name</th><th>Password</th><th>Type</th><th>Email</th><th>Created</th>";
+    echo "<tr><th>ID</th><th>Account Name</th><th>Password</th><th>Type</th><th>Email</th><th>Created</th><th>Options</th>";
     for ( $i = $startIndex; $i < $this->numUsers; $i++ )
     {
       $user = $this->userData[$i];
@@ -118,6 +135,7 @@ class UserManagerApp implements IFCAdminApp
       echo "<td>".$user->account_type."</td>";
       echo "<td>".$user->account_email."</td>";
       echo "<td>".$user->account_created."</td>";
+      echo "<td><a href=\"actions/deluser.php?aid=".$user->account_id."\">Delete</a>";
       echo "</tr>";
     }
     echo "</table>";
@@ -147,21 +165,83 @@ class UserManagerApp implements IFCAdminApp
   
   /////////////////////////////////////////////////////////////////////////////////
 
-  private function render_userform()
+  private function render_userform($userid = -1)
   {
-    $formAction = $this->userAction == -1 ? "newuser" : "edituser";
-    echo "<form name\"userForm\" method=\"post\" action=\"actions/$formAction.php\">";
-    echo "<table>";
-    echo "<tr>";
-    echo "<td>Account name:</td>";
-    echo "<td><input type=\"text\" name=\"username\" class=\"fcedit\"/></td>";
-    echo "</table>";
-    echo "</form>";
+    if ( $userid != -1 && $this->userData == NULL )
+      return false;
+      
+    $typeLabels = array( "Normal User", "GM", "Administrator" );
+    $userAction = ($userid == -1 ? "adduser" : "edituser");
+    $readOnly = ($userid == -1 ? "" : "readonly=\"yes\"");
+    $userID = "";
+    $userName = "";
+    $userPass = "";
+    $userEmail = "";
+    $userType = "";
+
+    // if we have an account loaded... load the data into local variables    
+    if ( $this->userData != NULL )
+    {
+      $userID = $this->userData->account_id;
+      $userName = $this->userData->account_name;
+      $userPass = $this->userData->account_password;
+      $userEmail = $this->userData->account_email;
+      $userType = $this->userData->account_type;
+    }
     
+echo <<<FORMDEF
+    <a href="?a=users">Back to User List</a><br/><br/>
+    <form name="userform" method="post" action="actions/$userAction.php">
+      <table>
+FORMDEF;
+    if ( $userid != -1 )
+    {
+echo <<<FORMDEF
+        <tr>
+          <td align="right">Account ID:</td>
+          <td><input type="text" name="account_id" $readOnly value="$userID"/></td>
+        </tr>
+FORMDEF;
+    }
+echo <<<FORMDEF
+        <tr>
+          <td align="right">User name:</td>
+          <td><input type="text" name="account_name" $readOnly value="$userName"/></td>
+        </tr>
+        <tr>
+          <td align="right">Password:</td>
+          <td><input type="password" name="account_pass" value="$userPass"/></td>
+        </tr>
+        <tr>
+          <td align="right">Email:</td>
+          <td><input type="text" name="account_email" value="$userEmail"/></td>
+        </tr>
+        <tr>
+          <td align="right">Account Type:</td>
+          <td>                          
+            <select name="account_type">
+FORMDEF;
+    for ( $i = 1; $i <= 3; $i++ )
+    {
+      echo "<option value=\"$i\" ".($i == $userType ? "selected=\"yes\"" : "").">".$typeLabels[$i-1]."</option>";
+    }
+echo <<<FORMDEF
+            </select>
+          </td>           
+        </tr>
+        <tr>
+          <td></td>
+          <td><input type="submit" value="Save" /></td>
+        </tr>
+      </table>
+    </form>
+FORMDEF;
   }
   
   /////////////////////////////////////////////////////////////////////////////////
-  
+  // DB access functions  
+  /////////////////////////////////////////////////////////////////////////////////
+
   private function GetNumUsers()
   {
     if ( !$this->db )
@@ -211,15 +291,16 @@ class UserManagerApp implements IFCAdminApp
   
   /////////////////////////////////////////////////////////////////////////////////
 
-  private function GetUserData($userID)
+  private function GetUser($userID)
   {
     if ( !$this->db )
       return -1;
       
-    $user = NULL;
-    $result = $this->db->Execute( $this->query_GetUserData.$userID );
+    $userData = NULL;
+    $query = $this->query_GetUser.$userID;
+    $result = $this->db->Execute( $query );
     if ( $result != NULL )
-    {
+    {                             
       if ( $line = mysql_fetch_array($result, MYSQL_ASSOC) )
       {
         $user = new User();
@@ -229,10 +310,12 @@ class UserManagerApp implements IFCAdminApp
         $user->account_created = $line["created"];
         $user->account_type = $line["acc_type"];
         $user->account_email = $line["email"];
+        
+        $userData = $user;
       }      
     }
     
-    return $user;
+    return $userData;
   }
   
   /////////////////////////////////////////////////////////////////////////////////
