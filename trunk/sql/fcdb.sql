@@ -123,7 +123,7 @@ DROP TABLE IF EXISTS `fc_items`;
 
 CREATE TABLE `fc_items` (
   `item_id` bigint(20) unsigned NOT NULL auto_increment,
-  `item_name` char(64) NOT NULL,
+  `item_name` char(64) default NULL,
   `itemtype_id` int(10) unsigned NOT NULL COMMENT 'type of item (tb_itemtypes)',
   `object_id` bigint(20) unsigned NOT NULL COMMENT 'ID of the object in the table corresponding to the item type',
   `description` text,
@@ -131,9 +131,11 @@ CREATE TABLE `fc_items` (
   `max_level` int(10) unsigned default NULL COMMENT 'maximum level that this item can be created for',
   `npc_value` bigint(20) unsigned NOT NULL COMMENT 'Items NPC value',
   PRIMARY KEY  (`item_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_items` */
+
+insert  into `fc_items`(`item_id`,`item_name`,`itemtype_id`,`object_id`,`description`,`min_level`,`max_level`,`npc_value`) values (1,'PowerCore SC12',1,1,'This is the entry level processor for computers. It will do what you want, when you want it, but not much else.',1,NULL,120),(2,'PowerCore SC15',1,2,NULL,3,NULL,250),(3,'PowerCore SC20',1,3,NULL,7,NULL,500),(4,'PowerCore SC24',1,4,NULL,10,NULL,800),(5,'PowerCore SC28',1,5,NULL,15,NULL,1500),(6,'PowerCore SC32',1,6,NULL,20,NULL,2000),(7,'PowerCore DC18',1,7,NULL,20,NULL,3500),(8,'PowerCore DC20',1,8,NULL,25,NULL,5000),(9,'PowerCore DC22',1,9,NULL,30,NULL,10000),(10,'PowerCore DC25',1,10,NULL,35,NULL,20000),(11,'PowerCore DC28',1,11,NULL,40,NULL,35000),(12,'RageOS',2,1,NULL,1,NULL,50),(13,'CritOS',2,2,NULL,1,NULL,50),(14,'ClarityOS',2,3,NULL,1,NULL,50);
 
 /*Table structure for table `fc_itemtypes` */
 
@@ -142,10 +144,13 @@ DROP TABLE IF EXISTS `fc_itemtypes`;
 CREATE TABLE `fc_itemtypes` (
   `itemtype_id` int(10) unsigned NOT NULL auto_increment,
   `itemtype_name` varchar(32) NOT NULL,
+  `itemtype_table` varchar(32) NOT NULL COMMENT 'sql table that stores items of this type',
   PRIMARY KEY  (`itemtype_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_itemtypes` */
+
+insert  into `fc_itemtypes`(`itemtype_id`,`itemtype_name`,`itemtype_table`) values (1,'Processor','fc_processors'),(2,'Operating System','fc_operatingsystems'),(3,'Memory Module','fc_memorymodules'),(4,'Network Module','fc_networkmodules'),(5,'Storage Devices','fc_storagedevices'),(6,'Software','fc_software'),(7,'Data','fc_data'),(8,'Miscellaneous','fc_miscellaneous');
 
 /*Table structure for table `fc_missions` */
 
@@ -190,28 +195,27 @@ DROP TABLE IF EXISTS `fc_operatingsystems`;
 
 CREATE TABLE `fc_operatingsystems` (
   `os_id` int(10) unsigned NOT NULL auto_increment,
-  `os_name` varchar(32) NOT NULL COMMENT 'Name of OS',
   `oskernel_id` smallint(5) unsigned NOT NULL COMMENT 'Kernel Type of the OS (this is for software compatibility)',
   PRIMARY KEY  (`os_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_operatingsystems` */
 
-insert  into `fc_operatingsystems`(`os_id`,`os_name`,`oskernel_id`) values (1,'RageOS',1),(2,'CritOS',2),(3,'ClarityOS',3);
+insert  into `fc_operatingsystems`(`os_id`,`oskernel_id`) values (1,1),(2,2),(3,3);
 
 /*Table structure for table `fc_oskernels` */
 
 DROP TABLE IF EXISTS `fc_oskernels`;
 
 CREATE TABLE `fc_oskernels` (
-  `oskernal_id` smallint(5) unsigned NOT NULL auto_increment,
+  `oskernel_id` smallint(5) unsigned NOT NULL auto_increment,
   `name` varchar(32) NOT NULL COMMENT 'Name of the operating system kernel',
-  PRIMARY KEY  (`oskernal_id`)
+  PRIMARY KEY  (`oskernel_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_oskernels` */
 
-insert  into `fc_oskernels`(`oskernal_id`,`name`) values (1,'Fury Kernal'),(2,'Havok Kernel'),(3,'CrystalOS');
+insert  into `fc_oskernels`(`oskernel_id`,`name`) values (1,'Fury Kernal'),(2,'Havok Kernel'),(3,'CrystalOS');
 
 /*Table structure for table `fc_processors` */
 
@@ -219,7 +223,6 @@ DROP TABLE IF EXISTS `fc_processors`;
 
 CREATE TABLE `fc_processors` (
   `processor_id` int(10) unsigned NOT NULL auto_increment,
-  `name` varchar(32) NOT NULL COMMENT 'Name of Processor',
   `core_count` smallint(5) unsigned NOT NULL COMMENT 'Number of cores on the processor',
   `core_speed` smallint(5) unsigned NOT NULL COMMENT 'Speed of cores (GHz)',
   PRIMARY KEY  (`processor_id`)
@@ -227,7 +230,7 @@ CREATE TABLE `fc_processors` (
 
 /*Data for the table `fc_processors` */
 
-insert  into `fc_processors`(`processor_id`,`name`,`core_count`,`core_speed`) values (1,'PowerCore SC12',1,1200),(2,'PowerCore SC15',1,1500),(3,'PowerCore SC20',1,2000),(4,'PowerCore SC24',1,2400),(5,'PowerCore SC28',1,2800),(6,'PowerCore SC32',1,3200),(7,'PowerCore DC18',2,1800),(8,'PowerCore DC20',2,2000),(9,'PowerCore DC22',2,2200),(10,'PowerCore DC25',2,2500),(11,'PowerCore DC28',2,2800);
+insert  into `fc_processors`(`processor_id`,`core_count`,`core_speed`) values (1,1,1200),(2,1,1500),(3,1,2000),(4,1,2400),(5,1,2800),(6,1,3200),(7,2,1800),(8,2,2000),(9,2,2200),(10,2,2500),(11,2,2800);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
