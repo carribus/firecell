@@ -134,7 +134,7 @@ HTML;
 echo <<<HTML
 		<!-- footer... !-->
     <div id="foot">
-      FireCell Administration System by Peter Mares, 2008
+      FireCell Administration System
     </div>
   </div> <!-- /CONTENT !-->
 </div>  
