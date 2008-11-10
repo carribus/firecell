@@ -197,6 +197,7 @@ bool FCLogicWorld::OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRou
   }
   else
   {
+/*
     // now that we have the player object, we need to load the player's facilities, items etc
     DBJobContext pCtx = new DBJobContext;
     pCtx->pThis = this;
@@ -205,7 +206,7 @@ bool FCLogicWorld::OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRou
     pCtx->pData = (void*)pPlayer;
 
     GetDatabase().ExecuteJob(DBQ_LOAD_ACCOUNT, (void*)pCtx, d.username, d.password);
-
+*/
     SendCharacterLoginStatus(d.account_id, d.character_id, CharacterSelectSucceeded, pRouter, d.clientSocket);
 
     // emit an event for the player logging in
