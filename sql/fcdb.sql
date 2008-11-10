@@ -91,13 +91,17 @@ CREATE TABLE `fc_computers` (
   `computer_id` bigint(20) unsigned NOT NULL auto_increment,
   `character_id` bigint(20) unsigned NOT NULL COMMENT 'ID of the character this computer belongs ',
   `processor_id` int(10) unsigned NOT NULL COMMENT 'Processor installed in the computer',
+  `name` varchar(32) default NULL COMMENT '[optional] Name of computer given by player',
   `memory_size` int(10) unsigned NOT NULL COMMENT 'Amount of Ram (in MB)',
   `os_id` int(10) unsigned NOT NULL COMMENT 'Operating system installed on machine',
-  `harddrive_size` bigint(20) unsigned NOT NULL COMMENT 'Amount of storage space on machine',
+  `harddrive_size` bigint(20) unsigned NOT NULL COMMENT 'Amount of storage space on machine (in MB)',
+  `network_speed` int(10) unsigned NOT NULL COMMENT 'Speed of network connection (MBits)',
   PRIMARY KEY  (`computer_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_computers` */
+
+insert  into `fc_computers`(`computer_id`,`character_id`,`processor_id`,`name`,`memory_size`,`os_id`,`harddrive_size`,`network_speed`) values (1,1,11,'GM Computer',4096,1,1048576,100),(2,2,1,'TestUser PC',1024,2,81920,4),(3,3,1,NULL,1024,3,81920,4);
 
 /*Table structure for table `fc_countries` */
 
@@ -124,6 +128,7 @@ CREATE TABLE `fc_items` (
   `description` text,
   `min_level` int(10) unsigned NOT NULL COMMENT 'minimum level that this item can be created for',
   `max_level` int(10) unsigned default NULL COMMENT 'maximum level that this item can be created for',
+  `npc_value` bigint(20) unsigned NOT NULL COMMENT 'Items NPC value',
   PRIMARY KEY  (`item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -175,9 +180,11 @@ CREATE TABLE `fc_operatingsystems` (
   `os_name` varchar(32) NOT NULL COMMENT 'Name of OS',
   `oskernel_id` smallint(5) unsigned NOT NULL COMMENT 'Kernel Type of the OS (this is for software compatibility)',
   PRIMARY KEY  (`os_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_operatingsystems` */
+
+insert  into `fc_operatingsystems`(`os_id`,`os_name`,`oskernel_id`) values (1,'RageOS',1),(2,'CritOS',2),(3,'ClarityOS',3);
 
 /*Table structure for table `fc_oskernels` */
 
@@ -187,9 +194,11 @@ CREATE TABLE `fc_oskernels` (
   `oskernal_id` smallint(5) unsigned NOT NULL auto_increment,
   `name` varchar(32) NOT NULL COMMENT 'Name of the operating system kernel',
   PRIMARY KEY  (`oskernal_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_oskernels` */
+
+insert  into `fc_oskernels`(`oskernal_id`,`name`) values (1,'Fury Kernal'),(2,'Havok Kernel'),(3,'CrystalOS');
 
 /*Table structure for table `fc_processors` */
 
@@ -197,12 +206,15 @@ DROP TABLE IF EXISTS `fc_processors`;
 
 CREATE TABLE `fc_processors` (
   `processor_id` int(10) unsigned NOT NULL auto_increment,
+  `name` varchar(32) NOT NULL COMMENT 'Name of Processor',
   `core_count` smallint(5) unsigned NOT NULL COMMENT 'Number of cores on the processor',
   `core_speed` smallint(5) unsigned NOT NULL COMMENT 'Speed of cores (GHz)',
   PRIMARY KEY  (`processor_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_processors` */
+
+insert  into `fc_processors`(`processor_id`,`name`,`core_count`,`core_speed`) values (1,'PowerCore SC12',1,1200),(2,'PowerCore SC15',1,1500),(3,'PowerCore SC20',1,2000),(4,'PowerCore SC24',1,2400),(5,'PowerCore SC28',1,2800),(6,'PowerCore SC32',1,3200),(7,'PowerCore DC18',2,1800),(8,'PowerCore DC20',2,2000),(9,'PowerCore DC22',2,2200),(10,'PowerCore DC25',2,2500),(11,'PowerCore DC28',2,2800);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
