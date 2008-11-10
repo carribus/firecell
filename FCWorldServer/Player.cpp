@@ -34,7 +34,6 @@ Player::Player(void)
 , m_clientSocket(0)
 , m_pEventSystem(NULL)
 {
-  printf("Player Object constructing -- ID:%ld, name=%ld, address=%p\n", m_id, m_name, this);
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -60,7 +60,9 @@ int FCLogicWorld::Start()
   // initialise the packet extractor
   m_pktExtractor.Prepare( __FCPACKET_DEF );
 
-  // kick off the database object
+  /*
+   *  Initialise the Database object
+   */
   if ( HasConsole() )
     printf("Setting up database connection...\n");
 
@@ -72,12 +74,15 @@ int FCLogicWorld::Start()
     }
   }
 
-  // get the eventing system up and running
+  /*
+   *  Configure the Event System and set up dependencies
+   */
   ConfigureEventSystem();
-
   m_playerMgr.SetEventSystem( EventSystem::GetInstance() );
 
-  // connect to the router(s) that we were configured to connect to
+  /*
+   *  Connect to the router(s) that we were configured to connect to
+   */
   ConnectToRouters();
 
   return 0;
@@ -192,6 +197,15 @@ bool FCLogicWorld::OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRou
   }
   else
   {
+    // now that we have the player object, we need to load the player's facilities, items etc
+    DBJobContext pCtx = new DBJobContext;
+    pCtx->pThis = this;
+    pCtx->clientSocket = clientSocket;
+    pCtx->pRouter = pSocket;
+    pCtx->pData = (void*)pPlayer;
+
+    GetDatabase().ExecuteJob(DBQ_LOAD_ACCOUNT, (void*)pCtx, d.username, d.password);
+
     SendCharacterLoginStatus(d.account_id, d.character_id, CharacterSelectSucceeded, pRouter, d.clientSocket);
 
     // emit an event for the player logging in

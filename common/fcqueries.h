@@ -41,4 +41,9 @@
 #define DBQ_LOGIN_CHARACTER               "login_character"
 #define DBQ_LOGOUT_CHARACTER              "logout_character"
 
+////////////////////////////////////////
+// CHARACTER LOADING QUERIES
+////////////////////////////////////////
+
+
 #endif//_FCQUERIES_H_

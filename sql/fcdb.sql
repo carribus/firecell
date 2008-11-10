@@ -125,6 +125,7 @@ CREATE TABLE `fc_items` (
   `item_id` bigint(20) unsigned NOT NULL auto_increment,
   `item_name` char(64) NOT NULL,
   `itemtype_id` int(10) unsigned NOT NULL COMMENT 'type of item (tb_itemtypes)',
+  `object_id` bigint(20) unsigned NOT NULL COMMENT 'ID of the object in the table corresponding to the item type',
   `description` text,
   `min_level` int(10) unsigned NOT NULL COMMENT 'minimum level that this item can be created for',
   `max_level` int(10) unsigned default NULL COMMENT 'maximum level that this item can be created for',
@@ -133,6 +134,18 @@ CREATE TABLE `fc_items` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_items` */
+
+/*Table structure for table `fc_itemtypes` */
+
+DROP TABLE IF EXISTS `fc_itemtypes`;
+
+CREATE TABLE `fc_itemtypes` (
+  `itemtype_id` int(10) unsigned NOT NULL auto_increment,
+  `itemtype_name` varchar(32) NOT NULL,
+  PRIMARY KEY  (`itemtype_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_itemtypes` */
 
 /*Table structure for table `fc_missions` */
 
