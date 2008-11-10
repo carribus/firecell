@@ -29,6 +29,14 @@
 
 class FCLogicWorld : public ServiceLogicBase
 {
+  struct DBJobContext
+  {
+    FCLogicAuth* pThis;
+    RouterSocket* pRouter;
+    FCSOCKET clientSocket;
+    void* pData;
+  };
+
 public:
   FCLogicWorld(void);
   ~FCLogicWorld(void);

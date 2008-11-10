@@ -125,6 +125,9 @@
 				RelativePath="..\common\CmdLineInfo.cpp">
 			</File>
 			<File
+				RelativePath=".\Computer.cpp">
+			</File>
+			<File
 				RelativePath=".\Event.cpp">
 			</File>
 			<File
@@ -179,6 +182,9 @@
 			</File>
 			<File
 				RelativePath="..\common\CmdLineInfo.h">
+			</File>
+			<File
+				RelativePath=".\Computer.h">
 			</File>
 			<File
 				RelativePath=".\Event.h">

@@ -54,9 +54,6 @@ void ServiceLogicBase::OnDisconnected(BaseSocket* pSocket, int nErrorCode)
 
 void ServiceLogicBase::OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen)
 {
-//  if ( HasConsole() )
-//    printf("[DATA_IN-%ld bytes]\n", nLen);
-
   PEPacket* pPkt = NULL;
 	RouterSocket* pRouter = (RouterSocket*)pSocket;
   CBinStream<FCBYTE, true>& stream = pRouter->GetDataStream();

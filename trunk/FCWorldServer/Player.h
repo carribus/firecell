@@ -23,6 +23,7 @@
 #include <string>
 #include "../common/fctypes.h"
 #include "IEventSystem.h"
+#include "Computer.h"
 #include "InGameIPAddress.h"
 
 using namespace std;
@@ -65,6 +66,7 @@ public:
   FCINT GetFameScale()                    { return m_fameScale; }
   FCULONG GetCityID()                     { return m_cityID; }
   FCULONG GetCountryID()                  { return m_countryID; }
+  Computer& GetComputer()                 { return m_computer; }
   InGameIPAddress& GetIP()                { return m_ip; }
   FCSOCKET GetClientSocket()              { return m_clientSocket; }
 
@@ -91,6 +93,7 @@ private:
   FCINT m_fameScale;
   FCULONG m_cityID;
   FCULONG m_countryID;
+  Computer m_computer;
   InGameIPAddress m_ip;
   FCSOCKET m_clientSocket;
 
