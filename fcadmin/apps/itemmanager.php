@@ -21,13 +21,31 @@ class Item
   public $npc_value;
 }
 
+class Processor
+{
+  public $id;
+  public $core_speed;
+  public $core_count;
+}
+
 class ItemsManagerApp implements IFCAdminApp
 {
+  const ITEMTYPE_PROCESSOR = 1;
+  const ITEMTYPE_OPERATINGSYSTEM = 2;
+  const ITEMTYPE_MEMORY = 3;
+  const ITEMTYPE_NETWORK = 4;
+  const ITEMTYPE_STORAGE = 5;
+  const ITEMTYPE_SOFTWARE = 6;
+  const ITEMTYPE_DATA = 7;
+  const ITEMTYPE_MISC = 8;
+
   private $db = NULL;
   private $itemAction = NULL;
   private $itemFilter = NULL;
   private $itemTypes = NULL;
   private $itemData = NULL;
+  private $itemType = NULL;                         // passed in 't' during 'Add' or 'Edit' functionality
+  private $objectData = NULL;
   private $numItems = 0;
   private $itemsPerPage = 50;
   private $currentPage = 0;
@@ -58,13 +76,13 @@ class ItemsManagerApp implements IFCAdminApp
     }
     
     $this->itemAction = $_GET["i"];
-    $this->itemFilter = $_GET["f"];
     $this->LoadItemTypes();
     
     switch ( $this->itemAction )
     {
       case  NULL:
         {
+          $this->itemFilter = $_GET["f"];
           // check if a specific page was requested (if not, set it to 0)
           $this->currentPage = $_GET["page"];
           if ( $this->currentPage == NULL )
@@ -82,8 +100,11 @@ class ItemsManagerApp implements IFCAdminApp
           
       default:
         {
+          $this->itemType = $_GET["t"];
           if ( $this->itemAction > -1 )
+          {
             $this->LoadItem( $this->itemAction );
+          }
         }
         break;
     }
@@ -107,7 +128,7 @@ class ItemsManagerApp implements IFCAdminApp
         break;
 
       default:
-        $this->render_itemform($this->userAction);
+        $this->render_itemform($this->itemAction);
         break;
     }
   }
@@ -116,8 +137,12 @@ class ItemsManagerApp implements IFCAdminApp
 
   private function render_options()
   {
-    echo "<a href=\"?a=items&i=-1\">Add Item</a>";
-    echo "<br/><br/>";
+    echo "<center>";
+    foreach ($this->itemTypes as $id => $type)
+    {
+      echo "<a href=\"?a=items&i=-1&t=$id\">Add ".$type->name."</a> |&nbsp;";
+    }
+    echo "</center><br/><br/>";
   }
   
   /////////////////////////////////////////////////////////////////////////////////
@@ -148,11 +173,11 @@ LIST;
       
       echo "<tr>";
       echo "<td>".$item->id."</td>";
-      echo "<td><a href=\"?a=items&i=".$item->id."\">".$item->name."</a></td>";
+      echo "<td><a href=\"?a=items&i=".$item->id."&t=".$item->type_id."\">".$item->name."</a></td>";
       echo "<td>".$type->name."</td>";
       echo "<td>".$item->min_level." - ".$item->max_level."</td>";
       echo "<td>".$item->npc_value."</td>";
-      echo "<td><a href=\"actions/delitem.php?aid=".$item->id."\">Delete</a>";
+      echo "<td><a href=\"actions/delitem.php?iid=".$item->id."\">Delete</a>";
       echo "</tr>";
       $itemsRendered++;
       if ( $itemsRendered >= $this->itemsPerPage )
@@ -202,9 +227,10 @@ echo <<<FILTERS
 FILTERS;
     // echo the item types into the selection list
     for ( $i = 0; $i < count($this->itemTypes); $i++ )
-    {
+    {                          
       $type = $this->itemTypes[$i];
-      echo "<option value=\"".$type->id."\">".$type->name."</option>";    
+      if ( $type != NULL )
+        echo "<option value=\"".$type->id."\">".$type->name."</option>";    
     }
     
 echo <<<FILTERS
@@ -224,11 +250,178 @@ FILTERS;
 
   private function render_itemform($itemID)
   {
-    // if we have an item loaded
-    if ( $this->itemData != NULL )
+    switch ( $this->itemType )
     {
-    
+      case  constant("ItemsManagerApp::ITEMTYPE_PROCESSOR"):
+        $this->render_processor_form($itemID);
+        break;
+        
+      case  constant("ItemsManagerapp::ITEMTYPE_OPERATINGSYSTEM"):
+        $this->render_os_form($itemID);
+        break;
+        
+      case  constant("ItemsManagerapp::ITEMTYPE_MEMORY"):
+        break;
+        
+      case  constant("ItemsManagerapp::ITEMTYPE_NETWORK"):
+        break;
+        
+      case  constant("ItemsManagerapp::ITEMTYPE_STORAGE"):
+        break;
+        
+      case  constant("ItemsManagerapp::ITEMTYPE_SOFTWARE"):
+        break;
+        
+      case  constant("ItemsManagerapp::ITEMTYPE_DATA"):
+        break;
+        
+      case  constant("ItemsManagerapp::ITEMTYPE_MISC"):
+        break;
+        
+      default:
+        echo "Unknown type (".$this->itemType.")<br/>";
+        break;
     }
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////
+
+  private function render_processor_form($itemID)
+  {
+    $userAction = ($itemID == -1 ? "additem" : "edititem");
+    $readOnly = ($itemID == -1 ? "" : "readonly=\"yes\"");
+    
+    $itemName = NULL;
+    $minLevel = 1;
+    $maxLevel = NULL;
+    $npcValue = 0;
+    $description = NULL;
+    $objectID = -1;
+    $coreCount = 0;
+    $coreSpeed = 0;
+    
+    if ( $itemID != -1 )
+    {
+      $itemName = $this->itemData->name;
+      $minLevel = $this->itemData->min_level;
+      $maxLevel = ($this->itemData->max_level == "Max" ? NULL : $this->itemData->max_level);
+      $npcValue = $this->itemData->npc_value;
+      $description = $this->itemData->description;
+      $coreCount = $this->objectData->core_count;
+      $coreSpeed = $this->objectData->core_speed;
+      $objectID = $this->objectData->id;
+    }
+    
+    echo "<h2>".($itemID == -1 ? "Adding " : "Editing ")." processor</h2><br/>";
+    
+echo <<<FORMDEF
+    <form name="$userAction" method="post" action="actions/$userAction.php">
+      <input type="hidden" name="item_type" value="1" />
+      <table>
+        <tr>
+          <td>Name:</td>
+          <td><input type="text" name="item_name" value="$itemName" /></td>
+        </tr>
+        <tr>
+          <td>Minimum Level:</td>
+          <td><input type="text" name="min_level" value="$minLevel" /></td>
+        </tr>
+        <tr>
+          <td>Maximum Level:</td>
+          <td><input type="text" name="max_level" value="$maxLevel" /> (leave empty for max)</td>
+        </tr>
+        <tr>
+          <td>NPC Value:</td>
+          <td><input type="text" name="npc_value" value="$npcValue" /></td>
+        </tr>
+        <tr>
+          <td>Core Count:</td>
+          <td><input type="text" name="core_count" value="$coreCount" /></td>
+        </tr>
+        <tr>
+          <td>Core Speed:</td>
+          <td><input type="text" name="core_speed" value="$coreSpeed" /> Mhz</td>
+        </tr>
+        <tr>
+          <td>Description:</td>
+          <td><textarea name="description" cols="50" rows="5">$description</textarea></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><input type="submit" value="Submit" /></td>
+        </tr>
+      </table>
+FORMDEF;
+
+    if ( $itemID != -1 )
+    {
+      echo "<input type=\"hidden\" name=\"item_id\" value=\"$itemID\" />";          // the item ID
+      echo "<input type=\"hidden\" name=\"object_id\" value=\"$objectID\" />";
+    }
+
+echo <<<FORMDEF
+    </form>
+FORMDEF;
+  
+  }
+  
+  /////////////////////////////////////////////////////////////////////////////////
+
+  private function render_os_form($itemID)
+  {
+    $userAction = ($itemID == -1 ? "addos" : "editos");
+    $readOnly = ($itemID == -1 ? "" : "readonly=\"yes\"");
+    
+    $itemName = NULL;
+    $minLevel = 1;
+    $maxLevel = NULL;
+    $npcValue = 0;
+    
+    if ( $itemID != -1 )
+    {
+      $itemName = $this->itemData->name;
+      $minLevel = $this->itemData->min_level;
+      $maxLevel = ($this->itemData->max_level == "Max" ? NULL : $this->itemData->max_level);
+      $npcValue = $this->itemData->npc_value;
+    }
+    
+    echo "<h2>".($itemID == -1 ? "Adding " : "Editing ")." processor</h2><br/>";
+    
+echo <<<FORMDEF
+    <form name="$userAction" method="post" action="actions/$userAction.php">
+      <table>
+        <tr>
+          <td>Name:</td>
+          <td><input type="text" name="item_name" value="$itemName" /></td>
+        </tr>
+        <tr>
+          <td>Minimum Level:</td>
+          <td><input type="text" name="min_level" value="$minLevel" /></td>
+        </tr>
+        <tr>
+          <td>Maximum Level:</td>
+          <td><input type="text" name="max_level" value="$maxLevel" /> (leave empty for max)</td>
+        </tr>
+        <tr>
+          <td>NPC Value:</td>
+          <td><input type="text" name="npc_value" value="$npcValue" /></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Description:</td>
+          <td><textarea name="description" cols="50" rows="5"></textarea></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><input type="submit" value="Submit" /></td>
+        </tr>
+      </table>
+    </form>
+FORMDEF;
+  
   }
   
   /////////////////////////////////////////////////////////////////////////////////
@@ -320,14 +513,29 @@ FILTERS;
     $query = "SELECT      * ".
              "FROM        fc_items items ".
              "INNER JOIN  fc_itemtypes types ".
-             "ON          type.itemtype_id = items.itemtype_id ".
+             "ON          types.itemtype_id = items.itemtype_id ".
              "WHERE       items.item_id = $itemID";
-             
     $result = $this->db->Execute($query);
     if ( $result != NULL )
     {
       if ( $line = mysql_fetch_array($result, MYSQL_ASSOC) )
         $this->itemData = $this->CreateItemFromRecord($line);
+    }
+    
+    // now that we have the item shell, we need to load the underlying object
+    if ( $this->itemData != NULL )
+    {
+      // get the table for the object type
+      $objType = $this->itemTypes[ $this->itemData->type_id ];
+      $query = "SELECT * FROM ".$objType->dbTable." WHERE processor_id = ".$this->itemData->object_id;
+      $result = $this->db->Execute($query);
+      if ( $result != NULL )
+      {
+        if ( $line = mysql_fetch_array($result, MYSQL_ASSOC) )
+        {
+          $this->CreateObjectFromRecord($objType->id, $line);
+        }
+      }
     }
   }  
 
@@ -350,5 +558,69 @@ FILTERS;
 
     return $item;    
   }
+  
+  /////////////////////////////////////////////////////////////////////////////////
+
+  private function CreateObjectFromRecord($objType, $record)
+  {
+    if ( $record == NULL )
+      return false;
+      
+    switch ( $objType )
+    {
+      case  constant("ItemsManagerApp::ITEMTYPE_PROCESSOR"):
+        $this->CreateProcessorFromRecord($record);
+        break;
+        
+      case  constant("ItemsManagerapp::ITEMTYPE_OPERATINGSYSTEM"):
+        $this->CreateOSFromRecord($record);
+        break;
+        
+      case  constant("ItemsManagerapp::ITEMTYPE_MEMORY"):
+        break;
+        
+      case  constant("ItemsManagerapp::ITEMTYPE_NETWORK"):
+        break;
+        
+      case  constant("ItemsManagerapp::ITEMTYPE_STORAGE"):
+        break;
+        
+      case  constant("ItemsManagerapp::ITEMTYPE_SOFTWARE"):
+        break;
+        
+      case  constant("ItemsManagerapp::ITEMTYPE_DATA"):
+        break;
+        
+      case  constant("ItemsManagerapp::ITEMTYPE_MISC"):
+        break;
+        
+      default:
+        echo "Unknown type (".$this->itemType.")<br/>";
+    }
+    
+    return ($this->objectData != NULL);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////
+
+  private function CreateProcessorFromRecord($record)
+  {
+    if ( $record == NULL )
+     return false;
+     
+    $this->objectData = new Processor;
+    $this->objectData->id = $record["processor_id"];
+    $this->objectData->core_count = $record["core_count"];
+    $this->objectData->core_speed = $record["core_speed"];    
+  }
+  
+  /////////////////////////////////////////////////////////////////////////////////
+
+  /////////////////////////////////////////////////////////////////////////////////
+
+  /////////////////////////////////////////////////////////////////////////////////
+
+  /////////////////////////////////////////////////////////////////////////////////
+
 }
 ?>

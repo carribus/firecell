@@ -45,5 +45,10 @@ class MySQLDB
 		
 		return $result;
 	}
+  
+  public function GetLastInsertedID()
+  {
+    return mysql_insert_id($this->link);
+  }
 }
 ?>
