@@ -294,12 +294,13 @@ bool FCLogicAuth::OnCommandClientDisconnect(PEPacket* pPkt, RouterSocket* pSocke
   {
     // NOTE: This might be a bit brutal. Possibly investigate the potential of putting the account on a disconnect
     //       timer, at the end of which we log the account out. This will potentially make reconnects a little easier.
+/*
     pCtx = new DBJobContext;
     pCtx->pThis = this;
     pCtx->clientSocket = clientSocket;
     pCtx->pRouter = pSocket;
-
-    GetDatabase().ExecuteJob(DBQ_LOGOUT_CHARACTER, (void*)pCtx, pAccount->GetID(), pAccount->GetCurrentCharacterID());
+*/
+    GetDatabase().ExecuteJob(DBQ_LOGOUT_CHARACTER, NULL, pAccount->GetID(), pAccount->GetCurrentCharacterID());
 
     AccountLogout( pAccount );
   }
@@ -561,3 +562,5 @@ void FCLogicAuth::OnDBJob_LoginCharacter(DBIResultSet& resultSet, void*& pContex
   delete pCtx;
   pContext = NULL;
 }
+
+///////////////////////////////////////////////////////////////////////
