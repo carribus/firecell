@@ -66,7 +66,7 @@ CREATE TABLE `fc_characters` (
 
 /*Data for the table `fc_characters` */
 
-insert  into `fc_characters`(`character_id`,`account_id`,`name`,`xp`,`level`,`fame_scale`,`country_id`,`city_id`,`is_logged_in`) values (1,1,'FireCell_GM',0,1,0,1,1,0),(2,1,'TestCharacter',0,1,0,2,2,0),(3,2,'TestUserCharacter',0,1,0,3,3,0);
+insert  into `fc_characters`(`character_id`,`account_id`,`name`,`xp`,`level`,`fame_scale`,`country_id`,`city_id`,`is_logged_in`) values (1,1,'FireCell_GM',0,1,0,1,1,1),(2,1,'TestCharacter',0,1,0,2,2,0),(3,2,'TestUserCharacter',0,1,0,3,3,0);
 
 /*Table structure for table `fc_cities` */
 
@@ -101,7 +101,7 @@ CREATE TABLE `fc_computers` (
 
 /*Data for the table `fc_computers` */
 
-insert  into `fc_computers`(`computer_id`,`character_id`,`processor_id`,`name`,`memory_size`,`os_id`,`harddrive_size`,`network_speed`) values (1,1,11,'GM Computer',4096,1,1048576,100),(2,2,1,'TestUser PC',1024,2,81920,4),(3,3,1,NULL,1024,3,81920,4);
+insert  into `fc_computers`(`computer_id`,`character_id`,`processor_id`,`name`,`memory_size`,`os_id`,`harddrive_size`,`network_speed`) values (1,1,11,'GM Computer',4096,12,1048576,100),(2,2,1,'TestUser PC',1024,13,81920,4),(3,3,1,NULL,1024,14,81920,4);
 
 /*Table structure for table `fc_countries` */
 

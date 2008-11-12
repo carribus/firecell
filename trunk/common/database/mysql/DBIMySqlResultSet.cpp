@@ -19,7 +19,8 @@
 */
 #include "DBIMySqlResultSet.h"
 
-DBIMySqlResultSet::DBIMySqlResultSet(void)
+DBIMySqlResultSet::DBIMySqlResultSet(DBIResults* pParent)
+: DBIResultSet(pParent)
 {
 }
 
@@ -48,7 +49,9 @@ void DBIMySqlResultSet::Process(MYSQL_RES* result)
     for ( nField = 0; nField < numFields; nField++ )
     {
       char* pValue = row[nField];
-      AddColumnDataForRow(fields[nField].name, row[nField]);
+      if ( !pValue )
+        pValue = "";
+      AddColumnDataForRow(fields[nField].name, pValue);
     }
   }
 

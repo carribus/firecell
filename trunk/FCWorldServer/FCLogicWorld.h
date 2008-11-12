@@ -25,13 +25,16 @@
 #include <queue>
 #include "Player.h"
 #include "PlayerManager.h"
+#include "ItemManager.h"
 #include "../common/ServiceLogicBase.h"
+#include "../common/threading.h"
 
 class FCLogicWorld : public ServiceLogicBase
 {
   struct DBJobContext
   {
-    FCLogicAuth* pThis;
+    DBJobContext() : pThis(NULL), pRouter(NULL), clientSocket(0), pData(NULL) {}
+    FCLogicWorld* pThis;
     RouterSocket* pRouter;
     FCSOCKET clientSocket;
     void* pData;
@@ -71,10 +74,21 @@ private:
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
 
   /*
+   *  DB Job Handlers
+   */
+  static void OnDBJob_LoadItemTypes(DBIResultSet& resultSet, void*& pContext);
+  static void OnDBJob_LoadItemDefs(DBIResultSet& resultSet, void*& pContext);
+  static void OnDBJob_LoadObjectData(DBIResultSet& resultSet, void*& pContext);
+  static void OnDBJob_LoadCharacterComputer(DBIResultSet& resultSet, void*& pContext);
+
+  /*
    *  Private members
    */
-
   PlayerManager         m_playerMgr;
+  ItemManager           m_itemMgr;
+
+  pthread_cond_t        m_condSync;
+  pthread_mutex_t       m_mutexSync;
 };
 
 #endif//_FCLOGICWORLD_H_

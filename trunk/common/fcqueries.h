@@ -34,6 +34,15 @@
  */
 
 ////////////////////////////////////////
+// ITEM LOADING QUERIES
+////////////////////////////////////////
+#define DBQ_LOAD_ITEM_TYPES               "load_item_types"
+#define DBQ_LOAD_ITEM_DEFS                "load_items"
+#define DBQ_LOAD_PROCESSOR_ITEM           "load_item_processor"
+#define DBQ_LOAD_OS_ITEM                  "load_item_os"
+#define DBQ_LOAD_MEMORY_ITEM              "load_item_memory"
+
+////////////////////////////////////////
 // ACCOUNT QUERIES
 ////////////////////////////////////////
 #define DBQ_LOAD_ACCOUNT                  "load_account"
@@ -44,6 +53,7 @@
 ////////////////////////////////////////
 // CHARACTER LOADING QUERIES
 ////////////////////////////////////////
+#define DBQ_LOAD_CHARACTER_COMPUTER       "load_character_computer"
 
 
 #endif//_FCQUERIES_H_

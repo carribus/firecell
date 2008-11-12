@@ -26,6 +26,7 @@
 
 using namespace std;
 
+class DBIResults;
 class DBIResultSet
 {
 protected:
@@ -51,12 +52,17 @@ protected:
   };
 
 public:
-  DBIResultSet(void);
+  DBIResultSet(DBIResults* pParent);
   virtual ~DBIResultSet(void);
 
   size_t AddColumn(const string& name, unsigned short type);
   void AddColumnDataForRow(const string& name, const string& value);
-  string GetValue(const string& name, size_t row);
+  string GetStringValue(const string& name, size_t row);
+  unsigned long GetULongValue(const string& name, size_t row);
+  unsigned short GetShortValue(const string& name, size_t row);
+  unsigned char GetByteValue(const string& name, size_t row);
+
+  bool IsLastResultSet();
   size_t GetRowCount()                                { return m_rowCount; }
 
 protected:
@@ -65,6 +71,7 @@ protected:
 
 private:
 
+  DBIResults*                    m_pParent;
   map< string, DBIColumn >       m_columns;
   size_t                         m_rowCount;
 };

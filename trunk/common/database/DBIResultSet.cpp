@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "DBIResults.h"
 #include "DBIResultSet.h"
 
 string DBIResultSet::DBIColumn::GetValue(size_t index)
@@ -31,8 +32,9 @@ string DBIResultSet::DBIColumn::GetValue(size_t index)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-DBIResultSet::DBIResultSet(void)
-: m_rowCount(0)
+DBIResultSet::DBIResultSet(DBIResults* pParent)
+: m_pParent(pParent)
+, m_rowCount(0)
 {
 }
 
@@ -73,7 +75,7 @@ void DBIResultSet::AddColumnDataForRow(const string& name, const string& value)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-string DBIResultSet::GetValue(const string& name, size_t row)
+string DBIResultSet::GetStringValue(const string& name, size_t row)
 {
   string val;
   map<string, DBIColumn>::iterator it = m_columns.find(name);
@@ -84,4 +86,35 @@ string DBIResultSet::GetValue(const string& name, size_t row)
   }
 
   return val;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+unsigned long DBIResultSet::GetULongValue(const string& name, size_t row)
+{
+  return atoi(GetStringValue(name, row).c_str());
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+unsigned short DBIResultSet::GetShortValue(const string& name, size_t row)
+{
+  return (unsigned short)atoi(GetStringValue(name, row).c_str());
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+unsigned char DBIResultSet::GetByteValue(const string& name, size_t row)
+{
+  return (unsigned char)atoi(GetStringValue(name, row).c_str());
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+bool DBIResultSet::IsLastResultSet()
+{
+  if ( !m_pParent )
+    return true;
+
+  return (m_pParent->GetCount() == 0);
 }

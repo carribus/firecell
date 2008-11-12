@@ -40,7 +40,9 @@ public:
 
   bool Initialise(string strEngine, string server, string dbName, string user, string pass, FCUINT uiNumWorkerThreads = 2);
 
+  string GetQueryByName(const string& QueryName);
   bool ExecuteJob(const string QueryName, void* pData, ...);
+  bool ExecuteDirectQuery(const string query, const string ref, void* pData);
   size_t GetCompletedJobCount();
   bool GetNextCompletedJob(FCDBJob& job);
 
@@ -54,6 +56,7 @@ private:
   void StartWorkerThreads(FCUINT uiNumThreads);
   void StopWorkerThreads();
 
+  void QueueJob(const string query, const string ref = "", void* pData = NULL);
   void JobComplete(FCDBJob& job);
 
   static void* thrdDBWorker(void* pData);
