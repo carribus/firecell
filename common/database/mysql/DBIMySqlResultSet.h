@@ -32,7 +32,7 @@
 class DBIMySqlResultSet : public DBIResultSet
 {
 public:
-  DBIMySqlResultSet(void);
+  DBIMySqlResultSet(DBIResults* pParent);
   ~DBIMySqlResultSet(void);
 
   void Process(MYSQL_RES* result);

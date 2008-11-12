@@ -267,6 +267,7 @@ void ServiceLogicBase::HandleCompletedDBJob(FCDBJob& job)
   DBIResults* pResults = job.GetResults();
   DBIResultSet* pResultSet = NULL;
   void* pCtx = job.GetData();
+  bool bHandled = false;
 
   while ( pResults && pResults->GetCount() )
   {
@@ -278,17 +279,18 @@ void ServiceLogicBase::HandleCompletedDBJob(FCDBJob& job)
       if ( it != m_mapDBHandlers.end() )
       {
         (*it->second)(*pResultSet, pCtx);
-
-        // NOTE: We do not delete the context (pCtx) since it was not created/initialised by us. We expect the db handler to clean up after itself.
-        if ( pCtx != NULL && HasConsole() )
-        {
-          printf("Possible leak of DBJob context: JobRef=%s\n", jobRef.c_str());
-        }
+        bHandled = true;
       }
 
       // clear the result set
       delete pResultSet;
     }
+  }
+
+  // NOTE: We do not delete the context (pCtx) since it was not created/initialised by us. We expect the db handler to clean up after itself.
+  if ( pCtx != NULL && HasConsole() )
+  {
+    printf("Possible leak of DBJob context: JobRef=%s\n", jobRef.c_str());
   }
 
   // delete the results object

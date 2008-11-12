@@ -68,10 +68,20 @@ bool FCDatabase::Initialise(string strEngine, string server, string dbName, stri
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
+string FCDatabase::GetQueryByName(const string& QueryName)
+{
+  return m_pQueries->GetValue(QueryName);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
 bool FCDatabase::ExecuteJob(const string QueryName, void* pData, ...)
 {
   if ( !m_pQueries || QueryName.empty() )
     return false;
+
+  if ( QueryName.empty() )
+    printf("ExecuteJob: QueryName=%s\n", QueryName.c_str());
 
   bool bResult = false;
   string sqlQuery = m_pQueries->GetValue(QueryName);
@@ -88,17 +98,24 @@ bool FCDatabase::ExecuteJob(const string QueryName, void* pData, ...)
     va_end(marker);
 
     sqlQuery = buffer;
-    FCDBJob job(sqlQuery, pData);
 
-    job.SetReference(QueryName);
-
-    pthread_mutex_lock(&m_mutexJobs);
-    m_jobs.push(job);
-    pthread_mutex_unlock(&m_mutexJobs);
+    QueueJob(sqlQuery, QueryName, pData);
     bResult = true;
   }
 
   return bResult;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+bool FCDatabase::ExecuteDirectQuery(const string query, const string ref, void* pData)
+{
+  if ( query.empty() )
+    return false;
+
+  QueueJob(query, ref, pData);
+
+  return true;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -203,6 +220,19 @@ void FCDatabase::StopWorkerThreads()
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
+void FCDatabase::QueueJob(const string query, const string ref, void* pData)
+{
+  FCDBJob job(query, pData);
+
+  job.SetReference(ref);
+
+  pthread_mutex_lock(&m_mutexJobs);
+  m_jobs.push(job);
+  pthread_mutex_unlock(&m_mutexJobs);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
 void FCDatabase::JobComplete(FCDBJob& job)
 {
   pthread_mutex_lock(&m_mutexCompletedJobs);
@@ -244,15 +274,28 @@ void* FCDatabase::thrdDBWorker(void* pData)
     {
       // synchronised job fetch
       pthread_mutex_lock(&pThis->m_mutexJobs);
+      if ( pThis->m_jobs.size() == 0 )
+      {
+        pthread_mutex_unlock(&pThis->m_mutexJobs);
+        continue;
+      }
+
       FCDBJob job = pThis->m_jobs.front();
       pThis->m_jobs.pop();
       pthread_mutex_unlock(&pThis->m_mutexJobs);
       // execute the job
-      pResults = pConn->Execute(job);
-      job.SetResults(pResults);
-      job.IsCompleted(true);
-      // notify listener that a job has completed
-      pThis->JobComplete(job);
+      if ( !job.GetQuery().empty() )
+      {
+        pResults = pConn->Execute(job);
+        job.SetResults(pResults);
+        job.IsCompleted(true);
+        // notify listener that a job has completed
+        pThis->JobComplete(job);
+      }
+      else
+      {
+        // empty job in queue
+      }
     }
 
 

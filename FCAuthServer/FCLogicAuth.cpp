@@ -426,9 +426,9 @@ void FCLogicAuth::OnDBJob_LoadAccount(DBIResultSet& resultSet, void*& pContext)
     string strAccID;
     __FCPKT_LOGIN_RESP d;
 
-    int nAccountID = atoi( resultSet.GetValue( "account_id", 0 ).c_str() );
-    string strAccountName = resultSet.GetValue( "acc_name", 0 );
-    int nAccountType = atoi( resultSet.GetValue( "acc_type", 0 ).c_str() );
+    int nAccountID = resultSet.GetULongValue( "account_id", 0 );
+    string strAccountName = resultSet.GetStringValue( "acc_name", 0 );
+    int nAccountType = resultSet.GetULongValue( "acc_type", 0 );
 
     if ( nAccountID > 0 )
     {
@@ -484,13 +484,13 @@ void FCLogicAuth::OnDBJob_LoadCharacterInfo(DBIResultSet& resultSet, void*& pCon
       // there are characters available...
       for ( size_t i = 0; i < d.numCharacters; i++ )
       {
-        d.characters[i].character_id = atoi( resultSet.GetValue("character_id", i).c_str() );
-        strncpy( d.characters[i].name, resultSet.GetValue("name", i).c_str(), sizeof(d.characters[i].name)-1 );
-        d.characters[i].xp = atoi( resultSet.GetValue("xp", i).c_str() );
-        d.characters[i].level = atoi( resultSet.GetValue("level", i).c_str() );
-        d.characters[i].fame_scale = atoi( resultSet.GetValue("fame_scale", i).c_str() );
-        d.characters[i].country_id = atoi( resultSet.GetValue("country_id", i).c_str() );
-        d.characters[i].city_id = atoi( resultSet.GetValue("city_id", i).c_str() );
+        d.characters[i].character_id = resultSet.GetULongValue("character_id", i);
+        strncpy( d.characters[i].name, resultSet.GetStringValue("name", i).c_str(), sizeof(d.characters[i].name)-1 );
+        d.characters[i].xp = resultSet.GetULongValue("xp", i);
+        d.characters[i].level = resultSet.GetULongValue("level", i);
+        d.characters[i].fame_scale = resultSet.GetULongValue("fame_scale", i);
+        d.characters[i].country_id = resultSet.GetByteValue("country_id", i);
+        d.characters[i].city_id = resultSet.GetByteValue("city_id", i);
       }
     }
 
@@ -516,9 +516,9 @@ void FCLogicAuth::OnDBJob_LoginCharacter(DBIResultSet& resultSet, void*& pContex
   if ( !pThis )
     return;
 
-  FCUINT accountID = atoi( resultSet.GetValue("account_id", 0).c_str() );
-  FCUINT charID = atoi( resultSet.GetValue("character_id", 0).c_str() );
-  bool bLoggedIn = atoi( resultSet.GetValue("is_logged_in", 0).c_str() ) ? true : false;
+  FCUINT accountID = resultSet.GetULongValue("account_id", 0);
+  FCUINT charID = resultSet.GetULongValue("character_id", 0);
+  bool bLoggedIn = resultSet.GetULongValue("is_logged_in", 0) ? true : false;
   Account* pAccount = pThis->GetAccountByClientSocket( pCtx->clientSocket );
 
   if ( pAccount )
@@ -533,18 +533,8 @@ void FCLogicAuth::OnDBJob_LoginCharacter(DBIResultSet& resultSet, void*& pContex
   if ( pSock )
   {
     // notify the player of the character selection result
-    PEPacket pkt, pkt2;
-/*
-    __FCPKT_SELECT_CHARACTER_RESP d;
+    PEPacket pkt;
 
-    d.bSuccess = bLoggedIn;
-    d.character_id = charID;
-
-    PEPacketHelper::CreatePacket( pkt, FCPKT_RESPONSE, FCMSG_SELECT_CHARACTER );
-    PEPacketHelper::SetPacketData( pkt, (void*)&d, sizeof(__FCPKT_SELECT_CHARACTER_RESP) );
-    pkt.SetFieldValue("target", &pCtx->clientSocket);
-    pSock->Send(&pkt);
-*/
     if ( bLoggedIn )
     {
       // notify the world service of the character selection
@@ -554,17 +544,17 @@ void FCLogicAuth::OnDBJob_LoginCharacter(DBIResultSet& resultSet, void*& pContex
       d2.clientSocket = pCtx->clientSocket;
       d2.account_id = accountID;
       d2.character_id = charID;
-      strncpy( d2.name, resultSet.GetValue("name", 0).c_str(), sizeof(d2.name) );
-      d2.xp = atoi( resultSet.GetValue("xp", 0).c_str() );
-      d2.level = atoi( resultSet.GetValue("level", 0).c_str() );
-      d2.fame_scale = atoi( resultSet.GetValue("fame_scale", 0).c_str() );
-      d2.country_id = atoi( resultSet.GetValue("country_id", 0).c_str() );
-      d2.city_id = atoi( resultSet.GetValue("city_id", 0).c_str() );
+      strncpy( d2.name, resultSet.GetStringValue("name", 0).c_str(), sizeof(d2.name) );
+      d2.xp = resultSet.GetULongValue("xp", 0);
+      d2.level = resultSet.GetULongValue("level", 0);
+      d2.fame_scale = resultSet.GetULongValue("fame_scale", 0);
+      d2.country_id = resultSet.GetByteValue("country_id", 0);
+      d2.city_id = resultSet.GetByteValue("city_id", 0);
 
-      PEPacketHelper::CreatePacket( pkt2, FCPKT_COMMAND, FCSMSG_CHARACTER_LOGGEDIN );
-      PEPacketHelper::SetPacketData( pkt2, (void*)&d2, sizeof(d2) );
-      pkt2.SetFieldValue("target", (void*)&target);
-      pSock->Send(&pkt2);
+      PEPacketHelper::CreatePacket( pkt, FCPKT_COMMAND, FCSMSG_CHARACTER_LOGGEDIN );
+      PEPacketHelper::SetPacketData( pkt, (void*)&d2, sizeof(d2) );
+      pkt.SetFieldValue("target", (void*)&target);
+      pSock->Send(&pkt);
     }
   }  
 

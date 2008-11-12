@@ -79,7 +79,7 @@ DBIResults* DBIMySqlConnection::Execute(FCDBJob job)
 
       if ( result )
       {
-        pResultSet = new DBIMySqlResultSet;
+        pResultSet = new DBIMySqlResultSet(pResults);
         // process the results from the query
         pResultSet->Process(result);
         // add the resultset to the results object

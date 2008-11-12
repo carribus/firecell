@@ -146,6 +146,18 @@
 				RelativePath="..\common\inifile.cpp">
 			</File>
 			<File
+				RelativePath=".\ItemManager.cpp">
+			</File>
+			<File
+				RelativePath=".\ItemMemory.cpp">
+			</File>
+			<File
+				RelativePath=".\ItemOS.cpp">
+			</File>
+			<File
+				RelativePath=".\ItemProcessor.cpp">
+			</File>
+			<File
 				RelativePath="..\common\PacketExtractor.cpp">
 			</File>
 			<File
@@ -218,6 +230,24 @@
 			</File>
 			<File
 				RelativePath="..\fcserver\interfaces\IServiceLogic.h">
+			</File>
+			<File
+				RelativePath=".\Item.h">
+			</File>
+			<File
+				RelativePath=".\ItemManager.h">
+			</File>
+			<File
+				RelativePath=".\ItemMemory.h">
+			</File>
+			<File
+				RelativePath=".\ItemOS.h">
+			</File>
+			<File
+				RelativePath=".\ItemProcessor.h">
+			</File>
+			<File
+				RelativePath=".\ItemType.h">
 			</File>
 			<File
 				RelativePath="..\common\PacketExtractor.h">

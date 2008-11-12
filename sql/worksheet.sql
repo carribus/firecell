@@ -1,5 +1,10 @@
+-- Character's computer load
+SELECT		*
+FROM 		fc_computers
+WHERE		character_id = 1
+
 -- Item Selection
-select  	items.item_id, items.item_name, types.itemtype_name, types.itemtype_table, 
+select  	items.item_id, items.item_name, items.itemtype_id, types.itemtype_name, types.itemtype_table, 
 		items.object_id, items.description, items.min_level, items.max_level, items.npc_value
 from 		fc_items items
 inner join 	fc_itemtypes types
@@ -27,3 +32,7 @@ INNER JOIN	fc_operatingsystems o
 INNER JOIN 	fc_oskernels osk
 	ON 	osk.oskernel_id = o.oskernel_id
 WHERE		i.itemtype_id = 2
+
+
+SELECT os.os_id, os.oskernel_id, osk.name FROM fc_operatingsystems os INNER JOIN fc_oskernels osk ON os.oskernel_id = osk.oskernel_id WHERE os_id = 1
+select items.item_id, items.item_name, items.itemtype_id, types.itemtype_name, types.itemtype_table, items.object_id, items.description, items.min_level, items.max_level, items.npc_value from fc_items items inner join fc_itemtypes types on types.itemtype_id = items.itemtype_id
