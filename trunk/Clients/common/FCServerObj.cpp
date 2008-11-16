@@ -75,6 +75,20 @@ void FCServerObj::SendCharacterSelection(size_t character_id)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCServerObj::SendCharacterAssetRequest(size_t character_id)
+{
+  PEPacket pkt;
+  __FCPKT_CHARACTER_ASSET_REQUEST d;
+
+  d.character_id = (FCUINT)character_id;
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_CHARACTER_ASSET_REQUEST, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCServerObj::SendPacket(PEPacket& pkt)
 {
   char* pData = NULL;

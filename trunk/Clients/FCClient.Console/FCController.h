@@ -72,6 +72,7 @@ protected:
   bool OnResponseLogin(PEPacket* pPkt, BaseSocket* pSocket);  
   bool OnResponseGetCharacters(PEPacket* pPkt, BaseSocket* pSocket);  
   bool OnResponseSelectCharacter(PEPacket* pPkt, BaseSocket* pSocket);  
+  bool OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* pSocket);
 
 private:
 

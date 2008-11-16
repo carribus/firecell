@@ -171,6 +171,61 @@ void FCLogicWorld::SendCharacterLoginStatus(FCULONG accountID, FCULONG character
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCLogicWorld::SendCharacterAssetResponse(Player* pPlayer, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  if ( !pPlayer )
+    return;
+
+  PEPacket pkt;
+  __FCPKT_CHARACTER_ASSET_REQUEST_RESP d;
+  Computer& comp = pPlayer->GetComputer();
+
+  // computer data
+  d.computer.id = comp.GetID();
+  strncpy( d.computer.name, comp.GetName().c_str(), sizeof(d.computer.name)-1 );
+  d.computer.hddSize = comp.GetTotalHDD();
+  d.computer.networkSpeed = comp.GetNetworkSpeed();
+
+  // processor data
+  strncpy( d.computer.processor.name, comp.GetProcessor().GetName().c_str(), sizeof(d.computer.processor.name)-1 );
+  d.computer.processor.item_id = comp.GetProcessor().GetID();
+  d.computer.processor.itemtype_id = comp.GetProcessor().GetTypeID();
+  d.computer.processor.min_level = comp.GetProcessor().GetMinLevel();
+  d.computer.processor.max_level = comp.GetProcessor().GetMaxLevel();
+  d.computer.processor.npc_value = comp.GetProcessor().GetNPCValue();
+  d.computer.processor.core_count = comp.GetProcessor().GetCoreCount();
+  d.computer.processor.core_speed = comp.GetProcessor().GetCoreSpeed();
+
+  // operating system data
+  strncpy( d.computer.os.name, comp.GetOS().GetName().c_str(), sizeof(d.computer.os.name)-1 );
+  d.computer.os.item_id = comp.GetOS().GetID();
+  d.computer.os.itemtype_id = comp.GetOS().GetTypeID();
+  d.computer.os.min_level = comp.GetOS().GetMinLevel();
+  d.computer.os.max_level = comp.GetOS().GetMaxLevel();
+  d.computer.os.npc_value = comp.GetOS().GetNPCValue();
+  d.computer.os.kernel_id = comp.GetOS().GetKernelID();
+  strncpy( d.computer.os.kernel_name, comp.GetOS().GetKernelName().c_str(), sizeof( d.computer.os.kernel_name )-1 );
+
+  // memory data
+  strncpy( d.computer.memory.name, comp.GetMemory().GetName().c_str(), sizeof(d.computer.memory.name)-1 );
+  d.computer.memory.item_id = comp.GetMemory().GetID();
+  d.computer.memory.itemtype_id = comp.GetMemory().GetTypeID();
+  d.computer.memory.min_level = comp.GetMemory().GetMinLevel();
+  d.computer.memory.max_level = comp.GetMemory().GetMaxLevel();
+  d.computer.memory.npc_value = comp.GetMemory().GetNPCValue();
+  d.computer.memory.mem_size = comp.GetMemory().GetMemorySize();
+
+  // send the packet
+  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_CHARACTER_ASSET_REQUEST, ST_None);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(__FCPKT_CHARACTER_ASSET_REQUEST_RESP));
+
+  // send notification to Client
+  pkt.SetFieldValue("target", (void*)&clientSocket);
+  pRouter->Send(&pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
 {
   RouterSocket* pRouter = (RouterSocket*) pSocket;
@@ -186,6 +241,12 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
   case  FCSMSG_CHARACTER_LOGGEDIN:
     {
       bHandled = OnCommandCharacterLoggedIn(pPkt, pRouter, clientSock);
+    }
+    break;
+
+  case  FCMSG_CHARACTER_ASSET_REQUEST:
+    {
+      bHandled = OnCommandCharacterAssetRequest(pPkt, pRouter, clientSock);
     }
     break;
 
@@ -232,6 +293,27 @@ bool FCLogicWorld::OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRou
 
     GetDatabase().ExecuteJob(DBQ_LOAD_CHARACTER_COMPUTER, (void*)pCtx, d.character_id);
   }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandCharacterAssetRequest(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  __FCPKT_CHARACTER_ASSET_REQUEST d;
+  size_t dataLen = 0;
+  Player* pPlayer = NULL;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  if ( (pPlayer = m_playerMgr.GetPlayerByID( d.character_id )) )
+  {
+    SendCharacterAssetResponse( pPlayer, pRouter, clientSocket );
+  }
+  else
+    return false;
 
   return true;
 }
