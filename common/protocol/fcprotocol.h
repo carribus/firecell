@@ -67,6 +67,19 @@ struct __FCPACKET
 };
 
 /*
+ *  Basic structures for serialisation
+ */
+struct _game_item
+{
+  FCULONG item_id;
+  char name[65];
+  FCINT itemtype_id;
+  FCINT min_level;
+  FCINT max_level;
+  FCULONG npc_value;
+};
+
+/*
  *  Standard Message Identifiers
  */
 
@@ -142,6 +155,42 @@ struct __FCPKT_SELECT_CHARACTER_RESP
 {
   FCUINT character_id;
   e_SelectCharacterStatus status;
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_CHARACTER_ASSET_REQUEST     = 6;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_CHARACTER_ASSET_REQUEST
+{
+  FCUINT character_id;
+};
+
+struct __FCPKT_CHARACTER_ASSET_REQUEST_RESP
+{
+  struct _computer
+  {
+    FCULONG id;
+    char name[33];
+    FCUINT hddSize;
+    FCUINT networkSpeed;
+
+    struct _processor : public _game_item
+    {
+      FCSHORT core_count;
+      FCSHORT core_speed;
+    } processor;
+
+    struct _os : public _game_item
+    {
+      FCSHORT kernel_id;
+      char kernel_name[33];
+    } os;
+
+    struct _memory : public _game_item
+    {
+      FCULONG mem_size;
+    } memory;
+  } computer;
 };
 
 

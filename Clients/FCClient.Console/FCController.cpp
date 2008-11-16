@@ -275,6 +275,12 @@ bool FCController::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  case  FCMSG_CHARACTER_ASSET_REQUEST:
+    {
+      bHandled = OnResponseCharacterAssetRequest(pPkt, pSocket);
+    }
+    break;
+
   default:
     printf("Unknown Response packet received\n");
     pPkt->DebugDump();
@@ -410,11 +416,35 @@ bool FCController::OnResponseSelectCharacter(PEPacket* pPkt, BaseSocket* pSocket
   if ( d.status == CharacterSelectSucceeded )
   {
     printf("Character id:%ld selected\n", d.character_id);
+    m_server.SendCharacterAssetRequest(d.character_id);
   }
   else
   {
     printf("Character selection failed (%ld)\n", d.status);
   }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCController::OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_CHARACTER_ASSET_REQUEST_RESP d;
+  size_t dataLen;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+
+  printf("\nComputer Specifications:\n\n");
+  printf("\tName: %s\n\tHDD Size: %ld MB\n\tNetwork Speed: %ld MBits\n",
+         d.computer.name, d.computer.hddSize, d.computer.networkSpeed);
+  printf("\tProcessor:\n\t\tName: %s\n\t\tCore Count: %ld\n\t\tCore Speed: %ldMhz\n",
+         d.computer.processor.name, d.computer.processor.core_count, d.computer.processor.core_speed);
+  printf("\tOperating System:\n\t\tName: %s\n\t\tKernal: %s\n",
+         d.computer.os.name, d.computer.os.kernel_name);
+  printf("\tMemory Module:\n\t\tName: %s\n\t\tSize: %ldMB\n",
+         d.computer.memory.name, d.computer.memory.mem_size);
 
   return true;
 }
