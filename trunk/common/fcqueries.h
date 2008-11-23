@@ -43,6 +43,12 @@
 #define DBQ_LOAD_MEMORY_ITEM              "load_item_memory"
 
 ////////////////////////////////////////
+// WORLD DATA QUERIES
+////////////////////////////////////////
+#define DBQ_LOAD_WORLD_GEOGRAPHY          "load_world_geography"
+#define DBQ_LOAD_COMPANIES                "load_companies"
+
+////////////////////////////////////////
 // ACCOUNT QUERIES
 ////////////////////////////////////////
 #define DBQ_LOAD_ACCOUNT                  "load_account"

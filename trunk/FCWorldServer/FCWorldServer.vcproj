@@ -125,6 +125,9 @@
 				RelativePath="..\common\CmdLineInfo.cpp">
 			</File>
 			<File
+				RelativePath=".\Company.cpp">
+			</File>
+			<File
 				RelativePath=".\Computer.cpp">
 			</File>
 			<File
@@ -181,6 +184,9 @@
 			<File
 				RelativePath="..\common\sockserver\win\W32SocketServer.cpp">
 			</File>
+			<File
+				RelativePath=".\WorldManager.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -193,10 +199,19 @@
 				RelativePath="..\common\binstream.h">
 			</File>
 			<File
+				RelativePath=".\City.h">
+			</File>
+			<File
 				RelativePath="..\common\CmdLineInfo.h">
 			</File>
 			<File
+				RelativePath=".\Company.h">
+			</File>
+			<File
 				RelativePath=".\Computer.h">
+			</File>
+			<File
+				RelativePath=".\Country.h">
 			</File>
 			<File
 				RelativePath=".\Event.h">
@@ -272,6 +287,9 @@
 			</File>
 			<File
 				RelativePath="..\common\sockserver\win\W32SocketServer.h">
+			</File>
+			<File
+				RelativePath=".\WorldManager.h">
 			</File>
 		</Filter>
 		<Filter

@@ -66,7 +66,7 @@ CREATE TABLE `fc_characters` (
 
 /*Data for the table `fc_characters` */
 
-insert  into `fc_characters`(`character_id`,`account_id`,`name`,`xp`,`level`,`fame_scale`,`country_id`,`city_id`,`is_logged_in`) values (1,1,'FireCell_GM',0,1,0,1,1,1),(2,1,'TestCharacter',0,1,0,2,2,0),(3,2,'TestUserCharacter',0,1,0,3,3,0);
+insert  into `fc_characters`(`character_id`,`account_id`,`name`,`xp`,`level`,`fame_scale`,`country_id`,`city_id`,`is_logged_in`) values (1,1,'FireCell_GM',0,1,0,1,1,0),(2,1,'TestCharacter',0,1,0,2,2,0),(3,2,'TestUserCharacter',0,1,0,3,3,0);
 
 /*Table structure for table `fc_cities` */
 
@@ -76,12 +76,30 @@ CREATE TABLE `fc_cities` (
   `city_id` int(10) unsigned NOT NULL auto_increment,
   `country_id` int(10) unsigned NOT NULL COMMENT 'country that this city belongs to',
   `name` varchar(64) NOT NULL,
-  PRIMARY KEY  (`city_id`)
+  `IP_groupB` smallint(6) unsigned NOT NULL COMMENT 'Group B IP range for city',
+  PRIMARY KEY  (`city_id`,`IP_groupB`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_cities` */
 
-insert  into `fc_cities`(`city_id`,`country_id`,`name`) values (1,1,'New York'),(2,2,'Moscow'),(3,3,'Amsterdam'),(4,4,'London'),(5,5,'Sydney'),(6,6,'Beijing'),(7,7,'Johannesburg'),(8,8,'Tokyo'),(9,9,'Abuja'),(10,10,'Paris'),(11,11,'Rio de Janeiro');
+insert  into `fc_cities`(`city_id`,`country_id`,`name`,`IP_groupB`) values (1,1,'New York',45),(2,2,'Moscow',232),(3,3,'Amsterdam',152),(4,4,'London',136),(5,5,'Sydney',221),(6,6,'Beijing',54),(7,7,'Johannesburg',23),(8,8,'Tokyo',97),(9,9,'Abuja',195),(10,10,'Paris',36),(11,11,'Rio de Janeiro',144);
+
+/*Table structure for table `fc_companies` */
+
+DROP TABLE IF EXISTS `fc_companies`;
+
+CREATE TABLE `fc_companies` (
+  `company_id` int(10) unsigned NOT NULL auto_increment,
+  `company_name` varchar(64) NOT NULL,
+  `city_id` smallint(5) unsigned NOT NULL COMMENT 'City where company exists (to get Group A + B IP classes)',
+  `IP_groupC` smallint(5) unsigned default NULL COMMENT 'Group C IP Range (if these are null, the IP is not fixed)',
+  `IP_groupD` smallint(5) unsigned default NULL COMMENT 'Group D IP Range (if these are null, the IP is not fixed)',
+  PRIMARY KEY  (`company_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_companies` */
+
+insert  into `fc_companies`(`company_id`,`company_name`,`city_id`,`IP_groupC`,`IP_groupD`) values (1,'Anion Devices',1,1,242),(2,'CON Development',5,8,231),(3,'Advan Design',2,12,200),(4,'Incoak Group',3,25,194),(5,'Equic Capital',9,29,184),(6,'Tass Consulting',7,36,175),(7,'COA Ventures',8,43,156),(8,'Mango Corporation',6,44,127),(9,'Quant Research',4,56,126),(10,'RAM Consulting',11,71,123),(11,'Micon Research',1,72,118),(12,'Vlsilinx Incorporated',5,75,114),(13,'Zilinett',2,76,109),(14,'Catmel Asia',6,82,108),(15,'Belluted Systems, Inc',3,95,104),(16,'Citas Asia',7,99,99),(17,'Cadvanducts Ventures',8,104,95),(18,'Softwart Capital',9,108,82),(19,'Klated USA',3,109,76),(20,'Soft Design',4,114,75),(21,'MIC Manufacturing',6,118,72),(22,'TIOTIO Corporation',10,123,71),(23,'Compute Incorporated',10,126,56),(24,'Sechnology Research',1,127,44),(25,'COR Technology',2,156,43),(26,'Tectoduct Partners',7,175,36),(27,'Miconatione Design',5,184,29),(28,'Cromed Corporation',2,194,25),(29,'Ants Consulting',5,200,12),(30,'Systro',7,231,8),(31,'Systems Corporation',9,242,1),(32,'Macrosoft',1,NULL,NULL);
 
 /*Table structure for table `fc_computers` */
 
@@ -92,7 +110,7 @@ CREATE TABLE `fc_computers` (
   `character_id` bigint(20) unsigned NOT NULL COMMENT 'ID of the character this computer belongs ',
   `processor_id` int(10) unsigned NOT NULL COMMENT 'Processor installed in the computer',
   `name` varchar(32) default NULL COMMENT '[optional] Name of computer given by player',
-  `memory_size` int(10) unsigned NOT NULL COMMENT 'Amount of Ram (in MB)',
+  `memory_id` int(10) unsigned NOT NULL COMMENT 'ID of the memory item that is installed in this machine',
   `os_id` int(10) unsigned NOT NULL COMMENT 'Operating system installed on machine',
   `harddrive_size` bigint(20) unsigned NOT NULL COMMENT 'Amount of storage space on machine (in MB)',
   `network_speed` int(10) unsigned NOT NULL COMMENT 'Speed of network connection (MBits)',
@@ -101,7 +119,7 @@ CREATE TABLE `fc_computers` (
 
 /*Data for the table `fc_computers` */
 
-insert  into `fc_computers`(`computer_id`,`character_id`,`processor_id`,`name`,`memory_size`,`os_id`,`harddrive_size`,`network_speed`) values (1,1,11,'GM Computer',4096,12,1048576,100),(2,2,1,'TestUser PC',1024,13,81920,4),(3,3,1,NULL,1024,14,81920,4);
+insert  into `fc_computers`(`computer_id`,`character_id`,`processor_id`,`name`,`memory_id`,`os_id`,`harddrive_size`,`network_speed`) values (1,1,11,'GM Computer',19,12,1048576,100),(2,2,1,'TestUser PC',15,13,81920,4),(3,3,1,NULL,15,14,81920,4);
 
 /*Table structure for table `fc_countries` */
 
@@ -110,12 +128,13 @@ DROP TABLE IF EXISTS `fc_countries`;
 CREATE TABLE `fc_countries` (
   `country_id` int(10) unsigned NOT NULL auto_increment,
   `name` varchar(64) NOT NULL,
-  PRIMARY KEY  (`country_id`)
+  `IP_groupA` smallint(5) unsigned NOT NULL COMMENT 'Group A IP block for country',
+  PRIMARY KEY  (`country_id`,`IP_groupA`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_countries` */
 
-insert  into `fc_countries`(`country_id`,`name`) values (1,'USA'),(2,'Russia'),(3,'Netherlands'),(4,'United Kingdom'),(5,'Australia'),(6,'China'),(7,'South Africa'),(8,'Japan'),(9,'Nigeria'),(10,'France'),(11,'Brazil');
+insert  into `fc_countries`(`country_id`,`name`,`IP_groupA`) values (1,'USA',216),(2,'Russia',65),(3,'Netherlands',163),(4,'United Kingdom',229),(5,'Australia',124),(6,'China',45),(7,'South Africa',196),(8,'Japan',86),(9,'Nigeria',176),(10,'France',168),(11,'Brazil',79);
 
 /*Table structure for table `fc_items` */
 
@@ -131,11 +150,11 @@ CREATE TABLE `fc_items` (
   `max_level` int(10) unsigned default NULL COMMENT 'maximum level that this item can be created for',
   `npc_value` bigint(20) unsigned NOT NULL COMMENT 'Items NPC value',
   PRIMARY KEY  (`item_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_items` */
 
-insert  into `fc_items`(`item_id`,`item_name`,`itemtype_id`,`object_id`,`description`,`min_level`,`max_level`,`npc_value`) values (1,'PowerCore SC12',1,1,'This is the entry level processor for computers. It will do what you want, when you want it, but not much else.',1,NULL,120),(2,'PowerCore SC15',1,2,NULL,3,NULL,250),(3,'PowerCore SC20',1,3,NULL,7,NULL,500),(4,'PowerCore SC24',1,4,NULL,10,NULL,800),(5,'PowerCore SC28',1,5,NULL,15,NULL,1500),(6,'PowerCore SC32',1,6,NULL,20,NULL,2000),(7,'PowerCore DC18',1,7,NULL,20,NULL,3500),(8,'PowerCore DC20',1,8,NULL,25,NULL,5000),(9,'PowerCore DC22',1,9,NULL,30,NULL,10000),(10,'PowerCore DC25',1,10,NULL,35,NULL,20000),(11,'PowerCore DC28',1,11,NULL,40,NULL,35000),(12,'RageOS',2,1,NULL,1,NULL,50),(13,'CritOS',2,2,NULL,1,NULL,50),(14,'ClarityOS',2,3,NULL,1,NULL,50);
+insert  into `fc_items`(`item_id`,`item_name`,`itemtype_id`,`object_id`,`description`,`min_level`,`max_level`,`npc_value`) values (1,'PowerCore SC12',1,1,'This is the entry level processor for computers. It will do what you want, when you want it, but not much else.',1,NULL,150),(2,'PowerCore SC15',1,2,NULL,3,NULL,500),(3,'PowerCore SC20',1,3,NULL,7,NULL,1000),(4,'PowerCore SC24',1,4,NULL,10,NULL,3000),(5,'PowerCore SC28',1,5,NULL,15,NULL,8500),(6,'PowerCore SC32',1,6,NULL,20,NULL,15000),(7,'PowerCore DC18',1,7,NULL,20,NULL,30000),(8,'PowerCore DC20',1,8,NULL,25,NULL,60000),(9,'PowerCore DC22',1,9,NULL,30,NULL,100000),(10,'PowerCore DC25',1,10,NULL,35,NULL,500000),(11,'PowerCore DC28',1,11,NULL,40,NULL,1000000),(12,'RageOS',2,1,NULL,1,NULL,50),(13,'CritOS',2,2,NULL,1,NULL,50),(14,'ClarityOS',2,3,NULL,1,NULL,50),(15,'MegaRam 1GB',3,1,NULL,1,NULL,500),(16,'MegaRam 2GB',3,2,NULL,15,NULL,1000),(17,'MegaRam 4GB',3,3,NULL,25,NULL,5000),(18,'MegaRam 8GB',3,4,NULL,35,NULL,15000),(19,'MegaRam 16GB',3,5,NULL,50,NULL,35000);
 
 /*Table structure for table `fc_itemtypes` */
 
@@ -150,7 +169,21 @@ CREATE TABLE `fc_itemtypes` (
 
 /*Data for the table `fc_itemtypes` */
 
-insert  into `fc_itemtypes`(`itemtype_id`,`itemtype_name`,`itemtype_table`) values (1,'Processor','fc_processors'),(2,'Operating System','fc_operatingsystems'),(3,'Memory Module','fc_memorymodules'),(4,'Network Module','fc_networkmodules'),(5,'Storage Devices','fc_storagedevices'),(6,'Software','fc_software'),(7,'Data','fc_data'),(8,'Miscellaneous','fc_miscellaneous');
+insert  into `fc_itemtypes`(`itemtype_id`,`itemtype_name`,`itemtype_table`) values (1,'Processor','fc_processors'),(2,'Operating System','fc_operatingsystems'),(3,'Memory Module','fc_memory'),(4,'Network Module','fc_networkmodules'),(5,'Storage Devices','fc_storagedevices'),(6,'Software','fc_software'),(7,'Data','fc_data'),(8,'Miscellaneous','fc_miscellaneous');
+
+/*Table structure for table `fc_memory` */
+
+DROP TABLE IF EXISTS `fc_memory`;
+
+CREATE TABLE `fc_memory` (
+  `memory_id` smallint(5) unsigned NOT NULL auto_increment,
+  `memory_size` int(10) unsigned NOT NULL COMMENT 'Size of Memory Module in MB',
+  PRIMARY KEY  (`memory_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_memory` */
+
+insert  into `fc_memory`(`memory_id`,`memory_size`) values (1,1024),(2,2048),(3,4096),(4,8192),(5,16384);
 
 /*Table structure for table `fc_missions` */
 

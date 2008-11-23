@@ -167,6 +167,11 @@ struct __FCPKT_CHARACTER_ASSET_REQUEST
 
 struct __FCPKT_CHARACTER_ASSET_REQUEST_RESP
 {
+  struct _ip_address
+  {
+    FCSHORT a, b, c, d;
+  } ip_address;
+
   struct _computer
   {
     FCULONG id;

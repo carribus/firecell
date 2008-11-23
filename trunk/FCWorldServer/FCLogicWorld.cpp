@@ -64,6 +64,9 @@ int FCLogicWorld::Start()
     return -1;
   }
 
+  // seed the RNG
+  srand( (unsigned int)time(NULL) );
+
   // initialise the packet extractor
   m_pktExtractor.Prepare( __FCPACKET_DEF );
 
@@ -85,6 +88,8 @@ int FCLogicWorld::Start()
     RegisterDBHandler(DBQ_LOAD_ITEM_DEFS, OnDBJob_LoadItemDefs);
     RegisterDBHandler(DBQ_LOAD_OBJECT_DATA, OnDBJob_LoadObjectData);
     RegisterDBHandler(DBQ_LOAD_CHARACTER_COMPUTER, OnDBJob_LoadCharacterComputer);
+    RegisterDBHandler(DBQ_LOAD_WORLD_GEOGRAPHY, OnDBJob_LoadWorldGeography);
+    RegisterDBHandler(DBQ_LOAD_COMPANIES, OnDBJob_LoadCompanies);
 
     // Start the Item loading...
     if ( HasConsole() )
@@ -94,10 +99,12 @@ int FCLogicWorld::Start()
     pCtx->pThis = this;
     GetDatabase().ExecuteJob(DBQ_LOAD_ITEM_TYPES, (void*)pCtx);
 
-    // we want to pause here until the required data is loaded
+    // we want to pause here until the item data required data is loaded
     pthread_mutex_lock(&m_mutexSync);
     pthread_cond_wait(&m_condSync, &m_mutexSync);
     pthread_mutex_unlock(&m_mutexSync);
+
+    LoadWorldData();
   }
 
   /*
@@ -131,6 +138,20 @@ void FCLogicWorld::ConfigureEventSystem()
   FCDatabase& db = GetDatabase();
 
   events->Start();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::LoadWorldData()
+{
+  DBJobContext* pCtx = new DBJobContext;
+  pCtx->pThis = this;
+  GetDatabase().ExecuteJob(DBQ_LOAD_WORLD_GEOGRAPHY, (void*)pCtx);
+
+  // we want to pause here until the item data required data is loaded
+  pthread_mutex_lock(&m_mutexSync);
+  pthread_cond_wait(&m_condSync, &m_mutexSync);
+  pthread_mutex_unlock(&m_mutexSync);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -179,6 +200,9 @@ void FCLogicWorld::SendCharacterAssetResponse(Player* pPlayer, RouterSocket* pRo
   PEPacket pkt;
   __FCPKT_CHARACTER_ASSET_REQUEST_RESP d;
   Computer& comp = pPlayer->GetComputer();
+
+  // ip address
+  pPlayer->GetIP().GetIP( d.ip_address.a, d.ip_address.b, d.ip_address.c, d.ip_address.d );
 
   // computer data
   d.computer.id = comp.GetID();
@@ -284,6 +308,9 @@ bool FCLogicWorld::OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRou
   }
   else
   {
+    // generate an IP address for the player
+    m_worldMgr.GenerateIPAddress(pPlayer->GetCountryID(), pPlayer->GetCityID(), pPlayer->GetIP());
+
     // now that we have the player object, we need to load the player's facilities, items etc
     DBJobContext* pCtx = new DBJobContext;
     pCtx->pThis = this;
@@ -618,4 +645,88 @@ void FCLogicWorld::OnDBJob_LoadCharacterComputer(DBIResultSet& resultSet, void*&
 
   delete pCtx;
   pContext = NULL;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::OnDBJob_LoadWorldGeography(DBIResultSet& resultSet, void*& pContext)
+{
+  DBJobContext* pCtx = (DBJobContext*) pContext;
+  FCLogicWorld* pThis = pCtx->pThis;
+
+  if ( !pThis )
+    return;
+
+  // load the countries and cities
+  size_t rowCount = resultSet.GetRowCount();
+  FCULONG countryID, cityID;
+  FCSHORT countryIP, cityIP;
+  string countryName, cityName;
+  Country* pCountry = NULL;
+
+  for ( size_t i = 0; i < rowCount; i++ )
+  {
+    countryID = resultSet.GetULongValue("country_id", i);
+    countryName = resultSet.GetStringValue("country_name", i);
+    countryIP = resultSet.GetShortValue("IP_groupA", i);
+    cityID = resultSet.GetULongValue("city_id", i);
+    cityName = resultSet.GetStringValue("city_name", i);
+    cityIP = resultSet.GetShortValue("IP_groupB", i);
+
+    // create the country...
+    if ( (pCountry = pThis->m_worldMgr.AddCountry(countryID, countryName, countryIP)) )
+    {
+      pThis->m_worldMgr.AddCity(pCountry, cityID, cityName, cityIP);
+    }
+  }
+
+  delete pCtx;
+  pContext = NULL;
+
+  if ( pThis->HasConsole() )
+  {
+    printf("%ld locations loaded\n", rowCount);
+  }
+
+  pCtx = new DBJobContext;
+  pCtx->pThis = pThis;
+  pThis->GetDatabase().ExecuteJob(DBQ_LOAD_COMPANIES, (void*)pCtx);
+
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::OnDBJob_LoadCompanies(DBIResultSet& resultSet, void*& pContext)
+{
+  DBJobContext* pCtx = (DBJobContext*) pContext;
+  FCLogicWorld* pThis = pCtx->pThis;
+
+  if ( !pThis )
+    return;
+
+  size_t rowCount = resultSet.GetRowCount();
+  FCULONG companyID, cityID;
+  string name;
+  InGameIPAddress ip;
+
+  for ( size_t i = 0; i < rowCount; i++ )
+  {
+    companyID = resultSet.GetULongValue("company_id", i);
+    name = resultSet.GetStringValue("company_name", i);
+    cityID = resultSet.GetULongValue("city_id", i);
+    ip.SetIP(resultSet.GetShortValue("IP_groupA", i), 
+             resultSet.GetShortValue("IP_groupB", i),
+             resultSet.GetShortValue("IP_groupC", i),
+             resultSet.GetShortValue("IP_groupD", i));
+
+    pThis->m_worldMgr.AddCompany(companyID, name, cityID, ip);
+  }
+
+  delete pCtx;
+  pContext = NULL;
+
+  if ( pThis->HasConsole() )
+    printf("%ld companies loaded\n", rowCount);
+
+  pthread_cond_signal(&pThis->m_condSync);
 }
