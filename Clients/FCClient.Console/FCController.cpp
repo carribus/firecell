@@ -436,7 +436,8 @@ bool FCController::OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* p
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", &d, dataLen);
 
-  printf("\nComputer Specifications:\n\n");
+  printf("\nIP Address: %ld.%ld.%ld.%ld\n", d.ip_address.a, d.ip_address.b, d.ip_address.c, d.ip_address.d);
+  printf("Computer Specifications:\n\n");
   printf("\tName: %s\n\tHDD Size: %ld MB\n\tNetwork Speed: %ld MBits\n",
          d.computer.name, d.computer.hddSize, d.computer.networkSpeed);
   printf("\tProcessor:\n\t\tName: %s\n\t\tCore Count: %ld\n\t\tCore Speed: %ldMhz\n",

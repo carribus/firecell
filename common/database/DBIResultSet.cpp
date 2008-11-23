@@ -77,9 +77,10 @@ void DBIResultSet::AddColumnDataForRow(const string& name, const string& value)
 
 string DBIResultSet::GetStringValue(const string& name, size_t row)
 {
-  string val;
+  string val = "";
   map<string, DBIColumn>::iterator it = m_columns.find(name);
 
+  val = "";
   if ( it != m_columns.end() )
   {
     val = it->second.GetValue(row);
