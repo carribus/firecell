@@ -25,6 +25,9 @@
 
 FCController::FCController(void)
 : m_bConnected(false)
+, m_gameState(Loading)
+, m_CurrentCharacterID(0)
+, m_pCurrentModule(NULL)
 {
   InitializeCriticalSection(&m_hDataInMutex);
   InitializeCriticalSection(&m_hDataOutMutex);
@@ -51,6 +54,8 @@ bool FCController::Initialise(const string& username, const string& password)
   m_username = username;
   m_password = password;
 
+  m_modConsole.SetServerObject( &m_server );
+
   return true;
 }
 
@@ -60,6 +65,8 @@ FCINT FCController::Run()
 {
   string strServer = "127.0.0.1";
   short port = 6666;
+
+  m_gameState = Startup;
 
   if ( !ConnectToServer(strServer, port) )
   {
@@ -71,7 +78,6 @@ FCINT FCController::Run()
 
   printf("Requesting Server Info: ");
   m_server.RequestServerInfo();
-  m_server.Login(m_username.c_str(), m_password.c_str());
 
   // game loop
   m_hGameEvent = CreateEvent(0, 0, 0, 0);
@@ -79,6 +85,8 @@ FCINT FCController::Run()
   {
     ProcessIncomingData();
     ProcessOutgoingData();
+
+    QueueForAction();
 
     if ( !m_bConnected )
       break;
@@ -116,6 +124,107 @@ void FCController::Disconnect()
   m_sock.Disconnect();
   m_bConnected = false;
   SetEvent(m_hGameEvent);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCController::QueueForAction()
+{
+  switch ( m_gameState )
+  {
+  case  FCController::Loading:
+    break;
+
+  case  FCController::Startup:
+    break;
+
+  case  FCController::LoginRequired:
+    printf("User %s logging in... (password: %s)\n", m_username.c_str(), m_password.c_str());
+    m_server.Login(m_username.c_str(), m_password.c_str());
+    m_gameState = FCController::LoggingIn;
+    break;
+
+  case  FCController::LoggingIn:
+    break;
+
+  case  FCController::Idle:
+    {
+      if ( m_pCurrentModule )
+      {
+        m_pCurrentModule->QueueForAction();
+      }
+      else
+      {
+        printf("\nOptions:\n\n");
+
+        map<FCUINT, DesktopOption>::iterator it;
+        for ( it = m_desktopOptions.begin(); it != m_desktopOptions.end(); it++ )
+        {
+          printf("[%ld] %s\n", it->second.optionID, it->second.name);
+        }
+        printf("\nSelect an option: ");
+
+        int nOption = -1;
+        while ( !IsValidOption(nOption) )
+          nOption = getch()-48;
+
+        switch ( nOption )
+        {
+        case  0:
+          printf("\nExiting...\n");
+          SetEvent(m_hGameEvent);
+          break;
+
+        default:
+          {
+            map<FCUINT, DesktopOption>::iterator it = m_desktopOptions.find(nOption);
+            printf("\n%s selected\n", it->second.name);
+
+            switch (it->second.type)
+            {
+            case  Forum:
+              break;
+
+            case  News:
+              break;
+
+            case  Email:
+              break;
+
+            case  Console:
+              m_pCurrentModule = &m_modConsole;
+              m_pCurrentModule->SetCharacterID(m_CurrentCharacterID);
+              break;
+
+            case  Bank:
+              break;
+
+            case  Chat:
+              break;
+
+            case  HackingTools:
+              break;
+
+            default:
+              printf("(unknown option) - WTF was that?\n");
+              break;
+            }
+          }
+          break;
+        }
+      }
+    }
+    break;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCController::IsValidOption(int nOption)
+{
+  map<FCUINT, DesktopOption>::iterator it = m_desktopOptions.find(nOption);
+
+  return (it != m_desktopOptions.end());
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -281,9 +390,21 @@ bool FCController::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  case  FCMSG_GET_DESKTOP_OPTIONS:
+    {
+      bHandled = OnResponseGetDesktopOptions(pPkt, pSocket);
+    }
+    break;
+
   default:
-    printf("Unknown Response packet received\n");
-    pPkt->DebugDump();
+    if ( m_pCurrentModule )
+      bHandled = m_pCurrentModule->OnResponse(msgID, pPkt, pSocket);
+
+    if ( !bHandled )
+    {
+      printf("Unknown Response packet received (id:%ld)\n", msgID);
+      pPkt->DebugDump();
+    }
     break;
   }
 
@@ -316,6 +437,8 @@ bool FCController::OnResponseServiceInfo(PEPacket* pPkt, BaseSocket* pSocket)
   pPkt->GetField("data", &d, dataLen);
   printf("\n\n\tv%d.%d\n" \
           "\t%ld Connections\n\n", d.verMajor, d.verMinor, d.connectionCountRouter);
+
+  m_gameState = LoginRequired;
 
   return true;
 }
@@ -413,6 +536,7 @@ bool FCController::OnResponseSelectCharacter(PEPacket* pPkt, BaseSocket* pSocket
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", &d, dataLen);
 
+  m_CurrentCharacterID = d.character_id;
   if ( d.status == CharacterSelectSucceeded )
   {
     printf("Character id:%ld selected\n", d.character_id);
@@ -446,6 +570,42 @@ bool FCController::OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* p
          d.computer.os.name, d.computer.os.kernel_name);
   printf("\tMemory Module:\n\t\tName: %s\n\t\tSize: %ldMB\n",
          d.computer.memory.name, d.computer.memory.mem_size);
+
+  m_server.RequestDesktopOptions(m_CurrentCharacterID);
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCController::OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_GET_DESKTOP_OPTIONS_RESP* d;
+  DesktopOption option;
+  size_t dataLen;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  d = (__FCPKT_GET_DESKTOP_OPTIONS_RESP*) new FCBYTE[ dataLen ];
+  pPkt->GetField("data", d, dataLen);
+
+  for ( int i = 0; i < d->numOptions; i++ )
+  {
+    option.optionID = d->Options[i].optionID;
+    option.type = d->Options[i].type;
+    strncpy(option.name, d->Options[i].name, sizeof(option.name));
+
+    m_desktopOptions[option.optionID] = option;
+  }
+
+  // add the default quit option
+  option.optionID = 0;
+  option.type = 0;
+  strncpy(option.name, "Logout", sizeof(option.name));
+  m_desktopOptions[0] = option;
+
+  m_gameState = Idle;
+
+  delete [] (FCBYTE*)d;
 
   return true;
 }

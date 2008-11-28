@@ -22,11 +22,15 @@
 
 #include <string>
 #include <queue>
+#include <map>
 #include "../../common/fctypes.h"
 #include "../../common/PacketExtractor.h"
 #include "../../common/PEPacket.h"
 #include "../common/Socket/ClientSocket.h"
 #include "../common/FCServerObj.h"
+
+#include "IGameModule.h"
+#include "ModConsole.h"
 
 using namespace std;
 
@@ -39,6 +43,15 @@ class FCController : IBaseSocketSink
   };
   typedef queue<DataQueueItem> DataQueue;
 
+  enum GameState
+  {
+    Loading = 0,
+    Startup,
+    LoginRequired,
+    LoggingIn,
+    Idle
+  };
+
 public:
   FCController(void);
   virtual ~FCController(void);
@@ -50,6 +63,9 @@ protected:
 
   bool ConnectToServer(string server, short port);
   void Disconnect();
+
+  void QueueForAction();
+  bool IsValidOption(int nOption);
 
   //
   // Data processing
@@ -73,16 +89,27 @@ protected:
   bool OnResponseGetCharacters(PEPacket* pPkt, BaseSocket* pSocket);  
   bool OnResponseSelectCharacter(PEPacket* pPkt, BaseSocket* pSocket);  
   bool OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* pSocket);
+  bool OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket);
 
 private:
 
   string                  m_username,
                           m_password;
 
+  GameState               m_gameState;
+  FCUINT                  m_CurrentCharacterID;
   FCServerObj             m_server;
   BaseSocket              m_sock;
   bool                    m_bConnected;
   HANDLE                  m_hSockEvent;
+
+  struct DesktopOption
+  {
+    FCULONG optionID;
+    FCUINT type;
+    char name[32];
+  };
+  map<FCUINT, DesktopOption>   m_desktopOptions;
 
   HANDLE                  m_hGameEvent;
 
@@ -91,6 +118,12 @@ private:
   DataQueue               m_qDataIn;
   CRITICAL_SECTION        m_hDataOutMutex;
   DataQueue               m_qDataOut;
+
+  /*
+   *  Modules
+   */
+  IGameModule*            m_pCurrentModule;
+  ModConsole              m_modConsole;
 };
 
 #endif//_FCCONTROLLER_H_

@@ -64,6 +64,12 @@ int FCLogicWorld::Start()
     return -1;
   }
 
+  INIFile::CSection* pSection = m_config.GetSection("Paths");
+  if ( pSection )
+  {
+    m_pathFileSystems = pSection->GetValue("Filesystems");
+  }
+
   // seed the RNG
   srand( (unsigned int)time(NULL) );
 
@@ -125,6 +131,7 @@ int FCLogicWorld::Start()
 
 int FCLogicWorld::Stop()
 {
+  m_playerMgr.RemoveAllPlayers();
   EventSystem::Shutdown();
   DisconnectFromRouters();
   return 0;
@@ -250,6 +257,138 @@ void FCLogicWorld::SendCharacterAssetResponse(Player* pPlayer, RouterSocket* pRo
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCLogicWorld::SendCharacterDesktopOptions(Player* pPlayer, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  if ( !pPlayer )
+    return;
+
+  PEPacket pkt;
+  __FCPKT_GET_DESKTOP_OPTIONS_RESP* d = NULL;
+  int nPktLen = 0;
+  int numOptions = 7;
+  char* OptionNames[] =
+  {
+    "Hacking Forum",
+    "News Site",
+    "Email",
+    "Console",
+    "Bank",
+    "Chat",
+    "Hacking Tools"
+  };
+
+  nPktLen = sizeof(__FCPKT_GET_DESKTOP_OPTIONS_RESP) + ( (numOptions-1)*sizeof(__FCPKT_GET_DESKTOP_OPTIONS_RESP::DesktopOptions) );
+  d = (__FCPKT_GET_DESKTOP_OPTIONS_RESP*) new FCBYTE[ nPktLen ];
+  memset(d, 0, nPktLen);
+  d->numOptions = numOptions;
+
+  for ( int i = 0; i < numOptions; i++ )
+  {
+    d->Options[i].optionID = i+1;
+    d->Options[i].type = (DesktopOptionType)(i+1);
+    strncpy( d->Options[i].name, OptionNames[i], sizeof(d->Options[i].name) );
+  }
+
+  // send the packet
+  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_GET_DESKTOP_OPTIONS, ST_None);
+  PEPacketHelper::SetPacketData(pkt, 
+                                (void*)d, 
+                                nPktLen);
+
+  // send notification to Client
+  pkt.SetFieldValue("target", (void*)&clientSocket);
+  pRouter->Send(&pkt);
+
+  // clear the data portion
+  delete [] d;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::SendConsoleFileSystemInfo(FileSystem& fs, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  PEPacket pkt;
+  __FCPKT_CON_GET_FS_INFO_RESP d;
+
+  d.fsStyle = fs.GetFSStyle();
+  strncpy(d.dirSeperator, fs.GetDirSeperator().c_str(), sizeof(d.dirSeperator));
+
+  // send the packet
+  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_CON_GET_FS_INFO, ST_None);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(__FCPKT_CON_GET_FS_INFO_RESP));
+
+  // send notification to Client
+  pkt.SetFieldValue("target", (void*)&clientSocket);
+  pRouter->Send(&pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::SendConsoleFileList(string currentDir, vector<FileSystem::File> files, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  PEPacket pkt;
+  __FCPKT_CON_GET_FILE_LIST_RESP* d = NULL;
+  size_t numFiles = files.size();
+  size_t nPktLen = sizeof(__FCPKT_CON_GET_FILE_LIST_RESP) + ( (numFiles-1)*sizeof(__FCPKT_CON_GET_FILE_LIST_RESP::_files) );
+  FileSystem::File f;
+
+  d = (__FCPKT_CON_GET_FILE_LIST_RESP*) new FCBYTE[ nPktLen ];
+  memset(d, 0, nPktLen);
+  d->numFiles = (FCULONG)numFiles;
+
+  for ( size_t i = 0; i < numFiles; i++ )
+  {
+    f = files[i];
+    strncpy( d->Files[i].filename, f.filename.c_str(), sizeof(d->Files[i].filename) );
+    d->Files[i].is_mutable = f.is_mutable;
+    d->Files[i].is_dir = (f.filetype == FileSystem::File::FT_Directory);
+  }
+
+  // send the packet
+  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_CON_GET_FILE_LIST, ST_None);
+  PEPacketHelper::SetPacketData(pkt, 
+                                (void*)d, 
+                                nPktLen);
+
+  // send notification to Client
+  pkt.SetFieldValue("target", (void*)&clientSocket);
+  pRouter->Send(&pkt);
+
+  // clear the data portion
+  delete [] (FCBYTE*)d;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::SendConsoleCommandResult(string result, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  PEPacket pkt;
+  __FCPKT_CON_COMMAND_RESP* d = NULL;
+  size_t len = result.length();
+  size_t pktLen = sizeof(__FCPKT_CON_COMMAND_RESP) + ( len );
+
+  d = (__FCPKT_CON_COMMAND_RESP*) new FCBYTE[ pktLen ];
+  memset(d, 0, pktLen);
+  d->len = (FCINT)len;
+
+  memcpy(d->result, result.c_str(), len);
+
+  // send the packet
+  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_CON_COMMAND, ST_None);
+  PEPacketHelper::SetPacketData(pkt, 
+                                (void*)d, 
+                                pktLen);
+
+  // send notification to Client
+  pkt.SetFieldValue("target", (void*)&clientSocket);
+  pRouter->Send(&pkt);
+
+  // clear the data portion
+  delete [] (FCBYTE*)d;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
 {
   RouterSocket* pRouter = (RouterSocket*) pSocket;
@@ -274,6 +413,36 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  case  FCMSG_GET_DESKTOP_OPTIONS:
+    {
+      bHandled = OnCommandGetDesktopOptions(pPkt, pRouter, clientSock);
+    }
+    break;
+
+  /*
+   *  Console Module Messages
+   */
+  case  FCMSG_CON_GET_FS_INFO:
+    {
+      bHandled = OnCommandConsoleGetFSInfo(pPkt, pRouter, clientSock);
+    }
+    break;
+
+  case  FCMSG_CON_GET_FILE_LIST:
+    {
+      bHandled = OnCommandConsoleGetFileList(pPkt, pRouter, clientSock);
+    }
+    break;
+
+  case  FCMSG_CON_COMMAND:
+    {
+      bHandled = OnCommandConsoleCommand(pPkt, pRouter, clientSock);
+    }
+    break;
+
+  /*
+   * Inter-service Messages
+   */
   case  FCSMSG_CLIENT_DISCONNECT:
     {
       bHandled = OnCommandClientDisconnect(pPkt, pRouter, clientSock);
@@ -347,6 +516,112 @@ bool FCLogicWorld::OnCommandCharacterAssetRequest(PEPacket* pPkt, RouterSocket* 
 
 ///////////////////////////////////////////////////////////////////////
 
+bool FCLogicWorld::OnCommandGetDesktopOptions(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  __FCPKT_GET_DESKTOP_OPTIONS d;
+  size_t dataLen = 0;
+  Player* pPlayer = NULL;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  if ( (pPlayer = m_playerMgr.GetPlayerByID( d.character_id )) )
+  {
+    // return all available desktop options that the player has
+    SendCharacterDesktopOptions( pPlayer, pRouter, clientSocket );
+  }
+  else
+    return false;
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandConsoleGetFSInfo(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCPKT_CON_GET_FS_INFO d;
+  size_t dataLen = 0;
+  Player* pPlayer = NULL;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  if ( (pPlayer = m_playerMgr.GetPlayerByID( d.character_id )) )
+  {
+    FileSystem& fs = pPlayer->GetComputer().GetFileSystem();
+
+    SendConsoleFileSystemInfo( fs, pSocket, clientSocket );
+  }
+  else
+    return false;
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandConsoleGetFileList(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCPKT_CON_GET_FILE_LIST d;
+  size_t dataLen = 0;
+  Player* pPlayer = NULL;
+  vector<FileSystem::File> files;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket( clientSocket )) )
+  {
+    FileSystem& fs = pPlayer->GetComputer().GetFileSystem();
+
+    fs.EnumerateFiles( d.currentDir, files );
+    SendConsoleFileList(d.currentDir, files, pSocket, clientSocket);
+  }
+  else
+    return false;
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandConsoleCommand(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCPKT_CON_COMMAND d;
+  size_t dataLen = 0;
+  Player* pPlayer = NULL;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket( clientSocket )) )
+  {
+    string cmd, args;
+    size_t pos;
+
+    // now we need to know how to execute commands
+    FileSystem& fs = pPlayer->GetComputer().GetFileSystem();
+
+    cmd = d.command;
+    pos = cmd.find_first_of(" ");
+    if ( pos != string::npos )
+    {
+      args = cmd.substr(cmd.find_first_of(" ")+1, cmd.length());
+      cmd.erase(cmd.find_first_of(" "), cmd.length());
+    }
+
+    string result = fs.ExecuteCommand(cmd, args);
+    SendConsoleCommandResult(result, pSocket, clientSocket);
+  }
+  else
+    return false;
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCLogicWorld::OnCommandClientDisconnect(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
 {
   __FCSPKT_CLIENT_DISCONNECT d;
@@ -402,7 +677,6 @@ bool FCLogicWorld::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
           if ( HasConsole() )
             printf("Service failed to register with Router (%s:%ld)\n", pRouter->GetServer().c_str(), pRouter->GetPort());
         }
-
       }
     }
     break;
@@ -636,6 +910,12 @@ void FCLogicWorld::OnDBJob_LoadCharacterComputer(DBIResultSet& resultSet, void*&
     os = *pOS;
   if ( pMem )        
     mem = *pMem;
+
+  // load the computer's file system
+  stringstream ss;
+
+  ss << pThis->m_pathFileSystems << "fs_uid_" << pPlayer->GetID() << ".xml";
+  comp.GetFileSystem().LoadFromXML( ss.str() );
 
   // we are done loading the player... notify the client that the character has been created...
   pThis->SendCharacterLoginStatus(pPlayer->GetAccountID(), pPlayer->GetID(), CharacterSelectSucceeded, pSock, pCtx->clientSocket);

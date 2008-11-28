@@ -14,6 +14,12 @@ public:
   void RequestCharacterInfo();
   void SendCharacterSelection(size_t character_id);
   void SendCharacterAssetRequest(size_t character_id);
+  void RequestDesktopOptions(size_t character_id);
+
+  // console commands
+  void RequestCharacterFileSystemInfo(FCULONG character_id);
+  void RequestFileSystemList(const string& currentDir);
+  void SendConsoleCommand(const string& currentDir, const string cmd);
 
   void SetSocket(BaseSocket* pSock)                             { m_pSock = pSock; }
 

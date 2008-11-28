@@ -124,7 +124,7 @@ Company* WorldManager::AddCompany(FCULONG id, const string& name, FCULONG cityID
     pCompany->SetIP(ip);
 
     m_mapCompanies[id] = pCompany;
-    m_mapCompanies[ ip.ToULong() ] = pCompany;
+    m_mapIPToCompany[ ip.ToULong() ] = pCompany;
   }
 
   return pCompany;

@@ -1,0 +1,29 @@
+<FCFileSystem owner="Player" id="1" style="unix">
+	<Command name="ver" action="OSVersion" />
+	<Command name="cd" action="ChangeDir" />
+	<Command name="ls" action="FileListing" />
+	<File type="dir" name="bin">
+		<File type="file" name="ver" mutable="0" />
+		<File type="file" name="ping" mutable="0" action="ConnectionCheck" />
+		<File type="file" name="telnet" mutable="0" action="RemoteConnection" />
+		<File type="file" name="ls" mutable="0" />
+		<File type="file" name="ftp" mutable="0" action="RemoteFile" />
+	</File>
+	<File type="dir" name="etc">
+		<File type="file" name="passwd" mutable="0" />
+		<File type="file" name="hosts" mutable="0" />
+	</File>
+	<File type="dir" name="users">
+		<File type="dir" name="FireCell_GM">
+			<File type="dir" name="Downloads">
+				<File type="file" name="RemoteRemove" />
+			</File>
+			<File type="dir" name="Docs">
+				<File type="file" name="BankDetails.txt" />
+			</File>
+			<File type="dir" name="Scripts">
+			</File>
+		</File>
+	</File>
+	<File type="dir" name="logs" />
+</FCFileSystem>

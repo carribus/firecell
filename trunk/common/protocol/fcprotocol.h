@@ -198,6 +198,90 @@ struct __FCPKT_CHARACTER_ASSET_REQUEST_RESP
   } computer;
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_GET_DESKTOP_OPTIONS         = 7;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_GET_DESKTOP_OPTIONS
+{
+  FCUINT character_id;
+};
+
+enum DesktopOptionType
+{
+  Forum = 1,
+  News,
+  Email,
+  Console,
+  Bank,
+  Chat,
+  HackingTools
+};
+
+struct __FCPKT_GET_DESKTOP_OPTIONS_RESP
+{
+  FCUSHORT  numOptions;
+  struct DesktopOptions
+  {
+    FCULONG optionID;
+    DesktopOptionType type;
+    char name[32];
+  } Options[1];
+};
+
+/*
+ *  CONSOLE module specific commands
+ *
+ *  These messages are specifically for use by the console 'application' on the user's desktop and give access to the user's (or target's) file system
+ */
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_CON_GET_FS_INFO           = 100;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_CON_GET_FS_INFO
+{
+  FCULONG character_id;
+};
+
+struct __FCPKT_CON_GET_FS_INFO_RESP
+{
+  FCINT fsStyle;
+  char dirSeperator[16];
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_CON_GET_FILE_LIST         = 101;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_CON_GET_FILE_LIST
+{
+  char currentDir[256];
+};
+
+struct __FCPKT_CON_GET_FILE_LIST_RESP
+{
+  FCULONG numFiles;
+  struct _files
+  {
+    char filename[64];
+    FCULONG fizesize;
+    bool is_mutable;
+    bool is_dir;
+  } Files[1];
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_CON_COMMAND               = 102;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_CON_COMMAND
+{
+  char currentDir[256];
+  char command[64];
+};
+
+struct __FCPKT_CON_COMMAND_RESP
+{
+  FCINT len;
+  char result[1];
+};
 
 #pragma pack(pop)
 
