@@ -92,8 +92,10 @@ public:
 
   FSStyle             GetFSStyle()                          { return m_style; }
   string              GetDirSeperator()                     { return m_dirSeperator; }
+  string              GetPathPrefix()                       { return m_pathPrefix; }
   void                SetComputer(Computer* pComputer)      { m_pComputer = pComputer; }
   Computer*           GetComputer()                         { return m_pComputer; }
+  bool                IsCaseSensitive()                     { return m_bCaseSensitive; }
 
 private:
 
@@ -115,11 +117,13 @@ private:
   IrrXMLReader*       m_xml;
   FSStyle             m_style;
   FSOwnerType         m_ownerType;
+  bool                m_bCaseSensitive;
 
   File                m_root;
   File*               m_pCurrentDir;
   list<File*>         m_recursionStack;
   string              m_dirSeperator;
+  string              m_pathPrefix;
   string              m_currentPath;
 
   //
