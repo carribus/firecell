@@ -22,6 +22,7 @@ public:
   ModConsole(void);
   ~ModConsole(void);
 
+  void RegisterSink(IGameModuleSink* pSink)                       { m_pSink = pSink; }
   void SetCharacterID(FCULONG character_id)                       { m_characterID = character_id; }
   void SetServerObject(FCServerObj* pServer)                      { m_pServer = pServer; }
   void QueueForAction();
@@ -32,6 +33,10 @@ public:
 
 private:
 
+  bool IsLocalCommand(const char* cmd);
+  void HandleLocalCommand(const char* cmd);
+
+  IGameModuleSink*    m_pSink;
   FCULONG             m_characterID;
   FCServerObj*        m_pServer;
   ConsoleState        m_state;

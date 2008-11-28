@@ -51,10 +51,12 @@ void FCLogicWorld::Free()
 }
 
 ///////////////////////////////////////////////////////////////////////
-
+#include <sstream>
 int FCLogicWorld::Start()
 {
   string strEngine, strServer, strDBName, strUser, strPass;
+
+  stringstream ss;
 
   // load the configuration
   if ( !LoadConfig("FCWorld.conf") )
@@ -360,16 +362,18 @@ void FCLogicWorld::SendConsoleFileList(string currentDir, vector<FileSystem::Fil
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCLogicWorld::SendConsoleCommandResult(string result, RouterSocket* pRouter, FCSOCKET clientSocket)
+void FCLogicWorld::SendConsoleCommandResult(Player* pPlayer, string result, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
   PEPacket pkt;
   __FCPKT_CON_COMMAND_RESP* d = NULL;
   size_t len = result.length();
   size_t pktLen = sizeof(__FCPKT_CON_COMMAND_RESP) + ( len );
+  FileSystem& fs = pPlayer->GetComputer().GetFileSystem();
 
   d = (__FCPKT_CON_COMMAND_RESP*) new FCBYTE[ pktLen ];
   memset(d, 0, pktLen);
   d->len = (FCINT)len;
+  strncpy(d->currentDir, fs.GetCurrentPathName().c_str(), sizeof(d->currentDir)-1);
 
   memcpy(d->result, result.c_str(), len);
 
@@ -612,7 +616,7 @@ bool FCLogicWorld::OnCommandConsoleCommand(PEPacket* pPkt, RouterSocket* pSocket
     }
 
     string result = fs.ExecuteCommand(cmd, args);
-    SendConsoleCommandResult(result, pSocket, clientSocket);
+    SendConsoleCommandResult(pPlayer, result, pSocket, clientSocket);
   }
   else
     return false;

@@ -34,7 +34,8 @@
 
 using namespace std;
 
-class FCController : IBaseSocketSink
+class FCController : public IBaseSocketSink
+                   , public IGameModuleSink
 {
   struct DataQueueItem
   {
@@ -90,6 +91,10 @@ protected:
   bool OnResponseSelectCharacter(PEPacket* pPkt, BaseSocket* pSocket);  
   bool OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* pSocket);
   bool OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket);
+
+  //
+  // IGameModuleSink implementation
+  void CloseModule(IGameModule* pModule);
 
 private:
 

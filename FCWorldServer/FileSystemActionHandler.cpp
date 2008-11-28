@@ -1,4 +1,6 @@
 #include <sstream>
+#include "Computer.h"
+#include "ItemOS.h"
 #include "FileSystemActionHandler.h"
 
 FileSystemActionHandler::FileSystemActionHandler(void)
@@ -33,13 +35,30 @@ string FileSystemActionHandler::Action_FileListing(FileSystem* pFS, const string
 
       ss << "File listing for " << curDir.filename << std::endl << std::endl;
 
+      if ( curDir.parent )
+      {
+        ss.setf(ios::left, ios::adjustfield);
+        ss.width(32);
+        ss << "..";
+        ss.width(8);
+        ss << "<Dir>";
+        ss.width(16);
+        ss << "--r--r--r" << std::endl;
+      }
+
       for ( size_t i = 0; i < numFiles; i++ )
       {
         f = files[i];
-        ss << f.filename << "\t" << ( f.filetype == FileSystem::File::FT_Directory ? "<Dir>" : "     " ) << "\t" << ( f.is_mutable ? "--r--r--r" : "wrxwrxwrx" ) << std::endl;
+        ss.setf(ios::left, ios::adjustfield);
+        ss.width(32);
+        ss << f.filename;
+        ss.width(8);
+        ss << ( f.filetype == FileSystem::File::FT_Directory ? "<Dir>" : "     " );
+        ss.width(16);
+        ss << ( f.is_mutable ? "--r--r--r" : "wrxwrxwrx" ) << std::endl;
       }
 
-      ss << std::endl << (unsigned int)numFiles << " File(s)" << "\n\n";
+      ss << std::endl << (unsigned int)numFiles << " File(s)" << "\n";
 
       result = ss.str();
     }
@@ -75,10 +94,11 @@ string FileSystemActionHandler::Action_ChangeDirectory(FileSystem* pFS, const st
     }
     else
     {
-      newDir = (pFS->IsRootDir(curDir.filename) ? "" : pFS->GetCurrentPathName()) + pFS->GetDirSeperator() + arguments;
+      newDir = pFS->GetCurrentPathName() + arguments;
     }
 
-    pFS->SetCurrentDir(newDir);
+    if ( !pFS->SetCurrentDir(newDir) )
+      result = "No such directory found.";
   }
   else
   {
@@ -93,6 +113,24 @@ string FileSystemActionHandler::Action_ChangeDirectory(FileSystem* pFS, const st
 string FileSystemActionHandler::Action_OSVersion(FileSystem* pFS, const string& arguments)
 {
   string result = "";
+
+  if ( pFS )
+  {
+    Computer* pComputer = pFS->GetComputer();
+
+    if ( pComputer )
+    {
+      ItemOS& os = pComputer->GetOS();
+      stringstream ss;
+
+      ss << os.GetName() << " (" << os.GetKernelName() << " kernel)\n\n";
+      result = ss.str();
+    }
+  }
+  else
+  {
+    result = "No filesystem associated with request.";
+  }
 
   return result;
 }

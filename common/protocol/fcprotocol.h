@@ -280,6 +280,7 @@ struct __FCPKT_CON_COMMAND
 struct __FCPKT_CON_COMMAND_RESP
 {
   FCINT len;
+  char currentDir[256];
   char result[1];
 };
 

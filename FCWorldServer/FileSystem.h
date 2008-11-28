@@ -31,6 +31,9 @@ using namespace io;
 
 using namespace std;
 
+// forward declaration(s)
+class Computer;
+
 class FileSystem
 {
 public:
@@ -46,6 +49,8 @@ public:
   {
   public:
 
+    File() : parent(NULL), filetype(FT_Directory) {}
+
     enum FileType
     {
       FT_Directory,
@@ -55,6 +60,7 @@ public:
     string filename;
     FileType filetype;
     bool is_mutable;
+    File* parent;
 
     map<string, File> files;
   };
@@ -79,12 +85,15 @@ public:
   string ExecuteCommand(const string& cmd, const string& arguments);
 
   bool IsRootDir(const string& path);
-  string GetCurrentPathName()                               { return m_currentPath; }
+  string GetCurrentPathName();
+//  string GetCurrentPathName()                               { return m_currentPath; }
   bool SetCurrentDir(string path);
   FileSystem::File GetCurrentDir()                          { return *m_pCurrentDir; }
 
   FSStyle             GetFSStyle()                          { return m_style; }
   string              GetDirSeperator()                     { return m_dirSeperator; }
+  void                SetComputer(Computer* pComputer)      { m_pComputer = pComputer; }
+  Computer*           GetComputer()                         { return m_pComputer; }
 
 private:
 
@@ -102,6 +111,7 @@ private:
   /*
    *  Private data
    */
+  Computer*           m_pComputer;
   IrrXMLReader*       m_xml;
   FSStyle             m_style;
   FSOwnerType         m_ownerType;
