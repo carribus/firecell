@@ -4,7 +4,8 @@
 #include "ModConsole.h"
 
 ModConsole::ModConsole(void)
-: m_characterID(0)
+: m_pSink(NULL)
+, m_characterID(0)
 , m_pServer(NULL)
 , m_state(ModConsole::Initialise)
 , m_currentDir("/")
@@ -40,9 +41,16 @@ void ModConsole::QueueForAction()
       printf("%s: ", m_currentDir.c_str());
       cin.getline(cmd, sizeof(cmd)-1);
 
-      m_pServer->SendConsoleCommand(m_currentDir, cmd);
+      if ( !IsLocalCommand(cmd) )
+      {
+        m_pServer->SendConsoleCommand(m_currentDir, cmd);
+        m_state = WaitingForResponse;
+      }
+      else
+      {
+        HandleLocalCommand(cmd);
+      }
 
-      m_state = WaitingForResponse;
     }
     break;
 
@@ -137,9 +145,54 @@ bool ModConsole::OnResponseConCommand(PEPacket* pPkt, BaseSocket* pSocket)
   d = (__FCPKT_CON_COMMAND_RESP*) new FCBYTE[ dataLen ];
   pPkt->GetField("data", d, dataLen);
 
-  printf(d->result);
+  m_currentDir = d->currentDir;
+
+  printf("%s\n", d->result);
 
   delete [] (FCBYTE*)d;
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool ModConsole::IsLocalCommand(const char* cmd)
+{
+  char* localCmds[] =
+  {
+    "exit",
+    "pwd",
+    NULL
+  };
+  char** pCmd = localCmds;
+
+  while ( *pCmd )
+  {
+    if ( !strcmp(*pCmd, cmd) )
+      return true;
+    pCmd++;
+  }
+
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ModConsole::HandleLocalCommand(const char* cmd)
+{
+  string c = cmd;
+  size_t pos = c.find(" ");
+
+  if ( pos != string::npos )
+    c = c.substr(0, pos);
+
+  if ( c == "exit" )
+  {
+    if ( m_pSink )
+      m_pSink->CloseModule(this);
+  }
+  else if ( c == "pwd" )
+  {
+    printf("%s\n", m_currentDir.c_str());
+  }
 }

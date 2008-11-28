@@ -24,7 +24,8 @@
 using namespace std;
 
 FileSystem::FileSystem(void)
-: m_xml(NULL)
+: m_pComputer(NULL)
+, m_xml(NULL)
 , m_pCurrentDir(NULL)
 {
   m_root.filetype = File::FT_Directory;
@@ -163,6 +164,38 @@ bool FileSystem::IsRootDir(const string& path)
 
 ////////////////////////////////////////////////////////////////////////
 
+string FileSystem::GetCurrentPathName()
+{
+  if ( !m_pCurrentDir )
+    return "Path Error: No Current path!";
+
+  File* pDir = m_pCurrentDir;
+  string pathName;
+  list<File*> recursionStack;
+
+  while ( pDir->parent )
+  {
+    recursionStack.push_front(pDir);
+    pDir = pDir->parent;
+  }
+  recursionStack.push_front(pDir);
+
+  // build the path name
+  list<File*>::iterator it = recursionStack.begin();
+
+  while ( it != recursionStack.end() )
+  {
+    pathName += (*it)->filename;
+    if ( (*it)->parent )
+      pathName += m_dirSeperator;
+    it++;
+  }
+
+  return pathName;
+}
+
+////////////////////////////////////////////////////////////////////////
+
 bool FileSystem::SetCurrentDir(string path)
 {
   string tempPath = path;
@@ -195,8 +228,15 @@ bool FileSystem::SetCurrentDir(string path)
       }
       else
       {
-        pDir = NULL;
-        break;
+        if ( strSubDir == ".." )
+        {
+          pDir = pDir->parent;
+        }
+        else
+        {
+          pDir = NULL;
+          break;
+        }
       }
     }
     lastPos = pos+1;
@@ -207,6 +247,7 @@ bool FileSystem::SetCurrentDir(string path)
   {
     m_currentPath = tempPath;
     m_pCurrentDir = pDir;
+
     return true;
   }
 
@@ -337,6 +378,8 @@ void FileSystem::ParseElement_File(IrrXMLReader* pXML)
       file.is_mutable = (value == "1" || value == "true");
     }
   }
+
+  file.parent = m_pCurrentDir;
 
   m_pCurrentDir->files[ file.filename ] = file;
   if ( file.filetype == File::FT_Directory )

@@ -193,6 +193,7 @@ void FCController::QueueForAction()
 
             case  Console:
               m_pCurrentModule = &m_modConsole;
+              m_pCurrentModule->RegisterSink(this);
               m_pCurrentModule->SetCharacterID(m_CurrentCharacterID);
               break;
 
@@ -608,4 +609,17 @@ bool FCController::OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSock
   delete [] (FCBYTE*)d;
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCController::CloseModule(IGameModule* pModule)
+{
+  if ( pModule )
+  {
+    if ( pModule == m_pCurrentModule )
+    {
+      m_pCurrentModule = NULL;
+    }
+  }
 }
