@@ -143,6 +143,12 @@
 				RelativePath=".\FCWorldServer.cpp">
 			</File>
 			<File
+				RelativePath=".\FileSystem.cpp">
+			</File>
+			<File
+				RelativePath=".\FileSystemActionHandler.cpp">
+			</File>
+			<File
 				RelativePath=".\InGameIPAddress.cpp">
 			</File>
 			<File
@@ -230,6 +236,12 @@
 			</File>
 			<File
 				RelativePath="..\common\fctypes.h">
+			</File>
+			<File
+				RelativePath=".\FileSystem.h">
+			</File>
+			<File
+				RelativePath=".\FileSystemActionHandler.h">
 			</File>
 			<File
 				RelativePath=".\IEventSystem.h">
@@ -343,6 +355,34 @@
 			</File>
 			<File
 				RelativePath="..\common\database\IDBInterface.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="XML"
+			Filter="">
+			<File
+				RelativePath="..\common\Xml\CXMLReaderImpl.h">
+			</File>
+			<File
+				RelativePath="..\common\Xml\fast_atof.h">
+			</File>
+			<File
+				RelativePath="..\common\Xml\heapsort.h">
+			</File>
+			<File
+				RelativePath="..\common\Xml\irrArray.h">
+			</File>
+			<File
+				RelativePath="..\common\Xml\irrString.h">
+			</File>
+			<File
+				RelativePath="..\common\Xml\irrTypes.h">
+			</File>
+			<File
+				RelativePath="..\common\Xml\irrXML.cpp">
+			</File>
+			<File
+				RelativePath="..\common\Xml\irrXML.h">
 			</File>
 		</Filter>
 	</Files>

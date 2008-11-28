@@ -5,6 +5,7 @@
 #include "ItemProcessor.h"
 #include "ItemOS.h"
 #include "ItemMemory.h"
+#include "FileSystem.h"
 #include "../common/fctypes.h"
 
 using namespace std;
@@ -22,9 +23,7 @@ public:
   ItemProcessor& GetProcessor()           { return m_processor; }
   ItemOS& GetOS()                         { return m_os; }
   ItemMemory& GetMemory()                 { return m_memory; }
-/*
   FileSystem& GetFileSystem()             { return m_fileSystem; }
-*/
   void SetID(FCULONG id)                  { m_id = id; }
   void SetName(const string& name)        { m_name = name; }
   void SetHDDSize(FCUINT sizeMB)          { m_hddSizeMB = sizeMB; }
@@ -39,7 +38,7 @@ private:
   ItemProcessor   m_processor;
   ItemOS          m_os;
   ItemMemory      m_memory;
-//  FileSystem      m_fileSystem;
+  FileSystem      m_fileSystem;
 };
 
 #endif//_COMPUTER_H_

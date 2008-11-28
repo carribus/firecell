@@ -54,7 +54,6 @@ void PEPacketHelper::CreateBasePacket(PEPacket& pkt, FCBYTE type, ServiceType ta
 {
   unsigned char header[8] = { 0x0A, 0x0A, 0x00, 0x10, 0x00, 0x20, 0x00, 0x40 };
 
-  int s = sizeof(target);
   pkt.AddField("magic", 1, 8, header);
   pkt.AddField("type", 1, 1, &type);
   pkt.AddField("target", 4, 1, &target);

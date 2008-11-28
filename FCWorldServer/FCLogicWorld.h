@@ -65,12 +65,21 @@ private:
   // Packet sending functions
   void SendCharacterLoginStatus(FCULONG accountID, FCULONG characterID, e_SelectCharacterStatus status, RouterSocket* pRouter, FCSOCKET clientSocket);
   void SendCharacterAssetResponse(Player* pPlayer, RouterSocket* pRouter, FCSOCKET clientSocket);
+  void SendCharacterDesktopOptions(Player* pPlayer, RouterSocket* pRouter, FCSOCKET clientSocket);
+  void SendConsoleFileSystemInfo(FileSystem& fs, RouterSocket* pRouter, FCSOCKET clientSocket);
+  void SendConsoleFileList(string currentDir, vector<FileSystem::File> files, RouterSocket* pRouter, FCSOCKET clientSocket);
+  void SendConsoleCommandResult(string result, RouterSocket* pRouter, FCSOCKET clientSocket);
 
   //
   // Packet handling functions
   bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
     bool OnCommandCharacterAssetRequest(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
+    bool OnCommandGetDesktopOptions(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
+    bool OnCommandConsoleGetFSInfo(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
+    bool OnCommandConsoleGetFileList(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
+    bool OnCommandConsoleCommand(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
+
     bool OnCommandClientDisconnect(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
 
   bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
@@ -89,6 +98,8 @@ private:
   /*
    *  Private members
    */
+  string                m_pathFileSystems;
+
   PlayerManager         m_playerMgr;
   ItemManager           m_itemMgr;
   WorldManager          m_worldMgr;

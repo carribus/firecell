@@ -37,7 +37,7 @@ void FCServerObj::Login(const char* username, const char* password)
 
   memset(&d, 0, sizeof(d));
   strncpy(d.username, username, min( strlen(username), 64 ));
-  strncpy(d.password, password, min( strlen(username), 64 )); 
+  strncpy(d.password, password, min( strlen(password), 64 )); 
 
   PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_LOGIN, ST_Auth);
   PEPacketHelper::SetPacketData(pkt, &d, sizeof(d));
@@ -82,6 +82,64 @@ void FCServerObj::SendCharacterAssetRequest(size_t character_id)
 
   d.character_id = (FCUINT)character_id;
   PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_CHARACTER_ASSET_REQUEST, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCServerObj::RequestDesktopOptions(size_t character_id)
+{
+  PEPacket pkt;
+  __FCPKT_GET_DESKTOP_OPTIONS d;
+
+  d.character_id = (FCUINT)character_id;
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_GET_DESKTOP_OPTIONS, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCServerObj::RequestCharacterFileSystemInfo(FCULONG character_id)
+{
+  PEPacket pkt;
+  __FCPKT_CON_GET_FS_INFO d;
+
+  d.character_id = character_id;
+
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_CON_GET_FS_INFO, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCServerObj::RequestFileSystemList(const string& currentDir)
+{
+  PEPacket pkt;
+  __FCPKT_CON_GET_FILE_LIST d;
+
+  strncpy(d.currentDir, currentDir.c_str(), sizeof(d.currentDir));
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_CON_GET_FILE_LIST, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCServerObj::SendConsoleCommand(const string& currentDir, const string cmd)
+{
+  PEPacket pkt;
+  __FCPKT_CON_COMMAND d;
+
+  strncpy(d.currentDir, currentDir.c_str(), sizeof(d.currentDir));
+  strncpy(d.command, cmd.c_str(), sizeof(d.command));
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_CON_COMMAND, ST_World);
   PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
 
   SendPacket(pkt);

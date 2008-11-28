@@ -34,12 +34,11 @@ public:
   Player* GetPlayerByID(FCULONG id);
   Player* GetPlayerByClientSocket(FCSOCKET s);
   void RemovePlayer(Player*& pPlayer);
+  void RemoveAllPlayers();
 
   void SetEventSystem(IEventSystem* pES)                { m_pEventSystem = pES; }
 
 private:
-
-  void RemoveAllPlayers();
 
   /*
    *  Map of players by their alias
