@@ -1,4 +1,4 @@
-<FCFileSystem owner="Player" id="1" style="unix" casesensitive="0">
+<FCFileSystem owner={FSOwner} id={FSOwnerID} style="unix" casesensitive="0">
 	<Command name="ver" action="OSVersion" />
 	<Command name="cd" action="ChangeDir" />
 	<Command name="ls" action="FileListing" />
@@ -14,12 +14,10 @@
 		<File type="file" name="hosts" mutable="0" />
 	</File>
 	<File type="dir" name="users">
-		<File type="dir" name="FireCell_GM">
+		<File type="dir" name={CharacterName}>
 			<File type="dir" name="Downloads">
-				<File type="file" name="RemoteRemove" />
 			</File>
 			<File type="dir" name="Docs">
-				<File type="file" name="BankDetails.txt" />
 			</File>
 			<File type="dir" name="Scripts">
 			</File>

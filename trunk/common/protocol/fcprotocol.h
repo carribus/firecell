@@ -246,6 +246,7 @@ struct __FCPKT_CON_GET_FS_INFO_RESP
 {
   FCINT fsStyle;
   char dirSeperator[16];
+  char currentDir[256];
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////

@@ -84,7 +84,7 @@ string FileSystemActionHandler::Action_ChangeDirectory(FileSystem* pFS, const st
     string newDir;
 
     oldDir = curDir = pFS->GetCurrentDir();
-    pos = arguments.find_first_of(pFS->GetDirSeperator());
+    pos = arguments.find_first_of(pFS->GetPathPrefix() + pFS->GetDirSeperator());
 
     // setup the target path
     if ( pos == 0 && pos != std::string::npos )

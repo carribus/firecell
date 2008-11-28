@@ -314,6 +314,7 @@ void FCLogicWorld::SendConsoleFileSystemInfo(FileSystem& fs, RouterSocket* pRout
 
   d.fsStyle = fs.GetFSStyle();
   strncpy(d.dirSeperator, fs.GetDirSeperator().c_str(), sizeof(d.dirSeperator));
+  strncpy(d.currentDir, fs.GetCurrentPathName().c_str(), sizeof(d.currentDir));
 
   // send the packet
   PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_CON_GET_FS_INFO, ST_None);

@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include <algorithm>
 #include <string>
 #include "FileSystem.h"
 #include "FileSystemActionHandler.h"
@@ -27,6 +28,7 @@ FileSystem::FileSystem(void)
 : m_pComputer(NULL)
 , m_xml(NULL)
 , m_pCurrentDir(NULL)
+, m_bCaseSensitive(false)
 {
   m_root.filetype = File::FT_Directory;
   m_root.is_mutable = false;
@@ -70,7 +72,10 @@ size_t FileSystem::EnumerateFiles(std::string path, vector<FileSystem::File>& ta
 
   if ( path[ path.length()-1 ] != m_dirSeperator[0] )
     path.append( m_dirSeperator );
-  
+ 
+  if ( !m_bCaseSensitive )
+    std::transform(path.begin()+1, path.end(), path.begin()+1, (int(*)(int))tolower);
+
   while ( pos != string::npos )
   {
     strSubDir = path.substr(lastPos, pos - lastPos+1);
@@ -206,6 +211,9 @@ bool FileSystem::SetCurrentDir(string path)
   if ( path[ path.length()-1 ] != m_dirSeperator[0] )
     path.append( m_dirSeperator );
 
+  if ( !m_bCaseSensitive )
+    std::transform(path.begin()+1, path.end(), path.begin()+1, (int(*)(int))tolower);
+
   while ( pos != string::npos )
   {
     strSubDir = path.substr(lastPos, pos - lastPos+1);
@@ -219,6 +227,7 @@ bool FileSystem::SetCurrentDir(string path)
     else
     {
       strSubDir.erase( strSubDir.length()-1, 1 );
+
       map<string, File>::iterator it = pDir->files.find(strSubDir);
 
       if ( it != pDir->files.end() )
@@ -338,8 +347,13 @@ void FileSystem::ParseElement_FileSystem(IrrXMLReader* pXML)
       {
         m_style = FileSystem::FSS_Windows;
         m_dirSeperator = "\\";
-        m_root.filename = "C:" + m_dirSeperator;
+        m_pathPrefix = "C:";
+        m_root.filename = m_pathPrefix + m_dirSeperator;
       }
+    }
+    else if ( attrName == "casesensitive" )
+    {
+      m_bCaseSensitive = !(value == "0");
     }
   }
 
@@ -381,13 +395,18 @@ void FileSystem::ParseElement_File(IrrXMLReader* pXML)
 
   file.parent = m_pCurrentDir;
 
-  m_pCurrentDir->files[ file.filename ] = file;
+  string keyname = file.filename;
+
+  if ( !m_bCaseSensitive )
+    std::transform(keyname.begin(), keyname.end(), keyname.begin(), (int(*)(int))tolower);
+
+  m_pCurrentDir->files[ keyname ] = file;
   if ( file.filetype == File::FT_Directory )
   {
     if ( !pXML->isEmptyElement() )
     {
       m_recursionStack.push_back(m_pCurrentDir);
-      File& f = m_pCurrentDir->files[ file.filename ];
+      File& f = m_pCurrentDir->files[ keyname ];
       m_pCurrentDir = &f;
     }
   }

@@ -104,6 +104,7 @@ bool ModConsole::OnResponseConGetFSInfo(PEPacket* pPkt, BaseSocket* pSocket)
 
   m_dirSeperator = d.dirSeperator;
   m_fsStyle = (FCBYTE) d.fsStyle & 0x000000FF;
+  m_currentDir = d.currentDir;
 
   m_state = Running;
 
