@@ -1,0 +1,16 @@
+<Missions lang="en">
+	<Mission id="1">
+		<Name>Learn about your file system</Name>
+		<Prelude></Prelude>
+		<Description>This mission will teach you the basics of using and managing your file system.</Description>
+	</Mission>
+	<Mission id="2">
+		<Name>In the console, get a file listing by type 'ls' or 'dir' depending on your OS</Name>
+	</Mission>
+	<Mission id="3">
+		<Name>In the console, go a different directory using the 'cd' command (eg. cd OtherDir)</Name>
+	</Mission>
+	<Mission id="4">
+		<Name>In the console, request the OS version using the 'ver' command</Name>
+	</Mission>
+<Missions>

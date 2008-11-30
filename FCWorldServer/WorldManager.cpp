@@ -157,6 +157,46 @@ Company* WorldManager::GetCompanyByIP(InGameIPAddress& ip)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool WorldManager::AddToNetwork(InGameIPAddress& ip, WorldManager::NetConnection::ConnectionType connType, FCULONG objID)
+{
+  bool bResult = false;
+  FCULONG ipAddress = ip.ToULong();
+  NetConnectionMap::iterator it = m_mapNetConnections.find(ipAddress);
+
+  if ( it == m_mapNetConnections.end() )
+  {
+    NetConnection nc;
+    
+    nc.ipAddress = ip;
+    nc.connType = connType;
+    nc.objID = objID;
+    m_mapNetConnections[ ipAddress ] = nc;
+
+    bResult = true;
+  }
+
+  return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool WorldManager::GetNetworkObject(InGameIPAddress& ip, WorldManager::NetConnection& dest)
+{
+  bool bResult = false;
+  FCULONG ipAddress = ip.ToULong();
+  NetConnectionMap::iterator it = m_mapNetConnections.find(ipAddress);
+
+  if ( it == m_mapNetConnections.end() )
+  {
+    dest = it->second;
+    bResult = true;
+  }
+
+  return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool WorldManager::GenerateIPAddress(const FCULONG countryID, const FCULONG cityID, InGameIPAddress& dest)
 {
   Country* pCountry = GetCountry(countryID);

@@ -147,6 +147,20 @@ void FCServerObj::SendConsoleCommand(const string& currentDir, const string cmd)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCServerObj::RequestForumThreads(FCULONG character_id)
+{
+  PEPacket pkt;
+  __FCPKT_FORUM_GET_THREADS d;
+
+  d.character_id = character_id;
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_FORUM_GET_THREADS, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCServerObj::SendPacket(PEPacket& pkt)
 {
   char* pData = NULL;

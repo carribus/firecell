@@ -28,6 +28,7 @@ struct IDBConnection
 {
   virtual DBIResults* Execute(FCDBJob job) = 0;
   virtual void Disconnect() = 0;
+  virtual std::string GetLastError() = 0;
 };
 
 struct IDBInterface

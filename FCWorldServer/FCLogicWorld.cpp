@@ -98,6 +98,7 @@ int FCLogicWorld::Start()
     RegisterDBHandler(DBQ_LOAD_CHARACTER_COMPUTER, OnDBJob_LoadCharacterComputer);
     RegisterDBHandler(DBQ_LOAD_WORLD_GEOGRAPHY, OnDBJob_LoadWorldGeography);
     RegisterDBHandler(DBQ_LOAD_COMPANIES, OnDBJob_LoadCompanies);
+    RegisterDBHandler(DBQ_LOAD_COMPANY_COMPUTERS, OnDBJob_LoadCompanyComputers);
 
     // Start the Item loading...
     if ( HasConsole() )
@@ -446,6 +447,13 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
     break;
 
   /*
+   *  Forum Module Messages
+   */
+    {
+      bHandled = OnCommandForumGetThreads(pPkt, pRouter, clientSock);
+    }
+
+  /*
    * Inter-service Messages
    */
   case  FCSMSG_CLIENT_DISCONNECT:
@@ -483,7 +491,12 @@ bool FCLogicWorld::OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRou
   else
   {
     // generate an IP address for the player
-    m_worldMgr.GenerateIPAddress(pPlayer->GetCountryID(), pPlayer->GetCityID(), pPlayer->GetIP());
+    bool bAddedToNetwork = false;
+    do
+    {
+      m_worldMgr.GenerateIPAddress(pPlayer->GetCountryID(), pPlayer->GetCityID(), pPlayer->GetIP());
+      bAddedToNetwork = m_worldMgr.AddToNetwork( pPlayer->GetIP(), WorldManager::NetConnection::Player, pPlayer->GetID() );
+    } while ( !bAddedToNetwork );
 
     // now that we have the player object, we need to load the player's facilities, items etc
     DBJobContext* pCtx = new DBJobContext;
@@ -621,6 +634,25 @@ bool FCLogicWorld::OnCommandConsoleCommand(PEPacket* pPkt, RouterSocket* pSocket
   }
   else
     return false;
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandForumGetThreads(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCPKT_FORUM_GET_THREADS d;
+  size_t dataLen = 0;
+  Player* pPlayer = NULL;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  if ( (pPlayer = m_playerMgr.GetPlayerByID(d.character_id)) )
+  {
+    // TODO: We need to load missions during startup.
+  }
 
   return true;
 }
@@ -888,39 +920,14 @@ void FCLogicWorld::OnDBJob_LoadCharacterComputer(DBIResultSet& resultSet, void*&
   DBJobContext* pCtx = (DBJobContext*)pContext;
   RouterSocket* pSock = pCtx->pRouter;
   FCLogicWorld* pThis = pCtx->pThis;
-  Player* pPlayer = (Player*)pCtx->pData;;
+  Player* pPlayer = (Player*)pCtx->pData;
 
   if ( !pThis || !pPlayer )
     return;
 
   // set the main computer details
   Computer& comp = pPlayer->GetComputer();
-
-  comp.SetID( resultSet.GetULongValue("computer_id", 0) );
-  comp.SetName( resultSet.GetStringValue("name", 0) );
-  comp.SetNetworkSpeed( resultSet.GetULongValue("network_speed", 0) );
-  comp.SetHDDSize( resultSet.GetULongValue("harddrive_size", 0) );
-
-  // set the sub-component details (cpu, ram, network, os...)
-  ItemProcessor& cpu = comp.GetProcessor();
-  ItemOS& os = comp.GetOS();
-  ItemMemory& mem = comp.GetMemory();
-  ItemProcessor* pProcessor = (ItemProcessor*)pThis->m_itemMgr.GetItem( resultSet.GetULongValue("processor_id", 0) );
-  ItemOS* pOS = (ItemOS*)pThis->m_itemMgr.GetItem( resultSet.GetULongValue("os_id", 0) );
-  ItemMemory* pMem = (ItemMemory*)pThis->m_itemMgr.GetItem( resultSet.GetULongValue("memory_id", 0) );
-
-  if ( pProcessor )  
-    cpu = *pProcessor;
-  if ( pOS )         
-    os = *pOS;
-  if ( pMem )        
-    mem = *pMem;
-
-  // load the computer's file system
-  stringstream ss;
-
-  ss << pThis->m_pathFileSystems << "fs_uid_" << pPlayer->GetID() << ".xml";
-  comp.GetFileSystem().LoadFromXML( ss.str() );
+  pThis->UpdateComputerFromResultSet(comp, resultSet);
 
   // we are done loading the player... notify the client that the character has been created...
   pThis->SendCharacterLoginStatus(pPlayer->GetAccountID(), pPlayer->GetID(), CharacterSelectSucceeded, pSock, pCtx->clientSocket);
@@ -1013,5 +1020,84 @@ void FCLogicWorld::OnDBJob_LoadCompanies(DBIResultSet& resultSet, void*& pContex
   if ( pThis->HasConsole() )
     printf("%ld companies loaded\n", rowCount);
 
+  pCtx = new DBJobContext;
+  pCtx->pThis = pThis;
+  pThis->GetDatabase().ExecuteJob(DBQ_LOAD_COMPANY_COMPUTERS, (void*)pCtx);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::OnDBJob_LoadCompanyComputers(DBIResultSet& resultSet, void*& pContext)
+{
+  DBJobContext* pCtx = (DBJobContext*) pContext;
+  FCLogicWorld* pThis = pCtx->pThis;
+  Company* pCompany = NULL;
+
+  if ( !pThis )
+    return;
+
+  FCULONG companyID;
+
+  size_t rowCount = resultSet.GetRowCount();
+
+  for ( size_t i = 0; i < rowCount; i++ )
+  {
+    companyID = resultSet.GetULongValue("owner_id", i);
+    if ( (pCompany = pThis->m_worldMgr.GetCompany(companyID)) )
+    {
+      Computer& comp = pCompany->GetComputer();
+
+      pThis->UpdateComputerFromResultSet(comp, resultSet, i);
+      pThis->m_worldMgr.AddToNetwork( pCompany->GetIP(), WorldManager::NetConnection::Company, companyID );
+    }
+    else
+    {
+      // failed to find company that this computer belongs to...
+    }
+  }
+
+  delete pCtx;
+  pContext = NULL;
+
+  if ( pThis->HasConsole() )
+    printf("%ld company computers loaded\n", rowCount);
+
   pthread_cond_signal(&pThis->m_condSync);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::UpdateComputerFromResultSet(Computer& comp, DBIResultSet& resultSet, size_t row)
+{
+  FCULONG ownerID = 0; 
+  FCSHORT ownertypeID = 0; 
+
+  ownerID = resultSet.GetULongValue("owner_id", row);
+  ownertypeID = resultSet.GetShortValue("ownertype_id", row);
+
+  comp.SetID( resultSet.GetULongValue("computer_id", row) );
+  comp.SetName( resultSet.GetStringValue("name", row) );
+  comp.SetNetworkSpeed( resultSet.GetULongValue("network_speed", row) );
+  comp.SetHDDSize( resultSet.GetULongValue("harddrive_size", row) );
+
+  // set the sub-component details (cpu, ram, network, os...)
+  ItemProcessor& cpu = comp.GetProcessor();
+  ItemOS& os = comp.GetOS();
+  ItemMemory& mem = comp.GetMemory();
+  ItemProcessor* pProcessor = (ItemProcessor*)m_itemMgr.GetItem( resultSet.GetULongValue("processor_id", row) );
+  ItemOS* pOS = (ItemOS*)m_itemMgr.GetItem( resultSet.GetULongValue("os_id", row) );
+  ItemMemory* pMem = (ItemMemory*)m_itemMgr.GetItem( resultSet.GetULongValue("memory_id", row) );
+
+  if ( pProcessor )  
+    cpu = *pProcessor;
+  if ( pOS )         
+    os = *pOS;
+  if ( pMem )        
+    mem = *pMem;
+
+  // load the computer's file system
+  stringstream ss;
+
+  ss << m_pathFileSystems << "fs_uid_" << ownerID << ".xml";
+  comp.GetFileSystem().LoadFromXML( ss.str() );
 }

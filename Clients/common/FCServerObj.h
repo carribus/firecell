@@ -21,6 +21,9 @@ public:
   void RequestFileSystemList(const string& currentDir);
   void SendConsoleCommand(const string& currentDir, const string cmd);
 
+  // forum commands
+  void RequestForumThreads(FCULONG character_id);
+
   void SetSocket(BaseSocket* pSock)                             { m_pSock = pSock; }
 
 private:

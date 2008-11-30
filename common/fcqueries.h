@@ -47,6 +47,7 @@
 ////////////////////////////////////////
 #define DBQ_LOAD_WORLD_GEOGRAPHY          "load_world_geography"
 #define DBQ_LOAD_COMPANIES                "load_companies"
+#define DBQ_LOAD_COMPANY_COMPUTERS        "load_company_computers"
 
 ////////////////////////////////////////
 // ACCOUNT QUERIES

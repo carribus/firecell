@@ -73,8 +73,9 @@ public:
 
   enum FSOwnerType
   {
-    FSO_Player,
-    FSO_NPC
+    FSO_Player = 1,
+    FSO_NPC,
+    FSO_Company
   };
 
   FileSystem(void);
