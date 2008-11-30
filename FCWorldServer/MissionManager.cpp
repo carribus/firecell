@@ -1,6 +1,7 @@
 #include "MissionManager.h"
 
-MissionManager::MissionManager(void)
+MissionManager::MissionManager(IEventSystem* pEventSystem)
+: m_pEventSystem(pEventSystem)
 {
 }
 
@@ -47,4 +48,32 @@ Mission* MissionManager::GetMission(FCULONG missionID)
     return it->second;
 
   return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+FCULONG MissionManager::GetAvailableMissionsForPlayer(Player* pPlayer, vector<Mission*>& target)
+{
+	if ( !pPlayer )
+		return 0;
+
+	MissionMap::iterator it = m_mapMissions.begin();
+	Mission* pMission = NULL;
+
+	while ( it != m_mapMissions.end() )
+	{
+		pMission = it->second;
+		// check if the player's level allows the taking of this mission
+		if ( pPlayer->GetLevel() >= pMission->GetMinLevel() &&
+			   (pMission->GetMaxLevel() != 0 ? pPlayer->GetLevel() <= pMission->GetMaxLevel() : true) )
+		{
+			// check if the player has completed the mission
+			if ( !pPlayer->HasCompletedMission(pMission->GetID()) )
+			{
+				target.push_back(pMission);
+			}
+		}
+	}
+
+	return target.size();
 }
