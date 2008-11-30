@@ -57,6 +57,14 @@ public:
    *  Public Methods
    */
 
+	/*
+	 *	Mission related
+	 */
+	bool HasCompletedMission(FCULONG missionID);
+
+	/*
+	 *	Accessor/Mutators
+	 */
   FCULONG GetAccountID()                  { return m_accountID; }
   FCULONG GetID()                         { return m_id; }
   string GetName()                        { return m_name; }

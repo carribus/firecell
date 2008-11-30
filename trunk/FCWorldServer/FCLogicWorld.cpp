@@ -122,6 +122,7 @@ int FCLogicWorld::Start()
    */
   ConfigureEventSystem();
   m_playerMgr.SetEventSystem( EventSystem::GetInstance() );
+	m_missionMgr.SetEventSystem( EventSystem::GetInstance() );
 
   /*
    *  Connect to the router(s) that we were configured to connect to
@@ -459,9 +460,17 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
   /*
    *  Forum Module Messages
    */
+	case	FCMSG_FORUM_GET_CATEGORIES:
+		{
+			bHandled = OnCommandForumGetCategories(pPkt, pRouter, clientSock);
+		}
+		break;
+
+	case	FCMSG_FORUM_GET_THREADS:
     {
       bHandled = OnCommandForumGetThreads(pPkt, pRouter, clientSock);
     }
+		break;
 
   /*
    * Inter-service Messages
@@ -650,6 +659,27 @@ bool FCLogicWorld::OnCommandConsoleCommand(PEPacket* pPkt, RouterSocket* pSocket
 
 ///////////////////////////////////////////////////////////////////////
 
+bool FCLogicWorld::OnCommandForumGetCategories(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+	__FCPKT_FORUM_GET_CATEGORIES d;
+  size_t dataLen = 0;
+  Player* pPlayer = NULL;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+	{
+		// TODO: Create a forum object that can handle these requests, and return required results for this and other forum messages
+	}
+	else
+		return false;
+
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCLogicWorld::OnCommandForumGetThreads(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
 {
   __FCPKT_FORUM_GET_THREADS d;
@@ -661,7 +691,9 @@ bool FCLogicWorld::OnCommandForumGetThreads(PEPacket* pPkt, RouterSocket* pSocke
 
   if ( (pPlayer = m_playerMgr.GetPlayerByID(d.character_id)) )
   {
-    // TODO: We need to load missions during startup.
+		vector<Mission*> missions;
+    FCULONG count = m_missionMgr.GetAvailableMissionsForPlayer(pPlayer, missions);
+
   }
 
   return true;
@@ -1110,6 +1142,8 @@ void FCLogicWorld::OnDBJob_LoadMissions(DBIResultSet& resultSet, void*& pContext
 
   if ( pThis->HasConsole() )
     printf("%ld missions loaded\n", rowCount);
+
+  pthread_cond_signal(&pThis->m_condSync);
 }
 
 ///////////////////////////////////////////////////////////////////////

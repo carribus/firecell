@@ -2,13 +2,19 @@
 #define _MISSION_H_
 
 #include "../common/fctypes.h"
+#include "IEventSystem.h"
 #include <string>
 
 using namespace std;
 
-class Mission
+class Mission : public IEventSource
+			  , public IEventTarget
 {
 public:
+
+  DECLARE_EVENT_SOURCE();
+  DECLARE_EVENT(Complete);
+
   Mission(void);
   ~Mission(void);
 
@@ -32,6 +38,13 @@ public:
   void SetSuccessCount(FCSHORT count)                     { m_successCount = count; }
   void SetFailureCount(FCSHORT count)                     { m_failureCount = count; }
 
+  /*
+   *	IEventSource/IEventTarget implementation
+   */
+  void RegisterForEvents(IEventSystem* pEventSystem);
+  void OnEvent(IEventSource* pSource, IEvent* pEvent);
+  const std::string& GetType();
+
 private:
 
   FCULONG m_id;
@@ -43,6 +56,8 @@ private:
   string m_eventFailure;
   FCSHORT m_successCount;
   FCSHORT m_failureCount;
+
+	IEventSystem* m_pEventSystem;
 };
 
 #endif//_MISSION_H_

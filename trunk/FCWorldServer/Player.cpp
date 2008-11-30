@@ -95,7 +95,7 @@ void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
   string eventCode = pEvent->GetCode();
   string eventName = eventCode.substr(eventCode.find('.')+1, eventCode.length());
 
-  printf("Event [%s] received from source [%s]\n", eventCode.c_str(), sourceType.c_str());
+	printf("Player::OnEvent(): Event [%s] received from source [%s]\n", eventCode.c_str(), sourceType.c_str());
 
   if ( !sourceType.compare( Player::EVTSYS_ObjectType ) )      // player events
   {
@@ -114,6 +114,13 @@ void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
   {
     printf("Player::OnEvent(): Unknown event received [source:%s / event:%s]\n", sourceType.c_str(), pEvent->GetCode().c_str());
   }
+}
 
+///////////////////////////////////////////////////////////////////////
 
+bool Player::HasCompletedMission(FCULONG missionID)
+{
+	// TODO: Put in check+data structures for missions completed
+
+	return false;
 }
