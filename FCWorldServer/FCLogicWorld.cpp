@@ -99,6 +99,7 @@ int FCLogicWorld::Start()
     RegisterDBHandler(DBQ_LOAD_WORLD_GEOGRAPHY, OnDBJob_LoadWorldGeography);
     RegisterDBHandler(DBQ_LOAD_COMPANIES, OnDBJob_LoadCompanies);
     RegisterDBHandler(DBQ_LOAD_COMPANY_COMPUTERS, OnDBJob_LoadCompanyComputers);
+    RegisterDBHandler(DBQ_LOAD_MISSIONS, OnDBJob_LoadMissions);
 
     // Start the Item loading...
     if ( HasConsole() )
@@ -157,6 +158,15 @@ void FCLogicWorld::LoadWorldData()
   DBJobContext* pCtx = new DBJobContext;
   pCtx->pThis = this;
   GetDatabase().ExecuteJob(DBQ_LOAD_WORLD_GEOGRAPHY, (void*)pCtx);
+
+  // we want to pause here until the item data required data is loaded
+  pthread_mutex_lock(&m_mutexSync);
+  pthread_cond_wait(&m_condSync, &m_mutexSync);
+  pthread_mutex_unlock(&m_mutexSync);
+
+  pCtx = new DBJobContext;
+  pCtx->pThis = this;
+  GetDatabase().ExecuteJob(DBQ_LOAD_MISSIONS, (void*)pCtx);
 
   // we want to pause here until the item data required data is loaded
   pthread_mutex_lock(&m_mutexSync);
@@ -1063,6 +1073,43 @@ void FCLogicWorld::OnDBJob_LoadCompanyComputers(DBIResultSet& resultSet, void*& 
     printf("%ld company computers loaded\n", rowCount);
 
   pthread_cond_signal(&pThis->m_condSync);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::OnDBJob_LoadMissions(DBIResultSet& resultSet, void*& pContext)
+{
+  DBJobContext* pCtx = (DBJobContext*) pContext;
+  FCLogicWorld* pThis = pCtx->pThis;
+
+  if ( !pThis )
+    return;
+
+  size_t rowCount = resultSet.GetRowCount();
+  FCULONG id, parentID;
+  FCSHORT minLevel, maxLevel, difficulty, successCount, failureCount;
+  string eventSuccess, eventFailure;
+
+  for ( size_t i = 0; i < rowCount; i++ )
+  {
+    id = resultSet.GetULongValue("mission_id", i);
+    parentID = resultSet.GetULongValue("parentmission_id", i);
+    minLevel = resultSet.GetShortValue("min_level", i);
+    maxLevel = resultSet.GetShortValue("max_level", i);
+    difficulty = resultSet.GetShortValue("difficulty", i);
+    eventSuccess = resultSet.GetStringValue("success_event_id", i);
+    eventFailure = resultSet.GetStringValue("failure_event_id", i);
+    successCount = resultSet.GetShortValue("success_count", i);
+    failureCount = resultSet.GetShortValue("failure_count", i);
+
+    pThis->m_missionMgr.AddMission( id, minLevel, maxLevel, difficulty, eventSuccess, eventFailure, parentID, successCount, failureCount );
+  }
+
+  delete pCtx;
+  pContext = NULL;
+
+  if ( pThis->HasConsole() )
+    printf("%ld missions loaded\n", rowCount);
 }
 
 ///////////////////////////////////////////////////////////////////////

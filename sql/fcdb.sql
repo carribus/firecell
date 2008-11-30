@@ -193,8 +193,8 @@ DROP TABLE IF EXISTS `fc_missions`;
 CREATE TABLE `fc_missions` (
   `mission_id` int(10) unsigned NOT NULL,
   `parentmission_id` int(10) unsigned default NULL COMMENT 'Parent ID for sub quests of a main mission',
-  `min_level` int(11) default NULL COMMENT 'minimum character level when mission becomes available',
-  `max_level` int(11) default NULL COMMENT 'maximum character level before mission stops being available',
+  `min_level` int(11) default '1' COMMENT 'minimum character level when mission becomes available',
+  `max_level` int(11) default '100' COMMENT 'maximum character level before mission stops being available',
   `difficulty` smallint(5) unsigned NOT NULL COMMENT 'difficulty rating of the mission (1-10)',
   `success_event_id` varchar(32) NOT NULL COMMENT 'event that will indicate success of a mission',
   `failure_event_id` varchar(32) default NULL COMMENT '[optional] event that will cause mission to fail',
