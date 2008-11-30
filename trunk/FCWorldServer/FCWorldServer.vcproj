@@ -167,6 +167,12 @@
 				RelativePath=".\ItemProcessor.cpp">
 			</File>
 			<File
+				RelativePath=".\Mission.cpp">
+			</File>
+			<File
+				RelativePath=".\MissionManager.cpp">
+			</File>
+			<File
 				RelativePath="..\common\PacketExtractor.cpp">
 			</File>
 			<File
@@ -275,6 +281,12 @@
 			</File>
 			<File
 				RelativePath=".\ItemType.h">
+			</File>
+			<File
+				RelativePath=".\Mission.h">
+			</File>
+			<File
+				RelativePath=".\MissionManager.h">
 			</File>
 			<File
 				RelativePath="..\common\PacketExtractor.h">

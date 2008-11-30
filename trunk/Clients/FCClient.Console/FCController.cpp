@@ -58,7 +58,11 @@ bool FCController::Initialise(const string& username, const string& password)
   m_modConsole.SetServerObject( &m_server );
   m_modForum.SetServerObject( &m_server );
 
-  ResourceManager::instance().LoadMissionStrings("./clientdata/missions/missions_en.xml");
+  if ( ResourceManager::instance().LoadMissionStrings("./clientdata/missions/missions_en.xml") == -1 )
+  {
+    fprintf(stderr, "Failed to load mission strings\n");
+    return false;
+  }
 
   return true;
 }

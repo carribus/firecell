@@ -27,6 +27,7 @@
 #include "PlayerManager.h"
 #include "ItemManager.h"
 #include "WorldManager.h"
+#include "MissionManager.h"
 #include "../common/ServiceLogicBase.h"
 #include "../common/threading.h"
 
@@ -98,6 +99,7 @@ private:
   static void OnDBJob_LoadWorldGeography(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadCompanies(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadCompanyComputers(DBIResultSet& resultSet, void*& pContext);
+  static void OnDBJob_LoadMissions(DBIResultSet& resultSet, void*& pContext);
 
   /*
    *  Helper functions
@@ -112,6 +114,7 @@ private:
   PlayerManager         m_playerMgr;
   ItemManager           m_itemMgr;
   WorldManager          m_worldMgr;
+  MissionManager        m_missionMgr;
 
   pthread_cond_t        m_condSync;
   pthread_mutex_t       m_mutexSync;
