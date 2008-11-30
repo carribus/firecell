@@ -1,9 +1,11 @@
 #ifndef _COMPANY_H_
 #define _COMPANY_H_
 
+#include <map>
 #include <string>
 #include "../common/fctypes.h"
 #include "InGameIPAddress.h"
+#include "Computer.h"
 
 using namespace std;
 
@@ -21,13 +23,19 @@ public:
   string GetName()                          { return m_name; }
   FCULONG GetCityID()                       { return m_cityID; }
   InGameIPAddress& GetIP()                  { return m_ip; }
+  Computer& GetComputer()                   { return m_computer; }
 
 private:
 
-  FCULONG       m_id;
-  string        m_name;
-  FCULONG       m_cityID;
+  FCULONG         m_id;
+  string          m_name;
+  FCULONG         m_cityID;
   InGameIPAddress m_ip;
+
+  /*
+   *  Company computer
+   */
+  Computer        m_computer;
 };
 
 #endif//_COMPANY_H_

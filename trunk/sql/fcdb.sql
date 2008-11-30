@@ -107,7 +107,8 @@ DROP TABLE IF EXISTS `fc_computers`;
 
 CREATE TABLE `fc_computers` (
   `computer_id` bigint(20) unsigned NOT NULL auto_increment,
-  `character_id` bigint(20) unsigned NOT NULL COMMENT 'ID of the character this computer belongs ',
+  `owner_id` bigint(20) unsigned NOT NULL COMMENT 'ID of the owner this computer belongs ',
+  `ownertype_id` smallint(5) unsigned NOT NULL COMMENT 'Type of owner (refer to fc_ownertypes)',
   `processor_id` int(10) unsigned NOT NULL COMMENT 'Processor installed in the computer',
   `name` varchar(32) default NULL COMMENT '[optional] Name of computer given by player',
   `memory_id` int(10) unsigned NOT NULL COMMENT 'ID of the memory item that is installed in this machine',
@@ -115,11 +116,11 @@ CREATE TABLE `fc_computers` (
   `harddrive_size` bigint(20) unsigned NOT NULL COMMENT 'Amount of storage space on machine (in MB)',
   `network_speed` int(10) unsigned NOT NULL COMMENT 'Speed of network connection (MBits)',
   PRIMARY KEY  (`computer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_computers` */
 
-insert  into `fc_computers`(`computer_id`,`character_id`,`processor_id`,`name`,`memory_id`,`os_id`,`harddrive_size`,`network_speed`) values (1,1,11,'GM Computer',19,12,1048576,100),(2,2,1,'TestUser PC',15,13,81920,4),(3,3,1,NULL,15,14,81920,4);
+insert  into `fc_computers`(`computer_id`,`owner_id`,`ownertype_id`,`processor_id`,`name`,`memory_id`,`os_id`,`harddrive_size`,`network_speed`) values (1,1,1,11,'GM Computer',19,12,1048576,100),(2,2,1,1,'TestUser PC',15,13,81920,4),(3,3,1,1,NULL,15,14,81920,4),(4,1,3,1,'Anion Gateway',15,13,81920,4),(5,2,3,1,'CON Development',15,13,81920,4),(6,3,3,1,'Advan Development',15,13,81920,4),(7,4,3,1,'Incoak Group',15,14,81920,4),(8,5,3,1,'Equic Capital',15,14,81920,4),(9,6,3,1,'Tass Consulting',15,14,81920,4),(10,7,3,1,'COA Ventures',15,14,81920,4),(11,8,3,1,'Mango Corporation',15,14,81920,4),(12,9,3,1,'Quant Research',15,14,81920,4),(13,10,3,1,'RAM Consulting',15,14,81920,4),(14,11,3,1,'Micon Research',15,14,81920,4),(15,12,3,1,'Visilinx Incorporated',15,14,81920,4),(16,13,3,1,'Zilinett',15,14,81920,4),(17,14,3,1,'Catmel Asia',15,14,81920,4),(18,15,3,1,'Belluted Systems',15,14,81920,4),(19,16,3,1,'Citas Asia',15,14,81920,4),(20,17,3,1,'Cadvanducts Ventures',15,14,81920,4),(21,18,3,1,'Softwart Capital',15,14,81920,4),(22,19,3,1,'Klated USA',15,14,81920,4),(23,20,3,1,'Soft Design',15,14,81920,4),(24,21,3,1,'MIC Manufacturing',15,14,81920,4),(25,22,3,1,'TIOTIO Corporation',15,14,81920,4),(26,23,3,1,'Compute Incorporated',15,14,81920,4),(27,24,3,1,'Sechnology Research',15,14,81920,4),(28,25,3,1,'COR Technology',15,14,81920,4),(29,26,3,1,'Tectoduct Partners',15,14,81920,4),(30,27,3,1,'Miconatione Design',15,14,81920,4),(31,28,3,1,'Cromed Corporation',15,14,81920,4),(32,29,3,1,'Ants Consulting',15,13,81920,4),(33,30,3,1,'Systro',15,13,81920,4),(34,31,3,1,'Systems Corporationg',15,13,81920,4),(35,32,3,1,'Macrosoft',15,13,81920,4);
 
 /*Table structure for table `fc_countries` */
 
@@ -190,22 +191,21 @@ insert  into `fc_memory`(`memory_id`,`memory_size`) values (1,1024),(2,2048),(3,
 DROP TABLE IF EXISTS `fc_missions`;
 
 CREATE TABLE `fc_missions` (
-  `mission_id` int(10) unsigned NOT NULL auto_increment,
+  `mission_id` int(10) unsigned NOT NULL,
   `parentmission_id` int(10) unsigned default NULL COMMENT 'Parent ID for sub quests of a main mission',
-  `name` int(10) unsigned NOT NULL COMMENT 'ID Mission Name',
-  `prelude` int(10) unsigned default NULL COMMENT 'ID of Optional mission prelude text',
-  `description` int(10) unsigned NOT NULL COMMENT 'ID of mission text',
   `min_level` int(11) default NULL COMMENT 'minimum character level when mission becomes available',
   `max_level` int(11) default NULL COMMENT 'maximum character level before mission stops being available',
   `difficulty` smallint(5) unsigned NOT NULL COMMENT 'difficulty rating of the mission (1-10)',
-  `success_event_id` int(10) unsigned NOT NULL COMMENT 'event that will indicate success of a mission',
-  `failure_event_id` int(10) unsigned default NULL COMMENT '[optional] event that will cause mission to fail',
+  `success_event_id` varchar(32) NOT NULL COMMENT 'event that will indicate success of a mission',
+  `failure_event_id` varchar(32) default NULL COMMENT '[optional] event that will cause mission to fail',
   `success_count` smallint(5) unsigned NOT NULL default '1' COMMENT 'Number of times the success event needs to fire to succeed in the mission',
   `failure_count` smallint(5) unsigned NOT NULL default '1' COMMENT 'number of times the failure event needs to fire to fail the mission',
   PRIMARY KEY  (`mission_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_missions` */
+
+insert  into `fc_missions`(`mission_id`,`parentmission_id`,`min_level`,`max_level`,`difficulty`,`success_event_id`,`failure_event_id`,`success_count`,`failure_count`) values (1,NULL,1,NULL,1,'(child).Mission.Complete',NULL,0,0),(2,1,1,NULL,1,'FileSystem.FileListing',NULL,1,1),(3,1,1,NULL,1,'FileSystem.ChangeDir',NULL,1,1),(4,1,1,NULL,1,'FileSystem.OSVersion',NULL,1,1);
 
 /*Table structure for table `fc_npcs` */
 
@@ -248,7 +248,21 @@ CREATE TABLE `fc_oskernels` (
 
 /*Data for the table `fc_oskernels` */
 
-insert  into `fc_oskernels`(`oskernel_id`,`name`) values (1,'Fury Kernal'),(2,'Havok Kernel'),(3,'CrystalOS');
+insert  into `fc_oskernels`(`oskernel_id`,`name`) values (1,'Fury'),(2,'Havok'),(3,'Crystal');
+
+/*Table structure for table `fc_ownertypes` */
+
+DROP TABLE IF EXISTS `fc_ownertypes`;
+
+CREATE TABLE `fc_ownertypes` (
+  `ownertype_id` smallint(5) unsigned NOT NULL,
+  `ownertype` varchar(32) NOT NULL COMMENT 'description of the owner type',
+  PRIMARY KEY  (`ownertype_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_ownertypes` */
+
+insert  into `fc_ownertypes`(`ownertype_id`,`ownertype`) values (1,'Player'),(2,'NPC'),(3,'Company');
 
 /*Table structure for table `fc_processors` */
 

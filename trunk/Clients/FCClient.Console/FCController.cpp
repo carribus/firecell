@@ -21,6 +21,7 @@
 #include <map>
 #include "../../common/protocol/fcprotocol.h"
 #include "../../common/PEPacketHelper.h"
+#include "ResourceManager.h"
 #include "FCController.h"
 
 FCController::FCController(void)
@@ -55,6 +56,9 @@ bool FCController::Initialise(const string& username, const string& password)
   m_password = password;
 
   m_modConsole.SetServerObject( &m_server );
+  m_modForum.SetServerObject( &m_server );
+
+  ResourceManager::instance().LoadMissionStrings("./clientdata/missions/missions_en.xml");
 
   return true;
 }
@@ -183,6 +187,7 @@ void FCController::QueueForAction()
             switch (it->second.type)
             {
             case  Forum:
+              m_pCurrentModule = &m_modForum;
               break;
 
             case  News:
@@ -193,8 +198,6 @@ void FCController::QueueForAction()
 
             case  Console:
               m_pCurrentModule = &m_modConsole;
-              m_pCurrentModule->RegisterSink(this);
-              m_pCurrentModule->SetCharacterID(m_CurrentCharacterID);
               break;
 
             case  Bank:
@@ -209,6 +212,12 @@ void FCController::QueueForAction()
             default:
               printf("(unknown option) - WTF was that?\n");
               break;
+            }
+
+            if ( m_pCurrentModule )
+            {
+              m_pCurrentModule->RegisterSink(this);
+              m_pCurrentModule->SetCharacterID(m_CurrentCharacterID);
             }
           }
           break;

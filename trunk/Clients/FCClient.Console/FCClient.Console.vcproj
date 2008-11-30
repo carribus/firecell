@@ -131,6 +131,9 @@
 				RelativePath=".\ModConsole.cpp">
 			</File>
 			<File
+				RelativePath=".\ModForum.cpp">
+			</File>
+			<File
 				RelativePath="..\..\common\PacketExtractor.cpp">
 			</File>
 			<File
@@ -138,6 +141,9 @@
 			</File>
 			<File
 				RelativePath="..\..\common\PEPacketHelper.cpp">
+			</File>
+			<File
+				RelativePath=".\ResourceManager.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -163,6 +169,9 @@
 				RelativePath=".\ModConsole.h">
 			</File>
 			<File
+				RelativePath=".\ModForum.h">
+			</File>
+			<File
 				RelativePath="..\..\common\PacketExtractor.h">
 			</File>
 			<File
@@ -171,11 +180,41 @@
 			<File
 				RelativePath="..\..\common\PEPacketHelper.h">
 			</File>
+			<File
+				RelativePath=".\ResourceManager.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
+		</Filter>
+		<Filter
+			Name="XML">
+			<File
+				RelativePath="..\..\common\Xml\CXMLReaderImpl.h">
+			</File>
+			<File
+				RelativePath="..\..\common\Xml\fast_atof.h">
+			</File>
+			<File
+				RelativePath="..\..\common\Xml\heapsort.h">
+			</File>
+			<File
+				RelativePath="..\..\common\Xml\irrArray.h">
+			</File>
+			<File
+				RelativePath="..\..\common\Xml\irrString.h">
+			</File>
+			<File
+				RelativePath="..\..\common\Xml\irrTypes.h">
+			</File>
+			<File
+				RelativePath="..\..\common\Xml\irrXML.cpp">
+			</File>
+			<File
+				RelativePath="..\..\common\Xml\irrXML.h">
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt">

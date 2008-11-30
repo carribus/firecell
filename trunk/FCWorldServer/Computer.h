@@ -6,6 +6,7 @@
 #include "ItemOS.h"
 #include "ItemMemory.h"
 #include "FileSystem.h"
+#include "../common/Database/FCDatabase.h"
 #include "../common/fctypes.h"
 
 using namespace std;

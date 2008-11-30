@@ -39,10 +39,12 @@ public:
    */
   DBIResults* Execute(FCDBJob job);
   void Disconnect();
+  std::string GetLastError();
 
 private:
 
   MYSQL*       m_conn;
+  std::string  m_strLastError;
 };
 
 #endif//_DBIMYSQLCONNECTION_H_

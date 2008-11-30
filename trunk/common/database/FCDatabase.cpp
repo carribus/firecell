@@ -286,11 +286,23 @@ void* FCDatabase::thrdDBWorker(void* pData)
       // execute the job
       if ( !job.GetQuery().empty() )
       {
-        pResults = pConn->Execute(job);
-        job.SetResults(pResults);
-        job.IsCompleted(true);
-        // notify listener that a job has completed
-        pThis->JobComplete(job);
+        if ( (pResults = pConn->Execute(job)) )
+        {
+          job.SetResults(pResults);
+          job.IsCompleted(true);
+          // notify listener that a job has completed
+          pThis->JobComplete(job);
+        }
+        else
+        {
+          // an error probably occurred here... lets check
+          string strError = pConn->GetLastError();
+
+          if ( strError.length() )
+          {
+            printf("FCDatabase Error: %s\n", strError.c_str());
+          }
+        }
       }
       else
       {

@@ -103,6 +103,8 @@ DBIResults* DBIMySqlConnection::Execute(FCDBJob job)
   }
   else
   {
+    // figure out what went wrong
+    m_strLastError = mysql_error(m_conn);
     delete pResults;
     pResults = NULL;
     // error handling ..
@@ -121,4 +123,14 @@ void DBIMySqlConnection::Disconnect()
     mysql_close(m_conn);
     m_conn = NULL;
   }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+std::string DBIMySqlConnection::GetLastError()
+{
+  string e = m_strLastError;
+  m_strLastError.erase( m_strLastError.begin(), m_strLastError.end() );
+
+  return e;
 }
