@@ -137,6 +137,42 @@ CREATE TABLE `fc_countries` (
 
 insert  into `fc_countries`(`country_id`,`name`,`IP_groupA`) values (1,'USA',216),(2,'Russia',65),(3,'Netherlands',163),(4,'United Kingdom',229),(5,'Australia',124),(6,'China',45),(7,'South Africa',196),(8,'Japan',86),(9,'Nigeria',176),(10,'France',168),(11,'Brazil',79);
 
+/*Table structure for table `fc_forumcategories` */
+
+DROP TABLE IF EXISTS `fc_forumcategories`;
+
+CREATE TABLE `fc_forumcategories` (
+  `forumcat_id` int(10) unsigned NOT NULL auto_increment,
+  `parent_id` int(11) default NULL COMMENT '[Optional] Parent Category ID',
+  `name` varchar(32) NOT NULL COMMENT 'Name of the category',
+  `description` varchar(256) default NULL COMMENT 'Description of category',
+  `accounttype_required` int(10) unsigned NOT NULL COMMENT 'account type required to see the category',
+  `min_level` int(10) unsigned NOT NULL COMMENT 'minimum level required to see this category',
+  `max_level` int(11) default NULL COMMENT 'max level that could see this category',
+  PRIMARY KEY  (`forumcat_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_forumcategories` */
+
+insert  into `fc_forumcategories`(`forumcat_id`,`parent_id`,`name`,`description`,`accounttype_required`,`min_level`,`max_level`) values (1,NULL,'General','All game related posts are made in these categories',1,1,100),(2,1,'Tutorial Missions','The introductory tutorial missions can be found here',1,1,5),(3,1,'Basic Missions','Basic Missions for the early levels..',1,1,15),(4,1,'General Missions','Missions here are available to all levels of players',1,1,100),(5,NULL,'Q&A',NULL,1,1,100),(6,5,'Beginner Questions','All beginner questions should be asked here...',1,1,100),(7,5,'General Questions','General game related questions go here',1,1,100);
+
+/*Table structure for table `fc_forumposts` */
+
+DROP TABLE IF EXISTS `fc_forumposts`;
+
+CREATE TABLE `fc_forumposts` (
+  `forumpost_id` bigint(20) unsigned NOT NULL auto_increment,
+  `parentpost_id` bigint(20) default NULL COMMENT 'id of the parent thread post',
+  `order` int(11) NOT NULL COMMENT 'this posts order in the thread',
+  `title` varchar(255) NOT NULL COMMENT 'Title of the thread',
+  `author_id` bigint(20) NOT NULL COMMENT 'ID of the author of the thread',
+  `content` text NOT NULL COMMENT 'Content of the thread post',
+  `date_created` datetime NOT NULL COMMENT 'Datetime of thread creation',
+  PRIMARY KEY  (`forumpost_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_forumposts` */
+
 /*Table structure for table `fc_items` */
 
 DROP TABLE IF EXISTS `fc_items`;

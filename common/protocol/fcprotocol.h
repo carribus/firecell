@@ -317,7 +317,6 @@ const FCSHORT FCMSG_FORUM_GET_THREADS           = 201;
 struct __FCPKT_FORUM_GET_THREADS
 {
 	FCULONG category_id;
-  FCULONG character_id;
 };
 
 #pragma pack(pop)

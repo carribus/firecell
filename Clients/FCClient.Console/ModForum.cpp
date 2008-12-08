@@ -59,13 +59,23 @@ void ModForum::QueueForAction()
 
 	case	ModForum::ForumCategorySelection:
 		{
-			printf("Select category (0 to exit): ");
+			DisplayForumCategories();
+			printf("\nSelect category (0 to exit): ");
 			int nOption = getch();
 
-			while ( nOption < '0' && nOption > '7' )
+			while ( nOption < '0' || nOption > m_catID_max+48 )
 				nOption = getch();
 
 			// request the threads for the chosen category
+			if ( nOption == '0' )
+			{
+				if ( m_pSink )
+					m_pSink->CloseModule(this);
+			}
+			else
+			{
+				m_pServer->RequestForumThreads(nOption-48);
+			}
 		}
 		break;
 
@@ -108,7 +118,8 @@ bool ModForum::OnResponseForumGetCategories(PEPacket* pPkt, BaseSocket* pSocket)
   d = (__FCPKT_FORUM_GET_CATEGORIES_RESP*) new FCBYTE[ dataLen ];
   pPkt->GetField("data", d, dataLen);
 
-	printf("\nForum categories\n\n", d->category_count);
+	m_catID_max = m_catID_min = 0;
+
 	for ( FCSHORT i = 0; i < d->category_count; i++ )
 	{
 		c.cat_id = d->categories[i].category_id;
@@ -117,15 +128,41 @@ bool ModForum::OnResponseForumGetCategories(PEPacket* pPkt, BaseSocket* pSocket)
 		c.desc = d->categories[i].desc;
 		m_mapCategories[c.cat_id] = c;
 
-		// TODO: Move the listing of the categories out of this function...
-//#error you left off here
-		printf("[%ld] %s - %s\n", d->categories[i].category_id, d->categories[i].name, d->categories[i].desc);
+		if ( c.cat_id < m_catID_min )
+			m_catID_min = c.cat_id;
+		if ( c.cat_id > m_catID_max )
+			m_catID_max = c.cat_id;
 	}
 
-	printf("\n");
 	m_state = ModForum::ForumCategorySelection;
 
   delete [] (FCBYTE*)d;
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ModForum::DisplayForumCategories(FCULONG parentID)
+{
+	static int nLevel = 0;
+	CategoryMap::iterator it = m_mapCategories.begin();
+	Category* pParent = NULL;
+	string name, desc;
+
+	while ( it != m_mapCategories.end() )
+	{
+		if ( it->second.parent_id == parentID )
+		{
+			name = it->second.name;
+			desc = it->second.desc;
+			for ( int i = 0; i < nLevel; i++ )
+				printf(" ");
+			printf("[%ld] %s (%s)\n", it->second.cat_id, name.c_str(), desc.c_str());
+			nLevel++;
+			DisplayForumCategories( it->second.cat_id );
+			nLevel--;
+		}
+		it++;
+	}
 }

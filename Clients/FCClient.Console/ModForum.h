@@ -35,6 +35,9 @@ class ModForum : public IGameModule
 		ForumCategorySelection
   };
 
+	struct Category;
+	typedef map<FCULONG, Category> CategoryMap;
+
 	struct Category
 	{
 		FCULONG cat_id;
@@ -56,13 +59,16 @@ public:
 
 private:
 
+	void DisplayForumCategories(FCULONG parentID = 0);
+
   IGameModuleSink*    m_pSink;
   FCULONG             m_characterID;
   FCServerObj*        m_pServer;
   ForumState          m_state;
 
-	typedef map<FCULONG, Category> CategoryMap;
 	CategoryMap					m_mapCategories;
+	FCULONG							m_catID_min;
+	FCULONG							m_catID_max;
 };
 
 #endif//_MODFORUM_H_
