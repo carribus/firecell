@@ -741,11 +741,14 @@ bool FCLogicWorld::OnCommandForumGetThreads(PEPacket* pPkt, RouterSocket* pSocke
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
 
-  if ( (pPlayer = m_playerMgr.GetPlayerByID(d.character_id)) )
+  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(d.clientSocket)) )
   {
+/*
+		// THIS IS WRONG - need to create a structure to tie certain forum posts to missions.
+		// The correct response here is to just get all posts for a forum category and return that to the client
 		vector<Mission*> missions;
     FCULONG count = m_missionMgr.GetAvailableMissionsForPlayer(pPlayer, missions);
-
+*/
   }
 
   return true;

@@ -161,6 +161,20 @@ void FCServerObj::RequestForumCategories(FCULONG character_id)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCServerObj::RequestForumThreads(FCULONG category_id)
+{
+	PEPacket pkt;
+	__FCPKT_FORUM_GET_THREADS d;
+
+	d.category_id = category_id;
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_FORUM_GET_THREADS, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCServerObj::SendPacket(PEPacket& pkt)
 {
   char* pData = NULL;
