@@ -28,6 +28,7 @@
 #include "ItemManager.h"
 #include "WorldManager.h"
 #include "MissionManager.h"
+#include "Forum.h"
 #include "../common/ServiceLogicBase.h"
 #include "../common/threading.h"
 
@@ -70,6 +71,7 @@ private:
   void SendConsoleFileSystemInfo(FileSystem& fs, RouterSocket* pRouter, FCSOCKET clientSocket);
   void SendConsoleFileList(string currentDir, vector<FileSystem::File> files, RouterSocket* pRouter, FCSOCKET clientSocket);
   void SendConsoleCommandResult(Player* pPlayer, string result, RouterSocket* pRouter, FCSOCKET clientSocket);
+	void SendForumCategories(vector<ForumCategory*>& categories, RouterSocket* pRouter, FCSOCKET clientSocket);
 
   //
   // Packet handling functions
@@ -101,6 +103,8 @@ private:
   static void OnDBJob_LoadCompanies(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadCompanyComputers(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadMissions(DBIResultSet& resultSet, void*& pContext);
+	static void OnDBJob_LoadForumCategories(DBIResultSet& resultSet, void*& pContext);
+	static void OnDBJob_LoadForumPosts(DBIResultSet& resultSet, void*& pContext);
 
   /*
    *  Helper functions
@@ -116,6 +120,7 @@ private:
   ItemManager           m_itemMgr;
   WorldManager          m_worldMgr;
   MissionManager        m_missionMgr;
+	Forum									m_forum;
 
   pthread_cond_t        m_condSync;
   pthread_mutex_t       m_mutexSync;

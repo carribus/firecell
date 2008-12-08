@@ -23,6 +23,8 @@
 #include "EventSystem.h"
 #include "Event.h"
 #include "EventWithDisposableData.h"
+#include "Forum.h"
+#include "ForumCategory.h"
 #include "FCLogicWorld.h"
 
 #define DBQ_LOAD_OBJECT_DATA    "load_object_data"
@@ -100,6 +102,8 @@ int FCLogicWorld::Start()
     RegisterDBHandler(DBQ_LOAD_COMPANIES, OnDBJob_LoadCompanies);
     RegisterDBHandler(DBQ_LOAD_COMPANY_COMPUTERS, OnDBJob_LoadCompanyComputers);
     RegisterDBHandler(DBQ_LOAD_MISSIONS, OnDBJob_LoadMissions);
+		RegisterDBHandler(DBQ_LOAD_FORUM_CATEGORIES, OnDBJob_LoadForumCategories);
+		RegisterDBHandler(DBQ_LOAD_FORUM_POSTS, OnDBJob_LoadForumPosts);
 
     // Start the Item loading...
     if ( HasConsole() )
@@ -173,6 +177,10 @@ void FCLogicWorld::LoadWorldData()
   pthread_mutex_lock(&m_mutexSync);
   pthread_cond_wait(&m_condSync, &m_mutexSync);
   pthread_mutex_unlock(&m_mutexSync);
+
+	pCtx = new DBJobContext;
+	pCtx->pThis = this;
+	GetDatabase().ExecuteJob(DBQ_LOAD_FORUM_CATEGORIES, (void*)pCtx);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -392,6 +400,46 @@ void FCLogicWorld::SendConsoleCommandResult(Player* pPlayer, string result, Rout
 
   // send the packet
   PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_CON_COMMAND, ST_None);
+  PEPacketHelper::SetPacketData(pkt, 
+                                (void*)d, 
+                                pktLen);
+
+  // send notification to Client
+  pkt.SetFieldValue("target", (void*)&clientSocket);
+  pRouter->Send(&pkt);
+
+  // clear the data portion
+  delete [] (FCBYTE*)d;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::SendForumCategories(vector<ForumCategory*>& categories, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  PEPacket pkt;
+  __FCPKT_FORUM_GET_CATEGORIES_RESP* d = NULL;
+	size_t catCount = categories.size(), index = 0;
+	size_t pktLen = sizeof(__FCPKT_FORUM_GET_CATEGORIES_RESP) + ( (catCount-1) * sizeof(__FCPKT_FORUM_GET_CATEGORIES_RESP::category_info));
+
+	d = (__FCPKT_FORUM_GET_CATEGORIES_RESP*) new FCBYTE[ pktLen ];
+	memset(d, 0, pktLen);
+	d->category_count = (FCSHORT)catCount;
+
+	ForumCategory* pCat = NULL;
+	vector<ForumCategory*>::iterator it = categories.begin();
+	while ( it != categories.end() )
+	{
+		pCat = (*it);
+		d->categories[index].category_id = pCat->GetID();
+		d->categories[index].parent_id = pCat->GetParentID();
+		strncpy( d->categories[index].name, pCat->GetName().c_str(), sizeof(d->categories[index].name) );
+		strncpy( d->categories[index].desc, pCat->GetDescription().c_str(), sizeof(d->categories[index].desc) );
+		it++;
+		index++;
+	}
+
+  // send the packet
+  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_FORUM_GET_CATEGORIES, ST_None);
   PEPacketHelper::SetPacketData(pkt, 
                                 (void*)d, 
                                 pktLen);
@@ -671,6 +719,10 @@ bool FCLogicWorld::OnCommandForumGetCategories(PEPacket* pPkt, RouterSocket* pSo
 	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
 	{
 		// TODO: Create a forum object that can handle these requests, and return required results for this and other forum messages
+		vector<ForumCategory*> arrCategories;
+
+		m_forum.GetCategoriesForPlayer(pPlayer, arrCategories);
+		SendForumCategories(arrCategories, pSocket, clientSocket);
 	}
 	else
 		return false;
@@ -1142,6 +1194,65 @@ void FCLogicWorld::OnDBJob_LoadMissions(DBIResultSet& resultSet, void*& pContext
 
   if ( pThis->HasConsole() )
     printf("%ld missions loaded\n", rowCount);
+
+  pthread_cond_signal(&pThis->m_condSync);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::OnDBJob_LoadForumCategories(DBIResultSet& resultSet, void*& pContext)
+{
+	DBJobContext* pCtx = (DBJobContext*) pContext;
+	FCLogicWorld* pThis = pCtx->pThis;
+
+	if ( !pThis )
+		return;
+
+	size_t rowCount = resultSet.GetRowCount();
+	FCULONG id, parentID, accountTypeReq, minLevel, maxLevel;
+	string name, desc;
+
+	for ( size_t i = 0; i < rowCount; i++ )
+	{
+		id = resultSet.GetULongValue("forumcat_id", i);
+		parentID = resultSet.GetULongValue("parent_id", i);
+		name = resultSet.GetStringValue("name", i);
+		desc = resultSet.GetStringValue("description", i);
+		accountTypeReq = resultSet.GetULongValue("accounttype_required", i);
+		minLevel = resultSet.GetULongValue("min_level", i);
+		maxLevel = resultSet.GetULongValue("max_level", i);
+
+		pThis->m_forum.AddCategory(id, parentID, name, desc, accountTypeReq, minLevel, maxLevel);
+	}
+
+	delete pCtx;
+	pContext = NULL;
+
+	if ( pThis->HasConsole() )
+		printf("%ld forum categories loaded\n", rowCount);
+
+	pCtx = new DBJobContext;
+  pCtx->pThis = pThis;
+  pThis->GetDatabase().ExecuteJob(DBQ_LOAD_FORUM_POSTS, (void*)pCtx);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::OnDBJob_LoadForumPosts(DBIResultSet& resultSet, void*& pContext)
+{
+	DBJobContext* pCtx = (DBJobContext*) pContext;
+	FCLogicWorld* pThis = pCtx->pThis;
+
+	if ( !pThis )
+		return;
+
+	size_t rowCount = resultSet.GetRowCount();
+
+	if ( pThis->HasConsole() )
+		printf("FCLogicWorld::OnDBJob_LoadForumPosts() not implemented yet\n");
+
+	delete pCtx;
+	pContext = NULL;
 
   pthread_cond_signal(&pThis->m_condSync);
 }

@@ -31,8 +31,17 @@ class ModForum : public IGameModule
   {
     Initialise = 1,
     Running,
-    WaitingForResponse
+    WaitingForResponse,
+		ForumCategorySelection
   };
+
+	struct Category
+	{
+		FCULONG cat_id;
+		FCULONG parent_id;
+		string name;
+		string desc;
+	};
 
 public:
   ModForum(void);
@@ -43,7 +52,7 @@ public:
   void SetServerObject(FCServerObj* pServer)                      { m_pServer = pServer; }
   void QueueForAction();
   bool OnResponse(FCSHORT msgID, PEPacket* pPkt, BaseSocket* pSocket);
-    bool OnResponseForumGetThreads(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnResponseForumGetCategories(PEPacket* pPkt, BaseSocket* pSocket);
 
 private:
 
@@ -51,6 +60,9 @@ private:
   FCULONG             m_characterID;
   FCServerObj*        m_pServer;
   ForumState          m_state;
+
+	typedef map<FCULONG, Category> CategoryMap;
+	CategoryMap					m_mapCategories;
 };
 
 #endif//_MODFORUM_H_
