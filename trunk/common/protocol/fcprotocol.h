@@ -208,13 +208,13 @@ struct __FCPKT_GET_DESKTOP_OPTIONS
 
 enum DesktopOptionType
 {
-  Forum = 1,
-  News,
-  Email,
-  Console,
-  Bank,
-  Chat,
-  HackingTools
+  DOT_Forum = 1,
+  DOT_News,
+  DOT_Email,
+  DOT_Console,
+  DOT_Bank,
+  DOT_Chat,
+  DOT_HackingTools
 };
 
 struct __FCPKT_GET_DESKTOP_OPTIONS_RESP
@@ -297,6 +297,18 @@ const FCSHORT FCMSG_FORUM_GET_CATEGORIES        = 200;
 struct __FCPKT_FORUM_GET_CATEGORIES
 {
   FCULONG character_id;
+};
+
+struct __FCPKT_FORUM_GET_CATEGORIES_RESP
+{
+	FCSHORT category_count;
+	struct category_info
+	{
+		FCULONG category_id;
+		FCULONG parent_id;
+		char name[32];
+		char desc[256];
+	} categories[1];
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////

@@ -190,27 +190,27 @@ void FCController::QueueForAction()
 
             switch (it->second.type)
             {
-            case  Forum:
+            case  DOT_Forum:
               m_pCurrentModule = &m_modForum;
               break;
 
-            case  News:
+            case  DOT_News:
               break;
 
-            case  Email:
+            case  DOT_Email:
               break;
 
-            case  Console:
+            case  DOT_Console:
               m_pCurrentModule = &m_modConsole;
               break;
 
-            case  Bank:
+            case  DOT_Bank:
               break;
 
-            case  Chat:
+            case  DOT_Chat:
               break;
 
-            case  HackingTools:
+            case  DOT_HackingTools:
               break;
 
             default:

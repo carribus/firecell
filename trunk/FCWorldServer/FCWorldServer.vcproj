@@ -149,6 +149,9 @@
 				RelativePath=".\FileSystemActionHandler.cpp">
 			</File>
 			<File
+				RelativePath=".\Forum.cpp">
+			</File>
+			<File
 				RelativePath=".\InGameIPAddress.cpp">
 			</File>
 			<File
@@ -248,6 +251,12 @@
 			</File>
 			<File
 				RelativePath=".\FileSystemActionHandler.h">
+			</File>
+			<File
+				RelativePath=".\Forum.h">
+			</File>
+			<File
+				RelativePath=".\ForumCategory.h">
 			</File>
 			<File
 				RelativePath=".\IEventSystem.h">

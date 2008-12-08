@@ -22,7 +22,7 @@ public:
   void SendConsoleCommand(const string& currentDir, const string cmd);
 
   // forum commands
-  void RequestForumThreads(FCULONG character_id);
+  void RequestForumCategories(FCULONG character_id);
 
   void SetSocket(BaseSocket* pSock)                             { m_pSock = pSock; }
 

@@ -65,18 +65,18 @@ public:
 	/*
 	 *	Accessor/Mutators
 	 */
-  FCULONG GetAccountID()                  { return m_accountID; }
-  FCULONG GetID()                         { return m_id; }
-  string GetName()                        { return m_name; }
-  string GetEmail()                       { return m_email; }
-  FCULONG GetXP()                         { return m_xp; }
-  FCULONG GetLevel()                      { return m_level; }
-  FCINT GetFameScale()                    { return m_fameScale; }
-  FCULONG GetCityID()                     { return m_cityID; }
-  FCULONG GetCountryID()                  { return m_countryID; }
+  FCULONG GetAccountID() const            { return m_accountID; }
+  FCULONG GetID() const                   { return m_id; }
+  string GetName() const                  { return m_name; }
+  string GetEmail() const                 { return m_email; }
+  FCULONG GetXP() const                   { return m_xp; }
+  FCULONG GetLevel() const                { return m_level; }
+  FCINT GetFameScale() const              { return m_fameScale; }
+  FCULONG GetCityID() const               { return m_cityID; }
+  FCULONG GetCountryID() const            { return m_countryID; }
   Computer& GetComputer()                 { return m_computer; }
   InGameIPAddress& GetIP()                { return m_ip; }
-  FCSOCKET GetClientSocket()              { return m_clientSocket; }
+  FCSOCKET GetClientSocket() const        { return m_clientSocket; }
 
   void SetAccountID(FCULONG id)           { m_accountID = id; }
   void SetID(FCULONG id)                  { m_id = id; }

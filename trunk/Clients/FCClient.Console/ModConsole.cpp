@@ -48,6 +48,7 @@ void ModConsole::QueueForAction()
       if ( m_pServer )
       {
         m_pServer->RequestCharacterFileSystemInfo(m_characterID);
+				m_state = WaitingForResponse;
 //        m_pServer->RequestFileSystemList(m_currentDir);
       }
     }

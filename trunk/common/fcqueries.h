@@ -50,6 +50,9 @@
 #define DBQ_LOAD_COMPANY_COMPUTERS        "load_company_computers"
 #define DBQ_LOAD_MISSIONS                 "load_missions"
 
+#define DBQ_LOAD_FORUM_CATEGORIES					"load_forum_categories"
+#define DBQ_LOAD_FORUM_POSTS							"load_forum_posts"
+
 ////////////////////////////////////////
 // ACCOUNT QUERIES
 ////////////////////////////////////////
