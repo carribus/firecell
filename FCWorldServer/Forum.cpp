@@ -1,3 +1,4 @@
+#include "ForumPost.h"
 #include "Forum.h"
 
 Forum::Forum(void)
@@ -12,7 +13,7 @@ Forum::~Forum()
 
 ///////////////////////////////////////////////////////////////////////
 
-size_t Forum::AddCategory(FCULONG id, FCULONG parentID, string name, string desc, FCULONG accountTypeReq, FCULONG minLevel, FCULONG maxLevel)
+size_t Forum::AddCategory(FCULONG id, FCULONG parentID, FCULONG order, string name, string desc, FCULONG accountTypeReq, FCULONG minLevel, FCULONG maxLevel)
 {
 	ForumCategory* pCat = GetCategoryByID(id);
 
@@ -21,6 +22,7 @@ size_t Forum::AddCategory(FCULONG id, FCULONG parentID, string name, string desc
 		pCat = new ForumCategory;
 		pCat->SetID(id);
 		pCat->SetParentID(parentID);
+		pCat->SetOrder(order);
 		pCat->SetName(name);
 		pCat->SetDescription(desc);
 		pCat->SetAccountTypeRequired(accountTypeReq);
@@ -81,4 +83,44 @@ ForumCategory* Forum::GetCategoryByID(FCULONG id)
 	}
 
 	return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+size_t Forum::AddForumPost(FCULONG id, FCULONG parentID, FCULONG category_id, FCULONG order, string title, string content, FCULONG author_id, string date_created, FCULONG mission_id)
+{
+	ForumCategory* pCat = GetCategoryByID(category_id);
+	ForumPost* pPost = NULL;
+	size_t result = 0;
+
+	if ( pCat )
+	{
+		pPost = new ForumPost;
+		pPost->SetID(id);
+		pPost->SetParentID(parentID);
+		pPost->SetOrder(order);
+		pPost->SetTitle(title);
+		pPost->SetContent(content);
+		pPost->SetAuthorID(author_id);
+		pPost->SetDateCreated(date_created);
+		pPost->SetMissionID(mission_id);
+
+		result = pCat->AddForumPost(pPost);
+	}
+
+	return result;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+size_t Forum::GetForumThreads(FCULONG category_id, vector<ForumPost>& target)
+{
+	ForumCategory* pCat = GetCategoryByID(category_id);
+
+	if ( pCat )
+	{
+		pCat->GetForumPosts(target);
+	}
+
+	return target.size();
 }

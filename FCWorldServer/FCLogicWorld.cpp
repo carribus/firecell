@@ -160,6 +160,7 @@ void FCLogicWorld::ConfigureEventSystem()
 
 void FCLogicWorld::LoadWorldData()
 {
+	// load the world related data
   DBJobContext* pCtx = new DBJobContext;
   pCtx->pThis = this;
   GetDatabase().ExecuteJob(DBQ_LOAD_WORLD_GEOGRAPHY, (void*)pCtx);
@@ -169,18 +170,25 @@ void FCLogicWorld::LoadWorldData()
   pthread_cond_wait(&m_condSync, &m_mutexSync);
   pthread_mutex_unlock(&m_mutexSync);
 
+	// load missions
   pCtx = new DBJobContext;
   pCtx->pThis = this;
   GetDatabase().ExecuteJob(DBQ_LOAD_MISSIONS, (void*)pCtx);
 
-  // we want to pause here until the item data required data is loaded
+  // we want to pause here until the mission data required data is loaded
   pthread_mutex_lock(&m_mutexSync);
   pthread_cond_wait(&m_condSync, &m_mutexSync);
   pthread_mutex_unlock(&m_mutexSync);
 
+	// load forum data
 	pCtx = new DBJobContext;
 	pCtx->pThis = this;
 	GetDatabase().ExecuteJob(DBQ_LOAD_FORUM_CATEGORIES, (void*)pCtx);
+
+  // we want to pause here until the forum data required data is loaded
+  pthread_mutex_lock(&m_mutexSync);
+  pthread_cond_wait(&m_condSync, &m_mutexSync);
+  pthread_mutex_unlock(&m_mutexSync);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -450,6 +458,12 @@ void FCLogicWorld::SendForumCategories(vector<ForumCategory*>& categories, Route
 
   // clear the data portion
   delete [] (FCBYTE*)d;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::SendForumThreads(vector<ForumPost>& threads, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -741,8 +755,12 @@ bool FCLogicWorld::OnCommandForumGetThreads(PEPacket* pPkt, RouterSocket* pSocke
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
 
-  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(d.clientSocket)) )
+  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
   {
+		vector<ForumPost> target;
+		m_forum.GetForumThreads( d.category_id, target );
+
+		SendForumThreads(target, pSocket, clientSocket);
 /*
 		// THIS IS WRONG - need to create a structure to tie certain forum posts to missions.
 		// The correct response here is to just get all posts for a forum category and return that to the client
@@ -1212,20 +1230,21 @@ void FCLogicWorld::OnDBJob_LoadForumCategories(DBIResultSet& resultSet, void*& p
 		return;
 
 	size_t rowCount = resultSet.GetRowCount();
-	FCULONG id, parentID, accountTypeReq, minLevel, maxLevel;
+	FCULONG id, parentID, accountTypeReq, minLevel, maxLevel, order;
 	string name, desc;
 
 	for ( size_t i = 0; i < rowCount; i++ )
 	{
 		id = resultSet.GetULongValue("forumcat_id", i);
 		parentID = resultSet.GetULongValue("parent_id", i);
+		order = resultSet.GetULongValue("order", i);
 		name = resultSet.GetStringValue("name", i);
 		desc = resultSet.GetStringValue("description", i);
 		accountTypeReq = resultSet.GetULongValue("accounttype_required", i);
 		minLevel = resultSet.GetULongValue("min_level", i);
 		maxLevel = resultSet.GetULongValue("max_level", i);
 
-		pThis->m_forum.AddCategory(id, parentID, name, desc, accountTypeReq, minLevel, maxLevel);
+		pThis->m_forum.AddCategory(id, parentID, order, name, desc, accountTypeReq, minLevel, maxLevel);
 	}
 
 	delete pCtx;
@@ -1250,9 +1269,26 @@ void FCLogicWorld::OnDBJob_LoadForumPosts(DBIResultSet& resultSet, void*& pConte
 		return;
 
 	size_t rowCount = resultSet.GetRowCount();
+	FCULONG post_id, parent_id, category_id, order, author_id, mission_id;
+	string title, content, date_created;
+
+	for ( size_t i = 0; i < rowCount; i++ )
+	{
+		post_id = resultSet.GetULongValue("forumpost_id", i);
+		parent_id = resultSet.GetULongValue("parentpost_id", i);
+		category_id = resultSet.GetULongValue("forumcategory_id", i);
+		order = resultSet.GetULongValue("order", i);
+		title = resultSet.GetStringValue("title", i);
+		author_id = resultSet.GetULongValue("author_id", i);
+		content = resultSet.GetStringValue("content", i);
+		date_created = resultSet.GetStringValue("date_created", i);
+		mission_id = resultSet.GetULongValue("mission_id", i);
+
+		pThis->m_forum.AddForumPost(post_id, parent_id, category_id, order, title, content, author_id, date_created, mission_id);
+	}
 
 	if ( pThis->HasConsole() )
-		printf("FCLogicWorld::OnDBJob_LoadForumPosts() not implemented yet\n");
+		printf("%ld forum posts loaded\n", rowCount);
 
 	delete pCtx;
 	pContext = NULL;

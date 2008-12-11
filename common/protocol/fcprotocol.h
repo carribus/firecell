@@ -306,6 +306,7 @@ struct __FCPKT_FORUM_GET_CATEGORIES_RESP
 	{
 		FCULONG category_id;
 		FCULONG parent_id;
+		FCULONG order;
 		char name[32];
 		char desc[256];
 	} categories[1];

@@ -259,6 +259,9 @@
 				RelativePath=".\ForumCategory.h">
 			</File>
 			<File
+				RelativePath=".\ForumPost.h">
+			</File>
+			<File
 				RelativePath=".\IEventSystem.h">
 			</File>
 			<File
