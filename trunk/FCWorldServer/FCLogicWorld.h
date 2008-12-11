@@ -72,6 +72,7 @@ private:
   void SendConsoleFileList(string currentDir, vector<FileSystem::File> files, RouterSocket* pRouter, FCSOCKET clientSocket);
   void SendConsoleCommandResult(Player* pPlayer, string result, RouterSocket* pRouter, FCSOCKET clientSocket);
 	void SendForumCategories(vector<ForumCategory*>& categories, RouterSocket* pRouter, FCSOCKET clientSocket);
+	void SendForumThreads(vector<ForumPost>& threads, RouterSocket* pRouter, FCSOCKET clientSocket);
 
   //
   // Packet handling functions

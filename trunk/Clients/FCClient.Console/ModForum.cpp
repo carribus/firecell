@@ -124,6 +124,7 @@ bool ModForum::OnResponseForumGetCategories(PEPacket* pPkt, BaseSocket* pSocket)
 	{
 		c.cat_id = d->categories[i].category_id;
 		c.parent_id = d->categories[i].parent_id;
+		c.order = d->categories[i].order;
 		c.name = d->categories[i].name;
 		c.desc = d->categories[i].desc;
 		m_mapCategories[c.cat_id] = c;

@@ -42,6 +42,7 @@ class ModForum : public IGameModule
 	{
 		FCULONG cat_id;
 		FCULONG parent_id;
+		FCULONG order;
 		string name;
 		string desc;
 	};

@@ -144,17 +144,18 @@ DROP TABLE IF EXISTS `fc_forumcategories`;
 CREATE TABLE `fc_forumcategories` (
   `forumcat_id` int(10) unsigned NOT NULL auto_increment,
   `parent_id` int(11) default NULL COMMENT '[Optional] Parent Category ID',
+  `order` int(10) unsigned NOT NULL COMMENT 'Order of display',
   `name` varchar(32) NOT NULL COMMENT 'Name of the category',
   `description` varchar(256) default NULL COMMENT 'Description of category',
   `accounttype_required` int(10) unsigned NOT NULL COMMENT 'account type required to see the category',
   `min_level` int(10) unsigned NOT NULL COMMENT 'minimum level required to see this category',
   `max_level` int(11) default NULL COMMENT 'max level that could see this category',
   PRIMARY KEY  (`forumcat_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_forumcategories` */
 
-insert  into `fc_forumcategories`(`forumcat_id`,`parent_id`,`name`,`description`,`accounttype_required`,`min_level`,`max_level`) values (1,NULL,'General','All game related posts are made in these categories',1,1,100),(2,1,'Tutorial Missions','The introductory tutorial missions can be found here',1,1,5),(3,1,'Basic Missions','Basic Missions for the early levels..',1,1,15),(4,1,'General Missions','Missions here are available to all levels of players',1,1,100),(5,NULL,'Q&A',NULL,1,1,100),(6,5,'Beginner Questions','All beginner questions should be asked here...',1,1,100),(7,5,'General Questions','General game related questions go here',1,1,100);
+insert  into `fc_forumcategories`(`forumcat_id`,`parent_id`,`order`,`name`,`description`,`accounttype_required`,`min_level`,`max_level`) values (1,NULL,1,'General','All game related posts are made in these categories',1,1,100),(2,1,1,'Tutorial Missions','The introductory tutorial missions can be found here',1,1,5),(3,1,2,'Basic Missions','Basic Missions for the early levels..',1,1,15),(4,1,3,'General Missions','Missions here are available to all levels of players',1,1,100),(5,NULL,2,'Q&A',NULL,1,1,100),(6,5,1,'Beginner Questions','All beginner questions should be asked here...',1,1,100),(7,5,2,'General Questions','General game related questions go here',1,1,100),(8,1,4,'News','Game related news',1,1,100);
 
 /*Table structure for table `fc_forumposts` */
 
@@ -163,15 +164,19 @@ DROP TABLE IF EXISTS `fc_forumposts`;
 CREATE TABLE `fc_forumposts` (
   `forumpost_id` bigint(20) unsigned NOT NULL auto_increment,
   `parentpost_id` bigint(20) default NULL COMMENT 'id of the parent thread post',
+  `forumcategory_id` bigint(20) unsigned NOT NULL COMMENT 'category that this post belongs to',
   `order` int(11) NOT NULL COMMENT 'this posts order in the thread',
-  `title` varchar(255) NOT NULL COMMENT 'Title of the thread',
+  `title` varchar(255) default NULL COMMENT 'Title of the thread',
   `author_id` bigint(20) NOT NULL COMMENT 'ID of the author of the thread',
-  `content` text NOT NULL COMMENT 'Content of the thread post',
+  `content` text COMMENT 'Content of the thread post',
   `date_created` datetime NOT NULL COMMENT 'Datetime of thread creation',
+  `mission_id` bigint(20) unsigned default NULL COMMENT 'Set if this post is tied to a mission',
   PRIMARY KEY  (`forumpost_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_forumposts` */
+
+insert  into `fc_forumposts`(`forumpost_id`,`parentpost_id`,`forumcategory_id`,`order`,`title`,`author_id`,`content`,`date_created`,`mission_id`) values (1,NULL,2,1,'Your first mission',1,'This is your first mission','2008-12-11 11:44:41',1);
 
 /*Table structure for table `fc_items` */
 
