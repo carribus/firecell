@@ -20,6 +20,7 @@
 #ifndef _MODFORUM_H_
 #define _MODFORUM_H_
 
+#include <vector>
 #include "../../common/PEPacket.h"
 #include "../common/Socket/ClientSocket.h"
 #include "../common/FCServerObj.h"
@@ -32,11 +33,9 @@ class ModForum : public IGameModule
     Initialise = 1,
     Running,
     WaitingForResponse,
-		ForumCategorySelection
+		ForumCategorySelection,
+		ForumThreadSelection
   };
-
-	struct Category;
-	typedef map<FCULONG, Category> CategoryMap;
 
 	struct Category
 	{
@@ -46,6 +45,19 @@ class ModForum : public IGameModule
 		string name;
 		string desc;
 	};
+	typedef map<FCULONG, Category> CategoryMap;
+
+	struct Thread
+	{
+		FCULONG thread_id;
+		FCULONG parent_id;
+		FCULONG order;
+		string title;
+		FCULONG author_id;
+		string date_created;
+		FCULONG mission_id;
+	};
+	typedef vector<Thread> ThreadVector;
 
 public:
   ModForum(void);
@@ -57,10 +69,12 @@ public:
   void QueueForAction();
   bool OnResponse(FCSHORT msgID, PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseForumGetCategories(PEPacket* pPkt, BaseSocket* pSocket);
+		bool OnResponseForumGetThreads(PEPacket* pPkt, BaseSocket* pSocket);
 
 private:
 
 	void DisplayForumCategories(FCULONG parentID = 0);
+	void DisplayCategoryThreads();
 
   IGameModuleSink*    m_pSink;
   FCULONG             m_characterID;
@@ -70,6 +84,10 @@ private:
 	CategoryMap					m_mapCategories;
 	FCULONG							m_catID_min;
 	FCULONG							m_catID_max;
+	FCULONG							m_currentCategoryID;
+
+	ThreadVector				m_threads;
+	FCULONG							m_currentThreadID;
 };
 
 #endif//_MODFORUM_H_

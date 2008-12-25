@@ -31,7 +31,7 @@ CREATE TABLE `fc_accounts` (
 
 /*Data for the table `fc_accounts` */
 
-insert  into `fc_accounts`(`account_id`,`acc_name`,`acc_password`,`created`,`acc_type`,`email`) values (1,'root','toor','2008-10-16 14:24:52',3,'root@fcell.org'),(2,'testuser','test','2008-10-21 13:26:00',1,'test@fcell.org');
+insert  into `fc_accounts`(`account_id`,`acc_name`,`acc_password`,`created`,`acc_type`,`email`) values (1,'root','toor','2008-10-16 13:24:52',3,'root@fcell.org'),(2,'testuser','test','2008-10-21 12:26:00',1,'test@fcell.org');
 
 /*Table structure for table `fc_accounttypes` */
 

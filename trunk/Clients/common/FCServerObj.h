@@ -24,6 +24,7 @@ public:
   // forum commands
   void RequestForumCategories(FCULONG character_id);
 	void RequestForumThreads(FCULONG category_id);
+	void RequestForumThreadDetails(FCULONG category_id, FCULONG thread_id);
 
   void SetSocket(BaseSocket* pSock)                             { m_pSock = pSock; }
 
