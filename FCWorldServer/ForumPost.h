@@ -36,6 +36,7 @@ public:
 	string				GetTitle()													{ return m_title; }
 	string				GetContent()												{ return m_content; }
 	FCULONG				GetAuthorID()												{ return m_authorID; }
+	string				GetAuthorName()											{ return m_author_name; }
 	string				GetDateCreated()										{ return m_dateCreated; }
 	FCULONG				GetMissionID()											{ return m_missionID; }
 
@@ -44,6 +45,7 @@ public:
 	void					SetOrder(FCULONG order)							{ m_order = order; }
 	void					SetTitle(string title)							{ m_title = title; }
 	void					SetContent(string content)					{ m_content = content; }
+	void					SetAuthorName(string name)					{ m_author_name = name; }
 	void					SetAuthorID(FCULONG id)							{ m_authorID = id; }
 	void					SetDateCreated(string date)					{ m_dateCreated = date; }
 	void					SetMissionID(FCULONG id)						{ m_missionID = id; }
@@ -53,7 +55,8 @@ private:
 	FCULONG				m_parentID;
 	FCULONG				m_order;
 	string				m_title,
-								m_content;
+								m_content,
+								m_author_name;
 	FCULONG				m_authorID;
 	string				m_dateCreated;
 	FCULONG				m_missionID;

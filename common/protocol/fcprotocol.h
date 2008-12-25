@@ -320,6 +320,36 @@ struct __FCPKT_FORUM_GET_THREADS
 	FCULONG category_id;
 };
 
+struct __FCPKT_FORUM_GET_THREADS_RESP
+{
+	FCULONG thread_count;
+	struct thread_data
+	{
+		FCULONG thread_id;
+		FCULONG parent_id;
+		FCULONG order;
+		char title[255];
+		FCULONG author_id;
+		char author_name[32];
+		char date_created[32];
+		FCULONG mission_id;
+	} threads[1];
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_FORUM_GET_THREAD_DETAILS    = 202;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_FORUM_GET_THREAD_DETAILS
+{
+	FCULONG category_id;
+	FCULONG thread_id;
+};
+
+struct __FCPKT_FORUM_GET_THREAD_DETAILS_RESP
+{
+
+};
+
 #pragma pack(pop)
 
 #endif//_FCPROTOCOL_H_

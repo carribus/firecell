@@ -74,6 +74,7 @@ public:
 		{
 			pPost = (*it);
 			target.push_back(*pPost);
+			it++;
 		}
 
 		return target.size();

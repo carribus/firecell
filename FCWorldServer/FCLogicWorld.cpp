@@ -464,6 +464,43 @@ void FCLogicWorld::SendForumCategories(vector<ForumCategory*>& categories, Route
 
 void FCLogicWorld::SendForumThreads(vector<ForumPost>& threads, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
+	PEPacket pkt;
+	__FCPKT_FORUM_GET_THREADS_RESP* d;
+	size_t threadCount = threads.size(), index = 0;
+	size_t pktLen = sizeof(__FCPKT_FORUM_GET_THREADS_RESP) + ( (threadCount-1) * sizeof(__FCPKT_FORUM_GET_THREADS_RESP::thread_data));
+
+	d = (__FCPKT_FORUM_GET_THREADS_RESP*) new FCBYTE[ pktLen ];
+	memset(d, 0, pktLen);
+	d->thread_count = (FCSHORT)threadCount;
+
+	vector<ForumPost>::iterator it = threads.begin();
+
+	while ( it != threads.end() )
+	{
+		d->threads[index].thread_id = it->GetID();
+		d->threads[index].parent_id = it->GetParentID();
+		d->threads[index].author_id = it->GetAuthorID();
+		strncpy( d->threads[index].author_name, it->GetAuthorName().c_str(), sizeof(d->threads[index].author_name) );
+		d->threads[index].mission_id = it->GetMissionID();
+		d->threads[index].order = it->GetOrder();
+		strncpy( d->threads[index].title, it->GetTitle().c_str(), sizeof(d->threads[index].title) );
+		strncpy( d->threads[index].date_created, it->GetDateCreated().c_str(), sizeof(d->threads[index].date_created) );
+		it++;
+		index++;
+	}
+
+  // send the packet
+  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_FORUM_GET_THREADS, ST_None);
+  PEPacketHelper::SetPacketData(pkt, 
+                                (void*)d, 
+                                pktLen);
+
+  // send notification to Client
+  pkt.SetFieldValue("target", (void*)&clientSocket);
+  pRouter->Send(&pkt);
+
+  // clear the data portion
+  delete [] (FCBYTE*)d;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -532,6 +569,12 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
     {
       bHandled = OnCommandForumGetThreads(pPkt, pRouter, clientSock);
     }
+		break;
+
+	case	FCMSG_FORUM_GET_THREAD_DETAILS:
+		{
+			bHandled = OnCommandForumGetThreadDetails(pPkt, pRouter, clientSocket);
+		}
 		break;
 
   /*
@@ -761,15 +804,28 @@ bool FCLogicWorld::OnCommandForumGetThreads(PEPacket* pPkt, RouterSocket* pSocke
 		m_forum.GetForumThreads( d.category_id, target );
 
 		SendForumThreads(target, pSocket, clientSocket);
-/*
-		// THIS IS WRONG - need to create a structure to tie certain forum posts to missions.
-		// The correct response here is to just get all posts for a forum category and return that to the client
-		vector<Mission*> missions;
-    FCULONG count = m_missionMgr.GetAvailableMissionsForPlayer(pPlayer, missions);
-*/
   }
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandForumGetThreadDetails(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+	__FCPKT_FORUM_GET_THREAD_DETAILS d;
+	size_t dataLen = 0;
+	Player* pPlayer = NULL;
+
+	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+	pPkt->GetField("data", (void*)&d, dataLen);
+
+	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+	{
+		// TODO: Finish this code off - should return all posts that are childed to the initial thread post
+	}
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////

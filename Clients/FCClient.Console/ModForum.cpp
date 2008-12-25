@@ -26,6 +26,8 @@ ModForum::ModForum(void)
 , m_characterID(0)
 , m_pServer(NULL)
 , m_state(ModForum::Initialise)
+, m_currentCategoryID(0)
+, m_currentThreadID(0)
 {
 }
 
@@ -63,8 +65,10 @@ void ModForum::QueueForAction()
 			printf("\nSelect category (0 to exit): ");
 			int nOption = getch();
 
-			while ( nOption < '0' || nOption > m_catID_max+48 )
+			while ( nOption < (int)'0' || nOption > m_catID_max+48 )
 				nOption = getch();
+
+			printf("\n");
 
 			// request the threads for the chosen category
 			if ( nOption == '0' )
@@ -74,7 +78,33 @@ void ModForum::QueueForAction()
 			}
 			else
 			{
+				m_currentCategoryID = nOption - 48;
 				m_pServer->RequestForumThreads(nOption-48);
+			}
+		}
+		break;
+
+	case	ModForum::ForumThreadSelection:
+		{
+			DisplayCategoryThreads();
+			printf("\nSelect thread (0 to exit): ");
+			int nOption = getch();
+
+			while ( nOption < (int)'0' || nOption > m_catID_max+48 )
+				nOption = getch();
+
+			printf("\n");
+
+			// request the threads for the chosen category
+			if ( nOption == '0' )
+			{
+				if ( m_pSink )
+					m_pSink->CloseModule(this);
+			}
+			else
+			{
+				m_currentThreadID = nOption - 48;
+				m_pServer->RequestForumThreadDetails(m_currentCategoryID, nOption-48);
 			}
 		}
 		break;
@@ -95,6 +125,10 @@ bool ModForum::OnResponse(FCSHORT msgID, PEPacket* pPkt, BaseSocket* pSocket)
   case  FCMSG_FORUM_GET_CATEGORIES:
     bHandled = OnResponseForumGetCategories(pPkt, pSocket);
     break;
+
+	case	FCMSG_FORUM_GET_THREADS:
+		bHandled = OnResponseForumGetThreads(pPkt, pSocket);
+		break;
 
   default:
     break;
@@ -144,6 +178,38 @@ bool ModForum::OnResponseForumGetCategories(PEPacket* pPkt, BaseSocket* pSocket)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool ModForum::OnResponseForumGetThreads(PEPacket* pPkt, BaseSocket* pSocket)
+{
+	__FCPKT_FORUM_GET_THREADS_RESP* d;
+  size_t dataLen;
+	Thread t;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  d = (__FCPKT_FORUM_GET_THREADS_RESP*) new FCBYTE[ dataLen ];
+  pPkt->GetField("data", d, dataLen);
+
+	for ( FCULONG i = 0; i < d->thread_count; i++ )
+	{
+		t.thread_id = d->threads[i].thread_id;
+		t.parent_id = d->threads[i].parent_id;
+		t.order = d->threads[i].order;
+		t.title = d->threads[i].title;
+		t.author_id = d->threads[i].author_id;
+		t.date_created = d->threads[i].date_created;
+		t.mission_id = d->threads[i].mission_id;
+
+		m_threads.push_back(t);
+	}
+
+	m_state = ModForum::ForumThreadSelection;
+
+	delete [] (FCBYTE*)d;
+
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void ModForum::DisplayForumCategories(FCULONG parentID)
 {
 	static int nLevel = 0;
@@ -164,6 +230,22 @@ void ModForum::DisplayForumCategories(FCULONG parentID)
 			DisplayForumCategories( it->second.cat_id );
 			nLevel--;
 		}
+		it++;
+	}
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ModForum::DisplayCategoryThreads()
+{
+	if ( m_currentCategoryID == 0 )
+		return;
+
+	ThreadVector::iterator it = m_threads.begin();
+
+	while ( it != m_threads.end() )
+	{
+		printf("[%ld] %s (AuthorID: %ld | Date: %s)\n", it->thread_id, it->title.c_str(), it->author_id, it->date_created.c_str());
 		it++;
 	}
 }
