@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="FCServer"
-	ProjectGUID="{531260F4-EC1B-4A44-A9DA-CDC2714FE0C2}"
+	Name="FCClient"
+	ProjectGUID="{21FA62D8-B9A1-4560-9114-B1AC1C8AF472}"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
@@ -12,18 +12,17 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\bin\Debug\Server"
+			OutputDirectory="..\..\bin\Debug\Client"
 			IntermediateDirectory="Debug"
 			ConfigurationType="1"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="5"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
@@ -32,18 +31,16 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/FCServer.exe"
+				OutputFile="$(OutDir)/FCClient.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="$(OutDir)/FCServer.pdb"
-				SubSystem="1"
+				ProgramDatabaseFile="$(OutDir)/FCClient.pdb"
+				SubSystem="2"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Copying pthreads-win32 dll to bin\debug folder"
-				CommandLine="copy &quot;..\common\pthreads-win32\lib\pthreadVSE2.dll&quot; $(OutDir)"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -63,14 +60,14 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="..\bin\Release\Server"
+			OutputDirectory="..\..\bin\Release\Client"
 			IntermediateDirectory="Release"
 			ConfigurationType="1"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
-				RuntimeLibrary="2"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				RuntimeLibrary="4"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
@@ -79,19 +76,17 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/FCServer.exe"
+				OutputFile="$(OutDir)/FCClient.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
-				SubSystem="1"
+				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Copying pthreads-win32 dll to bin\debug folder"
-				CommandLine="copy &quot;..\common\pthreads-win32\lib\pthreadVSE2.dll&quot; $(OutDir)"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -118,34 +113,16 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath="..\common\socket\ClientSocket.cpp">
+				RelativePath=".\FCClient.cpp">
 			</File>
 			<File
-				RelativePath="..\common\CmdLineInfo.cpp">
+				RelativePath=".\FCController.cpp">
 			</File>
 			<File
-				RelativePath=".\FCLogicRouter.cpp">
+				RelativePath=".\FCModel.cpp">
 			</File>
 			<File
-				RelativePath=".\FCServer.cpp">
-			</File>
-			<File
-				RelativePath="..\common\inifile.cpp">
-			</File>
-			<File
-				RelativePath="..\common\PacketExtractor.cpp">
-			</File>
-			<File
-				RelativePath="..\common\PEPacket.cpp">
-			</File>
-			<File
-				RelativePath="..\common\PEPacketHelper.cpp">
-			</File>
-			<File
-				RelativePath="..\common\daemon\win\W32Service.cpp">
-			</File>
-			<File
-				RelativePath="..\common\sockserver\win\W32SocketServer.cpp">
+				RelativePath=".\FCView.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -153,58 +130,16 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
-				RelativePath="..\common\binstream.h">
+				RelativePath=".\FCController.h">
 			</File>
 			<File
-				RelativePath="..\common\socket\ClientSocket.h">
+				RelativePath=".\FCModel.h">
 			</File>
 			<File
-				RelativePath="..\common\CmdLineInfo.h">
+				RelativePath=".\FCView.h">
 			</File>
 			<File
-				RelativePath=".\FCLogicRouter.h">
-			</File>
-			<File
-				RelativePath="..\common\protocol\fcprotocol.h">
-			</File>
-			<File
-				RelativePath="..\common\protocol\fcserverprotocol.h">
-			</File>
-			<File
-				RelativePath="..\common\fctypes.h">
-			</File>
-			<File
-				RelativePath="..\common\inifile.h">
-			</File>
-			<File
-				RelativePath=".\interfaces\IService.h">
-			</File>
-			<File
-				RelativePath=".\interfaces\IServiceLogic.h">
-			</File>
-			<File
-				RelativePath=".\interfaces\ISocketServer.h">
-			</File>
-			<File
-				RelativePath="..\common\PacketExtractor.h">
-			</File>
-			<File
-				RelativePath="..\common\PEPacket.h">
-			</File>
-			<File
-				RelativePath="..\common\PEPacketHelper.h">
-			</File>
-			<File
-				RelativePath="..\common\SocketServer.h">
-			</File>
-			<File
-				RelativePath="..\common\threading.h">
-			</File>
-			<File
-				RelativePath="..\common\daemon\win\W32Service.h">
-			</File>
-			<File
-				RelativePath="..\common\sockserver\win\W32SocketServer.h">
+				RelativePath=".\IModelEventSink.h">
 			</File>
 		</Filter>
 		<Filter
@@ -212,9 +147,6 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
 		</Filter>
-		<File
-			RelativePath=".\ReadMe.txt">
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

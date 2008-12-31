@@ -15,6 +15,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FCServer", "FCServer\FCServ
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FCClient", "Clients\FCClient\FCClient.vcproj", "{21FA62D8-B9A1-4560-9114-B1AC1C8AF472}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -37,6 +41,10 @@ Global
 		{531260F4-EC1B-4A44-A9DA-CDC2714FE0C2}.Debug.Build.0 = Debug|Win32
 		{531260F4-EC1B-4A44-A9DA-CDC2714FE0C2}.Release.ActiveCfg = Release|Win32
 		{531260F4-EC1B-4A44-A9DA-CDC2714FE0C2}.Release.Build.0 = Release|Win32
+		{21FA62D8-B9A1-4560-9114-B1AC1C8AF472}.Debug.ActiveCfg = Debug|Win32
+		{21FA62D8-B9A1-4560-9114-B1AC1C8AF472}.Debug.Build.0 = Debug|Win32
+		{21FA62D8-B9A1-4560-9114-B1AC1C8AF472}.Release.ActiveCfg = Release|Win32
+		{21FA62D8-B9A1-4560-9114-B1AC1C8AF472}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

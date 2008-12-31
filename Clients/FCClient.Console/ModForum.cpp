@@ -87,7 +87,7 @@ void ModForum::QueueForAction()
 	case	ModForum::ForumThreadSelection:
 		{
 			DisplayCategoryThreads();
-			printf("\nSelect thread (0 to exit): ");
+			printf("\nSelect thread (0 - back to Categories): ");
 			int nOption = getch();
 
 			while ( nOption < (int)'0' || nOption > m_catID_max+48 )
@@ -98,8 +98,9 @@ void ModForum::QueueForAction()
 			// request the threads for the chosen category
 			if ( nOption == '0' )
 			{
-				if ( m_pSink )
-					m_pSink->CloseModule(this);
+				m_state = ModForum::ForumCategorySelection;
+				m_currentCategoryID = 0;
+				m_threads.clear();
 			}
 			else
 			{

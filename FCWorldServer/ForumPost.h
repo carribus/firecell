@@ -11,7 +11,7 @@ class ForumPost
 {
 public:
 
-	ForumPost() : m_id(0), m_parentID(0), m_order(0), m_authorID(0), m_missionID(0) {}
+	ForumPost() : m_id(0), m_parentID(0), m_order(0), m_authorID(0), m_missionID(0), m_locked(false) {}
 	
 	~ForumPost() 
 	{
@@ -39,6 +39,7 @@ public:
 	string				GetAuthorName()											{ return m_author_name; }
 	string				GetDateCreated()										{ return m_dateCreated; }
 	FCULONG				GetMissionID()											{ return m_missionID; }
+	bool					IsLocked()													{ return m_locked; }
 
 	void					SetID(FCULONG id)										{ m_id = id; }
 	void					SetParentID(FCULONG id)							{ m_parentID = id; }
@@ -49,6 +50,7 @@ public:
 	void					SetAuthorID(FCULONG id)							{ m_authorID = id; }
 	void					SetDateCreated(string date)					{ m_dateCreated = date; }
 	void					SetMissionID(FCULONG id)						{ m_missionID = id; }
+	void					SetLock(bool locked)								{ m_locked = locked; }
 
 private:
 	FCULONG				m_id;
@@ -60,6 +62,7 @@ private:
 	FCULONG				m_authorID;
 	string				m_dateCreated;
 	FCULONG				m_missionID;
+	bool					m_locked;
 
 	vector<ForumPost*> m_posts;
 };

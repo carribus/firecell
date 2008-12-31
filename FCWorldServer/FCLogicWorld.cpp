@@ -573,7 +573,7 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
 
 	case	FCMSG_FORUM_GET_THREAD_DETAILS:
 		{
-			bHandled = OnCommandForumGetThreadDetails(pPkt, pRouter, clientSocket);
+			bHandled = OnCommandForumGetThreadDetails(pPkt, pRouter, clientSock);
 		}
 		break;
 
@@ -1326,6 +1326,7 @@ void FCLogicWorld::OnDBJob_LoadForumPosts(DBIResultSet& resultSet, void*& pConte
 
 	size_t rowCount = resultSet.GetRowCount();
 	FCULONG post_id, parent_id, category_id, order, author_id, mission_id;
+	bool locked;
 	string title, content, date_created;
 
 	for ( size_t i = 0; i < rowCount; i++ )
@@ -1339,6 +1340,7 @@ void FCLogicWorld::OnDBJob_LoadForumPosts(DBIResultSet& resultSet, void*& pConte
 		content = resultSet.GetStringValue("content", i);
 		date_created = resultSet.GetStringValue("date_created", i);
 		mission_id = resultSet.GetULongValue("mission_id", i);
+		locked = resultSet.GetByteValue("locked", i);
 
 		pThis->m_forum.AddForumPost(post_id, parent_id, category_id, order, title, content, author_id, date_created, mission_id);
 	}
