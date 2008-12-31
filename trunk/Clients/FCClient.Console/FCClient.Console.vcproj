@@ -12,7 +12,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\..\bin\Debug"
+			OutputDirectory="..\..\bin\Debug\Client"
 			IntermediateDirectory="Debug"
 			ConfigurationType="1"
 			CharacterSet="2">
@@ -60,7 +60,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="..\..\bin\Release"
+			OutputDirectory="..\..\bin\Release\Client"
 			IntermediateDirectory="Release"
 			ConfigurationType="1"
 			CharacterSet="2">
