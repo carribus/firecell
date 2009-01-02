@@ -1,0 +1,6 @@
+<FCStrings lang="en">
+	<String id="LOAD_ASSET">Loading assets...</String>
+	<String id="CONNECT_SERVER">Connecting to server...</String>
+	<String id="CONNECT_OK">Connected</String>
+	<String id="CONNECT_FAIL">Failed to connect!</String>
+</FCStrings>
