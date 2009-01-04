@@ -21,7 +21,7 @@
 #include <map>
 #include "../../common/protocol/fcprotocol.h"
 #include "../../common/PEPacketHelper.h"
-#include "ResourceManager.h"
+#include "../common/ResourceManager.h"
 #include "FCController.h"
 
 FCController::FCController(void)

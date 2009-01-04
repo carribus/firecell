@@ -51,7 +51,11 @@ int main(int argc, char** argv)
 	if ( !view.Initialise() )
 		return 1;
 
-	
+	if ( !controller.Initialise() )
+		return 1;
+
+	controller.Run();
+
 /*
 	video::E_DRIVER_TYPE driverType = video::EDT_OPENGL;
 	IrrlichtDevice* pDevice = createDevice(driverType, core::dimension2d<s32>(1024, 768), 16, false);

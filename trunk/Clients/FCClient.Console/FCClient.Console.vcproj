@@ -143,7 +143,7 @@
 				RelativePath="..\..\common\PEPacketHelper.cpp">
 			</File>
 			<File
-				RelativePath=".\ResourceManager.cpp">
+				RelativePath="..\common\ResourceManager.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -181,7 +181,7 @@
 				RelativePath="..\..\common\PEPacketHelper.h">
 			</File>
 			<File
-				RelativePath=".\ResourceManager.h">
+				RelativePath="..\common\ResourceManager.h">
 			</File>
 		</Filter>
 		<Filter
