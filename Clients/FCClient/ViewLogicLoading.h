@@ -12,13 +12,13 @@ using namespace irr::gui;
 class ViewLogicLoading : public IViewLogic
 {
 public:
-	ViewLogicLoading(void);
+	ViewLogicLoading();
 	~ViewLogicLoading(void);
 
 	/*
 	 *	IViewLogic implementation
 	 */
-	void Create(IrrlichtDevice* pDevice);
+	void Create(FCView* pContainer, IrrlichtDevice* pDevice);
 	void Destroy();
 	void SetActive();
 	void Refresh();
@@ -26,6 +26,7 @@ public:
 
 private:
 
+	FCView*											m_pContainer;
 	IrrlichtDevice*							m_pDevice;
 	ISceneManager*							m_pScene;
 	IGUIEnvironment*						m_pEnv;

@@ -132,6 +132,7 @@ void FCView::HandleEvent(FCModelEvent& e)
 	case	FCME_StateChange:
 		{
 			FCModel::e_ModelState newState = static_cast<FCModel::e_ModelState>(e.GetData());
+			FCModel::StateInfo stateInfo = m_pModel->GetState();
 
 			if ( newState != m_currentModelState )
 			{
@@ -155,7 +156,7 @@ void FCView::HandleEvent(FCModelEvent& e)
 
 				if ( pNewView )
 				{
-					pNewView->Create(m_pDevice);
+					pNewView->Create(this, m_pDevice);
 					if ( m_pCurrentViewLogic )
 						m_pCurrentViewLogic->Destroy();
 					m_pCurrentViewLogic = pNewView;
