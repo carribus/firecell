@@ -1,7 +1,8 @@
 #include "ViewLogicLoading.h"
 
-ViewLogicLoading::ViewLogicLoading(void)
-: m_pDevice(NULL)
+ViewLogicLoading::ViewLogicLoading()
+: m_pContainer(NULL)
+, m_pDevice(NULL)
 , m_pScene(NULL)
 , m_pEnv(NULL)
 , m_pTextObject(NULL)
@@ -16,13 +17,15 @@ ViewLogicLoading::~ViewLogicLoading(void)
 
 ///////////////////////////////////////////////////////////////////////
 
-void ViewLogicLoading::Create(IrrlichtDevice* pDevice)
+void ViewLogicLoading::Create(FCView* pContainer, IrrlichtDevice* pDevice)
 {
 	m_lineIndex = 0;
 	m_arrDetailLines.push_back( L"Runtime check #1\n" );
 	m_arrDetailLines.push_back( L"Runtime check #2\n" );
 	m_arrDetailLines.push_back( L"Runtime check #3\n" );
 	m_arrDetailLines.push_back( L"Runtime check #4\n" );
+
+	m_pContainer = pContainer;
 
 	// get the required interfaces and store them
 	m_pDevice = pDevice;
@@ -62,7 +65,7 @@ void ViewLogicLoading::Refresh()
 	static u32 lastTick = 0;
 	u32 now = m_pDevice->getTimer()->getTime();
 
-	if ( now - lastTick > 2500 && m_lineIndex < m_arrDetailLines.size()-1 )
+	if ( now - lastTick > 2500 && m_lineIndex < (s32)m_arrDetailLines.size()-1 )
 	{
 		m_strDetails += m_arrDetailLines.at( ++m_lineIndex );
 		m_pTextObject->setText(m_strDetails.c_str());

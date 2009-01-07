@@ -3,12 +3,14 @@
 
 #include <irrlicht.h>
 
+class FCView;
+
 using namespace irr;
 using namespace video;
 
 struct IViewLogic
 {
-	virtual void Create(IrrlichtDevice* pDevice) = 0;
+	virtual void Create(FCView* pContainer, IrrlichtDevice* pDevice) = 0;
 	virtual void Destroy() = 0;
 	virtual void SetActive() = 0;
 	virtual void Refresh() = 0;
