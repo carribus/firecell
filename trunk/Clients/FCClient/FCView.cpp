@@ -156,6 +156,11 @@ void FCView::OnModelEvent(FCModelEvent event)
 					m_pCurrentViewLogic = pNewView;
 					m_pCurrentViewLogic->SetActive();
 				}
+				else
+				{
+					if ( m_pCurrentViewLogic )
+						m_pCurrentViewLogic->OnModelStateChange( m_pModel->GetState() );
+				}
 
         m_currentModelState = newState;
 			}

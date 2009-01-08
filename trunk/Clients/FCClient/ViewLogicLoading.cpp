@@ -24,6 +24,10 @@ void ViewLogicLoading::Create(FCView* pContainer, IrrlichtDevice* pDevice)
 	m_arrDetailLines.push_back( L"Loading Graphical assets\n" );
 	m_arrDetailLines.push_back( L"Loading Audio assets\n" );
 	m_arrDetailLines.push_back( L"------------------------\n" );
+	m_arrDetailLines.push_back( L"Connecting to server... " );
+	m_arrDetailLines.push_back( L"OK\n");
+	m_arrDetailLines.push_back( L"Failed\nRetrying...\n" );
+	m_arrDetailLines.push_back( L"Failed\n");
 
 	m_pContainer = pContainer;
 
@@ -98,6 +102,32 @@ void ViewLogicLoading::OnModelStateChange(FCModel::StateInfo state)
     break;
 
   case  FCModel::Connecting:
+		{
+			switch ( state.stateStep )
+			{
+			case	FCModel::MS_Connecting_None:
+				m_strDetails += m_arrDetailLines.at( state.stateStep + 4 );
+				break;
+
+			case	FCModel::MS_Connecting_Connecting:
+				m_strDetails += m_arrDetailLines.at( state.stateStep + 4 );
+				break;
+
+			case	FCModel::MS_Connecting_Retry:
+				m_strDetails += m_arrDetailLines.at( state.stateStep + 4 );
+				break;
+
+			case	FCModel::MS_Connecting_Connected:
+				m_strDetails += m_arrDetailLines.at( state.stateStep + 4 );
+				break;
+
+			case	FCModel::MS_Connecting_FinalFail:
+				m_strDetails += m_arrDetailLines.at( state.stateStep + 4 );
+				break;
+			}
+
+			m_pTextObject->setText(m_strDetails.c_str());
+		}
     break;
 
   default:

@@ -1,4 +1,5 @@
 #include "../common/ResourceManager.h"
+#include "Settings.h"
 #include "FCModel.h"
 
 FCModel::FCModel(void)
@@ -47,6 +48,7 @@ bool FCModel::Initialise()
 		// log an error
 		return false;
 	}
+	m_sock.Subscribe(this);
 
 	SetState( FCModel::Loading );
 
@@ -99,7 +101,8 @@ bool FCModel::ProcessData()
 		break;
 
 	case	FCModel::Connecting:
-    SetState( FCModel::Login );
+		if ( m_state.stateStep == FCModel::MS_Connecting_None )
+			ConnectToServer();
 		break;
 
 	case	FCModel::Login:
@@ -117,9 +120,52 @@ bool FCModel::ProcessData()
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCModel::OnAccepted(BaseSocket* pSocket, int nErrorCode)
+{
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::OnConnected(BaseSocket* pSocket, int nErrorCode)
+{
+	m_bConnected = (nErrorCode == 0);
+	if ( m_bConnected )
+	{
+		SetStateStep( MS_Connecting_Connected );
+    SetState( FCModel::Login );
+
+	}
+	else
+	{
+		SetStateStep( MS_Connecting_FinalFail );
+		SetState( FCModel::ShuttingDown );
+	}
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::OnDisconnected(BaseSocket* pSocket, int nErrorCode)
+{
+	m_bConnected = false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen)
+{
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCModel::LoadResources()
 {
   SetStateStep( (FCSHORT)FCModel::MS_Loading_Text );
+
+	if ( !Settings::instance().LoadSettings("./clientdata/settings.xml") )
+	{
+		fprintf(stderr, "Failed to load client settins\n");
+		return false;
+	}
 
 	if ( ResourceManager::instance().LoadClientStrings("./clientdata/strings_en.xml") == -1 )
 	{
@@ -136,6 +182,20 @@ bool FCModel::LoadResources()
   SetStateStep( (FCSHORT)FCModel::MS_Loading_Graphics );
 
   SetStateStep( (FCSHORT)FCModel::MS_Loading_Sounds );
+
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::ConnectToServer()
+{
+	string server = Settings::instance().GetValue("FCClient/Settings/Server", "address");
+	int port = atoi( Settings::instance().GetValue("FCClient/Settings/Server", "port").c_str() );
+
+	SetStateStep(MS_Connecting_Connecting);
+
+	m_sock.Connect(server.c_str(), (short)port);
 
 	return true;
 }

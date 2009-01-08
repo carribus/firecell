@@ -12,7 +12,7 @@
 
 using namespace std;
 
-class FCModel
+class FCModel : public IBaseSocketSink
 {
 public:
 
@@ -75,9 +75,19 @@ public:
 
 	bool ProcessData();
 
+	/*
+	 * IBaseSocketSink implementation
+	 */
+	void OnAccepted(BaseSocket* pSocket, int nErrorCode);
+	void OnConnected(BaseSocket* pSocket, int nErrorCode);
+	void OnDisconnected(BaseSocket* pSocket, int nErrorCode);
+	void OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen);
+
 private:
 
 	bool LoadResources();
+
+	bool ConnectToServer();
 
 	void FireEvent(e_FCEventType type, void* pData);
 
@@ -86,6 +96,7 @@ private:
 
 	BaseSocket				m_sock;
 	FCServerObj				m_server;
+	bool							m_bConnected;
 };
 
 #endif//_FCMODEL_H_
