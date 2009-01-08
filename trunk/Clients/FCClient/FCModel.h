@@ -36,6 +36,7 @@ public:
 	// e_ModelState::Loading
 	enum e_ModelStateLoading
 	{
+    MS_Loading_None,
     MS_Loading_Text,
     MS_Loading_Graphics,
     MS_Loading_Sounds
@@ -44,6 +45,7 @@ public:
   // e_ModelState::Connecting
   enum e_ModelStateConnecting
   {
+    MS_Connecting_None,
     MS_Connecting_Connecting,
     MS_Connecting_Connected,
     MS_Connecting_Retry,

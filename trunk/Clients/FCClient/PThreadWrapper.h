@@ -45,8 +45,11 @@ public:
 
 	void Stop()
 	{
-		m_bRunning = false;
-		pthread_join(m_thread, 0);
+    if ( m_bRunning )
+    {
+		  m_bRunning = false;
+		  pthread_join(m_thread, 0);
+    }
 	}
 
 	long long GetData()

@@ -34,9 +34,8 @@ private:
 
 	IGUIStaticText*							m_pTextObject;
 
-	std::basic_string<wchar_t>							m_strDetails;
+	std::basic_string<wchar_t>							    m_strDetails;
 	vector< std::basic_string< wchar_t > >			m_arrDetailLines;
-	s32																			m_lineIndex;
 };
 
 #endif//_VIEWLOGICLOADING_H_
