@@ -64,6 +64,14 @@ void FCModel::SetState(e_ModelState newState)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCModel::SetStateStep(FCSHORT stateStep)
+{
+  m_state.stateStep = stateStep;
+  FireEvent(FCME_StateChange, (void*) m_state.state);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void FCModel::FireEvent(e_FCEventType type, void* pData)
 {
 	FCModelEvent e(type, (long long)pData);
@@ -87,9 +95,11 @@ bool FCModel::ProcessData()
 	{
 	case	FCModel::Loading:
 		LoadResources();
+    SetState( FCModel::Connecting );
 		break;
 
 	case	FCModel::Connecting:
+    SetState( FCModel::Login );
 		break;
 
 	case	FCModel::Login:
@@ -109,6 +119,8 @@ bool FCModel::ProcessData()
 
 bool FCModel::LoadResources()
 {
+  SetStateStep( (FCSHORT)FCModel::MS_Loading_Text );
+
 	if ( ResourceManager::instance().LoadClientStrings("./clientdata/strings_en.xml") == -1 )
 	{
     fprintf(stderr, "Failed to load client strings\n");
@@ -120,6 +132,10 @@ bool FCModel::LoadResources()
     fprintf(stderr, "Failed to load mission strings\n");
     return false;
   }
+
+  SetStateStep( (FCSHORT)FCModel::MS_Loading_Graphics );
+
+  SetStateStep( (FCSHORT)FCModel::MS_Loading_Sounds );
 
 	return true;
 }

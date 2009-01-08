@@ -81,9 +81,6 @@ bool FCView::Initialise(E_DRIVER_TYPE driverType)
 	if ( !m_pScene )
 		return false;
 
-	// load the font
-	m_pEnv->getFont("./clientdata/fonts/fontcourier.bmp");
-
 	// Create event queue thread
 	QueueReaderThread<FCView, FCModelEvent>::ThreadContext* pCtx = new QueueReaderThread<FCView, FCModelEvent>::ThreadContext;
 	pCtx->pCallbackObject = this;
@@ -144,6 +141,9 @@ void FCView::HandleEvent(FCModelEvent& e)
 					pNewView = &m_vlLoading;
 					break;
 
+        case  FCModel::Connecting:
+          break;
+
 				case	FCModel::Login:
 					break;
 
@@ -162,7 +162,38 @@ void FCView::HandleEvent(FCModelEvent& e)
 					m_pCurrentViewLogic = pNewView;
 					m_pCurrentViewLogic->SetActive();
 				}
+
+        m_currentModelState = newState;
 			}
+      else
+      {
+        // if the main state did not change, then perhaps the sub-state did
+        FCModel::StateInfo stateInfo = m_pModel->GetState();
+
+        if ( m_pCurrentViewLogic )
+        {
+          switch ( stateInfo.state )
+          {
+          case  FCModel::Loading:
+          case  FCModel::Connecting:
+            {
+              if ( m_pCurrentViewLogic == &m_vlLoading )
+                m_pCurrentViewLogic->OnModelStateChange(stateInfo);
+            }
+            break;
+
+          case  FCModel::Login:
+            break;
+
+          case  FCModel::Playing:
+            break;
+
+          case  FCModel::ShuttingDown:
+            break;
+          }
+          m_pCurrentViewLogic->OnModelStateChange(stateInfo);
+        }
+      }
 		}
 		break;
 

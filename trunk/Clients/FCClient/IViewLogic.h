@@ -2,6 +2,7 @@
 #define _IVIEWLOGIC_H_
 
 #include <irrlicht.h>
+#include "FCModel.h"
 
 class FCView;
 
@@ -14,6 +15,7 @@ struct IViewLogic
 	virtual void Destroy() = 0;
 	virtual void SetActive() = 0;
 	virtual void Refresh() = 0;
+  virtual void OnModelStateChange(FCModel::StateInfo state) = 0;
 	virtual SColor GetBackgroundColour() = 0;
 };
 
