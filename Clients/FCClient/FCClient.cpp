@@ -45,10 +45,10 @@ int main(int argc, char** argv)
 	controller.SetModel(&model);
 	controller.SetView(&view);
 
-	if ( !model.Initialise() )
+	if ( !view.Initialise() )
 		return 1;
 
-	if ( !view.Initialise() )
+  if ( !model.Initialise() )
 		return 1;
 
 	if ( !controller.Initialise() )

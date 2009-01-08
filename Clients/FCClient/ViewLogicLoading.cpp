@@ -19,7 +19,7 @@ ViewLogicLoading::~ViewLogicLoading(void)
 
 void ViewLogicLoading::Create(FCView* pContainer, IrrlichtDevice* pDevice)
 {
-	m_lineIndex = 0;
+  m_arrDetailLines.push_back( L"FireCell initializing...\n");   // index 0
 	m_arrDetailLines.push_back( L"Loading Textual data\n" );
 	m_arrDetailLines.push_back( L"Loading Graphical assets\n" );
 	m_arrDetailLines.push_back( L"Loading Audio assets\n" );
@@ -37,7 +37,7 @@ void ViewLogicLoading::Create(FCView* pContainer, IrrlichtDevice* pDevice)
 	IGUIFont* pFont = m_pEnv->getFont("./clientdata/fonts/fontcourier.bmp");
 
 	// create the 'loading' text object
-	m_strDetails += m_arrDetailLines[ m_lineIndex ];
+	m_strDetails += m_arrDetailLines[ 0 ];
 	m_pTextObject = m_pEnv->addStaticText(m_strDetails.c_str(), core::rect<s32>(10, 10, dim.Width, dim.Height), false);
 
 	m_pTextObject->setOverrideColor( SColor(255, 172, 172, 172) );
@@ -70,7 +70,7 @@ void ViewLogicLoading::Refresh()
 
 void ViewLogicLoading::OnModelStateChange(FCModel::StateInfo state)
 {
-  if ( state.state != FCModel::Loading || state.state != FCModel::Connecting )
+  if ( state.state != FCModel::Loading && state.state != FCModel::Connecting )
     return;
 
   // check the Model's current sub-state and take necessary action
@@ -81,15 +81,15 @@ void ViewLogicLoading::OnModelStateChange(FCModel::StateInfo state)
       switch ( state.stateStep )
       {
       case  FCModel::MS_Loading_Text:
-        m_strDetails += m_arrDetailLines.at( state.stateStep-1 );
+        m_strDetails += m_arrDetailLines.at( state.stateStep );
         break;
 
       case  FCModel::MS_Loading_Graphics:
-        m_strDetails += m_arrDetailLines.at( state.stateStep-1 );
+        m_strDetails += m_arrDetailLines.at( state.stateStep );
         break;
 
       case  FCModel::MS_Loading_Sounds:
-        m_strDetails += m_arrDetailLines.at( state.stateStep-1 );
+        m_strDetails += m_arrDetailLines.at( state.stateStep );
         break;
       }
 

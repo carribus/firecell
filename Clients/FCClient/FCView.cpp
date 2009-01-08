@@ -80,14 +80,14 @@ bool FCView::Initialise(E_DRIVER_TYPE driverType)
 	m_pScene = m_pDevice->getSceneManager();
 	if ( !m_pScene )
 		return false;
-
+/*
 	// Create event queue thread
 	QueueReaderThread<FCView, FCModelEvent>::ThreadContext* pCtx = new QueueReaderThread<FCView, FCModelEvent>::ThreadContext;
 	pCtx->pCallbackObject = this;
 	pCtx->pSourceQueue = &m_modelEventQueue;
 	pCtx->pCallback = &FCView::HandleEvent;
 	m_thrdEventQueue.Start( (long long)pCtx );
-
+*/
 	return true;
 }
 
@@ -117,18 +117,12 @@ bool FCView::Update()
 
 void FCView::OnModelEvent(FCModelEvent event)
 {
-	m_modelEventQueue.push_back(event);
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void FCView::HandleEvent(FCModelEvent& e)
-{
-	switch ( e.GetType() )
+//	m_modelEventQueue.push_back(event);
+	switch ( event.GetType() )
 	{
 	case	FCME_StateChange:
 		{
-			FCModel::e_ModelState newState = static_cast<FCModel::e_ModelState>(e.GetData());
+			FCModel::e_ModelState newState = static_cast<FCModel::e_ModelState>(event.GetData());
 			FCModel::StateInfo stateInfo = m_pModel->GetState();
 
 			if ( newState != m_currentModelState )
@@ -191,7 +185,6 @@ void FCView::HandleEvent(FCModelEvent& e)
           case  FCModel::ShuttingDown:
             break;
           }
-          m_pCurrentViewLogic->OnModelStateChange(stateInfo);
         }
       }
 		}
@@ -200,4 +193,10 @@ void FCView::HandleEvent(FCModelEvent& e)
 	default:
 		break;
 	}
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCView::HandleEvent(FCModelEvent& e)
+{
 }
