@@ -20,10 +20,10 @@ ViewLogicLoading::~ViewLogicLoading(void)
 void ViewLogicLoading::Create(FCView* pContainer, IrrlichtDevice* pDevice)
 {
 	m_lineIndex = 0;
-	m_arrDetailLines.push_back( L"Runtime check #1\n" );
-	m_arrDetailLines.push_back( L"Runtime check #2\n" );
-	m_arrDetailLines.push_back( L"Runtime check #3\n" );
-	m_arrDetailLines.push_back( L"Runtime check #4\n" );
+	m_arrDetailLines.push_back( L"Loading Textual data\n" );
+	m_arrDetailLines.push_back( L"Loading Graphical assets\n" );
+	m_arrDetailLines.push_back( L"Loading Audio assets\n" );
+	m_arrDetailLines.push_back( L"------------------------\n" );
 
 	m_pContainer = pContainer;
 
@@ -62,16 +62,45 @@ void ViewLogicLoading::SetActive()
 
 void ViewLogicLoading::Refresh()
 {
-	static u32 lastTick = 0;
-	u32 now = m_pDevice->getTimer()->getTime();
-
-	if ( now - lastTick > 2500 && m_lineIndex < (s32)m_arrDetailLines.size()-1 )
-	{
-		m_strDetails += m_arrDetailLines.at( ++m_lineIndex );
-		m_pTextObject->setText(m_strDetails.c_str());
-		lastTick = now;
-	}
-
 	m_pScene->drawAll();
 	m_pEnv->drawAll();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewLogicLoading::OnModelStateChange(FCModel::StateInfo state)
+{
+  if ( state.state != FCModel::Loading || state.state != FCModel::Connecting )
+    return;
+
+  // check the Model's current sub-state and take necessary action
+  switch ( state.state )
+  {
+  case  FCModel::Loading:
+    {
+      switch ( state.stateStep )
+      {
+      case  FCModel::MS_Loading_Text:
+        m_strDetails += m_arrDetailLines.at( state.stateStep-1 );
+        break;
+
+      case  FCModel::MS_Loading_Graphics:
+        m_strDetails += m_arrDetailLines.at( state.stateStep-1 );
+        break;
+
+      case  FCModel::MS_Loading_Sounds:
+        m_strDetails += m_arrDetailLines.at( state.stateStep-1 );
+        break;
+      }
+
+      m_pTextObject->setText(m_strDetails.c_str());
+    }
+    break;
+
+  case  FCModel::Connecting:
+    break;
+
+  default:
+    break;
+  }
 }

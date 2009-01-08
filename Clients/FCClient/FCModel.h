@@ -16,6 +16,9 @@ class FCModel
 {
 public:
 
+	/*
+	 * Model states
+	 */
 	enum e_ModelState
 	{
 		None = 0,
@@ -26,12 +29,37 @@ public:
 		ShuttingDown
 	};
 
+	/*
+	 *	Sub-states for each model state
+	 */
+
+	// e_ModelState::Loading
+	enum e_ModelStateLoading
+	{
+    MS_Loading_Text,
+    MS_Loading_Graphics,
+    MS_Loading_Sounds
+	};
+
+  // e_ModelState::Connecting
+  enum e_ModelStateConnecting
+  {
+    MS_Connecting_Connecting,
+    MS_Connecting_Connected,
+    MS_Connecting_Retry,
+    MS_Connecting_FinalFail
+  };
+
+  /*
+   *  StateInfo structure that is passed along with the FCME_StateChange event
+   */
 	struct StateInfo
 	{
 		e_ModelState state;
 		FCSHORT stateStep;
 	};
 
+  /* */
 	FCModel(void);
 	~FCModel(void);
 
@@ -40,6 +68,7 @@ public:
 
 	bool Initialise();
 	void SetState(e_ModelState newState);
+  void SetStateStep(FCSHORT stateStep);
 	StateInfo GetState()														{ return m_state; }
 
 	bool ProcessData();
