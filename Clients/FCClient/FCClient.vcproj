@@ -146,6 +146,9 @@
 				RelativePath="..\common\ResourceManager.cpp">
 			</File>
 			<File
+				RelativePath=".\Settings.cpp">
+			</File>
+			<File
 				RelativePath=".\ViewLogicLoading.cpp">
 			</File>
 		</Filter>
@@ -194,6 +197,9 @@
 			</File>
 			<File
 				RelativePath="..\common\ResourceManager.h">
+			</File>
+			<File
+				RelativePath=".\Settings.h">
 			</File>
 			<File
 				RelativePath=".\ViewLogicLoading.h">
