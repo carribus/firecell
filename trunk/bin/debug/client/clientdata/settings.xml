@@ -1,5 +1,6 @@
 <FCClient>
 	<Settings>
-		<Server address="127.0.0.1" port="6666"/>
+		<Server address="127.0.0.1" port="6666" />
+		<ConnectAttempts count="4" />
 	</Settings>
 </FCClient>

@@ -97,6 +97,7 @@ private:
 	BaseSocket				m_sock;
 	FCServerObj				m_server;
 	bool							m_bConnected;
+  FCSHORT           m_connectRetry;
 };
 
 #endif//_FCMODEL_H_

@@ -3,6 +3,7 @@
 #include "FCModel.h"
 
 FCModel::FCModel(void)
+: m_connectRetry(1)
 {
 	m_state.state = FCModel::None;
 	m_state.stateStep = 0;
@@ -137,8 +138,17 @@ void FCModel::OnConnected(BaseSocket* pSocket, int nErrorCode)
 	}
 	else
 	{
-		SetStateStep( MS_Connecting_FinalFail );
-		SetState( FCModel::ShuttingDown );
+    if ( m_connectRetry < (short)atoi( Settings::instance().GetValue("FCClient/Settings/ConnectAttempts", "count").c_str() ) )
+    {
+      SetStateStep( MS_Connecting_Retry );
+      SetStateStep( MS_Connecting_None );
+      m_connectRetry++;
+    }
+    else
+    {
+      SetStateStep( MS_Connecting_FinalFail );
+		  SetState( FCModel::ShuttingDown );
+    }
 	}
 }
 
