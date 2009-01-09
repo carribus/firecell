@@ -23,7 +23,7 @@ public:
 	void SetActive();
 	void Refresh();
   void OnModelStateChange(FCModel::StateInfo state);
-	SColor GetBackgroundColour()													{ return SColor(255, 64, 64, 64); }
+	SColor GetBackgroundColour()													{ return SColor(255, 0, 0, 0); }
 
 private:
 
