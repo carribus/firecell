@@ -113,6 +113,11 @@ bool FCModel::ProcessData()
 		break;
 
 	case	FCModel::ShuttingDown:
+    if ( m_state.stateStep == FCModel::MS_ShuttingDown_None )
+    {
+      Shutdown();
+      bResult = false;        // cause the controller to exit from its loop
+    }
 		break;
 	}
 
@@ -132,9 +137,25 @@ void FCModel::OnConnected(BaseSocket* pSocket, int nErrorCode)
 	m_bConnected = (nErrorCode == 0);
 	if ( m_bConnected )
 	{
+    m_connectRetry = 0;
 		SetStateStep( MS_Connecting_Connected );
-    SetState( FCModel::Login );
 
+    switch ( m_state.state )
+    {
+    case  FCModel::Connecting:
+      // only move over to the login IF we are currently in the connecting state...
+      SetState( FCModel::Login );
+      break;
+
+    case  FCModel::Login:
+      break;
+
+    case  FCModel::Playing:
+      break;
+
+    default:
+      break;
+    }
 	}
 	else
 	{
@@ -147,7 +168,8 @@ void FCModel::OnConnected(BaseSocket* pSocket, int nErrorCode)
     else
     {
       SetStateStep( MS_Connecting_FinalFail );
-		  SetState( FCModel::ShuttingDown );
+      // fire a shut down event to let our subscribers clean up before we do
+      SetState(FCModel::ShuttingDown);
     }
 	}
 }
@@ -157,6 +179,11 @@ void FCModel::OnConnected(BaseSocket* pSocket, int nErrorCode)
 void FCModel::OnDisconnected(BaseSocket* pSocket, int nErrorCode)
 {
 	m_bConnected = false;
+  if ( m_state.state != FCModel::ShuttingDown )
+  {
+    // if we are not shutting down, then we should probably try to reconnect...
+    ConnectToServer();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -171,26 +198,33 @@ bool FCModel::LoadResources()
 {
   SetStateStep( (FCSHORT)FCModel::MS_Loading_Text );
 
+  // Load the client settings
 	if ( !Settings::instance().LoadSettings("./clientdata/settings.xml") )
 	{
 		fprintf(stderr, "Failed to load client settins\n");
 		return false;
 	}
 
+  // load the client strings
+  // TODO: Make this a load based on language (currently EN is hardcoded)
 	if ( ResourceManager::instance().LoadClientStrings("./clientdata/strings_en.xml") == -1 )
 	{
     fprintf(stderr, "Failed to load client strings\n");
     return false;
 	}
 
+  // load the mission text
+  // TODO: Make this multi-language enabled (again, EN is hardcoded)
   if ( ResourceManager::instance().LoadMissionStrings("./clientdata/missions/missions_en.xml") == -1 )
   {
     fprintf(stderr, "Failed to load mission strings\n");
     return false;
   }
 
+  // fire off an event allowing the view to load its graphical assets
   SetStateStep( (FCSHORT)FCModel::MS_Loading_Graphics );
 
+  // fire off an event so that the necessary sounds can get loaded
   SetStateStep( (FCSHORT)FCModel::MS_Loading_Sounds );
 
 	return true;
@@ -208,4 +242,16 @@ bool FCModel::ConnectToServer()
 	m_sock.Connect(server.c_str(), (short)port);
 
 	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::Shutdown()
+{
+  SetStateStep(FCModel::MS_ShuttingDown_InProgress);
+  // close the socket
+  if ( m_bConnected )
+  {
+    m_sock.Disconnect();
+  }
 }
