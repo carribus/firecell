@@ -40,7 +40,9 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="Copying pthreads-win32 dll to bin\debug folder"
+				CommandLine="copy &quot;..\..\common\pthreads-win32\lib\pthreadVSE2.dll&quot; $(OutDir)"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

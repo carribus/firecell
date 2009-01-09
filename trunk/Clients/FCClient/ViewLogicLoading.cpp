@@ -38,13 +38,13 @@ void ViewLogicLoading::Create(FCView* pContainer, IrrlichtDevice* pDevice)
 	core::dimension2d<s32> dim = m_pDevice->getVideoDriver()->getScreenSize();
 
 	// setup the font
-	IGUIFont* pFont = m_pEnv->getFont("./clientdata/fonts/fontcourier.bmp");
+	IGUIFont* pFont = m_pEnv->getFont("./clientdata/fonts/fontfixedsys.xml");
 
 	// create the 'loading' text object
 	m_strDetails += m_arrDetailLines[ 0 ];
 	m_pTextObject = m_pEnv->addStaticText(m_strDetails.c_str(), core::rect<s32>(10, 10, dim.Width, dim.Height), false);
 
-	m_pTextObject->setOverrideColor( SColor(255, 172, 172, 172) );
+	m_pTextObject->setOverrideColor( SColor(255, 0, 255, 0) );
 	m_pTextObject->setOverrideFont(pFont);
 }
 
