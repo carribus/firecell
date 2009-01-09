@@ -52,6 +52,13 @@ public:
     MS_Connecting_FinalFail
   };
 
+  // e_ModelState::ShuttingDown
+  enum e_ModelStateShuttingDown
+  {
+    MS_ShuttingDown_None = 0,
+    MS_ShuttingDown_InProgress
+  };
+
   /*
    *  StateInfo structure that is passed along with the FCME_StateChange event
    */
@@ -88,6 +95,8 @@ private:
 	bool LoadResources();
 
 	bool ConnectToServer();
+
+  void Shutdown();
 
 	void FireEvent(e_FCEventType type, void* pData);
 

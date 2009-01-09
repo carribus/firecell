@@ -47,8 +47,12 @@ void FCController::Run()
 	m_bRunning = true;
 	while ( m_bRunning )
 	{
-		m_pModel->ProcessData();
-		m_bRunning = m_pView->Update();
+		if ( m_pModel->ProcessData() )
+    {
+		  m_bRunning = m_pView->Update();
+    }
+    else
+      break;
 	}
 }
 
