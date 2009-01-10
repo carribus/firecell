@@ -19,6 +19,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FCClient", "Clients\FCClien
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "genstringh", "Tools\genstringh\genstringh.vcproj", "{70E699F5-3B93-4B28-8B5D-7B9D18240E2D}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -45,6 +49,10 @@ Global
 		{21FA62D8-B9A1-4560-9114-B1AC1C8AF472}.Debug.Build.0 = Debug|Win32
 		{21FA62D8-B9A1-4560-9114-B1AC1C8AF472}.Release.ActiveCfg = Release|Win32
 		{21FA62D8-B9A1-4560-9114-B1AC1C8AF472}.Release.Build.0 = Release|Win32
+		{70E699F5-3B93-4B28-8B5D-7B9D18240E2D}.Debug.ActiveCfg = Debug|Win32
+		{70E699F5-3B93-4B28-8B5D-7B9D18240E2D}.Debug.Build.0 = Debug|Win32
+		{70E699F5-3B93-4B28-8B5D-7B9D18240E2D}.Release.ActiveCfg = Release|Win32
+		{70E699F5-3B93-4B28-8B5D-7B9D18240E2D}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
