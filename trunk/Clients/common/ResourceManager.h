@@ -1,3 +1,22 @@
+/*
+    FireCell Server - The server code for the firecell multiplayer game
+    Copyright (C) 2008  Peter M. Mares
+
+		Contact: carribus@gmail.com
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 #ifndef _RESOURCEMANAGER_H_
 #define _RESOURCEMANAGER_H_
 
@@ -24,9 +43,11 @@ public:
 	int LoadClientStrings(string string_file);
   int LoadMissionStrings(string mission_file);
 
+	std::wstring GetClientString(const wstring& key);
+
 private:
 
-	void ParseClientStrings(IrrXMLReader* pXML);
+	void ParseClientStrings(IrrXMLReaderUTF16* pXML);
   void ParseMissionStrings(IrrXMLReader* pXML);
     void ParseMissionNode(IrrXMLReader* pXML);
 
@@ -35,7 +56,7 @@ private:
 	/*
 	 *	Client string related objects
 	 */
-	typedef map<string, string> StringMap;
+	typedef std::map<wstring, wstring> StringMap;
 	StringMap m_mapStrings;
 
   /*
@@ -48,7 +69,7 @@ private:
     string prelude;
     string description;
   };
-  typedef map<FCULONG, MissionStrings> MissionMap;
+	typedef std::map<FCULONG, MissionStrings> MissionMap;
   MissionMap m_mapMissions;
 };
 

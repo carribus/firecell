@@ -1,3 +1,22 @@
+/*
+    FireCell Server - The server code for the firecell multiplayer game
+    Copyright (C) 2008  Peter M. Mares
+
+		Contact: carribus@gmail.com
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 #include "ResourceManager.h"
 
 ResourceManager* ResourceManager::m_pThis = NULL;
@@ -42,7 +61,7 @@ int ResourceManager::LoadClientStrings(string string_file)
 	if ( string_file.empty() )
 		return -1;
 
-	IrrXMLReader* pXML = createIrrXMLReader(string_file.c_str());
+	IrrXMLReaderUTF16* pXML = createIrrXMLReaderUTF16(string_file.c_str());
 
 	if ( pXML )
 	{
@@ -71,12 +90,27 @@ int ResourceManager::LoadMissionStrings(string mission_file)
 
 ///////////////////////////////////////////////////////////////////////
 
-void ResourceManager::ParseClientStrings(IrrXMLReader* pXML)
+wstring ResourceManager::GetClientString(const wstring& key)
+{
+	std::wstring val;
+	StringMap::iterator it = m_mapStrings.find(key);
+
+	if ( it != m_mapStrings.end() )
+		val = it->second;
+	else
+		val = L"<STRING [" + key + L"] NOT FOUND>";
+
+	return val;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ResourceManager::ParseClientStrings(IrrXMLReaderUTF16* pXML)
 {
 	if ( !pXML )
 		return;
 
-	string elemName, stringID, stringText;
+	wstring elemName, stringID, stringText;
 
 	while ( pXML->read() )
 	{
@@ -85,13 +119,13 @@ void ResourceManager::ParseClientStrings(IrrXMLReader* pXML)
 		case	EXN_ELEMENT:
 			{
 				elemName = pXML->getNodeName();
-				if ( elemName == "FCStrings" )
+				if ( elemName == L"FCStrings" )
 				{
 				}
-				else if ( elemName == "String" )
+				else if ( elemName == L"String" )
 				{
 					// get the ID of the string
-					stringID = pXML->getAttributeValue("id");
+					stringID = pXML->getAttributeValue(L"id");
 				}
 			}
 			break;
@@ -100,10 +134,15 @@ void ResourceManager::ParseClientStrings(IrrXMLReader* pXML)
 			{
 				if ( !stringID.empty() )
 				{
+					size_t pos = 0;
 					stringText = pXML->getNodeData();
+					while ( (pos = stringText.find( L"\\n" )) != wstring::npos )
+					{
+						stringText.replace(pos, 2, L"\n");
+					}
 					m_mapStrings[stringID] = stringText;
 
-					stringID = stringText = "";
+					stringID = stringText = L"";
 				}
 			}
 			break;

@@ -1,6 +1,12 @@
 <FCStrings lang="en">
-	<String id="LOAD_ASSET">Loading assets...</String>
-	<String id="CONNECT_SERVER">Connecting to server...</String>
-	<String id="CONNECT_OK">Connected</String>
-	<String id="CONNECT_FAIL">Failed to connect!</String>
+	<!-- STARTUP STRINGS -->
+	<String id="LOAD_SEPERATOR">------------------------\n</String>
+	<String id="LOAD_START">FireCell initializing...\n</String>
+	<String id="LOAD_TEXT">Loading Textual data...\n</String>
+	<String id="LOAD_GFX">Loading Graphical assets...\n</String>
+	<String id="LOAD_AUDIO">Loading Audio assets...\n</String>
+	<String id="CONNECT_SERVER">Connecting to server... </String>
+	<String id="CONNECT_OK">OK\n</String>
+	<String id="CONNECT_FAIL_RETRY">Failed\nRetrying...\n</String>
+	<String id="CONNECT_FINAL_FAIL">Failed\n</String>
 </FCStrings>
