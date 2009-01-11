@@ -20,6 +20,7 @@
 #ifndef _FCMODEL_H_
 #define _FCMODEL_H_
 
+#include <queue>
 #include <vector>
 #include "../../common/fctypes.h"
 #include "../../common/PacketExtractor.h"
@@ -27,12 +28,20 @@
 #include "../common/Socket/ClientSocket.h"
 #include "../common/FCServerObj.h"
 #include "IModelEventSink.h"
+#include "PThreadMutex.h"
 #include "FCModelEvent.h"
 
 using namespace std;
 
 class FCModel : public IBaseSocketSink
 {
+	struct DataQueueItem
+  {
+    BaseSocket* pSocket;
+    PEPacket* pPkt;
+  };
+  typedef queue<DataQueueItem> DataQueue;
+
 public:
 
 	/*
@@ -44,6 +53,7 @@ public:
 		Loading,
 		Connecting,
 		Login,
+		CharacterSelection,
 		Playing,
 		ShuttingDown
 	};
@@ -70,6 +80,15 @@ public:
     MS_Connecting_Retry,
     MS_Connecting_FinalFail
   };
+
+	// e_ModelState::Login
+	enum e_ModelStateLogin
+	{
+		MS_Login_None,
+		MS_Login_LoginFailed,
+		MS_Login_LoginFailed_AccountInUse,
+		MS_Login_LoginSucceeded,
+	};
 
   // e_ModelState::ShuttingDown
   enum e_ModelStateShuttingDown
@@ -109,6 +128,8 @@ public:
 	void OnDisconnected(BaseSocket* pSocket, int nErrorCode);
 	void OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen);
 
+	void StartLogin(wstring username, wstring password);
+
 private:
 
 	bool LoadResources();
@@ -119,13 +140,28 @@ private:
 
 	void FireEvent(e_FCEventType type, void* pData);
 
+	void ProcessIncomingData();
+	bool GetNextQueueItem(DataQueue& queue, DataQueueItem& dest);
+
+	bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
+  bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
+		bool OnResponseServiceInfo(PEPacket* pPkt, BaseSocket* pSocket);  
+		bool OnResponseLogin(PEPacket* pPkt, BaseSocket* pSocket);  
+		bool OnResponseGetCharacters(PEPacket* pPkt, BaseSocket* pSocket);  
+
+  bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
+
 	vector<IModelEventSink*>				m_sinks;
 	StateInfo												m_state;
 
 	BaseSocket				m_sock;
 	FCServerObj				m_server;
+	PacketExtractor		m_extractor;
 	bool							m_bConnected;
   FCSHORT           m_connectRetry;
+
+	DataQueue					m_qDataIn;
+	PThreadMutex			m_mutexDataIn;
 };
 
 #endif//_FCMODEL_H_

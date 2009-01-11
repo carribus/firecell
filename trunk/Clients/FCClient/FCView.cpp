@@ -160,6 +160,10 @@ void FCView::OnModelEvent(FCModelEvent event)
 				case	FCModel::Login:
 					break;
 
+				case	FCModel::CharacterSelection:
+					pNewView = &m_vlCharSelect;
+					break;
+
 				case	FCModel::Playing:
 					break;
 
@@ -202,6 +206,9 @@ void FCView::OnModelEvent(FCModelEvent event)
 
           case  FCModel::Login:
             break;
+
+					case	FCModel::CharacterSelection:
+						break;
 
           case  FCModel::Playing:
             break;

@@ -23,9 +23,11 @@
 #include "IModelEventSink.h"
 #include "FCModel.h"
 #include "FCView.h"
+#include "FCViewEvent.h"
 
 class FCController : public IModelEventSink
 {
+
 public:
 
 	FCController(void);
@@ -38,6 +40,7 @@ public:
 	void Run();
 
 	void OnModelEvent(FCModelEvent event);
+	void OnViewEvent(FCViewEvent& event);
 
 private:
 

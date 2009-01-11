@@ -17,87 +17,74 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "../common/ResourceManager.h"
-#include "FCController.h"
+#include "ViewLogicCharacterSelection.h"
 
-FCController::FCController(void)
-: m_pModel(NULL)
-, m_pView(NULL)
-, m_bRunning(false)
+ViewLogicCharacterSelection::ViewLogicCharacterSelection(void)
+: m_pContainer(NULL)
+, m_pDevice(NULL)
+, m_pScene(NULL)
+, m_pEnv(NULL)
 {
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-FCController::~FCController(void)
+ViewLogicCharacterSelection::~ViewLogicCharacterSelection(void)
 {
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCController::SetModel(FCModel* pModel)
+void ViewLogicCharacterSelection::Create(FCView* pContainer, IrrlichtDevice* pDevice)
 {
-	m_pModel = pModel;
-	pModel->SubscribeToEvents(this);
+	m_pContainer = pContainer;
+
+	// get the required interfaces and store them
+	m_pDevice = pDevice;
+	m_pScene = m_pDevice->getSceneManager();
+	m_pEnv = m_pDevice->getGUIEnvironment();
+
+	// setup the event receiver
+	pDevice->setEventReceiver(this);
+
+	// setup the font
+	IGUIFont* pFont = m_pEnv->getFont("./clientdata/fonts/fontcourier.bmp");
+	m_pEnv->getSkin()->setFont(pFont);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCController::SetView(FCView* pView)
+void ViewLogicCharacterSelection::Destroy()
 {
-	m_pView = pView;
-	pView->SetController(this);
+	m_pEnv->clear();
+	m_pScene->clear();
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-bool FCController::Initialise()
+void ViewLogicCharacterSelection::SetActive()
 {
-	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCController::Run()
+void ViewLogicCharacterSelection::Refresh()
 {
-	if ( !m_pModel || !m_pView )
-		return;
-
-	m_bRunning = true;
-	while ( m_bRunning )
-	{
-		if ( m_pModel->ProcessData() )
-    {
-		  m_bRunning = m_pView->Update();
-    }
-    else
-      break;
-	}
+	m_pScene->drawAll();
+	m_pEnv->drawAll();
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCController::OnModelEvent(FCModelEvent event)
+void ViewLogicCharacterSelection::OnModelStateChange(FCModel::StateInfo state)
 {
-
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCController::OnViewEvent(FCViewEvent& event)
+bool ViewLogicCharacterSelection::OnEvent(const SEvent& event)
 {
-	switch ( event.GetType() )
-	{
-	case	VE_None:
-		break;
+	bool bHandled = false;
 
-	case	VE_ClientExit:
-		m_pModel->SetState( FCModel::ShuttingDown );
-		break;
-
-	case	VE_Login:
-		FCViewEventLogin* pEv = (FCViewEventLogin*) &event;
-		m_pModel->StartLogin( pEv->GetUsername(), pEv->GetPassword() );
-		break;
-	}
+	return bHandled;
 }

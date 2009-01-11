@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "../../common/protocol/fcprotocol.h"
 #include "../common/ResourceManager.h"
 #include "Settings.h"
 #include "FCModel.h"
@@ -69,6 +70,10 @@ bool FCModel::Initialise()
 		return false;
 	}
 	m_sock.Subscribe(this);
+	
+	// configure the server object
+	m_server.SetSocket(&m_sock);
+	m_extractor.Prepare( __FCPACKET_DEF );
 
 	SetState( FCModel::Loading );
 
@@ -109,10 +114,235 @@ void FCModel::FireEvent(e_FCEventType type, void* pData)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCModel::ProcessIncomingData()
+{
+  FCBYTE type;
+	DataQueueItem dqi;
+	bool bContinue = false;
+
+	m_mutexDataIn.Lock();
+	bContinue = GetNextQueueItem(m_qDataIn, dqi);
+	m_mutexDataIn.Unlock();
+
+	while ( bContinue )
+	{
+    if ( dqi.pPkt->GetField("type", &type, sizeof(FCBYTE)) )
+    {
+      switch ( type )
+      {
+      case  FCPKT_COMMAND:
+        OnCommand(dqi.pPkt, dqi.pSocket);
+        break;
+
+      case  FCPKT_RESPONSE:
+        OnResponse(dqi.pPkt, dqi.pSocket);
+        break;
+
+      case  FCPKT_ERROR:
+        OnError(dqi.pPkt, dqi.pSocket);
+        break;
+      }
+    }
+
+    m_mutexDataIn.Lock();
+    bContinue = GetNextQueueItem(m_qDataIn, dqi);
+    m_mutexDataIn.Unlock();
+	}
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::GetNextQueueItem(DataQueue& queue, DataQueueItem& dest)
+{
+  dest.pPkt = NULL;
+  dest.pSocket = NULL;
+
+  if ( queue.size() )
+  {
+    dest = queue.front();
+    queue.pop();
+    return true;
+  }
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  if ( !pPkt || !pSocket )
+    return false;
+
+  FCSHORT msgID;
+
+  pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  if ( !pPkt || !pSocket )
+    return false;
+
+  FCSHORT msgID;
+  bool bHandled = false;
+
+  pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
+
+  switch ( msgID )
+  {
+  case  FCMSG_INFO_SERVER:
+    {
+      bHandled = OnResponseServiceInfo(pPkt, pSocket);
+    }
+    break;
+
+  case  FCMSG_LOGIN:
+    {
+      bHandled = OnResponseLogin(pPkt, pSocket);
+    }
+    break;
+
+  case  FCMSG_GETCHARACTERS:
+    {
+      bHandled = OnResponseGetCharacters(pPkt, pSocket);
+    }
+    break;
+/*
+
+  case  FCMSG_SELECT_CHARACTER:
+    {
+      bHandled = OnResponseSelectCharacter(pPkt, pSocket);
+    }
+    break;
+
+  case  FCMSG_CHARACTER_ASSET_REQUEST:
+    {
+      bHandled = OnResponseCharacterAssetRequest(pPkt, pSocket);
+    }
+    break;
+
+  case  FCMSG_GET_DESKTOP_OPTIONS:
+    {
+      bHandled = OnResponseGetDesktopOptions(pPkt, pSocket);
+    }
+    break;
+*/
+  default:
+
+/*
+		if ( m_pCurrentModule )
+      bHandled = m_pCurrentModule->OnResponse(msgID, pPkt, pSocket);
+*/
+
+    if ( !bHandled )
+    {
+      printf("Unknown Response packet received (id:%ld)\n", msgID);
+      pPkt->DebugDump();
+    }
+    break;
+  }
+
+  return bHandled;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseServiceInfo(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_INFO_SERVER d;
+  size_t dataLen;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+/*
+  printf("\n\n\tv%d.%d\n" \
+          "\t%ld Connections\n\n", d.verMajor, d.verMinor, d.connectionCountRouter);
+
+  m_gameState = LoginRequired;
+*/
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseLogin(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_LOGIN_RESP d;
+  size_t dataLen;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+  switch ( d.loginStatus )
+  {
+  case  LoginFailed:
+		SetStateStep( FCModel::MS_Login_LoginFailed );
+		SetState( FCModel::ShuttingDown );
+    break;
+
+  case  LoginSuccess:
+		SetStateStep( FCModel::MS_Login_LoginSucceeded );
+    m_server.RequestCharacterInfo();
+    break;
+
+  case  LoginAccountLoggedInAlready:
+		SetStateStep( FCModel::MS_Login_LoginFailed_AccountInUse );
+		SetState( FCModel::ShuttingDown );
+    break;
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseGetCharacters(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_CHARACTER_LIST d;
+  size_t dataLen;
+  map<FCUINT, size_t> KeyToCharacterMap;
+  size_t characterSelected = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+
+  if ( d.numCharacters <= 0 )
+  {
+	}
+
+	SetState( FCModel::CharacterSelection );
+
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnError(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  if ( !pPkt || !pSocket )
+    return false;
+
+  FCSHORT msgID;
+
+  pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
+
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCModel::ProcessData()
 {
 	bool bResult = true;
 
+	// handle outstanding incoming data
+	ProcessIncomingData();
+
+	// handle the model's state
 	switch ( m_state.state )
 	{
 	case	FCModel::Loading:
@@ -209,6 +439,30 @@ void FCModel::OnDisconnected(BaseSocket* pSocket, int nErrorCode)
 
 void FCModel::OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen)
 {
+  PEPacket* pPkt = NULL;
+  size_t offset = 0;
+  DataQueueItem dqi;
+
+  while ( (pPkt = m_extractor.Extract((const char*)pData, offset, (size_t)nLen)) )
+  {
+    dqi.pSocket = pSocket;
+    dqi.pPkt = pPkt;
+
+		m_mutexDataIn.Lock();
+    m_qDataIn.push(dqi);
+    m_mutexDataIn.Unlock();
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::StartLogin(wstring username, wstring password)
+{
+	char un[128], pw[128];
+
+	sprintf(un, "%S", username.c_str());
+	sprintf(pw, "%S", password.c_str());
+	m_server.Login(un, pw);
 }
 
 ///////////////////////////////////////////////////////////////////////

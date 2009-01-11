@@ -26,6 +26,7 @@
 #include "FCModel.h"
 #include "QueueReaderThread.h"
 #include "ViewLogicLoading.h"
+#include "ViewLogicCharacterSelection.h"
 
 using namespace irr;
 using namespace core;
@@ -38,11 +39,13 @@ class FCController;
 class FCView : public IModelEventSink
 {
 public:
+
 	FCView(void);
 	~FCView(void);
 
 	void SetModel(FCModel* pModel);
 	void SetController(FCController* pController);
+	FCController* GetController()															{ return m_pController; }
 
 	bool Initialise(E_DRIVER_TYPE driverType = EDT_OPENGL);
 	bool Update();
@@ -67,6 +70,7 @@ private:
 
 	IViewLogic*				m_pCurrentViewLogic;
 	ViewLogicLoading	m_vlLoading;
+	ViewLogicCharacterSelection	m_vlCharSelect;
 };
 
 #endif//_FCVIEW_H_

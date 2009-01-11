@@ -19,7 +19,16 @@
 */
 #include "../common/ResourceManager.h"
 #include "clientstrings.h"
+#include "FCView.h"
+#include "FCViewEvent.h"
+#include "FCController.h"
 #include "ViewLogicLoading.h"
+
+#define WINDOW_LOGIN									1
+#define EDIT_USERNAME									2
+#define EDIT_PASSWORD									3
+#define BUTTON_LOGIN									4
+#define BUTTON_CANCEL									5
 
 ViewLogicLoading::ViewLogicLoading()
 : m_pContainer(NULL)
@@ -48,13 +57,17 @@ void ViewLogicLoading::Create(FCView* pContainer, IrrlichtDevice* pDevice)
 	m_pEnv = m_pDevice->getGUIEnvironment();
 	core::dimension2d<s32> dim = m_pDevice->getVideoDriver()->getScreenSize();
 
-	ConfigureUISkin();
+	// setup the event receiver
+	pDevice->setEventReceiver(this);
+//	ConfigureUISkin();
 
 	// setup the font
 	IGUIFont* pFont = m_pEnv->getFont("./clientdata/fonts/fontcourier.bmp");
+	m_pEnv->getSkin()->setFont(pFont);
 
 	// create the 'loading' text object
 	m_pTextObject = m_pEnv->addStaticText(m_strDetails.c_str(), core::rect<s32>(10, 10, dim.Width, dim.Height), false);
+	m_pTextObject->grab();
 
 	m_pTextObject->setOverrideColor( SColor(255, 0, 255, 0) );
 	m_pTextObject->setOverrideFont(pFont);
@@ -64,6 +77,7 @@ void ViewLogicLoading::Create(FCView* pContainer, IrrlichtDevice* pDevice)
 
 void ViewLogicLoading::Destroy()
 {
+	m_pTextObject->drop();
 	m_pEnv->clear();
 	m_pScene->clear();
 }
@@ -80,6 +94,61 @@ void ViewLogicLoading::Refresh()
 {
 	m_pScene->drawAll();
 	m_pEnv->drawAll();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool ViewLogicLoading::OnEvent(const SEvent& event)
+{
+	bool bHandled = false;
+
+	if ( event.EventType == EET_GUI_EVENT )
+	{
+		s32 elemID = event.GUIEvent.Caller->getID();
+		
+		switch ( event.GUIEvent.EventType )
+		{
+		case	EGET_BUTTON_CLICKED:
+			{
+				switch ( elemID )
+				{
+				case	BUTTON_LOGIN:
+					{
+						wstring username, password;
+
+						IGUIWindow* pWnd = (IGUIWindow*)m_pEnv->getRootGUIElement()->getElementFromId( WINDOW_LOGIN );
+
+						if ( pWnd )
+						{
+							IGUIEditBox* pEdit = (IGUIEditBox*) pWnd->getElementFromId( EDIT_USERNAME );
+							username = pEdit->getText();
+							pEdit = (IGUIEditBox*) pWnd->getElementFromId( EDIT_PASSWORD );
+							password = pEdit->getText();
+
+							FCViewEventLogin e( username, password );
+							m_pContainer->GetController()->OnViewEvent(e);
+						}
+					}
+					break;
+
+				case	BUTTON_CANCEL:
+					{
+						FCViewEvent e( VE_ClientExit );
+						m_pContainer->GetController()->OnViewEvent(e);
+					}
+					break;
+				}
+			}
+			break;
+
+		case	EGET_ELEMENT_CLOSED:
+			{
+			}
+			break;
+		}
+	}
+
+	return bHandled;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -145,17 +214,17 @@ void ViewLogicLoading::OnModelStateChange(FCModel::StateInfo state)
 
 	case	FCModel::Login:
 		{
-			s32 x1, y1, x2, y2;
-
 			core::dimension2d<s32> dim = m_pDevice->getVideoDriver()->getScreenSize();
+			m_pEnv->loadGUI("./clientdata/ui/dialog.login.xml");
+			IGUIElement* pRootElem = m_pEnv->getRootGUIElement();
+			IGUIWindow* pWindow = (IGUIWindow*)pRootElem->getElementFromId( WINDOW_LOGIN );
 
-			x1 = dim.Width / 4;
-			y1 = dim.Height / 4;
-			x2 = x1 + dim.Width / 2;
-			y2 = y2 = dim.Height / 2;
-			IGUIWindow* pWindow = m_pEnv->addWindow( core::rect<s32>(x1, y1, x2, y2), true, L"Login to FireCell" );
-			pWindow->setVisible(true);
-			
+			if ( pWindow )
+			{
+				core::rect<s32> wndRect = pWindow->getAbsoluteClippingRect();
+				pWindow->setRelativePosition(core::position2di( dim.Width/2 - wndRect.getWidth() / 2, dim.Height/2 - wndRect.getHeight()/2 ));
+				m_pEnv->setFocus( pWindow->getElementFromId( EDIT_USERNAME ) );
+			}
 		}
 		break;
 
@@ -175,6 +244,11 @@ void ViewLogicLoading::ConfigureUISkin()
 	// Window Caption background
 	pSkin->setColor( EGDC_ACTIVE_BORDER, SColor(255, 64, 128, 64) );
 	pSkin->setColor( EGDC_ACTIVE_CAPTION, SColor(255, 0, 0, 0) );
+
+	pSkin->setColor( EGDC_BUTTON_TEXT, SColor(255, 64, 255, 64) );
+
+	pSkin->setColor( EGDC_3D_FACE, SColor(255, 196, 255, 196) );
+
 
 	m_pEnv->setSkin(pSkin);
 	pSkin->drop();
