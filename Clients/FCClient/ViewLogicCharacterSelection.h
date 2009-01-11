@@ -17,23 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef _VIEWLOGICLOADING_H_
-#define _VIEWLOGICLOADING_H_
+#ifndef _VIEWLOGICCHARACTERSELECTION_H_
+#define _VIEWLOGICCHARACTERSELECTION_H_
 
-#include <string>
-#include <vector>
 #include "IViewLogic.h"
 
 using namespace std;
 using namespace irr::scene;
 using namespace irr::gui;
 
-class ViewLogicLoading : public IViewLogic
-											 , protected IEventReceiver
+class ViewLogicCharacterSelection :	public IViewLogic
+																	, protected IEventReceiver
 {
 public:
-	ViewLogicLoading();
-	~ViewLogicLoading(void);
+	ViewLogicCharacterSelection(void);
+	~ViewLogicCharacterSelection(void);
 
 	/*
 	 *	IViewLogic implementation
@@ -43,29 +41,19 @@ public:
 	void SetActive();
 	void Refresh();
   void OnModelStateChange(FCModel::StateInfo state);
-	SColor GetBackgroundColour()													{ return SColor(255, 0, 0, 0); }
+	SColor GetBackgroundColour()													{ return SColor(255, 0, 0, 255); }
 
 	/*
 	 *	IEventReceiver implementation
 	 */
 	bool OnEvent(const SEvent& event);
 
-	/*
-	 *	Methods
-	 */
-
 private:
-
-	void ConfigureUISkin();
 
 	FCView*											m_pContainer;
 	IrrlichtDevice*							m_pDevice;
 	ISceneManager*							m_pScene;
 	IGUIEnvironment*						m_pEnv;
-
-	IGUIStaticText*							m_pTextObject;
-
-	std::wstring						    m_strDetails;
 };
 
-#endif//_VIEWLOGICLOADING_H_
+#endif//_VIEWLOGICCHARACTERSELECTION_H_

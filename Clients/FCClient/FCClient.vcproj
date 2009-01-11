@@ -136,6 +136,9 @@
 				RelativePath=".\FCView.cpp">
 			</File>
 			<File
+				RelativePath=".\FCViewEvent.cpp">
+			</File>
+			<File
 				RelativePath="..\..\common\PacketExtractor.cpp">
 			</File>
 			<File
@@ -145,10 +148,16 @@
 				RelativePath="..\..\common\PEPacketHelper.cpp">
 			</File>
 			<File
+				RelativePath=".\PThreadMutex.cpp">
+			</File>
+			<File
 				RelativePath="..\common\ResourceManager.cpp">
 			</File>
 			<File
 				RelativePath=".\Settings.cpp">
+			</File>
+			<File
+				RelativePath=".\ViewLogicCharacterSelection.cpp">
 			</File>
 			<File
 				RelativePath=".\ViewLogicLoading.cpp">
@@ -177,6 +186,9 @@
 				RelativePath=".\FCView.h">
 			</File>
 			<File
+				RelativePath=".\FCViewEvent.h">
+			</File>
+			<File
 				RelativePath=".\IModelEventSink.h">
 			</File>
 			<File
@@ -192,6 +204,9 @@
 				RelativePath="..\..\common\PEPacketHelper.h">
 			</File>
 			<File
+				RelativePath=".\PThreadMutex.h">
+			</File>
+			<File
 				RelativePath=".\PThreadWrapper.h">
 			</File>
 			<File
@@ -202,6 +217,9 @@
 			</File>
 			<File
 				RelativePath=".\Settings.h">
+			</File>
+			<File
+				RelativePath=".\ViewLogicCharacterSelection.h">
 			</File>
 			<File
 				RelativePath=".\ViewLogicLoading.h">
