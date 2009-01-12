@@ -139,6 +139,9 @@
 				RelativePath=".\FCViewEvent.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIFCCharacterItem.cpp">
+			</File>
+			<File
 				RelativePath="..\..\common\PacketExtractor.cpp">
 			</File>
 			<File
@@ -187,6 +190,9 @@
 			</File>
 			<File
 				RelativePath=".\FCViewEvent.h">
+			</File>
+			<File
+				RelativePath=".\GUIFCCharacterItem.h">
 			</File>
 			<File
 				RelativePath=".\IModelEventSink.h">

@@ -50,6 +50,8 @@ void ViewLogicCharacterSelection::Create(FCView* pContainer, IrrlichtDevice* pDe
 	// setup the font
 	IGUIFont* pFont = m_pEnv->getFont("./clientdata/fonts/fontcourier.bmp");
 	m_pEnv->getSkin()->setFont(pFont);
+
+	m_pFontHeader = m_pEnv->getFont("./clientdata/fonts/fontverdana_18px.bmp");
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -64,12 +66,23 @@ void ViewLogicCharacterSelection::Destroy()
 
 void ViewLogicCharacterSelection::SetActive()
 {
+	CreateGUIObjects();
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void ViewLogicCharacterSelection::Refresh()
 {
+	core::dimension2d<s32> dim = m_pDevice->getVideoDriver()->getScreenSize();
+	core::rect<s32> frame(50, 50, dim.Width-50, dim.Height-50);
+	IVideoDriver* pDriver = m_pDevice->getVideoDriver();
+
+	pDriver->draw2DRectangle(frame, 
+													 SColor(255, 0, 0, 32),
+													 SColor(255, 0, 0, 32),
+													 SColor(255, 0, 0, 0),
+													 SColor(255, 0, 0, 0) );
+
 	m_pScene->drawAll();
 	m_pEnv->drawAll();
 }
@@ -87,4 +100,11 @@ bool ViewLogicCharacterSelection::OnEvent(const SEvent& event)
 	bool bHandled = false;
 
 	return bHandled;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewLogicCharacterSelection::CreateGUIObjects()
+{
+	GUIFCCharacterItem* pItem = new GUIFCCharacterItem( m_pEnv, m_pEnv->getRootGUIElement(), 1 );
 }
