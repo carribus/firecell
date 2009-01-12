@@ -117,6 +117,62 @@ bool ViewLogicCharacterSelection::OnEvent(const SEvent& event)
 {
 	bool bHandled = false;
 
+  switch ( event.EventType )
+  {
+  case  EET_GUI_EVENT :
+    {
+      s32 elemID = event.GUIEvent.Caller->getID();
+      IGUIElement* pRoot = m_pEnv->getRootGUIElement();
+      IGUIElement* pElem = NULL;
+      
+      if ( elemID != -1 )
+      {
+        pElem = event.GUIEvent.Caller;
+      }
+      else
+      {
+        pElem = event.GUIEvent.Caller;
+        while ( pElem && pElem->getID() == -1 )
+          pElem = pElem->getParent();
+        if ( pElem )
+          elemID = pElem->getID();
+      }
+
+      core::list<IGUIElement*> children = pRoot->getChildren();
+
+      switch ( event.GUIEvent.EventType )
+      {
+      case  EGET_ELEMENT_HOVERED:
+        {
+          if ( elemID >= 100 )
+          {
+            GUIFCCharacterItem* pItem = (GUIFCCharacterItem*) pElem;
+
+            if ( pItem )
+            {
+              pItem->SetHighlight(true);
+            }
+          }
+        }
+        break;
+
+      case  EGET_ELEMENT_LEFT:
+        {
+          if ( elemID >= 100 )
+          {
+            GUIFCCharacterItem* pItem = (GUIFCCharacterItem*) pElem;
+
+            if ( pItem )
+            {
+              pItem->SetHighlight(false);
+            }
+          }
+        }
+        break;
+      }
+    }
+  }
+
 	return bHandled;
 }
 

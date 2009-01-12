@@ -7,6 +7,7 @@ GUIFCCharacterItem::GUIFCCharacterItem(IGUIEnvironment* pEnv, IGUIElement* pPare
 : IGUIElement(EGUIET_ELEMENT, pEnv, pParent ? pParent : (IGUIElement*)pEnv, id, core::rect<s32>(0, 0, CHARSEL_ITEM_WIDTH, CHARSEL_ITEM_HEIGHT))
 , m_pDriver(NULL)
 , m_pCharacter(NULL)
+, m_bHighlight(false)
 {
   if ( pEnv )
     m_pDriver = pEnv->getVideoDriver();
@@ -22,6 +23,7 @@ GUIFCCharacterItem::~GUIFCCharacterItem(void)
 
 ///////////////////////////////////////////////////////////////////////
 
+#include <sstream>
 void GUIFCCharacterItem::draw()
 {
 	if ( !IsVisible )
@@ -30,15 +32,21 @@ void GUIFCCharacterItem::draw()
   SColor grey(255, 128, 128, 128);
 	SColor white(255, 255, 255, 255);
   SColor charInset(255, 0, 64, 128);
+  SColor blue(255, 64, 128, 255);
   core::rect<s32> rect = AbsoluteRect;
+  wstringstream s;
 
   // draw the outline and background
-	m_pDriver->draw2DRectangle( rect, grey, grey, grey, grey);
+  m_pDriver->draw2DRectangle( rect, grey, grey, grey, grey);
+
   rect.LowerRightCorner.X -= 2;
   rect.LowerRightCorner.Y -= 2;
   rect.UpperLeftCorner.X += 2;
   rect.UpperLeftCorner.Y += 2;
-	m_pDriver->draw2DRectangle( rect, white, white, white, white);
+  if ( !m_bHighlight )
+	  m_pDriver->draw2DRectangle( rect, white, white, white, white);
+  else
+	  m_pDriver->draw2DRectangle( rect, white, white, blue, blue);
 
   // draw the 'character image' inset
   rect.UpperLeftCorner.X += 7;
@@ -52,7 +60,11 @@ void GUIFCCharacterItem::draw()
   rect.LowerRightCorner.X = AbsoluteRect.LowerRightCorner.X - 10 - AbsoluteRect.UpperLeftCorner.X;
   rect.UpperLeftCorner.Y -= AbsoluteRect.UpperLeftCorner.Y;
   rect.LowerRightCorner.Y -= AbsoluteRect.UpperLeftCorner.Y;
-  IGUIStaticText* pTxtName = Environment->addStaticText( m_pCharacter->GetName().c_str(), rect, false, false, this );
+
+  // create the character details string and textobject
+  s << m_pCharacter->GetName() << L"\n\nLevel: " << m_pCharacter->GetLevel() << L"\nXP: " << m_pCharacter->GetXP();
+  wstring s1 = s.str();
+  IGUIStaticText* pTxtName = Environment->addStaticText( s1.c_str(), rect, false, true, this );
 
 
 	IGUIElement::draw();

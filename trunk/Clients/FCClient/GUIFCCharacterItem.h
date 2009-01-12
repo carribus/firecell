@@ -23,11 +23,13 @@ public:
 	 *	Public Methods
 	 */
   void SetCharacter(Character* pCharacter)                        { m_pCharacter = pCharacter; }
+  void SetHighlight(bool bHighlight)                              { m_bHighlight = bHighlight; }
 
 private:
 
   IVideoDriver*              m_pDriver;
   Character*                 m_pCharacter;
+  bool                       m_bHighlight;
 };
 
 #endif//_GUIFCCHARACTERITEM_H_

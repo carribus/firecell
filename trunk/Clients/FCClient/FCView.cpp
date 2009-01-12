@@ -99,14 +99,7 @@ bool FCView::Initialise(E_DRIVER_TYPE driverType)
 	m_pScene = m_pDevice->getSceneManager();
 	if ( !m_pScene )
 		return false;
-/*
-	// Create event queue thread
-	QueueReaderThread<FCView, FCModelEvent>::ThreadContext* pCtx = new QueueReaderThread<FCView, FCModelEvent>::ThreadContext;
-	pCtx->pCallbackObject = this;
-	pCtx->pSourceQueue = &m_modelEventQueue;
-	pCtx->pCallback = &FCView::HandleEvent;
-	m_thrdEventQueue.Start( (long long)pCtx );
-*/
+
 	return true;
 }
 
