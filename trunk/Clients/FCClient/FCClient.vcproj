@@ -118,6 +118,9 @@
 				RelativePath="..\common\Socket\win\BaseSocket.cpp">
 			</File>
 			<File
+				RelativePath=".\Character.cpp">
+			</File>
+			<File
 				RelativePath=".\FCClient.cpp">
 			</File>
 			<File
@@ -172,6 +175,12 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
 				RelativePath="..\common\Socket\win\BaseSocket.h">
+			</File>
+			<File
+				RelativePath=".\Character.h">
+			</File>
+			<File
+				RelativePath=".\clientstrings.h">
 			</File>
 			<File
 				RelativePath=".\FCController.h">

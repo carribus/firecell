@@ -1,7 +1,7 @@
 /*
  * FireCell String Definition file
  *
- * Do not modify this file. It was generated from [..\..\bin\debug\client\clientdata\strings_en.xml] by genstringh
+ * Do not modify this file. It was generated from [client\clientdata\strings_en.xml] by genstringh
  */
 
 /*
@@ -17,3 +17,7 @@
 #define STR_CONNECT_OK                         L"CONNECT_OK"
 #define STR_CONNECT_FAIL_RETRY                 L"CONNECT_FAIL_RETRY"
 #define STR_CONNECT_FINAL_FAIL                 L"CONNECT_FINAL_FAIL"
+#define STR_LOGINWND_CAPTION                   L"LOGINWND_CAPTION"
+#define STR_LOGINWND_USERNAME                  L"LOGINWND_USERNAME"
+#define STR_LOGINWND_PASSWORD                  L"LOGINWND_PASSWORD"
+#define STR_CHARSEL_HEADER                     L"CHARSEL_HEADER"

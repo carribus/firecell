@@ -299,19 +299,39 @@ bool FCModel::OnResponseLogin(PEPacket* pPkt, BaseSocket* pSocket)
 
 ///////////////////////////////////////////////////////////////////////
 
+#include <sstream>
 bool FCModel::OnResponseGetCharacters(PEPacket* pPkt, BaseSocket* pSocket)
 {
   __FCPKT_CHARACTER_LIST d;
   size_t dataLen;
-  map<FCUINT, size_t> KeyToCharacterMap;
-  size_t characterSelected = 0;
+
+  // clear the character array of any information it may be holding
+  m_characters.clear();
 
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", &d, dataLen);
 
-  if ( d.numCharacters <= 0 )
-  {
+  // read the characters into the model and make the data available to the view
+  if ( d.numCharacters > 0 )
+  {   
+    for ( FCBYTE i = 0; i < d.numCharacters; i++ )
+    {
+      wstringstream ss;
+      ss << d.characters[i].name;
+      Character c(d.characters[i].character_id, ss.str());
+      c.SetXP( d.characters[i].xp );
+      c.SetLevel( d.characters[i].level );
+      c.SetFameScale( d.characters[i].fame_scale );
+      c.SetCountryID( d.characters[i].country_id );
+      c.SetCityID( d.characters[i].city_id );
+
+      m_characters.push_back(c);
+    }
 	}
+  else
+  {
+    // no characters found, take a stand :D
+  }
 
 	SetState( FCModel::CharacterSelection );
 

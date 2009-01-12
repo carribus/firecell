@@ -9,4 +9,10 @@
 	<String id="CONNECT_OK">OK\n</String>
 	<String id="CONNECT_FAIL_RETRY">Failed\nRetrying...\n</String>
 	<String id="CONNECT_FINAL_FAIL">Failed\n</String>
+	<!-- LOGIN DIALOG -->
+	<String id="LOGINWND_CAPTION">Login to FireCell</String>
+	<String id="LOGINWND_USERNAME">User Name :</String>
+	<String id="LOGINWND_PASSWORD">Password :</String>
+	<!-- CHARACTER SELECTION SCREEN -->
+	<String id="CHARSEL_HEADER">Select a character</String>
 </FCStrings>
