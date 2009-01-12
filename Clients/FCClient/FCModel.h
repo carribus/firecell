@@ -154,6 +154,7 @@ private:
 
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
 
+  PThreadMutex                    m_mutexSinks;
 	vector<IModelEventSink*>				m_sinks;
 	StateInfo												m_state;
 

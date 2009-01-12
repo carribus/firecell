@@ -103,6 +103,7 @@ void FCModel::FireEvent(e_FCEventType type, void* pData)
 {
 	FCModelEvent e(type, (long long)pData);
 
+  m_mutexSinks.Lock();
 	vector<IModelEventSink*>::iterator it = m_sinks.begin();
 
 	while ( it != m_sinks.end() )
@@ -110,6 +111,7 @@ void FCModel::FireEvent(e_FCEventType type, void* pData)
 		(*it)->OnModelEvent(e);
 		it++;
 	}
+  m_mutexSinks.Unlock();
 }
 
 ///////////////////////////////////////////////////////////////////////
