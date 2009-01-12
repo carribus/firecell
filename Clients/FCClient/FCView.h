@@ -45,6 +45,7 @@ public:
 
 	void SetModel(FCModel* pModel);
 	void SetController(FCController* pController);
+  FCModel* GetModel()                                       { return m_pModel; }
 	FCController* GetController()															{ return m_pController; }
 
 	bool Initialise(E_DRIVER_TYPE driverType = EDT_OPENGL);

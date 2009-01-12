@@ -17,10 +17,26 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "../common/ResourceManager.h"
+#include "clientstrings.h"
+#include "FCView.h"
 #include "ViewLogicCharacterSelection.h"
 
+#define STATIC_HEADER               1
+#define CHARSEL_OBJECT_BASE         100
+
+#define BORDER_EDGE_TOP             30
+#define BORDER_EDGE_LEFT            20
+#define BORDER_EDGE_RIGHT           20
+#define BORDER_EDGE_BOTTOM          20
+
+#define CHARSEL_ITEM_STARTX         50
+#define CHARSEL_ITEM_STARTY         75
+#define CHARSEL_ITEM_PADDING_TOP    10
+
 ViewLogicCharacterSelection::ViewLogicCharacterSelection(void)
-: m_pContainer(NULL)
+: m_pModel(NULL)
+, m_pContainer(NULL)
 , m_pDevice(NULL)
 , m_pScene(NULL)
 , m_pEnv(NULL)
@@ -38,6 +54,7 @@ ViewLogicCharacterSelection::~ViewLogicCharacterSelection(void)
 void ViewLogicCharacterSelection::Create(FCView* pContainer, IrrlichtDevice* pDevice)
 {
 	m_pContainer = pContainer;
+  m_pModel = m_pContainer->GetModel();
 
 	// get the required interfaces and store them
 	m_pDevice = pDevice;
@@ -48,10 +65,11 @@ void ViewLogicCharacterSelection::Create(FCView* pContainer, IrrlichtDevice* pDe
 	pDevice->setEventReceiver(this);
 
 	// setup the font
-	IGUIFont* pFont = m_pEnv->getFont("./clientdata/fonts/fontcourier.bmp");
-	m_pEnv->getSkin()->setFont(pFont);
+	m_pNormalFont = m_pEnv->getFont("./clientdata/fonts/fontcourier.bmp");
+	m_pEnv->getSkin()->setFont(m_pNormalFont);
 
-	m_pFontHeader = m_pEnv->getFont("./clientdata/fonts/fontverdana_18px.bmp");
+	if ( !(m_pFontHeader = m_pEnv->getFont("./clientdata/fonts/fontverdana_18px.xml")) )
+    m_pFontHeader = m_pNormalFont;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -74,16 +92,16 @@ void ViewLogicCharacterSelection::SetActive()
 void ViewLogicCharacterSelection::Refresh()
 {
 	core::dimension2d<s32> dim = m_pDevice->getVideoDriver()->getScreenSize();
-	core::rect<s32> frame(50, 50, dim.Width-50, dim.Height-50);
+	core::rect<s32> frame(BORDER_EDGE_LEFT, BORDER_EDGE_TOP, dim.Width - BORDER_EDGE_RIGHT, dim.Height - BORDER_EDGE_BOTTOM);
 	IVideoDriver* pDriver = m_pDevice->getVideoDriver();
 
 	pDriver->draw2DRectangle(frame, 
-													 SColor(255, 0, 0, 32),
-													 SColor(255, 0, 0, 32),
-													 SColor(255, 0, 0, 0),
-													 SColor(255, 0, 0, 0) );
+													 SColor(255, 184, 184, 184),
+													 SColor(255, 184, 184, 184),
+													 SColor(255, 255, 255, 255),
+													 SColor(255, 255, 255, 255) );
 
-	m_pScene->drawAll();
+  m_pScene->drawAll();
 	m_pEnv->drawAll();
 }
 
@@ -106,5 +124,31 @@ bool ViewLogicCharacterSelection::OnEvent(const SEvent& event)
 
 void ViewLogicCharacterSelection::CreateGUIObjects()
 {
-	GUIFCCharacterItem* pItem = new GUIFCCharacterItem( m_pEnv, m_pEnv->getRootGUIElement(), 1 );
+  vector<Character>& characters = m_pModel->GetCharacters();
+  size_t numChars = characters.size();
+  core::position2di posItem(CHARSEL_ITEM_STARTX, CHARSEL_ITEM_STARTY);
+
+  // setup the header
+  wstring strHeader = ResourceManager::instance().GetClientString( STR_CHARSEL_HEADER );
+  core::dimension2d<s32> txtDim = m_pFontHeader->getDimension( strHeader.c_str() );
+  core::dimension2d<s32> screenDim = m_pDevice->getVideoDriver()->getScreenSize();
+  IGUIStaticText* pHeader = m_pEnv->addStaticText( strHeader.c_str(), core::rect<s32>(0, 0, screenDim.Width, txtDim.Height), false, false, 0, STATIC_HEADER );
+  pHeader->setOverrideFont( m_pFontHeader );
+  pHeader->setTextAlignment( EGUIA_CENTER, EGUIA_CENTER );
+  pHeader->setOverrideColor( video::SColor(255, 64, 64, 64) );
+
+  for ( size_t i = 0; i < numChars; i++ )
+  {
+    GUIFCCharacterItem* pItem = new GUIFCCharacterItem( m_pEnv, m_pEnv->getRootGUIElement(), CHARSEL_OBJECT_BASE + (s32)i );
+
+    // get the character and assign it to the gui reference
+    Character& c = characters[i];
+    pItem->SetCharacter(&c);
+
+    // position the gui object
+    pItem->setRelativePosition( posItem );
+
+    // offset the position
+    posItem.Y += pItem->getAbsoluteClippingRect().getHeight() + CHARSEL_ITEM_PADDING_TOP;
+  }
 }

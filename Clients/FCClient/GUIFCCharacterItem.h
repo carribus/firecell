@@ -2,9 +2,11 @@
 #define _GUIFCCHARACTERITEM_H_
 
 #include <irrlicht.h>
+#include "Character.h"
 
 using namespace irr;
 using namespace gui;
+using namespace video;
 
 class GUIFCCharacterItem : public IGUIElement
 {
@@ -20,11 +22,12 @@ public:
 	/*
 	 *	Public Methods
 	 */
-	void SetPosition(s32 left, s32 top);
+  void SetCharacter(Character* pCharacter)                        { m_pCharacter = pCharacter; }
 
 private:
 
-	core::position2d<s32>						m_position;
+  IVideoDriver*              m_pDriver;
+  Character*                 m_pCharacter;
 };
 
 #endif//_GUIFCCHARACTERITEM_H_

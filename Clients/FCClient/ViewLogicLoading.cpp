@@ -29,6 +29,8 @@
 #define EDIT_PASSWORD									3
 #define BUTTON_LOGIN									4
 #define BUTTON_CANCEL									5
+#define STATIC_USERNAME               6
+#define STATIC_PASSWORD               7
 
 ViewLogicLoading::ViewLogicLoading()
 : m_pContainer(NULL)

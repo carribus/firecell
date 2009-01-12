@@ -30,6 +30,7 @@
 #include "IModelEventSink.h"
 #include "PThreadMutex.h"
 #include "FCModelEvent.h"
+#include "Character.h"
 
 using namespace std;
 
@@ -130,6 +131,8 @@ public:
 
 	void StartLogin(wstring username, wstring password);
 
+  vector<Character>& GetCharacters()               { return m_characters; }
+
 private:
 
 	bool LoadResources();
@@ -162,6 +165,8 @@ private:
 
 	DataQueue					m_qDataIn;
 	PThreadMutex			m_mutexDataIn;
+
+  vector<Character> m_characters;
 };
 
 #endif//_FCMODEL_H_

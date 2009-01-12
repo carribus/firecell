@@ -20,8 +20,9 @@
 #ifndef _VIEWLOGICCHARACTERSELECTION_H_
 #define _VIEWLOGICCHARACTERSELECTION_H_
 
-#include "IViewLogic.h"
+#include "FCModel.h"
 #include "GUIFCCharacterItem.h"
+#include "IViewLogic.h"
 
 using namespace std;
 using namespace irr::scene;
@@ -42,7 +43,7 @@ public:
 	void SetActive();
 	void Refresh();
   void OnModelStateChange(FCModel::StateInfo state);
-	SColor GetBackgroundColour()													{ return SColor(255, 0, 0, 32); }
+	SColor GetBackgroundColour()													{ return SColor(255, 255, 255, 255); }
 
 	/*
 	 *	IEventReceiver implementation
@@ -56,12 +57,14 @@ private:
 	 */
 	void CreateGUIObjects();
 
+  FCModel*                    m_pModel;
 	FCView*											m_pContainer;
 	IrrlichtDevice*							m_pDevice;
 	ISceneManager*							m_pScene;
 	IGUIEnvironment*						m_pEnv;
 
 	// Fonts
+  IGUIFont*                   m_pNormalFont;
 	IGUIFont*										m_pFontHeader;
 };
 
