@@ -68,7 +68,7 @@ void ViewLogicLoading::Create(FCView* pContainer, IrrlichtDevice* pDevice)
 	// create the 'loading' text object
 	m_pTextObject = m_pEnv->addStaticText(m_strDetails.c_str(), core::rect<s32>(10, 10, dim.Width, dim.Height), false);
 	m_pTextObject->grab();
-
+		
 	m_pTextObject->setOverrideColor( SColor(255, 0, 255, 0) );
 	m_pTextObject->setOverrideFont(pFont);
 }
