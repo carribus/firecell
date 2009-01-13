@@ -143,7 +143,9 @@ bool ViewLogicGame::OnEvent(const SEvent& event)
 
 IBillboardSceneNode* ViewLogicGame::CreateBackgroundPanel()
 {
-  IBillboardSceneNode* pBB = m_pScene->addBillboardSceneNode(0, core::dimension2d<f32>(230.0, 200.0), core::vector3df(0, 0, 0), -1);
+  IBillboardSceneNode* pBB = m_pScene->addBillboardSceneNode(0, core::dimension2d<f32>(235.0, 145.0), core::vector3df(0, 0, 0), -1);
 
+  pBB->setMaterialTexture(0, m_pDevice->getVideoDriver()->getTexture("./clientdata/desktop.jpg"));
+ 
   return pBB;
 }
