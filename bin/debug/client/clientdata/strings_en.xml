@@ -13,6 +13,8 @@
 	<String id="LOGINWND_CAPTION">Login to FireCell</String>
 	<String id="LOGINWND_USERNAME">User Name :</String>
 	<String id="LOGINWND_PASSWORD">Password :</String>
+	<String id="LOGINWND_LOGINBUTTON">Login to FireCell</String>
+	<String id="LOGINWND_EXITBUTTON">Exit</String>
 	<!-- CHARACTER SELECTION SCREEN -->
 	<String id="CHARSEL_HEADER">Select a character</String>
 </FCStrings>

@@ -223,6 +223,7 @@ void ViewLogicLoading::OnModelStateChange(FCModel::StateInfo state)
 
 			if ( pWindow )
 			{
+        SetLoginWindowStrings(pWindow);
 				core::rect<s32> wndRect = pWindow->getAbsoluteClippingRect();
 				pWindow->setRelativePosition(core::position2di( dim.Width/2 - wndRect.getWidth() / 2, dim.Height/2 - wndRect.getHeight()/2 ));
 				m_pEnv->setFocus( pWindow->getElementFromId( EDIT_USERNAME ) );
@@ -254,4 +255,21 @@ void ViewLogicLoading::ConfigureUISkin()
 
 	m_pEnv->setSkin(pSkin);
 	pSkin->drop();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewLogicLoading::SetLoginWindowStrings(IGUIWindow* pWindow)
+{
+  IGUIElement* pElem = NULL;
+
+  pWindow->setText( ResourceManager::instance().GetClientString( STR_LOGINWND_CAPTION ).c_str() );
+  if ( (pElem = pWindow->getElementFromId( STATIC_USERNAME )) )
+    pElem->setText( ResourceManager::instance().GetClientString( STR_LOGINWND_USERNAME ).c_str() );
+  if ( (pElem = pWindow->getElementFromId( STATIC_PASSWORD )) )
+    pElem->setText( ResourceManager::instance().GetClientString( STR_LOGINWND_PASSWORD ).c_str() );
+  if ( (pElem = pWindow->getElementFromId( BUTTON_LOGIN )) )
+    pElem->setText( ResourceManager::instance().GetClientString( STR_LOGINWND_LOGINBUTTON ).c_str() );
+  if ( (pElem = pWindow->getElementFromId( BUTTON_CANCEL )) )
+    pElem->setText( ResourceManager::instance().GetClientString( STR_LOGINWND_EXITBUTTON ).c_str() );
 }

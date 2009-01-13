@@ -50,11 +50,17 @@ public:
 
 private:
 
+  // 3D object creation functions
+  IBillboardSceneNode* CreateBackgroundPanel();
 
 	FCView*											m_pContainer;
 	IrrlichtDevice*							m_pDevice;
 	ISceneManager*							m_pScene;
 	IGUIEnvironment*						m_pEnv;
+
+  ICameraSceneNode*           m_pCamera;
+  IMeshSceneNode*             m_pObject;
+  ILightSceneNode*            m_pLightNode;
 };
 
 #endif//_VIEWLOGICGAME_H_
