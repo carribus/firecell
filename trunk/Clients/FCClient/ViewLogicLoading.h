@@ -57,6 +57,7 @@ public:
 private:
 
 	void ConfigureUISkin();
+  void SetLoginWindowStrings(IGUIWindow* pWindow);
 
 	FCView*											m_pContainer;
 	IrrlichtDevice*							m_pDevice;

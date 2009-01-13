@@ -24,6 +24,7 @@ ViewLogicGame::ViewLogicGame(void)
 , m_pDevice(NULL)
 , m_pScene(NULL)
 , m_pEnv(NULL)
+, m_pCamera(NULL)
 {
 }
 
@@ -60,6 +61,17 @@ void ViewLogicGame::Destroy()
 
 void ViewLogicGame::SetActive()
 {
+  // Create the static camera
+  m_pCamera = m_pScene->addCameraSceneNode();
+  m_pCamera->setPosition(core::vector3df(0,0,-100));
+  m_pCamera->setTarget(core::vector3df(0,0,0));
+
+  // set the ambient lighting
+  m_pScene->setAmbientLight(SColorf(1.0f, 1.0f, 1.0f));
+
+  IBillboardSceneNode* pBkg = CreateBackgroundPanel();
+
+/*
 	// temporary 3d code
 
 	// create some 3d object here
@@ -67,29 +79,47 @@ void ViewLogicGame::SetActive()
 
 	if ( pSceneMgr )
 	{
-		irr::scene::IMeshSceneNode* pCube = pSceneMgr->addSphereSceneNode(50, 64);
-		if ( pCube )
+    m_pObject = pSceneMgr->addCubeSceneNode(50);
+		if ( m_pObject  )
 		{
-			pCube->setPosition( core::vector3df(0, 0, 0) );
-			pCube->setMaterialFlag( EMF_LIGHTING, false );
-			pCube->setMaterialTexture( 0, m_pDevice->getVideoDriver()->getTexture("./clientdata/niyothumb.jpg") );
+			m_pObject->setPosition( core::vector3df(0, 0, 0) );
+			m_pObject->setMaterialFlag( EMF_LIGHTING, true );
+      m_pObject->setMaterialFlag( EMF_ANISOTROPIC_FILTER, true );
+			m_pObject->setMaterialTexture( 0, m_pDevice->getVideoDriver()->getTexture("./clientdata/niyothumb.jpg") );
 
-			irr::scene::ISceneNodeAnimator* pAnim = pSceneMgr->createRotationAnimator( core::vector3df(0, 0.3f, 0) );
-			pCube->addAnimator(pAnim);
+			irr::scene::ISceneNodeAnimator* pAnim = pSceneMgr->createRotationAnimator( core::vector3df(0, 0.3f, 0.3f) );
+			m_pObject->addAnimator(pAnim);
 			pAnim->drop();
 
 		}
 
-    scene::ICameraSceneNode* cam = pSceneMgr->addCameraSceneNode();
-    cam->setPosition(core::vector3df(-100,50,100));
-    cam->setTarget(core::vector3df(0,0,0));
+
+    // add lighting
+    m_pLightNode = pSceneMgr->addLightSceneNode(0, core::vector3df(0, 0, -100), video::SColorf(1.0, 1.0, 1.0));
+    m_pLightNode->getLightData().AmbientColor = video::SColorf(0.3, 0.3, 0.3);
+    m_pLightNode->getLightData().SpecularColor = video::SColorf(0.5, 0.5, 0.5);
+    m_pLightNode->getLightData().Type = video::ELT_DIRECTIONAL;
+/*
+    //
+    irr::scene::ISceneNodeAnimator* pAnim = pSceneMgr->createRotationAnimator( core::vector3df(0, 1.3f, 0) );
+    m_pLightNode->addAnimator(pAnim);
+    pAnim->drop();
 	}
+*/
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void ViewLogicGame::Refresh()
 {
+/*
+  // add some temporary positional changes to the 3d object
+  static double i = 0.0L;
+  core::vector3df objPos = m_pObject->getPosition();
+  objPos.Z += sin( (double)i )*2;
+  i += 0.1L;
+  m_pObject->setPosition(objPos);
+*/
 	m_pScene->drawAll();
 	m_pEnv->drawAll();
 }
@@ -107,4 +137,13 @@ bool ViewLogicGame::OnEvent(const SEvent& event)
 	bool bHandled = false;
 
 	return bHandled;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+IBillboardSceneNode* ViewLogicGame::CreateBackgroundPanel()
+{
+  IBillboardSceneNode* pBB = m_pScene->addBillboardSceneNode(0, core::dimension2d<f32>(230.0, 200.0), core::vector3df(0, 0, 0), -1);
+
+  return pBB;
 }
