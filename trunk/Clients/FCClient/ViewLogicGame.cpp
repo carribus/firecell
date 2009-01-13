@@ -69,7 +69,12 @@ void ViewLogicGame::SetActive()
   // set the ambient lighting
   m_pScene->setAmbientLight(SColorf(1.0f, 1.0f, 1.0f));
 
+  // create the billboard background
   IBillboardSceneNode* pBkg = CreateBackgroundPanel();
+
+  IBillboardSceneNode* pWnd = m_pScene->addBillboardSceneNode(0, core::dimension2d<f32>(400.0, 300.0));
+  IVideoDriver* pVideo = m_pEnv->getVideoDriver();
+  m_pDevice->getVideoDriver()->createRenderTargetTexture(
 
 /*
 	// temporary 3d code
