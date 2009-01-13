@@ -23,6 +23,7 @@ public:
 	 *	Public Methods
 	 */
   void SetCharacter(Character* pCharacter)                        { m_pCharacter = pCharacter; }
+	Character* GetCharacter()																				{ return m_pCharacter; }
   void SetHighlight(bool bHighlight)                              { m_bHighlight = bHighlight; }
 
 private:

@@ -19,7 +19,9 @@
 */
 #include "../common/ResourceManager.h"
 #include "clientstrings.h"
+#include "FCController.h"
 #include "FCView.h"
+#include "FCViewEvent.h"
 #include "ViewLogicCharacterSelection.h"
 
 #define STATIC_HEADER               1
@@ -123,21 +125,7 @@ bool ViewLogicCharacterSelection::OnEvent(const SEvent& event)
     {
       s32 elemID = event.GUIEvent.Caller->getID();
       IGUIElement* pRoot = m_pEnv->getRootGUIElement();
-      IGUIElement* pElem = NULL;
-      
-      if ( elemID != -1 )
-      {
-        pElem = event.GUIEvent.Caller;
-      }
-      else
-      {
-        pElem = event.GUIEvent.Caller;
-        while ( pElem && pElem->getID() == -1 )
-          pElem = pElem->getParent();
-        if ( pElem )
-          elemID = pElem->getID();
-      }
-
+      IGUIElement* pElem = event.GUIEvent.Caller;
       core::list<IGUIElement*> children = pRoot->getChildren();
 
       switch ( event.GUIEvent.EventType )
@@ -171,6 +159,41 @@ bool ViewLogicCharacterSelection::OnEvent(const SEvent& event)
         break;
       }
     }
+		break;
+
+	case	EET_MOUSE_INPUT_EVENT:
+		{
+			switch ( event.MouseInput.Event )
+			{
+			case	EMIE_LMOUSE_LEFT_UP:
+				{
+					IGUIElement* pElem = m_pEnv->getRootGUIElement()->getElementFromPoint( core::position2d<s32>( event.MouseInput.X, event.MouseInput.Y ) );
+					
+					if ( pElem )
+					{
+						if ( pElem->getID() >= 100 )
+						{
+							GUIFCCharacterItem* pItem = (GUIFCCharacterItem*) pElem;
+
+							Character* pChar = pItem->GetCharacter();
+
+							if ( pChar )
+							{
+								FCViewEvent e( VE_CharacterSelected, pChar->GetID() );
+								m_pContainer->GetController()->OnViewEvent(e);
+							}
+						}
+					}
+				}
+				break;
+
+			default:
+				break;
+			}
+		}
+		break;
+
+
   }
 
 	return bHandled;

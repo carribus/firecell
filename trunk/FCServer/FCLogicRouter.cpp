@@ -613,9 +613,9 @@ void* FCLogicRouter::thrdSocketMonitor(void* pData)
     else
     {
 #ifdef _WIN32
-      Sleep(100);
+      Sleep(50);
 #else
-      usleep(250000);
+      usleep(50000);
 #endif
     }
   }

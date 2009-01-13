@@ -52,20 +52,36 @@ void GUIFCCharacterItem::draw()
   rect.UpperLeftCorner.X += 7;
   rect.UpperLeftCorner.Y += 7;
   rect.LowerRightCorner.Y -= 7;
-  rect.LowerRightCorner.X = rect.UpperLeftCorner.X +  rect.getHeight();
+  rect.LowerRightCorner.X = rect.UpperLeftCorner.X + rect.getHeight();
   m_pDriver->draw2DRectangle( rect, charInset, charInset, charInset, charInset );
 
-  // localise the text rectangle to this element's rectangle
-  rect.UpperLeftCorner.X = (rect.LowerRightCorner.X + 10) - AbsoluteRect.UpperLeftCorner.X;
-  rect.LowerRightCorner.X = AbsoluteRect.LowerRightCorner.X - 10 - AbsoluteRect.UpperLeftCorner.X;
-  rect.UpperLeftCorner.Y -= AbsoluteRect.UpperLeftCorner.Y;
-  rect.LowerRightCorner.Y -= AbsoluteRect.UpperLeftCorner.Y;
-
+  // update rectangle for lines of text
+	rect.UpperLeftCorner.X = rect.LowerRightCorner.X + 10;
+	rect.LowerRightCorner.X = AbsoluteRect.LowerRightCorner.X - 10;
   // create the character details string and textobject
-  s << m_pCharacter->GetName() << L"\n\nLevel: " << m_pCharacter->GetLevel() << L"\nXP: " << m_pCharacter->GetXP();
+	IGUIFont* pFont = Environment->getSkin()->getFont();
+/*
+	s << m_pCharacter->GetName() << L"\n\nLevel: " << m_pCharacter->GetLevel() << L"\nXP: " << m_pCharacter->GetXP();
   wstring s1 = s.str();
-  IGUIStaticText* pTxtName = Environment->addStaticText( s1.c_str(), rect, false, true, this );
+*/
+	wstring str = m_pCharacter->GetName();
+	core::dimension2d<s32> extents = pFont->getDimension( str.c_str() );
+	rect.LowerRightCorner.Y = rect.UpperLeftCorner.Y + extents.Height;
 
+	pFont->draw( str.c_str(), rect, SColor(255, 0, 0, 0) );
+
+	rect.UpperLeftCorner.Y = rect.LowerRightCorner.Y;
+	rect.LowerRightCorner.Y += extents.Height;
+	s << L"Level: " << m_pCharacter->GetLevel();
+	str = s.str();
+	pFont->draw( str.c_str(), rect, SColor(255, 0, 0, 0) );
+
+	rect.UpperLeftCorner.Y = rect.LowerRightCorner.Y;
+	rect.LowerRightCorner.Y += extents.Height;
+	s.str(L"");
+	s << L"XP: " << m_pCharacter->GetXP();
+	str = s.str();
+	pFont->draw( str.c_str(), rect, SColor(255, 0, 0, 0) );
 
 	IGUIElement::draw();
 }

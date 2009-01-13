@@ -283,6 +283,7 @@ void* FCDatabase::thrdDBWorker(void* pData)
       FCDBJob job = pThis->m_jobs.front();
       pThis->m_jobs.pop();
       pthread_mutex_unlock(&pThis->m_mutexJobs);
+
       // execute the job
       if ( !job.GetQuery().empty() )
       {
@@ -312,7 +313,7 @@ void* FCDatabase::thrdDBWorker(void* pData)
 
 
 #ifdef _WIN32
-    Sleep(1000);
+    Sleep(250);
 #else
     usleep(250000);
 #endif

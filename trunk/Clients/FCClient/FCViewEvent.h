@@ -9,7 +9,8 @@ enum e_FCViewEventType
 {
 	VE_None,
 	VE_ClientExit,
-	VE_Login
+	VE_Login,
+	VE_CharacterSelected
 };
 
 /////////////////////////////////////////////////////////////////

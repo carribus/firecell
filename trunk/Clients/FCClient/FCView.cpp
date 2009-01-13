@@ -158,6 +158,7 @@ void FCView::OnModelEvent(FCModelEvent event)
 					break;
 
 				case	FCModel::Playing:
+					pNewView = &m_vlGame;
 					break;
 
 				case	FCModel::ShuttingDown:
