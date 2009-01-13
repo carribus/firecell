@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include <vector>
 #include "../../common/protocol/fcprotocol.h"
 #include "../common/ResourceManager.h"
 #include "Settings.h"
@@ -24,6 +25,7 @@
 
 FCModel::FCModel(void)
 : m_connectRetry(1)
+, m_pCharacter(NULL)
 {
 	m_state.state = FCModel::None;
 	m_state.stateStep = 0;
@@ -33,6 +35,8 @@ FCModel::FCModel(void)
 
 FCModel::~FCModel(void)
 {
+	if ( m_pCharacter )
+		delete m_pCharacter;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -213,7 +217,6 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
       bHandled = OnResponseGetCharacters(pPkt, pSocket);
     }
     break;
-/*
 
   case  FCMSG_SELECT_CHARACTER:
     {
@@ -221,7 +224,7 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
-  case  FCMSG_CHARACTER_ASSET_REQUEST:
+	case  FCMSG_CHARACTER_ASSET_REQUEST:
     {
       bHandled = OnResponseCharacterAssetRequest(pPkt, pSocket);
     }
@@ -232,7 +235,7 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
       bHandled = OnResponseGetDesktopOptions(pPkt, pSocket);
     }
     break;
-*/
+
   default:
 
 /*
@@ -342,6 +345,94 @@ bool FCModel::OnResponseGetCharacters(PEPacket* pPkt, BaseSocket* pSocket)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool FCModel::OnResponseSelectCharacter(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_SELECT_CHARACTER_RESP d;
+  size_t dataLen;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+
+	// select the character
+	bool bFound = false;
+	vector<Character>::iterator it = m_characters.begin();
+	for ( ; it != m_characters.end(); it++ )
+	{
+		if ( it->GetID() == d.character_id )
+		{
+			m_pCharacter = new Character(it->GetID(), it->GetName());
+			bFound = true;
+			break;
+		}
+	}
+
+  if ( d.status == CharacterSelectSucceeded && bFound )
+  {
+    m_server.SendCharacterAssetRequest(m_pCharacter->GetID());
+  }
+  else
+  {
+		SetStateStep( MS_CharacterSelection_Failed );
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_CHARACTER_ASSET_REQUEST_RESP d;
+  size_t dataLen;
+
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+/*
+  printf("\nIP Address: %ld.%ld.%ld.%ld\n", d.ip_address.a, d.ip_address.b, d.ip_address.c, d.ip_address.d);
+  printf("Computer Specifications:\n\n");
+  printf("\tName: %s\n\tHDD Size: %ld MB\n\tNetwork Speed: %ld MBits\n",
+         d.computer.name, d.computer.hddSize, d.computer.networkSpeed);
+  printf("\tProcessor:\n\t\tName: %s\n\t\tCore Count: %ld\n\t\tCore Speed: %ldMhz\n",
+         d.computer.processor.name, d.computer.processor.core_count, d.computer.processor.core_speed);
+  printf("\tOperating System:\n\t\tName: %s\n\t\tKernal: %s\n",
+         d.computer.os.name, d.computer.os.kernel_name);
+  printf("\tMemory Module:\n\t\tName: %s\n\t\tSize: %ldMB\n",
+         d.computer.memory.name, d.computer.memory.mem_size);
+*/
+  m_server.RequestDesktopOptions(m_pCharacter->GetID());
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_GET_DESKTOP_OPTIONS_RESP* d;
+  DesktopOption option;
+  size_t dataLen;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  d = (__FCPKT_GET_DESKTOP_OPTIONS_RESP*) new FCBYTE[ dataLen ];
+  pPkt->GetField("data", d, dataLen);
+
+  for ( int i = 0; i < d->numOptions; i++ )
+  {
+    option.optionID = d->Options[i].optionID;
+    option.type = d->Options[i].type;
+    strncpy(option.name, d->Options[i].name, sizeof(option.name));
+
+    m_desktopOptions[option.optionID] = option;
+  }
+
+	SetState( FCModel::Playing );
+	
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCModel::OnError(PEPacket* pPkt, BaseSocket* pSocket)
 {
   if ( !pPkt || !pSocket )
@@ -375,6 +466,12 @@ bool FCModel::ProcessData()
 	case	FCModel::Connecting:
 		if ( m_state.stateStep == FCModel::MS_Connecting_None )
 			ConnectToServer();
+		break;
+
+	case	FCModel::CharacterSelection:
+		{
+
+		}
 		break;
 
 	case	FCModel::Login:
@@ -485,6 +582,14 @@ void FCModel::StartLogin(wstring username, wstring password)
 	sprintf(un, "%S", username.c_str());
 	sprintf(pw, "%S", password.c_str());
 	m_server.Login(un, pw);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::SelectCharacter(FCUINT characterID)
+{
+	m_server.SendCharacterSelection(characterID);
+	SetStateStep( FCModel::MS_CharacterSelection_CharacterSelected );
 }
 
 ///////////////////////////////////////////////////////////////////////

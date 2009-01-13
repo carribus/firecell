@@ -96,8 +96,21 @@ void FCController::OnViewEvent(FCViewEvent& event)
 		break;
 
 	case	VE_Login:
-		FCViewEventLogin* pEv = (FCViewEventLogin*) &event;
-		m_pModel->StartLogin( pEv->GetUsername(), pEv->GetPassword() );
+		{
+			FCViewEventLogin* pEv = (FCViewEventLogin*) &event;
+			m_pModel->StartLogin( pEv->GetUsername(), pEv->GetPassword() );
+		}
+		break;
+
+	case	VE_CharacterSelected:
+		{
+			FCModel::StateInfo state = m_pModel->GetState();
+
+			if ( state.state == FCModel::CharacterSelection )
+			{
+				m_pModel->SelectCharacter( (long long)event.GetData() );
+			}
+		}
 		break;
 	}
 }

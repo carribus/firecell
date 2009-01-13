@@ -166,6 +166,9 @@
 				RelativePath=".\ViewLogicCharacterSelection.cpp">
 			</File>
 			<File
+				RelativePath=".\ViewLogicGame.cpp">
+			</File>
+			<File
 				RelativePath=".\ViewLogicLoading.cpp">
 			</File>
 		</Filter>
@@ -235,6 +238,9 @@
 			</File>
 			<File
 				RelativePath=".\ViewLogicCharacterSelection.h">
+			</File>
+			<File
+				RelativePath=".\ViewLogicGame.h">
 			</File>
 			<File
 				RelativePath=".\ViewLogicLoading.h">

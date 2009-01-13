@@ -91,6 +91,16 @@ public:
 		MS_Login_LoginSucceeded,
 	};
 
+	// e_ModelState::CharacterSelection
+	enum e_ModelStateCharacterSelection
+	{
+		MS_CharacterSelection_None,
+		MS_CharacterSelection_CharacterSelected,
+		MS_CharacterSelection_NewCharacter,
+		MS_CharacterSelection_DeleteCharacter,
+		MS_CharacterSelection_Failed
+	};
+
   // e_ModelState::ShuttingDown
   enum e_ModelStateShuttingDown
   {
@@ -130,6 +140,7 @@ public:
 	void OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen);
 
 	void StartLogin(wstring username, wstring password);
+	void SelectCharacter(FCUINT characterID);
 
   vector<Character>& GetCharacters()               { return m_characters; }
 
@@ -151,6 +162,9 @@ private:
 		bool OnResponseServiceInfo(PEPacket* pPkt, BaseSocket* pSocket);  
 		bool OnResponseLogin(PEPacket* pPkt, BaseSocket* pSocket);  
 		bool OnResponseGetCharacters(PEPacket* pPkt, BaseSocket* pSocket);  
+		bool OnResponseSelectCharacter(PEPacket* pPkt, BaseSocket* pSocket);
+		bool OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* pSocket);
+		bool OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket);
 
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
 
@@ -168,6 +182,18 @@ private:
 	PThreadMutex			m_mutexDataIn;
 
   vector<Character> m_characters;
+	Character*				m_pCharacter;					// selected character
+
+	/*
+	 * Desktop Options available to player
+	 */
+  struct DesktopOption
+  {
+    FCULONG optionID;
+    FCUINT type;
+    char name[32];
+  };
+  map<FCUINT, DesktopOption>   m_desktopOptions;
 };
 
 #endif//_FCMODEL_H_

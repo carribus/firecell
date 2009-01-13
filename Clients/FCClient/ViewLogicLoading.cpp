@@ -57,22 +57,10 @@ void ViewLogicLoading::Create(FCView* pContainer, IrrlichtDevice* pDevice)
 	m_pDevice = pDevice;
 	m_pScene = m_pDevice->getSceneManager();
 	m_pEnv = m_pDevice->getGUIEnvironment();
-	core::dimension2d<s32> dim = m_pDevice->getVideoDriver()->getScreenSize();
 
 	// setup the event receiver
 	pDevice->setEventReceiver(this);
 //	ConfigureUISkin();
-
-	// setup the font
-	IGUIFont* pFont = m_pEnv->getFont("./clientdata/fonts/fontcourier.bmp");
-	m_pEnv->getSkin()->setFont(pFont);
-
-	// create the 'loading' text object
-	m_pTextObject = m_pEnv->addStaticText(m_strDetails.c_str(), core::rect<s32>(10, 10, dim.Width, dim.Height), false);
-	m_pTextObject->grab();
-		
-	m_pTextObject->setOverrideColor( SColor(255, 0, 255, 0) );
-	m_pTextObject->setOverrideFont(pFont);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -88,6 +76,18 @@ void ViewLogicLoading::Destroy()
 
 void ViewLogicLoading::SetActive()
 {
+	core::dimension2d<s32> dim = m_pDevice->getVideoDriver()->getScreenSize();
+
+	// setup the font
+	IGUIFont* pFont = m_pEnv->getFont("./clientdata/fonts/fontcourier.bmp");
+	m_pEnv->getSkin()->setFont(pFont);
+
+	// create the 'loading' text object
+	m_pTextObject = m_pEnv->addStaticText(m_strDetails.c_str(), core::rect<s32>(10, 10, dim.Width, dim.Height), false);
+	m_pTextObject->grab();
+		
+	m_pTextObject->setOverrideColor( SColor(255, 0, 255, 0) );
+	m_pTextObject->setOverrideFont(pFont);
 }
 
 ///////////////////////////////////////////////////////////////////////

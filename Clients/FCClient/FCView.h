@@ -27,6 +27,7 @@
 #include "QueueReaderThread.h"
 #include "ViewLogicLoading.h"
 #include "ViewLogicCharacterSelection.h"
+#include "ViewLogicGame.h"
 
 using namespace irr;
 using namespace core;
@@ -72,6 +73,7 @@ private:
 	IViewLogic*				m_pCurrentViewLogic;
 	ViewLogicLoading	m_vlLoading;
 	ViewLogicCharacterSelection	m_vlCharSelect;
+	ViewLogicGame			m_vlGame;
 };
 
 #endif//_FCVIEW_H_
