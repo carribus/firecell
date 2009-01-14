@@ -20,7 +20,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\common\mysql\include\"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;TIXML_USE_STL"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -70,7 +70,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\common\mysql\include\"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;TIXML_USE_STL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -407,6 +407,28 @@
 			</File>
 			<File
 				RelativePath="..\common\Xml\irrXML.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="tinyXML"
+			Filter="">
+			<File
+				RelativePath="..\common\tinyXML\tinystr.cpp">
+			</File>
+			<File
+				RelativePath="..\common\tinyXML\tinystr.h">
+			</File>
+			<File
+				RelativePath="..\common\tinyXML\tinyxml.cpp">
+			</File>
+			<File
+				RelativePath="..\common\tinyXML\tinyxml.h">
+			</File>
+			<File
+				RelativePath="..\common\tinyXML\tinyxmlerror.cpp">
+			</File>
+			<File
+				RelativePath="..\common\tinyXML\tinyxmlparser.cpp">
 			</File>
 		</Filter>
 	</Files>
