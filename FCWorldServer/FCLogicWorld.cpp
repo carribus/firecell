@@ -1340,7 +1340,7 @@ void FCLogicWorld::OnDBJob_LoadForumPosts(DBIResultSet& resultSet, void*& pConte
 		content = resultSet.GetStringValue("content", i);
 		date_created = resultSet.GetStringValue("date_created", i);
 		mission_id = resultSet.GetULongValue("mission_id", i);
-		locked = resultSet.GetByteValue("locked", i);
+    locked = resultSet.GetByteValue("locked", i) ? true : false;
 
 		pThis->m_forum.AddForumPost(post_id, parent_id, category_id, order, title, content, author_id, date_created, mission_id);
 	}
@@ -1387,6 +1387,22 @@ void FCLogicWorld::UpdateComputerFromResultSet(Computer& comp, DBIResultSet& res
   // load the computer's file system
   stringstream ss;
 
-  ss << m_pathFileSystems << "fs_uid_" << ownerID << ".xml";
+  switch ( ownertypeID )
+  {
+  case  1:      // Player
+    ss << m_pathFileSystems << "fs_uid_" << ownerID << ".xml";
+    break;
+
+  case  2:      // NPC
+    ss << m_pathFileSystems << "fs_npcid_" << ownerID << ".xml";
+    break;
+
+  case  3:      // Company
+    ss << m_pathFileSystems << "fs_coid_" << ownerID << ".xml";
+    break;
+
+  default:      // Unknown owner type
+    return;
+  }
   comp.GetFileSystem().LoadFromXML( ss.str() );
 }
