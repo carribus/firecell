@@ -67,7 +67,7 @@ void ViewLogicCharacterSelection::Create(FCView* pContainer, IrrlichtDevice* pDe
 	pDevice->setEventReceiver(this);
 
 	// setup the font
-	m_pNormalFont = m_pEnv->getFont("./clientdata/fonts/fontcourier.bmp");
+	m_pNormalFont = m_pEnv->getFont("./clientdata/fonts/fontcourier.png");
 	m_pEnv->getSkin()->setFont(m_pNormalFont);
 
 	if ( !(m_pFontHeader = m_pEnv->getFont("./clientdata/fonts/fontverdana_18px.xml")) )
