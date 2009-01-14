@@ -117,6 +117,16 @@ public:
 		FCSHORT stateStep;
 	};
 
+	/*
+	 *	Desktop Options available to the player
+	 */
+  struct DesktopOption
+  {
+    FCULONG optionID;
+    FCUINT type;
+    char name[32];
+  };
+
   /* */
 	FCModel(void);
 	~FCModel(void);
@@ -143,6 +153,7 @@ public:
 	void SelectCharacter(FCUINT characterID);
 
   vector<Character>& GetCharacters()               { return m_characters; }
+	map<FCUINT, DesktopOption> GetDesktopOptions()	 { return m_desktopOptions; }
 
 private:
 
@@ -187,13 +198,7 @@ private:
 	/*
 	 * Desktop Options available to player
 	 */
-  struct DesktopOption
-  {
-    FCULONG optionID;
-    FCUINT type;
-    char name[32];
-  };
-  map<FCUINT, DesktopOption>   m_desktopOptions;
+	std::map<FCUINT, DesktopOption>   m_desktopOptions;
 };
 
 #endif//_FCMODEL_H_

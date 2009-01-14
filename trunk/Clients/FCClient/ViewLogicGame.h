@@ -29,6 +29,15 @@ using namespace irr::gui;
 class ViewLogicGame :	public IViewLogic
 									  , protected IEventReceiver
 {
+	struct DesktopOption
+	{
+    FCULONG optionID;
+    FCUINT type;
+    wstring name;
+		ITexture* pTexture;
+		core::rect<s32> rect;
+	};
+
 public:
 	ViewLogicGame(void);
 	~ViewLogicGame(void);
@@ -51,16 +60,30 @@ public:
 private:
 
   // 3D object creation functions
-  IBillboardSceneNode* CreateBackgroundPanel();
+  void CreateBackgroundPanel();
+	void CreateStartBar();	
+	void UpdateDesktopOptions();
+
+	// drawing functions
+	void DrawDesktopIcons();
 
 	FCView*											m_pContainer;
 	IrrlichtDevice*							m_pDevice;
 	ISceneManager*							m_pScene;
 	IGUIEnvironment*						m_pEnv;
 
+	ITexture*										m_pBackground;
+
+	IGUIFont*										m_pFontCourier;
+
   ICameraSceneNode*           m_pCamera;
   IMeshSceneNode*             m_pObject;
   ILightSceneNode*            m_pLightNode;
+
+	typedef std::map<FCUINT, DesktopOption> DesktopOptionMap;
+	DesktopOptionMap						m_mapDesktopOptions;
+
+	core::dimension2d<s32>			m_iconMax;
 };
 
 #endif//_VIEWLOGICGAME_H_

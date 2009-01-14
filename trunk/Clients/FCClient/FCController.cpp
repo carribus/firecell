@@ -108,7 +108,7 @@ void FCController::OnViewEvent(FCViewEvent& event)
 
 			if ( state.state == FCModel::CharacterSelection )
 			{
-				m_pModel->SelectCharacter( (long long)event.GetData() );
+				m_pModel->SelectCharacter( (FCUINT)event.GetData() );
 			}
 		}
 		break;

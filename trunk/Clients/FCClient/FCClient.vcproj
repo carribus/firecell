@@ -210,6 +210,9 @@
 				RelativePath=".\IModelEventSink.h">
 			</File>
 			<File
+				RelativePath=".\irrHelpers.h">
+			</File>
+			<File
 				RelativePath=".\IViewLogic.h">
 			</File>
 			<File

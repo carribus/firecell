@@ -79,7 +79,7 @@ void ViewLogicLoading::SetActive()
 	core::dimension2d<s32> dim = m_pDevice->getVideoDriver()->getScreenSize();
 
 	// setup the font
-	IGUIFont* pFont = m_pEnv->getFont("./clientdata/fonts/fontcourier.bmp");
+	IGUIFont* pFont = m_pEnv->getFont("./clientdata/fonts/fontcourier.png");
 	m_pEnv->getSkin()->setFont(pFont);
 
 	// create the 'loading' text object

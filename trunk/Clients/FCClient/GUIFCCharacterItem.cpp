@@ -1,3 +1,4 @@
+#include <sstream>
 #include "GUIFCCharacterItem.h"
 
 #define CHARSEL_ITEM_HEIGHT         100
@@ -23,7 +24,6 @@ GUIFCCharacterItem::~GUIFCCharacterItem(void)
 
 ///////////////////////////////////////////////////////////////////////
 
-#include <sstream>
 void GUIFCCharacterItem::draw()
 {
 	if ( !IsVisible )
@@ -60,10 +60,10 @@ void GUIFCCharacterItem::draw()
 	rect.LowerRightCorner.X = AbsoluteRect.LowerRightCorner.X - 10;
   // create the character details string and textobject
 	IGUIFont* pFont = Environment->getSkin()->getFont();
-/*
-	s << m_pCharacter->GetName() << L"\n\nLevel: " << m_pCharacter->GetLevel() << L"\nXP: " << m_pCharacter->GetXP();
-  wstring s1 = s.str();
-*/
+
+	if ( !pFont )
+		pFont = Environment->getBuiltInFont();
+
 	wstring str = m_pCharacter->GetName();
 	core::dimension2d<s32> extents = pFont->getDimension( str.c_str() );
 	rect.LowerRightCorner.Y = rect.UpperLeftCorner.Y + extents.Height;
