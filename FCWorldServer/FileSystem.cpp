@@ -26,7 +26,6 @@ using namespace std;
 
 FileSystem::FileSystem(void)
 : m_pComputer(NULL)
-, m_xml(NULL)
 , m_pCurrentDir(NULL)
 , m_bCaseSensitive(false)
 {
@@ -45,16 +44,10 @@ FileSystem::~FileSystem(void)
 bool FileSystem::LoadFromXML(const string& filename)
 {
   bool bResult = false;
-  string elemName, attrName, value;
-  File* pCurrent = NULL;
-  File file;
-  list<File*> recursionStack;
-  m_xml = createIrrXMLReader(filename.c_str());
 
-  // Parse the XML
-  if ( m_xml )
+  if ( m_xmlDoc.LoadFile( filename ) )
   {
-    bResult = ParseXML(m_xml);
+    bResult = ParseXML(m_xmlDoc);
   }
 
   return bResult;
@@ -265,65 +258,47 @@ bool FileSystem::SetCurrentDir(string path)
 
 ////////////////////////////////////////////////////////////////////////
 
-bool FileSystem::ParseXML(IrrXMLReader* pXML)
+bool FileSystem::ParseXML(TiXmlDocument& xml)
 {
-  if ( !pXML )
-    return false;
+  bool bResult = true;
+  TiXmlElement* pRoot = xml.FirstChildElement("FCFileSystem");
 
-  string elemName, attrName, value;
-
-  while ( pXML->read() )
+  // check if we have the root of the file system
+  if ( pRoot )
   {
-    switch ( pXML->getNodeType() )
+    if ( (bResult = ParseElement_FileSystem(pRoot)) )
     {
-    case  EXN_ELEMENT:
-      elemName = pXML->getNodeName();
-      if ( elemName == "FCFileSystem" )
+      // set the current directory to the root
+      m_pCurrentDir = &m_root;
+      // parse the files
+      if ( (bResult = ParseElements_Files(pRoot)) )
       {
-        ParseElement_FileSystem(pXML);
+        bResult = ParseElements_Commands(pRoot);
       }
-      else if ( elemName == "File" )
-      {
-        ParseElement_File(pXML);
-      }
-      else if ( elemName == "Command" )
-      {
-        ParseElement_Command(pXML);
-      }
-      break;
-
-    case  EXN_ELEMENT_END:
-      elemName = pXML->getNodeName();
-      if ( elemName == "File" )
-      {
-        m_pCurrentDir = m_recursionStack.back();
-        m_recursionStack.pop_back();
-      }
-      break;
     }
+
+    m_currentPath = m_root.filename;
   }
+  else
+    bResult = false;
 
-  m_pCurrentDir = &m_root;
-  m_currentPath = m_root.filename;
-
-  return true;
+  return bResult;
 }
 
 ////////////////////////////////////////////////////////////////////////
 
-void FileSystem::ParseElement_FileSystem(IrrXMLReader* pXML)
+bool FileSystem::ParseElement_FileSystem(TiXmlElement* pElem)
 {
-  if ( !pXML )
-    return;
-
+  bool bResult = true;
   string attrName, value;
+  TiXmlAttribute* pAttr = pElem->FirstAttribute();
 
-  // start reading the file structure
-  // get the file system details
-  for ( int i = 0; i < pXML->getAttributeCount(); i++ )
+  // configure the FileSystem properties
+  while ( pAttr )
   {
-    attrName = pXML->getAttributeName(i);
-    value = pXML->getAttributeValue(attrName.c_str());
+    attrName = pAttr->Name();
+    value = pAttr->Value();
+
     if ( attrName == "owner" )
     {
       if (value == "Player")
@@ -355,33 +330,101 @@ void FileSystem::ParseElement_FileSystem(IrrXMLReader* pXML)
     {
       m_bCaseSensitive = !(value == "0");
     }
+
+    pAttr = pAttr->Next();
   }
 
-  m_pCurrentDir = &m_root;
+  return bResult;
 }
 
 ////////////////////////////////////////////////////////////////////////
 
-void FileSystem::ParseElement_File(IrrXMLReader* pXML)
+bool FileSystem::ParseElements_Commands(TiXmlElement* pFSElem)
 {
-  if ( !pXML )
-    return;
+  bool bResult = true;
+  TiXmlElement* pCmdElem = pFSElem->FirstChildElement("Command");
 
-  File file;
-  string attrName, value;
-
-  // get the file details
-  for ( int i = 0; i < pXML->getAttributeCount(); i++ )
+  // Look for all Command elements
+  while ( pCmdElem )
   {
-    attrName = pXML->getAttributeName(i);
-    value = pXML->getAttributeValue(attrName.c_str());
+    if ( !(bResult = ParseElement_Command(pCmdElem)) )
+      break;
+    pCmdElem = pCmdElem->NextSiblingElement("Command");
+  }
+
+  return bResult;
+}
+
+////////////////////////////////////////////////////////////////////////
+
+bool FileSystem::ParseElement_Command(TiXmlElement* pCmdElem)
+{
+  bool bResult = true;
+  string attrName, value;
+  Command cmd;
+  TiXmlAttribute* pAttr = pCmdElem->FirstAttribute();
+
+  while ( pAttr )
+  {
+    attrName = pAttr->Name();
+    value = pAttr->Value();
+
+    if ( attrName == "name" )
+    {
+      cmd.name = value;
+    }
+    else if ( attrName == "action" )
+    {
+      cmd.action = value;
+    }
+
+    pAttr = pAttr->Next();
+  }
+  m_mapCommands[ cmd.name ] = cmd;
+
+  return bResult;
+}
+
+////////////////////////////////////////////////////////////////////////
+
+bool FileSystem::ParseElements_Files(TiXmlElement* pParent)
+{
+  bool bResult = true;
+
+  TiXmlElement* pFileElem = pParent->FirstChildElement("File");
+
+  // Look for all File elements
+  while ( pFileElem )
+  {
+    if ( !(bResult = ParseElement_File( pFileElem )) )
+      break;
+    pFileElem = pFileElem->NextSiblingElement("File");
+  }
+
+  return bResult;
+}
+
+////////////////////////////////////////////////////////////////////////
+
+bool FileSystem::ParseElement_File(TiXmlElement* pFileElem)
+{
+  bool bResult = true;
+  string attrName, value, keyname;
+  File file;
+  TiXmlAttribute* pAttr = pFileElem->FirstAttribute();
+
+  // read the current file's attributes
+  while ( pAttr )
+  {
+    attrName = pAttr->Name();
+    value = pAttr->Value();
+
     if ( attrName == "type" )
     {
       if ( value == "dir" )
         file.filetype = File::FT_Directory;
-      else 
+      else
         file.filetype = File::FT_File;
-
     }
     else if ( attrName == "name" )
     {
@@ -391,53 +434,26 @@ void FileSystem::ParseElement_File(IrrXMLReader* pXML)
     {
       file.is_mutable = (value == "1" || value == "true");
     }
+    pAttr = pAttr->Next();
   }
 
   file.parent = m_pCurrentDir;
 
-  string keyname = file.filename;
+  // map the file
+  keyname = file.filename;
 
   if ( !m_bCaseSensitive )
     std::transform(keyname.begin(), keyname.end(), keyname.begin(), (int(*)(int))tolower);
 
   m_pCurrentDir->files[ keyname ] = file;
-  if ( file.filetype == File::FT_Directory )
+
+  // Now that we have a file, lets check if its a directory, and if it is, we recurse into the child elements to populate it
+  if ( file.filetype == File::FT_Directory && !pFileElem->NoChildren() )
   {
-    if ( !pXML->isEmptyElement() )
-    {
-      m_recursionStack.push_back(m_pCurrentDir);
-      File& f = m_pCurrentDir->files[ keyname ];
-      m_pCurrentDir = &f;
-    }
-  }
-}
-
-////////////////////////////////////////////////////////////////////////
-
-void FileSystem::ParseElement_Command(IrrXMLReader* pXML)
-{
-  if ( !pXML )
-    return;
-
-  Command cmd;
-  string attrName, value;
-
-  // get the command details
-  for ( int i = 0; i < pXML->getAttributeCount(); i++ )
-  {
-    attrName = pXML->getAttributeName(i);
-    value = pXML->getAttributeValue(attrName.c_str());
-    if ( attrName == "name" )
-    {
-      cmd.name = value;
-    }
-    else if ( attrName == "action" )
-    {
-      cmd.action = value;
-    }
+    m_pCurrentDir = &m_pCurrentDir->files[keyname];
+    bResult = ParseElements_Files( pFileElem );
+    m_pCurrentDir = file.parent;
   }
 
-  m_mapCommands[ cmd.name ] = cmd;
+  return bResult;
 }
-
-////////////////////////////////////////////////////////////////////////

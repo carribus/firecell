@@ -24,10 +24,7 @@
 #include <list>
 #include <map>
 #include <vector>
-#include "../common/XML/irrXML.h"
-
-using namespace irr;
-using namespace io;
+#include "../common/TinyXML/tinyxml.h"
 
 using namespace std;
 
@@ -103,19 +100,19 @@ private:
   /*
    *  Private methods
    */
+  bool ParseXML(TiXmlDocument& xml);
+    bool ParseElement_FileSystem(TiXmlElement* pElem);
+    bool ParseElements_Commands(TiXmlElement* pFSElem);
+      bool ParseElement_Command(TiXmlElement* pCmdElem);
+    bool ParseElements_Files(TiXmlElement* pParent);
+      bool ParseElement_File(TiXmlElement* pFileElem);
 
-  //
-  // Parsing methods
-  bool ParseXML(IrrXMLReader* pXML);
-    void ParseElement_FileSystem(IrrXMLReader* pXML);
-    void ParseElement_File(IrrXMLReader* pXML);
-    void ParseElement_Command(IrrXMLReader* pXML);
 
   /*
    *  Private data
    */
   Computer*           m_pComputer;
-  IrrXMLReader*       m_xml;
+  TiXmlDocument       m_xmlDoc;
   FSStyle             m_style;
   FSOwnerType         m_ownerType;
   bool                m_bCaseSensitive;
