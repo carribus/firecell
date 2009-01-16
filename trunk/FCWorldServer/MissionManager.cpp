@@ -64,8 +64,8 @@ FCULONG MissionManager::GetAvailableMissionsForPlayer(Player* pPlayer, vector<Mi
 	{
 		pMission = it->second;
 		// check if the player's level allows the taking of this mission
-		if ( pPlayer->GetLevel() >= pMission->GetMinLevel() &&
-			   (pMission->GetMaxLevel() != 0 ? pPlayer->GetLevel() <= pMission->GetMaxLevel() : true) )
+		if ( pPlayer->GetLevel() >= (FCULONG)pMission->GetMinLevel() &&
+			   (pMission->GetMaxLevel() != 0 ? pPlayer->GetLevel() <= (FCULONG)pMission->GetMaxLevel() : true) )
 		{
 			// check if the player has completed the mission
 			if ( !pPlayer->HasCompletedMission(pMission->GetID()) )
@@ -75,5 +75,5 @@ FCULONG MissionManager::GetAvailableMissionsForPlayer(Player* pPlayer, vector<Mi
 		}
 	}
 
-	return target.size();
+	return (FCULONG)target.size();
 }
