@@ -121,6 +121,9 @@
 				RelativePath=".\Character.cpp">
 			</File>
 			<File
+				RelativePath=".\ConsoleWindow.cpp">
+			</File>
+			<File
 				RelativePath=".\FCClient.cpp">
 			</File>
 			<File
@@ -143,6 +146,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIFCCharacterItem.cpp">
+			</File>
+			<File
+				RelativePath=".\InGameAppWindow.cpp">
 			</File>
 			<File
 				RelativePath="..\..\common\PacketExtractor.cpp">
@@ -186,6 +192,9 @@
 				RelativePath=".\clientstrings.h">
 			</File>
 			<File
+				RelativePath=".\ConsoleWindow.h">
+			</File>
+			<File
 				RelativePath=".\FCController.h">
 			</File>
 			<File
@@ -210,7 +219,7 @@
 				RelativePath=".\IModelEventSink.h">
 			</File>
 			<File
-				RelativePath=".\irrHelpers.h">
+				RelativePath=".\InGameAppWindow.h">
 			</File>
 			<File
 				RelativePath=".\IViewLogic.h">

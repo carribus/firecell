@@ -53,7 +53,9 @@ public:
 	bool Update();
 
 	void OnModelEvent(FCModelEvent event);
-	void HandleEvent(FCModelEvent& e);
+		bool OnModelStateChange(FCModelEvent& event);
+		bool OnOpenApplication(FCModelEvent& event);
+		bool OnConsoleFileSystemInfo(FCModelEvent& event);
 
 private:
 

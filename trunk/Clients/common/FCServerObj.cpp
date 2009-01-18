@@ -103,6 +103,20 @@ void FCServerObj::RequestDesktopOptions(size_t character_id)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCServerObj::RequestDesktopOptionActivate(FCULONG option_id)
+{
+	PEPacket pkt;
+	__FCPKT_ACTIVATE_DESKTOP_OPTION d;
+
+	d.optionID = option_id;
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_ACTIVATE_DESKTOP_OPTION, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void FCServerObj::RequestCharacterFileSystemInfo(FCULONG character_id)
 {
   PEPacket pkt;

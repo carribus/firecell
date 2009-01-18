@@ -335,6 +335,29 @@ void FCLogicWorld::SendCharacterDesktopOptions(Player* pPlayer, RouterSocket* pR
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCLogicWorld::SendActivateDesktopOptionResponse(FCULONG optionID, Player* pPlayer, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+	PEPacket pkt;
+	Computer& comp = pPlayer->GetComputer();
+	__FCPKT_ACTIVATE_DESKTOP_OPTION_RESP d;
+	
+	// TODO: Need to add the necessary methods to calculate whether an application can run
+	d.optionID = optionID;
+	d.canActivate = true;
+	d.cpu_cost = 0;
+	d.mem_cost = 0;
+
+  // send the packet
+  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_ACTIVATE_DESKTOP_OPTION, ST_None);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(__FCPKT_ACTIVATE_DESKTOP_OPTION_RESP));
+
+  // send notification to Client
+  pkt.SetFieldValue("target", (void*)&clientSocket);
+  pRouter->Send(&pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void FCLogicWorld::SendConsoleFileSystemInfo(FileSystem& fs, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
   PEPacket pkt;
@@ -535,6 +558,12 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+	case	FCMSG_ACTIVATE_DESKTOP_OPTION:
+		{
+			bHandled = OnCommandActivateDesktopOption(pPkt, pRouter, clientSock);
+		}
+		break;
+
   /*
    *  Console Module Messages
    */
@@ -676,6 +705,28 @@ bool FCLogicWorld::OnCommandGetDesktopOptions(PEPacket* pPkt, RouterSocket* pRou
     return false;
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandActivateDesktopOption(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+	__FCPKT_ACTIVATE_DESKTOP_OPTION d;
+	size_t dataLen = 0;
+	Player* pPlayer = NULL;
+	
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+	{
+		// calculate whether the player can run the option
+		SendActivateDesktopOptionResponse( d.optionID, pPlayer, pRouter, clientSocket );
+	}
+	else
+		return false;
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////

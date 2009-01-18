@@ -15,6 +15,7 @@ public:
   void SendCharacterSelection(size_t character_id);
   void SendCharacterAssetRequest(size_t character_id);
   void RequestDesktopOptions(size_t character_id);
+	void RequestDesktopOptionActivate(FCULONG option_id);
 
   // console commands
   void RequestCharacterFileSystemInfo(FCULONG character_id);
