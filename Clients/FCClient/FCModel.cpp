@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include <sstream>
 #include <vector>
 #include "../../common/protocol/fcprotocol.h"
 #include "../common/ResourceManager.h"
@@ -236,6 +237,18 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+	case	FCMSG_ACTIVATE_DESKTOP_OPTION:
+		{
+			bHandled = OnResponeActivateDesktopOptions(pPkt, pSocket);
+		}
+		break;
+
+	case	FCMSG_CON_GET_FS_INFO:
+		{
+			bHandled = OnResponseConsoleGetFileSystemInfo(pPkt, pSocket);
+		}
+		break;
+
   default:
 
 /*
@@ -304,7 +317,6 @@ bool FCModel::OnResponseLogin(PEPacket* pPkt, BaseSocket* pSocket)
 
 ///////////////////////////////////////////////////////////////////////
 
-#include <sstream>
 bool FCModel::OnResponseGetCharacters(PEPacket* pPkt, BaseSocket* pSocket)
 {
   __FCPKT_CHARACTER_LIST d;
@@ -428,6 +440,47 @@ bool FCModel::OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket)
 
 	SetState( FCModel::Playing );
 	
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponeActivateDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket)
+{
+	__FCPKT_ACTIVATE_DESKTOP_OPTION_RESP d;
+	size_t dataLen;
+
+	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+	pPkt->GetField("data", &d, sizeof(d));
+
+	// check if we can open the option
+	if ( d.canActivate )
+	{
+		FireEvent(FCME_OpenApplication, (void*)&d);
+	}
+	else
+	{
+	}
+
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseConsoleGetFileSystemInfo(PEPacket* pPkt, BaseSocket* pSocket)
+{
+	__FCPKT_CON_GET_FS_INFO_RESP d;
+	size_t dataLen;
+
+	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+	pPkt->GetField("data", &d, sizeof(d));
+	
+  m_fsInfo.dirSeperator = d.dirSeperator;
+  m_fsInfo.fsStyle = (FCBYTE) d.fsStyle & 0x000000FF;
+  m_fsInfo.currentDir = d.currentDir;
+
+	FireEvent(FCME_Console_FileSystemInfo, (void*)&m_fsInfo);
+
 	return true;
 }
 
@@ -590,6 +643,20 @@ void FCModel::SelectCharacter(FCUINT characterID)
 {
 	m_server.SendCharacterSelection(characterID);
 	SetStateStep( FCModel::MS_CharacterSelection_CharacterSelected );
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::ActivateDesktopOption(FCULONG optionID)
+{
+	m_server.RequestDesktopOptionActivate(optionID);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::ConsoleRefresh()
+{
+	m_server.RequestCharacterFileSystemInfo( m_pCharacter->GetID() );
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -20,8 +20,12 @@
 #include <sstream>
 #include "../../common/protocol/fcprotocol.h"
 #include "FCModel.h"
+#include "FCController.h"
 #include "FCView.h"
+#include "FCViewEvent.h"
 #include "ViewLogicGame.h"
+
+#include "ConsoleWindow.h"
 
 #define ICON_PADDING_X						0
 #define ICON_PADDING_Y						30
@@ -34,6 +38,8 @@ ViewLogicGame::ViewLogicGame(void)
 , m_pCamera(NULL)
 {
 	m_iconMax.Height = m_iconMax.Width = 0;
+	memset( &m_LButtonLastClick, 0, sizeof(LastClick) );
+	memset( &m_RButtonLastClick, 0, sizeof(LastClick) );
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -88,7 +94,7 @@ void ViewLogicGame::SetActive()
 
 	// create the Desktop icons
 	UpdateDesktopOptions();
-
+/*
 	// temporary 3d code
 
 	// create some 3d object here
@@ -156,7 +162,86 @@ bool ViewLogicGame::OnEvent(const SEvent& event)
 {
 	bool bHandled = false;
 
+	switch ( event.EventType )
+	{
+	case	EET_MOUSE_INPUT_EVENT:
+		{
+			switch ( event.MouseInput.Event )
+			{
+			case	EMIE_LMOUSE_PRESSED_DOWN:
+				bHandled = OnLButtonDown(event.MouseInput);
+				break;
+
+			case	EMIE_LMOUSE_LEFT_UP:
+				bHandled = OnLButtonUp(event.MouseInput);
+				break;
+			}
+		}
+		break;
+
+	default:
+		break;
+	}
+
 	return bHandled;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool ViewLogicGame::OnLButtonDown(const SEvent::SMouseInput& event)
+{
+	irr::ITimer* pTimer = m_pDevice->getTimer();
+	u32 now = pTimer->getTime();
+
+	if ( m_LButtonLastClick.last_tick )
+	{
+		if ( (event.X > m_LButtonLastClick.lastX-3 && event.X < m_LButtonLastClick.lastX+3) &&
+			   (event.Y > m_LButtonLastClick.lastY-3 && event.Y < m_LButtonLastClick.lastY+3) )
+		{
+			if ( now - m_LButtonLastClick.last_tick <= 300 )
+			{
+				memset( &m_LButtonLastClick, 0, sizeof(LastClick) );
+				return OnLButtonDblClick(event);
+			}
+		}
+	}
+
+	// update the tracking structure
+	m_LButtonLastClick.last_tick = now;
+	m_LButtonLastClick.lastX = event.X;
+	m_LButtonLastClick.lastY = event.Y;
+
+	return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool ViewLogicGame::OnLButtonUp(const SEvent::SMouseInput& event)
+{
+	return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool ViewLogicGame::OnLButtonDblClick(const SEvent::SMouseInput& event)
+{
+	// check if the user double clicked on any of our desktop icons
+	DesktopOptionMap::iterator it = m_mapDesktopOptions.begin();
+	DesktopOptionMap::iterator limit = m_mapDesktopOptions.end();
+	core::rect<s32> iconRect;
+
+	for ( ; it != limit; it++ )
+	{
+		iconRect = it->second.rect;
+		if ( iconRect.isPointInside(position2d<s32>(event.X, event.Y) ) )
+		{
+			// fire an event to the controller
+			FCViewEvent e(VE_DesktopOptionActivated, it->second.optionID);
+			m_pContainer->GetController()->OnViewEvent(e);
+		}
+	}
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -264,14 +349,13 @@ void ViewLogicGame::DrawDesktopIcons()
 {
 	DesktopOptionMap::iterator it = m_mapDesktopOptions.begin();
 	DesktopOptionMap::iterator limit = m_mapDesktopOptions.end();
-	DesktopOption d;
 
 	core::position2d<s32> pos(10, 10), iconPos, offset;;
 	core::dimension2d<s32> iconDim;
 
 	for ( ; it != limit; it++ )
 	{
-		d = it->second;
+		DesktopOption& d = it->second;
 		iconDim = d.pTexture->getSize();
 		iconPos.X = pos.X + (m_iconMax.Width/2 - iconDim.Width/2);
 		iconPos.Y = pos.Y;
@@ -282,12 +366,104 @@ void ViewLogicGame::DrawDesktopIcons()
 																						 SColor(255, 255, 255, 255), 
 																						 true );
 
-		d.rect += pos;
-		m_pFontCourier->draw( d.name.c_str(), core::rect<s32>( pos.X, pos.Y + iconDim.Height + 4, pos.X + m_iconMax.Width, pos.Y + m_iconMax.Height ), SColor(255, 0, 0, 0), true, true );
+		d.rect.UpperLeftCorner = pos;
+		d.rect.LowerRightCorner.X = pos.X + m_iconMax.Width;
+		d.rect.LowerRightCorner.Y = pos.Y + m_iconMax.Height;
+		m_pFontCourier->draw( d.name.c_str(), core::rect<s32>( pos.X, pos.Y + iconDim.Height + 4, d.rect.LowerRightCorner.X, d.rect.LowerRightCorner.Y ), SColor(255, 0, 0, 0), true, true );
 
 		offset.X = 0;
 		offset.Y = d.rect.getHeight() + ICON_PADDING_Y;
 		
 		pos += offset;
 	}
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool ViewLogicGame::OnOpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost)
+{
+	bool bResult = true;
+	DesktopOptionMap::iterator it = m_mapDesktopOptions.find(optionID);
+
+	if ( it != m_mapDesktopOptions.end() )
+	{
+		DesktopOption option = it->second;
+		InGameAppWindow* pAppWnd = NULL;
+		
+		switch ( option.type )
+		{
+		case	 DOT_Console:
+			{
+				// at the moment, we only allow one instance per application type
+				if ( !IsApplicationRunning(option.type) )
+				{
+					ConsoleWindow* pConsole = new ConsoleWindow(m_pContainer->GetController(), m_pEnv);
+					if ( pConsole->Create(optionID, L"Console Window") )
+					{
+						m_arrApps.push_back(pConsole);
+					}
+				}				
+			}
+			break;
+
+		default:
+			break;
+		}
+	}
+	else
+		bResult = false;
+
+	return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool ViewLogicGame::OnConsoleFileSystemInfo(FCModelEvent& event)
+{
+	bool bResult = true;
+	FCModel::FileSystemInfo* pFSI = (FCModel::FileSystemInfo*)event.GetData();
+	ConsoleWindow* pWnd = (ConsoleWindow*)GetAppWindowByType(DOT_Console);
+
+	if ( pWnd )
+	{
+		pWnd->SetCurrentDir( pFSI->currentDir );
+		pWnd->SetDirSeperator( pFSI->dirSeperator );
+		pWnd->SetFileSystemStyle( pFSI->fsStyle );
+	}
+	else 
+		bResult = false;
+
+	return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool ViewLogicGame::IsApplicationRunning(FCUINT appType)
+{
+	vector<InGameAppWindow*>::iterator it = m_arrApps.begin();
+	vector<InGameAppWindow*>::iterator limit = m_arrApps.end();
+
+	for ( ; it != limit; it++ )
+	{
+		if ( (*it)->GetAppType() == appType )
+			return true;
+	}
+
+	return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+InGameAppWindow* ViewLogicGame::GetAppWindowByType(FCULONG type)
+{
+	vector<InGameAppWindow*>::iterator it = m_arrApps.begin();
+	vector<InGameAppWindow*>::iterator limit = m_arrApps.end();
+
+	for ( ; it != limit; it++ )
+	{
+		if ( (*it)->GetAppType() == type )
+			return (*it);
+	}
+
+	return NULL;
 }

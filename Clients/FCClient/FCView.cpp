@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "../../common/protocol/fcprotocol.h"
 #include "FCController.h"
 #include "FCView.h"
 
@@ -129,89 +130,23 @@ bool FCView::Update()
 
 void FCView::OnModelEvent(FCModelEvent event)
 {
-//	m_modelEventQueue.push_back(event);
 	switch ( event.GetType() )
 	{
 	case	FCME_StateChange:
 		{
-			FCModel::e_ModelState newState = static_cast<FCModel::e_ModelState>(event.GetData());
-			FCModel::StateInfo stateInfo = m_pModel->GetState();
+			OnModelStateChange(event);
+		}
+		break;
 
-			if ( newState != m_currentModelState )
-			{
-				IViewLogic* pNewView = NULL;
+	case	FCME_OpenApplication:
+		{
+			OnOpenApplication(event);
+		}
+		break;
 
-				switch ( newState )
-				{
-				case	FCModel::Loading:
-					pNewView = &m_vlLoading;
-					break;
-
-        case  FCModel::Connecting:
-          break;
-
-				case	FCModel::Login:
-					break;
-
-				case	FCModel::CharacterSelection:
-					pNewView = &m_vlCharSelect;
-					break;
-
-				case	FCModel::Playing:
-					pNewView = &m_vlGame;
-					break;
-
-				case	FCModel::ShuttingDown:
-					break;
-				}
-
-				if ( pNewView )
-				{
-					pNewView->Create(this, m_pDevice);
-					if ( m_pCurrentViewLogic )
-						m_pCurrentViewLogic->Destroy();
-					m_pCurrentViewLogic = pNewView;
-					m_pCurrentViewLogic->SetActive();
-				}
-				else
-				{
-					if ( m_pCurrentViewLogic )
-						m_pCurrentViewLogic->OnModelStateChange( m_pModel->GetState() );
-				}
-
-        m_currentModelState = newState;
-			}
-      else
-      {
-        // if the main state did not change, then perhaps the sub-state did
-        FCModel::StateInfo stateInfo = m_pModel->GetState();
-
-        if ( m_pCurrentViewLogic )
-        {
-          switch ( stateInfo.state )
-          {
-          case  FCModel::Loading:
-          case  FCModel::Connecting:
-            {
-              if ( m_pCurrentViewLogic == &m_vlLoading )
-                m_pCurrentViewLogic->OnModelStateChange(stateInfo);
-            }
-            break;
-
-          case  FCModel::Login:
-            break;
-
-					case	FCModel::CharacterSelection:
-						break;
-
-          case  FCModel::Playing:
-            break;
-
-          case  FCModel::ShuttingDown:
-            break;
-          }
-        }
-      }
+	case	FCME_Console_FileSystemInfo:
+		{
+			OnConsoleFileSystemInfo(event);
 		}
 		break;
 
@@ -222,6 +157,116 @@ void FCView::OnModelEvent(FCModelEvent event)
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCView::HandleEvent(FCModelEvent& e)
+bool FCView::OnModelStateChange(FCModelEvent& event)
 {
+	FCModel::e_ModelState newState = static_cast<FCModel::e_ModelState>(event.GetData());
+	FCModel::StateInfo stateInfo = m_pModel->GetState();
+
+	if ( newState != m_currentModelState )
+	{
+		IViewLogic* pNewView = NULL;
+
+		switch ( newState )
+		{
+		case	FCModel::Loading:
+			pNewView = &m_vlLoading;
+			break;
+
+		case  FCModel::Connecting:
+			break;
+
+		case	FCModel::Login:
+			break;
+
+		case	FCModel::CharacterSelection:
+			pNewView = &m_vlCharSelect;
+			break;
+
+		case	FCModel::Playing:
+			pNewView = &m_vlGame;
+			break;
+
+		case	FCModel::ShuttingDown:
+			break;
+		}
+
+		if ( pNewView )
+		{
+			pNewView->Create(this, m_pDevice);
+			if ( m_pCurrentViewLogic )
+				m_pCurrentViewLogic->Destroy();
+			m_pCurrentViewLogic = pNewView;
+			m_pCurrentViewLogic->SetActive();
+		}
+		else
+		{
+			if ( m_pCurrentViewLogic )
+				m_pCurrentViewLogic->OnModelStateChange( m_pModel->GetState() );
+		}
+
+		m_currentModelState = newState;
+	}
+	else
+	{
+		// if the main state did not change, then perhaps the sub-state did
+		FCModel::StateInfo stateInfo = m_pModel->GetState();
+
+		if ( m_pCurrentViewLogic )
+		{
+			switch ( stateInfo.state )
+			{
+			case  FCModel::Loading:
+			case  FCModel::Connecting:
+				{
+					if ( m_pCurrentViewLogic == &m_vlLoading )
+						m_pCurrentViewLogic->OnModelStateChange(stateInfo);
+				}
+				break;
+
+			case  FCModel::Login:
+				break;
+
+			case	FCModel::CharacterSelection:
+				break;
+
+			case  FCModel::Playing:
+				break;
+
+			case  FCModel::ShuttingDown:
+				break;
+			}
+		}
+	}
+
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCView::OnOpenApplication(FCModelEvent& event)
+{
+	bool bResult = true;
+	FCModel::StateInfo state = m_pModel->GetState();
+
+	if ( state.state == FCModel::Playing &&
+		   m_pCurrentViewLogic == &m_vlGame )
+	{
+		__FCPKT_ACTIVATE_DESKTOP_OPTION_RESP* pData = (__FCPKT_ACTIVATE_DESKTOP_OPTION_RESP*) event.GetData();
+		m_vlGame.OnOpenApplication(pData->optionID, pData->cpu_cost, pData->mem_cost);
+	}
+	else
+		bResult = false;
+
+	return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCView::OnConsoleFileSystemInfo(FCModelEvent& event)
+{
+	bool bResult = true;
+
+	m_vlGame.OnConsoleFileSystemInfo(event);
+
+	return bResult;
 }

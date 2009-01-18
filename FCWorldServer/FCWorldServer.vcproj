@@ -382,34 +382,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="XML"
-			Filter="">
-			<File
-				RelativePath="..\common\Xml\CXMLReaderImpl.h">
-			</File>
-			<File
-				RelativePath="..\common\Xml\fast_atof.h">
-			</File>
-			<File
-				RelativePath="..\common\Xml\heapsort.h">
-			</File>
-			<File
-				RelativePath="..\common\Xml\irrArray.h">
-			</File>
-			<File
-				RelativePath="..\common\Xml\irrString.h">
-			</File>
-			<File
-				RelativePath="..\common\Xml\irrTypes.h">
-			</File>
-			<File
-				RelativePath="..\common\Xml\irrXML.cpp">
-			</File>
-			<File
-				RelativePath="..\common\Xml\irrXML.h">
-			</File>
-		</Filter>
-		<Filter
 			Name="tinyXML"
 			Filter="">
 			<File

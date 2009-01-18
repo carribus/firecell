@@ -20,11 +20,15 @@
 #ifndef _VIEWLOGICGAME_H_
 #define _VIEWLOGICGAME_H_
 
+#include <irrlicht.h>
 #include "IViewLogic.h"
+#include "FCModelEvent.h"
+#include "InGameAppWindow.h"
 
 using namespace std;
-using namespace irr::scene;
-using namespace irr::gui;
+using namespace irr;
+using namespace scene;
+using namespace gui;
 
 class ViewLogicGame :	public IViewLogic
 									  , protected IEventReceiver
@@ -57,7 +61,21 @@ public:
 	 */
 	bool OnEvent(const SEvent& event);
 
+	/*
+	 *	Public Methods
+	 */
+	bool OnOpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost);
+	bool IsApplicationRunning(FCUINT appType);
+	bool OnConsoleFileSystemInfo(FCModelEvent& event);
+
 private:
+
+	/*
+	 *	User Input event handlers
+	 */
+	bool OnLButtonDown(const SEvent::SMouseInput& event);
+	bool OnLButtonUp(const SEvent::SMouseInput& event);
+	bool OnLButtonDblClick(const SEvent::SMouseInput& event);
 
   // 3D object creation functions
   void CreateBackgroundPanel();
@@ -66,6 +84,9 @@ private:
 
 	// drawing functions
 	void DrawDesktopIcons();
+
+	// app functions
+	InGameAppWindow* GetAppWindowByType(FCULONG type);
 
 	FCView*											m_pContainer;
 	IrrlichtDevice*							m_pDevice;
@@ -83,7 +104,18 @@ private:
 	typedef std::map<FCUINT, DesktopOption> DesktopOptionMap;
 	DesktopOptionMap						m_mapDesktopOptions;
 
+  vector<InGameAppWindow*>		m_arrApps;
+
 	core::dimension2d<s32>			m_iconMax;
+
+	struct LastClick
+	{
+		u32 last_tick;
+		s32 lastX;
+		s32	lastY;
+	};
+	LastClick										m_LButtonLastClick,
+															m_RButtonLastClick;
 };
 
 #endif//_VIEWLOGICGAME_H_

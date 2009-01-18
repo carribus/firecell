@@ -3,7 +3,9 @@
 
 enum e_FCEventType
 {
-	FCME_StateChange
+	FCME_StateChange,
+	FCME_OpenApplication,
+	FCME_Console_FileSystemInfo
 };
 
 class FCModelEvent

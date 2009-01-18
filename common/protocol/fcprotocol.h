@@ -228,6 +228,22 @@ struct __FCPKT_GET_DESKTOP_OPTIONS_RESP
   } Options[1];
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_ACTIVATE_DESKTOP_OPTION      = 8;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_ACTIVATE_DESKTOP_OPTION
+{
+  FCULONG optionID;
+};
+
+struct __FCPKT_ACTIVATE_DESKTOP_OPTION_RESP
+{
+	FCULONG optionID;
+	bool canActivate;
+	FCSHORT cpu_cost;
+	FCULONG mem_cost;
+};
+
 /*
  *  CONSOLE module specific commands
  *

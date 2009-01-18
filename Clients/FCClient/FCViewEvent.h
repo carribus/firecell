@@ -10,7 +10,10 @@ enum e_FCViewEventType
 	VE_None,
 	VE_ClientExit,
 	VE_Login,
-	VE_CharacterSelected
+	VE_CharacterSelected,
+	VE_DesktopOptionActivated,
+	/* Console Events */
+	VE_ConRefresh
 };
 
 /////////////////////////////////////////////////////////////////
