@@ -7,14 +7,12 @@ InGameAppWindow::InGameAppWindow(FCController* pController, IGUIEnvironment* pEn
 , m_optionID(0)
 , m_bWaitingForResponse(false)
 {
-	m_pEnv->grab();
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 InGameAppWindow::~InGameAppWindow(void)
 {
-	m_pEnv->drop();
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -20,8 +20,6 @@ Desktop::Desktop(ViewLogicGame& owner, IrrlichtDevice* pDevice)
 
 Desktop::~Desktop(void)
 {
-  if ( m_pBackground )
-    m_pBackground->drop();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -80,6 +78,51 @@ bool Desktop::GetDesktopOptionFromPt(s32 x, s32 y, DesktopOption* d)
 	}
 
   return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Desktop::GetDesktopOptionByID(FCULONG optionID, DesktopOption& d)
+{
+	DesktopOptionMap::iterator it = m_mapDesktopOptions.begin();
+	DesktopOptionMap::iterator limit = m_mapDesktopOptions.end();
+
+	for ( ; it != limit; it++ )
+	{
+		if ( it->second.optionID == optionID )
+		{
+			d = it->second;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Desktop::HighlightDesktopOption(FCULONG optionID, bool bHighlight)
+{
+	DesktopOptionMap::iterator it = m_mapDesktopOptions.begin();
+	DesktopOptionMap::iterator limit = m_mapDesktopOptions.end();
+
+	for ( ; it != limit; it++ )
+	{
+		if ( it->second.optionID == optionID )
+		{
+			it->second.isHighlighted = bHighlight;
+		}
+		else
+		{
+			if ( bHighlight )
+				it->second.isHighlighted = false;
+		}
+	}
+
+	if ( it != m_mapDesktopOptions.end() )
+	{
+		it->second.isHighlighted = bHighlight;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -238,6 +281,7 @@ void Desktop::UpdateDesktopOptions()
 				m_iconMax.Height = d.rect.getHeight();
 
 			d.pTexture = pTexture;
+			d.isHighlighted = false;
 			pIcon->drop();
 
 			// map the desktop option structure
@@ -260,19 +304,36 @@ void Desktop::DrawDesktopIcons()
 	for ( ; it != limit; it++ )
 	{
 		DesktopOption& d = it->second;
+
 		iconDim = d.pTexture->getSize();
 		iconPos.X = pos.X + (m_iconMax.Width/2 - iconDim.Width/2);
 		iconPos.Y = pos.Y;
-		pVideo->draw2DImage( d.pTexture, 
-												 iconPos, 
-												 rect<s32>(0, 0, iconDim.Width, iconDim.Height), 
-												 0, 
-												 SColor(255, 255, 255, 255), 
-												 true );
 
 		d.rect.UpperLeftCorner = pos;
 		d.rect.LowerRightCorner.X = pos.X + m_iconMax.Width;
 		d.rect.LowerRightCorner.Y = pos.Y + m_iconMax.Height;
+
+		if ( d.isHighlighted )
+		{
+//			pVideo->draw2DRectangle(SColor(128, 64, 128, 255), d.rect);
+			pVideo->draw2DImage( d.pTexture, 
+													iconPos, 
+													rect<s32>(0, 0, iconDim.Width, iconDim.Height), 
+													0, 
+													SColor(255, 255, 255, 255), 
+													true );
+		}
+		else
+		{
+			pVideo->draw2DImage( d.pTexture, 
+													iconPos, 
+													rect<s32>(0, 0, iconDim.Width, iconDim.Height), 
+													0, 
+													SColor(128, 255, 255, 255), 
+													true );
+		}
+
+
 		m_pFontCourier->draw( d.name.c_str(), core::rect<s32>( pos.X, pos.Y + iconDim.Height + 4, d.rect.LowerRightCorner.X, d.rect.LowerRightCorner.Y ), SColor(255, 0, 0, 0), true, true );
 
 		offset.X = 0;

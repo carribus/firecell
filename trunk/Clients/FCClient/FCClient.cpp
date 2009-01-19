@@ -56,41 +56,5 @@ int main(int argc, char** argv)
 
 	controller.Run();
 
-/*
-	video::E_DRIVER_TYPE driverType = video::EDT_OPENGL;
-	IrrlichtDevice* pDevice = createDevice(driverType, core::dimension2d<s32>(1024, 768), 16, false);
-
-	if ( !pDevice )
-		return 1;
-
-	pDevice->setWindowCaption(L"FireCell");
-	video::IVideoDriver* pDriver = pDevice->getVideoDriver();
-	IGUIEnvironment* pEnv = pDevice->getGUIEnvironment();
-
-	IGUIFont* pFont = pEnv->getFont("./clientdata/fonts/fontcourier.bmp");
-	dimension2d<s32> fontDim = pFont->getDimension(L"ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
-
-	while ( pDevice->run() && pDriver )
-	{
-		s32 x1 = 10, y1 = 10;
-		if ( pDevice->isWindowActive() )
-		{
-			pDriver->beginScene( true, true, SColor(255, 128, 0, 0) );
-
-			if ( pFont )
-			{
-				pFont->draw(L"Initializing subsystems... ", rect<s32>( x1, y1, 100, 40 ), SColor(255, 255, 0, 0) );
-				y1 += fontDim.Height;
-				pFont->draw(L"Connecting to server... ", rect<s32>( x1, y1, 100, 40), SColor(255, 255, 0, 0) );
-				y1 += fontDim.Height;
-				pFont->draw(L"Loading assets... ", rect<s32>( x1, y1, 100, 40), SColor(255, 255, 0, 0) );
-			}
-
-			pDriver->endScene();
-		}
-	}
-
-	pDevice->drop();
-*/
 	return 0;
 }

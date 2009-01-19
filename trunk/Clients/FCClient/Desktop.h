@@ -23,6 +23,7 @@ public:
     wstring name;
 		ITexture* pTexture;
 		core::rect<s32> rect;
+		bool isHighlighted;
 	};
 
   Desktop(ViewLogicGame& owner, IrrlichtDevice* pDevice);
@@ -31,6 +32,8 @@ public:
   bool Create();
   void Draw();
   bool GetDesktopOptionFromPt(s32 x, s32 y, DesktopOption* d);
+	bool GetDesktopOptionByID(FCULONG optionID, DesktopOption& d);
+	void HighlightDesktopOption(FCULONG optionID, bool bHighlight = true);
   bool OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost);
 	bool IsApplicationRunning(FCUINT appType);
 
