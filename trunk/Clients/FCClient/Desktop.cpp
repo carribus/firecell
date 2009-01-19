@@ -138,6 +138,37 @@ bool Desktop::IsApplicationRunning(FCUINT appType)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool Desktop::OnConsoleEvent(FCModelEvent& event)
+{
+  bool bResult = true;
+  ConsoleWindow* pWnd = (ConsoleWindow*)GetAppWindowByType(DOT_Console);
+
+  if ( pWnd )
+  {
+    switch ( event.GetType() )
+    {
+    case  FCME_Console_FileSystemInfo:
+      {
+        FCModel::FileSystemInfo* pFSI = (FCModel::FileSystemInfo*) event.GetData();
+        if ( pFSI )
+        {
+          pWnd->OnFileSystemInfoReceived(pFSI);
+        }
+      }
+      break;
+
+    default:
+      break;
+    }
+  }
+  else
+    bResult = false;
+
+  return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void Desktop::UpdateDesktopOptions()
 {
 	FCModel* pModel = m_owner.GetContainer()->GetModel();
