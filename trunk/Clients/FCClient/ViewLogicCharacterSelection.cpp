@@ -109,8 +109,11 @@ void ViewLogicCharacterSelection::Refresh()
 
 ///////////////////////////////////////////////////////////////////////
 
-void ViewLogicCharacterSelection::OnModelStateChange(FCModel::StateInfo state)
+bool ViewLogicCharacterSelection::OnModelEvent(FCModelEvent event)
 {
+  bool bResult = false;
+
+  return bResult;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -231,3 +234,10 @@ void ViewLogicCharacterSelection::CreateGUIObjects()
     posItem.Y += pItem->getAbsoluteClippingRect().getHeight() + CHARSEL_ITEM_PADDING_TOP;
   }
 }
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewLogicCharacterSelection::OnModelStateChange(FCModel::StateInfo state)
+{
+}
+

@@ -34,8 +34,10 @@ struct IViewLogic
 	virtual void Destroy() = 0;
 	virtual void SetActive() = 0;
 	virtual void Refresh() = 0;
-  virtual void OnModelStateChange(FCModel::StateInfo state) = 0;
+  virtual bool OnModelEvent(FCModelEvent event) = 0;
+//  virtual void OnModelStateChange(FCModel::StateInfo state) = 0;
 	virtual SColor GetBackgroundColour() = 0;
+  virtual FCView* GetContainer() = 0;
 };
 
 #endif//_IVIEWLOGIC_H_

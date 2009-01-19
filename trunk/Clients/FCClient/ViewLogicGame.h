@@ -22,8 +22,8 @@
 
 #include <irrlicht.h>
 #include "IViewLogic.h"
+#include "Desktop.h"
 #include "FCModelEvent.h"
-#include "InGameAppWindow.h"
 
 using namespace std;
 using namespace irr;
@@ -33,17 +33,9 @@ using namespace gui;
 class ViewLogicGame :	public IViewLogic
 									  , protected IEventReceiver
 {
-	struct DesktopOption
-	{
-    FCULONG optionID;
-    FCUINT type;
-    wstring name;
-		ITexture* pTexture;
-		core::rect<s32> rect;
-	};
-
 public:
-	ViewLogicGame(void);
+
+  ViewLogicGame(void);
 	~ViewLogicGame(void);
 
 	/*
@@ -53,8 +45,9 @@ public:
 	void Destroy();
 	void SetActive();
 	void Refresh();
-  void OnModelStateChange(FCModel::StateInfo state);
+  bool OnModelEvent(FCModelEvent event);
 	SColor GetBackgroundColour()													{ return SColor(255, 0, 0, 0); }
+  FCView* GetContainer()                                { return m_pContainer; }
 
 	/*
 	 *	IEventReceiver implementation
@@ -64,11 +57,11 @@ public:
 	/*
 	 *	Public Methods
 	 */
-	bool OnOpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost);
-	bool IsApplicationRunning(FCUINT appType);
 	bool OnConsoleFileSystemInfo(FCModelEvent& event);
 
 private:
+
+  void OnModelStateChange(FCModel::StateInfo state);
 
 	/*
 	 *	User Input event handlers
@@ -78,35 +71,18 @@ private:
 	bool OnLButtonDblClick(const SEvent::SMouseInput& event);
 
   // 3D object creation functions
-  void CreateBackgroundPanel();
 	void CreateStartBar();	
-	void UpdateDesktopOptions();
-
-	// drawing functions
-	void DrawDesktopIcons();
-
-	// app functions
-	InGameAppWindow* GetAppWindowByType(FCULONG type);
 
 	FCView*											m_pContainer;
 	IrrlichtDevice*							m_pDevice;
 	ISceneManager*							m_pScene;
 	IGUIEnvironment*						m_pEnv;
 
-	ITexture*										m_pBackground;
-
-	IGUIFont*										m_pFontCourier;
+  Desktop*                    m_pDesktop;
 
   ICameraSceneNode*           m_pCamera;
   IMeshSceneNode*             m_pObject;
   ILightSceneNode*            m_pLightNode;
-
-	typedef std::map<FCUINT, DesktopOption> DesktopOptionMap;
-	DesktopOptionMap						m_mapDesktopOptions;
-
-  vector<InGameAppWindow*>		m_arrApps;
-
-	core::dimension2d<s32>			m_iconMax;
 
 	struct LastClick
 	{

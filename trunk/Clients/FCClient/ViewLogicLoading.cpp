@@ -90,12 +90,32 @@ void ViewLogicLoading::SetActive()
 	m_pTextObject->setOverrideFont(pFont);
 }
 
-///////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////s///////////////////
 
 void ViewLogicLoading::Refresh()
 {
 	m_pScene->drawAll();
 	m_pEnv->drawAll();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool ViewLogicLoading::OnModelEvent(FCModelEvent event)
+{
+  bool bResult = false;
+
+  switch ( event.GetType() )
+  {
+  case  FCME_StateChange:
+    {
+    	FCModel::StateInfo stateInfo = m_pContainer->GetModel()->GetState();
+
+      bResult = OnModelStateChange(stateInfo);
+    }
+    break;
+  }
+
+  return bResult;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -155,10 +175,48 @@ bool ViewLogicLoading::OnEvent(const SEvent& event)
 
 ///////////////////////////////////////////////////////////////////////
 
-void ViewLogicLoading::OnModelStateChange(FCModel::StateInfo state)
+void ViewLogicLoading::ConfigureUISkin()
+{
+	IGUISkin* pSkin = m_pEnv->createSkin(gui::EGST_BURNING_SKIN);
+
+	// Window Background
+	pSkin->setColor( EGDC_WINDOW, SColor(255, 0, 0, 0) );
+	// Window Caption background
+	pSkin->setColor( EGDC_ACTIVE_BORDER, SColor(255, 64, 128, 64) );
+	pSkin->setColor( EGDC_ACTIVE_CAPTION, SColor(255, 0, 0, 0) );
+
+	pSkin->setColor( EGDC_BUTTON_TEXT, SColor(255, 64, 255, 64) );
+
+	pSkin->setColor( EGDC_3D_FACE, SColor(255, 196, 255, 196) );
+
+
+	m_pEnv->setSkin(pSkin);
+	pSkin->drop();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewLogicLoading::SetLoginWindowStrings(IGUIWindow* pWindow)
+{
+  IGUIElement* pElem = NULL;
+
+  pWindow->setText( ResourceManager::instance().GetClientString( STR_LOGINWND_CAPTION ).c_str() );
+  if ( (pElem = pWindow->getElementFromId( STATIC_USERNAME )) )
+    pElem->setText( ResourceManager::instance().GetClientString( STR_LOGINWND_USERNAME ).c_str() );
+  if ( (pElem = pWindow->getElementFromId( STATIC_PASSWORD )) )
+    pElem->setText( ResourceManager::instance().GetClientString( STR_LOGINWND_PASSWORD ).c_str() );
+  if ( (pElem = pWindow->getElementFromId( BUTTON_LOGIN )) )
+    pElem->setText( ResourceManager::instance().GetClientString( STR_LOGINWND_LOGINBUTTON ).c_str() );
+  if ( (pElem = pWindow->getElementFromId( BUTTON_CANCEL )) )
+    pElem->setText( ResourceManager::instance().GetClientString( STR_LOGINWND_EXITBUTTON ).c_str() );
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool ViewLogicLoading::OnModelStateChange(FCModel::StateInfo state)
 {
 	if ( state.state != FCModel::Loading && state.state != FCModel::Connecting && state.state != FCModel::Login )
-    return;
+    return false;
 
   // check the Model's current sub-state and take necessary action
   switch ( state.state )
@@ -217,59 +275,28 @@ void ViewLogicLoading::OnModelStateChange(FCModel::StateInfo state)
 	case	FCModel::Login:
 		{
 			core::dimension2d<s32> dim = m_pDevice->getVideoDriver()->getScreenSize();
-			m_pEnv->loadGUI("./clientdata/ui/dialog.login.xml");
-			IGUIElement* pRootElem = m_pEnv->getRootGUIElement();
-			IGUIWindow* pWindow = (IGUIWindow*)pRootElem->getElementFromId( WINDOW_LOGIN );
 
-			if ( pWindow )
-			{
-        SetLoginWindowStrings(pWindow);
-				core::rect<s32> wndRect = pWindow->getAbsoluteClippingRect();
-				pWindow->setRelativePosition(core::position2di( dim.Width/2 - wndRect.getWidth() / 2, dim.Height/2 - wndRect.getHeight()/2 ));
-				m_pEnv->setFocus( pWindow->getElementFromId( EDIT_USERNAME ) );
-			}
+      if ( state.stateStep == FCModel::MS_Login_None )
+      {
+  			m_pEnv->loadGUI("./clientdata/ui/dialog.login.xml");
+  			IGUIElement* pRootElem = m_pEnv->getRootGUIElement();
+			  IGUIWindow* pWindow = (IGUIWindow*)pRootElem->getElementFromId( WINDOW_LOGIN );
+
+			  if ( pWindow )
+			  {
+          SetLoginWindowStrings(pWindow);
+				  core::rect<s32> wndRect = pWindow->getAbsoluteClippingRect();
+				  pWindow->setRelativePosition(core::position2di( dim.Width/2 - wndRect.getWidth() / 2, dim.Height/2 - wndRect.getHeight()/2 ));
+				  m_pEnv->setFocus( pWindow->getElementFromId( EDIT_USERNAME ) );
+			  }
+      }
 		}
 		break;
 
   default:
     break;
   }
+
+  return true;
 }
 
-///////////////////////////////////////////////////////////////////////
-
-void ViewLogicLoading::ConfigureUISkin()
-{
-	IGUISkin* pSkin = m_pEnv->createSkin(gui::EGST_BURNING_SKIN);
-
-	// Window Background
-	pSkin->setColor( EGDC_WINDOW, SColor(255, 0, 0, 0) );
-	// Window Caption background
-	pSkin->setColor( EGDC_ACTIVE_BORDER, SColor(255, 64, 128, 64) );
-	pSkin->setColor( EGDC_ACTIVE_CAPTION, SColor(255, 0, 0, 0) );
-
-	pSkin->setColor( EGDC_BUTTON_TEXT, SColor(255, 64, 255, 64) );
-
-	pSkin->setColor( EGDC_3D_FACE, SColor(255, 196, 255, 196) );
-
-
-	m_pEnv->setSkin(pSkin);
-	pSkin->drop();
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void ViewLogicLoading::SetLoginWindowStrings(IGUIWindow* pWindow)
-{
-  IGUIElement* pElem = NULL;
-
-  pWindow->setText( ResourceManager::instance().GetClientString( STR_LOGINWND_CAPTION ).c_str() );
-  if ( (pElem = pWindow->getElementFromId( STATIC_USERNAME )) )
-    pElem->setText( ResourceManager::instance().GetClientString( STR_LOGINWND_USERNAME ).c_str() );
-  if ( (pElem = pWindow->getElementFromId( STATIC_PASSWORD )) )
-    pElem->setText( ResourceManager::instance().GetClientString( STR_LOGINWND_PASSWORD ).c_str() );
-  if ( (pElem = pWindow->getElementFromId( BUTTON_LOGIN )) )
-    pElem->setText( ResourceManager::instance().GetClientString( STR_LOGINWND_LOGINBUTTON ).c_str() );
-  if ( (pElem = pWindow->getElementFromId( BUTTON_CANCEL )) )
-    pElem->setText( ResourceManager::instance().GetClientString( STR_LOGINWND_EXITBUTTON ).c_str() );
-}

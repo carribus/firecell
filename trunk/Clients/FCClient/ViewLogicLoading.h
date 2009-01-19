@@ -42,8 +42,9 @@ public:
 	void Destroy();
 	void SetActive();
 	void Refresh();
-  void OnModelStateChange(FCModel::StateInfo state);
+  bool OnModelEvent(FCModelEvent event);
 	SColor GetBackgroundColour()													{ return SColor(255, 0, 0, 0); }
+  FCView* GetContainer()                                { return m_pContainer; }
 
 	/*
 	 *	IEventReceiver implementation
@@ -58,6 +59,8 @@ private:
 
 	void ConfigureUISkin();
   void SetLoginWindowStrings(IGUIWindow* pWindow);
+
+  bool OnModelStateChange(FCModel::StateInfo state);
 
 	FCView*											m_pContainer;
 	IrrlichtDevice*							m_pDevice;

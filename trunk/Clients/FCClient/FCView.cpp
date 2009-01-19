@@ -130,6 +130,26 @@ bool FCView::Update()
 
 void FCView::OnModelEvent(FCModelEvent event)
 {
+  bool bHandled = false;
+
+  // attempt to hand the event to the active view (if any)
+  if ( m_pCurrentViewLogic )
+    bHandled = m_pCurrentViewLogic->OnModelEvent(event);
+
+  // if the event was not handled, then we try and handle it in this object (if possible)
+  if ( !bHandled )
+  {
+    switch ( event.GetType() )
+    {
+    case  FCME_StateChange:
+      OnModelStateChange(event);
+      break;
+
+    default:
+      break;
+    }
+  }
+/*
 	switch ( event.GetType() )
 	{
 	case	FCME_StateChange:
@@ -153,6 +173,7 @@ void FCView::OnModelEvent(FCModelEvent event)
 	default:
 		break;
 	}
+*/
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -198,12 +219,6 @@ bool FCView::OnModelStateChange(FCModelEvent& event)
 			m_pCurrentViewLogic = pNewView;
 			m_pCurrentViewLogic->SetActive();
 		}
-		else
-		{
-			if ( m_pCurrentViewLogic )
-				m_pCurrentViewLogic->OnModelStateChange( m_pModel->GetState() );
-		}
-
 		m_currentModelState = newState;
 	}
 	else
@@ -217,10 +232,6 @@ bool FCView::OnModelStateChange(FCModelEvent& event)
 			{
 			case  FCModel::Loading:
 			case  FCModel::Connecting:
-				{
-					if ( m_pCurrentViewLogic == &m_vlLoading )
-						m_pCurrentViewLogic->OnModelStateChange(stateInfo);
-				}
 				break;
 
 			case  FCModel::Login:
@@ -239,34 +250,4 @@ bool FCView::OnModelStateChange(FCModelEvent& event)
 	}
 
 	return true;
-}
-
-///////////////////////////////////////////////////////////////////////
-
-bool FCView::OnOpenApplication(FCModelEvent& event)
-{
-	bool bResult = true;
-	FCModel::StateInfo state = m_pModel->GetState();
-
-	if ( state.state == FCModel::Playing &&
-		   m_pCurrentViewLogic == &m_vlGame )
-	{
-		__FCPKT_ACTIVATE_DESKTOP_OPTION_RESP* pData = (__FCPKT_ACTIVATE_DESKTOP_OPTION_RESP*) event.GetData();
-		m_vlGame.OnOpenApplication(pData->optionID, pData->cpu_cost, pData->mem_cost);
-	}
-	else
-		bResult = false;
-
-	return bResult;
-}
-
-///////////////////////////////////////////////////////////////////////
-
-bool FCView::OnConsoleFileSystemInfo(FCModelEvent& event)
-{
-	bool bResult = true;
-
-	m_vlGame.OnConsoleFileSystemInfo(event);
-
-	return bResult;
 }

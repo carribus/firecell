@@ -124,6 +124,9 @@
 				RelativePath=".\ConsoleWindow.cpp">
 			</File>
 			<File
+				RelativePath=".\Desktop.cpp">
+			</File>
+			<File
 				RelativePath=".\FCClient.cpp">
 			</File>
 			<File
@@ -193,6 +196,9 @@
 			</File>
 			<File
 				RelativePath=".\ConsoleWindow.h">
+			</File>
+			<File
+				RelativePath=".\Desktop.h">
 			</File>
 			<File
 				RelativePath=".\FCController.h">

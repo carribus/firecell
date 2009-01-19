@@ -39,7 +39,7 @@ void InGameAppWindow::GetClientRect(core::rect<s32>& rect)
 {
 	rect = m_pWindow->getAbsoluteClippingRect();
 	rect.UpperLeftCorner.X += 2;
-	rect.UpperLeftCorner.Y += 19;
+	rect.UpperLeftCorner.Y += 20;
 	rect.LowerRightCorner.X -= 2;
 	rect.LowerRightCorner.Y -= 2;
 }

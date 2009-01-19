@@ -114,7 +114,7 @@ void FCController::OnViewEvent(FCViewEvent& event)
 		break;
 
 	case	VE_DesktopOptionActivated:
-		m_pModel->ActivateDesktopOption( event.GetData() );
+		m_pModel->ActivateDesktopOption( (FCULONG)event.GetData() );
 		break;
 
 	case	VE_ConRefresh:
