@@ -20,11 +20,9 @@
 #ifndef _FCVIEW_H_
 #define _FCVIEW_H_
 
-#include <deque>
 #include <irrlicht.h>
 #include "IModelEventSink.h"
 #include "FCModel.h"
-#include "QueueReaderThread.h"
 #include "ViewLogicLoading.h"
 #include "ViewLogicCharacterSelection.h"
 #include "ViewLogicGame.h"
@@ -54,21 +52,22 @@ public:
 
 	void OnModelEvent(FCModelEvent event);
 		bool OnModelStateChange(FCModelEvent& event);
+/*
 		bool OnOpenApplication(FCModelEvent& event);
 		bool OnConsoleFileSystemInfo(FCModelEvent& event);
-
+*/
 private:
 
 	FCModel*					m_pModel;
 	FCController*			m_pController;
 
+  /*
+   *  Irrlicht specific interfaces
+   */
 	IrrlichtDevice*		m_pDevice;
 	IVideoDriver*			m_pDriver;
 	IGUIEnvironment*	m_pEnv;
 	ISceneManager*		m_pScene;
-
-	QueueReaderThread<FCView, FCModelEvent>				m_thrdEventQueue;
-	deque<FCModelEvent>														m_modelEventQueue;
 
 	FCModel::e_ModelState		m_currentModelState;
 

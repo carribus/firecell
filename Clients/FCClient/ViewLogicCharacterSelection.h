@@ -42,8 +42,9 @@ public:
 	void Destroy();
 	void SetActive();
 	void Refresh();
-  void OnModelStateChange(FCModel::StateInfo state);
+  bool OnModelEvent(FCModelEvent event);
 	SColor GetBackgroundColour()													{ return SColor(255, 255, 255, 255); }
+  FCView* GetContainer()                                { return m_pContainer; }
 
 	/*
 	 *	IEventReceiver implementation
@@ -56,6 +57,8 @@ private:
 	 * Private Methods
 	 */
 	void CreateGUIObjects();
+
+  void OnModelStateChange(FCModel::StateInfo state);
 
   FCModel*                    m_pModel;
 	FCView*											m_pContainer;
