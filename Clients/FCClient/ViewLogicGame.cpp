@@ -194,6 +194,10 @@ bool ViewLogicGame::OnEvent(const SEvent& event)
 			case	EMIE_LMOUSE_LEFT_UP:
 				bHandled = OnLButtonUp(event.MouseInput);
 				break;
+
+			case	EMIE_MOUSE_MOVED:
+				bHandled = OnMouseMove(event.MouseInput);
+				break;
 			}
 		}
 		break;
@@ -230,6 +234,15 @@ bool ViewLogicGame::OnLButtonDown(const SEvent::SMouseInput& event)
 	m_LButtonLastClick.lastX = event.X;
 	m_LButtonLastClick.lastY = event.Y;
 
+	// if we didn't get to double click, the lets check if the player clicked on an item
+	Desktop::DesktopOption d;
+
+	if ( m_pDesktop->GetDesktopOptionFromPt( event.X, event.Y, &d ) )
+	{
+		m_pDesktop->HighlightDesktopOption(d.optionID);
+	}
+
+
 	return false;
 }
 
@@ -256,6 +269,15 @@ bool ViewLogicGame::OnLButtonDblClick(const SEvent::SMouseInput& event)
   }
 
   return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool ViewLogicGame::OnMouseMove(const SEvent::SMouseInput& event)
+{
+	bool bResult = false;
+
+	return bResult;
 }
 
 ///////////////////////////////////////////////////////////////////////

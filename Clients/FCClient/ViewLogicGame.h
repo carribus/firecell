@@ -69,6 +69,7 @@ private:
 	bool OnLButtonDown(const SEvent::SMouseInput& event);
 	bool OnLButtonUp(const SEvent::SMouseInput& event);
 	bool OnLButtonDblClick(const SEvent::SMouseInput& event);
+	bool OnMouseMove(const SEvent::SMouseInput& event);
 
   // 3D object creation functions
 	void CreateStartBar();	
