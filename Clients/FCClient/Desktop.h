@@ -34,6 +34,8 @@ public:
   bool OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost);
 	bool IsApplicationRunning(FCUINT appType);
 
+  bool OnConsoleEvent(FCModelEvent& event);
+
 private:
 
   /*

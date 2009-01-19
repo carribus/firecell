@@ -2,5 +2,6 @@
 	<Settings>
 		<Server address="127.0.0.1" port="6666" />
 		<ConnectAttempts count="4" />
+		<WindowMode fullscreen="1" />
 	</Settings>
 </FCClient>

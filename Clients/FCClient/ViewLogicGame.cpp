@@ -154,6 +154,13 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
       }
       break;
 
+    case  FCME_Console_FileSystemInfo:
+      // Add any other console specific events here
+      {
+        m_pDesktop->OnConsoleEvent(event);
+      }
+      break;
+
     default:
       break;
     }
