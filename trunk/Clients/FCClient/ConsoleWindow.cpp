@@ -36,7 +36,9 @@ bool ConsoleWindow::Create(FCUINT optionID, std::wstring caption)
     // create the font
     IGUIFont* pFont = m_pEnv->getFont("./clientdata/fonts/fontfixedsys.xml");
 		m_pLogWnd->setOverrideFont( pFont );
-    pFont->drop();
+
+    // get focus
+    m_pEnv->setFocus( m_pWindow );
 
 		// request a refresh
     m_bWaitingForResponse = true;

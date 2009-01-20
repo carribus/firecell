@@ -43,7 +43,7 @@ public:
 	void SetActive();
 	void Refresh();
   bool OnModelEvent(FCModelEvent event);
-	SColor GetBackgroundColour()													{ return SColor(255, 255, 255, 255); }
+	SColor GetBackgroundColour()													{ return SColor(255, 0, 0, 0); }
   FCView* GetContainer()                                { return m_pContainer; }
 
 	/*

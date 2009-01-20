@@ -25,6 +25,11 @@ bool InGameAppWindow::Create(FCUINT optionID, DesktopOptionType type, std::wstri
 	if ( !(m_pWindow = m_pEnv->addWindow( core::rect<s32>(0, 0, 0, 0), false, caption.c_str() )) )
 		return false;
 
+  IGUIButton* pBtn = m_pWindow->getMaximizeButton();
+  pBtn->setVisible(true);
+  pBtn = m_pWindow->getMinimizeButton();
+  pBtn->setVisible(true);
+
 	m_type = type;
 	m_optionID = optionID;
 		
@@ -36,8 +41,8 @@ bool InGameAppWindow::Create(FCUINT optionID, DesktopOptionType type, std::wstri
 void InGameAppWindow::GetClientRect(core::rect<s32>& rect)
 {
 	rect = m_pWindow->getAbsoluteClippingRect();
-	rect.UpperLeftCorner.X += 2;
-	rect.UpperLeftCorner.Y += 20;
-	rect.LowerRightCorner.X -= 2;
-	rect.LowerRightCorner.Y -= 2;
+	rect.UpperLeftCorner.X += 3;
+	rect.UpperLeftCorner.Y += 21;
+	rect.LowerRightCorner.X -= 3;
+	rect.LowerRightCorner.Y -= 3;
 }
