@@ -32,6 +32,10 @@ public:
   SColor getTextColor()                                         { return m_textColor; }
   void setTimer(ITimer* pTimer)                                 { m_pTimer = pTimer; }
   void setPrompt(const std::wstring& prompt)                    { m_prompt = prompt; }
+  void setHistoryLogSize(u32 size);
+  u32 getHistoryLogSize()                                       { return m_historySize; }
+  void setMaxLogSize(u32 size);
+  u32 getMaxLogSize()                                           { return m_maxLogSize; }
 
 protected:
 
@@ -43,11 +47,15 @@ protected:
   SColor            m_textColor;
 
   bool              m_bCaretVisible;
+  u32               m_maxLogSize;
   std::vector<std::wstring>   m_arrLogLines;
 
   std::wstring      m_prompt;
   std::wstring      m_input;
   u32               m_posInput;                     // position of the caret in the input string
+  u32               m_historySize;                  // size of input history backlog
+  u32               m_historyIndex;
+  std::vector<std::wstring> m_arrHistory;
 };
 
 } // end of namespace gui

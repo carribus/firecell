@@ -7,7 +7,10 @@ GUIConsoleCtrl::GUIConsoleCtrl(IGUIEnvironment* environment, core::rect<s32>& re
 , m_backColor(backColor)
 , m_textColor(textColor)
 , m_bCaretVisible(true)
+, m_maxLogSize(5000)
 , m_posInput(0)
+, m_historySize(10)
+, m_historyIndex(0)
 {
 	#ifdef _DEBUG
 	setDebugName("GUIConsoleCtrl");
@@ -138,46 +141,109 @@ bool GUIConsoleCtrl::ProcessKeyInput(const SEvent& event)
       // add the prompt and text line to the log
       addTextLine( m_prompt + m_input );
       // if we have an event sink registered, then we should fire a notification with the input text here
-      
+ 
+      // add the input the history log
+      m_arrHistory.push_back(m_input);
+      if ( m_arrHistory.size() > m_historySize )
+        m_arrHistory.erase( m_arrHistory.begin() );
+      m_historyIndex = (u32)m_arrHistory.size();
       // clear the input text and reset the caret position
       m_input.clear();
       m_posInput = 0;
+
       bResult = true;
     }
     break;
 
-  case  KEY_DELETE:
+  case  KEY_DELETE:   // delete the character to the right of the caret
     {
       if ( m_posInput < m_input.size() )
-      {
         m_input.erase( m_posInput, 1 );
-      }
+
       bResult = true;
     }
     break;
 
-  case  KEY_LEFT:
+  case  KEY_LEFT:   // move the caret to the left by one character
     {
       if ( m_posInput )
         m_posInput--;
+
       bResult = true;
     }
     break;
 
-  case  KEY_RIGHT:
+  case  KEY_RIGHT:  // move the caret to the right by one character
     {
       if ( m_posInput < m_input.size() )
         m_posInput++;
+
       bResult = true;
     }
     break;
 
-  case  KEY_BACK:
+  case  KEY_UP:   // This goes backwards through the history log of inputs
+    {
+      if ( m_historyIndex == 0 )
+        m_historyIndex = (u32)( (u32)m_arrHistory.size() < m_historySize ? m_arrHistory.size()-1 : m_historySize-1);
+      else
+        m_historyIndex--;
+      m_input = m_arrHistory[m_historyIndex];
+      m_posInput = (u32)m_input.size();
+
+      bResult = true;
+    }
+    break;
+
+  case  KEY_DOWN:   // move forward through the history log of inputs
+    {
+      if ( m_historyIndex == m_arrHistory.size()-1 )
+        m_historyIndex = 0;
+      else
+        m_historyIndex++;
+      m_input = m_arrHistory[m_historyIndex];
+      m_posInput = (u32)m_input.size();
+
+      bResult = true;
+    }
+    break;
+
+  case  KEY_SHIFT:
+    break;
+
+  case  KEY_BACK: // erase the character to the left of the caret
     {
       if ( m_posInput )
         m_input.erase( --m_posInput, 1 );
+
       bResult = true;
     }
+    break;
+
+  case  KEY_F1:
+  case  KEY_F2:
+  case  KEY_F3:
+  case  KEY_F4:
+  case  KEY_F5:
+  case  KEY_F6:
+  case  KEY_F7:
+  case  KEY_F8:
+  case  KEY_F9:
+  case  KEY_F10:
+  case  KEY_F11:
+  case  KEY_F12:
+  case  KEY_F13:
+  case  KEY_F14:
+  case  KEY_F15:
+  case  KEY_F16:
+  case  KEY_F17:
+  case  KEY_F18:
+  case  KEY_F19:
+  case  KEY_F20:
+  case  KEY_F21:
+  case  KEY_F22:
+  case  KEY_F23:
+  case  KEY_F24:
     break;
 
   default:
@@ -190,4 +256,29 @@ bool GUIConsoleCtrl::ProcessKeyInput(const SEvent& event)
   }
 
   return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void GUIConsoleCtrl::setHistoryLogSize(u32 size)
+{
+  m_historySize = size;
+  while ( m_arrHistory.size() > size )
+  {
+    m_arrHistory.erase( m_arrHistory.begin() );
+  }
+
+  if ( m_historyIndex >= size )
+    m_historyIndex = size-1;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void GUIConsoleCtrl::setMaxLogSize(u32 size)
+{
+  m_maxLogSize = size;
+  while ( m_arrLogLines.size() > size )
+  {
+    m_arrLogLines.erase( m_arrHistory.begin() );
+  }
 }
