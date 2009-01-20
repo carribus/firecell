@@ -133,6 +133,9 @@
 				RelativePath=".\FCController.cpp">
 			</File>
 			<File
+				RelativePath=".\FCGUIElementFactory.cpp">
+			</File>
+			<File
 				RelativePath=".\FCModel.cpp">
 			</File>
 			<File
@@ -146,6 +149,9 @@
 			</File>
 			<File
 				RelativePath=".\FCViewEvent.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIConsoleCtrl.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIFCCharacterItem.cpp">
@@ -204,6 +210,9 @@
 				RelativePath=".\FCController.h">
 			</File>
 			<File
+				RelativePath=".\FCGUIElementFactory.h">
+			</File>
+			<File
 				RelativePath=".\FCModel.h">
 			</File>
 			<File
@@ -217,6 +226,9 @@
 			</File>
 			<File
 				RelativePath=".\FCViewEvent.h">
+			</File>
+			<File
+				RelativePath=".\GUIConsoleCtrl.h">
 			</File>
 			<File
 				RelativePath=".\GUIFCCharacterItem.h">

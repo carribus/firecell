@@ -73,6 +73,7 @@ void ViewLogicLoading::Destroy()
 
 ///////////////////////////////////////////////////////////////////////
 
+#include "GUIConsoleCtrl.h"
 void ViewLogicLoading::SetActive()
 {
 	core::dimension2d<s32> dim = m_pDevice->getVideoDriver()->getScreenSize();
@@ -86,9 +87,20 @@ void ViewLogicLoading::SetActive()
 		
 	m_pTextObject->setOverrideColor( SColor(255, 0, 255, 0) );
 	m_pTextObject->setOverrideFont(pFont);
+
+  // test code for custom factory
+  GUIConsoleCtrl* pConsole = (GUIConsoleCtrl*)m_pEnv->addGUIElement("console");
+  if ( pConsole )
+  {
+    pConsole->setRelativePosition( core::rect<s32>(100, 100, 600, 500) );
+    pConsole->setBackgroundColor(SColor(128, 255, 0, 0));
+    pConsole->setTextColor(SColor(255, 255, 168, 168));
+    pConsole->setText(L"GUIConsoleCtrl tester");
+    pConsole->drop();
+  }
 }
 
-////////////////////////////////////////////////////s///////////////////
+///////////////////////////////////////////////////////////////////////
 
 void ViewLogicLoading::Refresh()
 {

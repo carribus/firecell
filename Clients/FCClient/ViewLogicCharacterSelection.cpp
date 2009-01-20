@@ -98,10 +98,10 @@ void ViewLogicCharacterSelection::Refresh()
 	IVideoDriver* pDriver = m_pDevice->getVideoDriver();
 
 	pDriver->draw2DRectangle(frame, 
-													 SColor(255, 184, 184, 184),
-													 SColor(255, 184, 184, 184),
-													 SColor(255, 255, 255, 255),
-													 SColor(255, 255, 255, 255) );
+													 SColor(255, 64, 64, 64),
+													 SColor(255, 64, 64, 64),
+													 SColor(255, 0, 0, 0),
+													 SColor(255, 0, 0, 0) );
 
   m_pScene->drawAll();
 	m_pEnv->drawAll();
@@ -217,7 +217,7 @@ void ViewLogicCharacterSelection::CreateGUIObjects()
   IGUIStaticText* pHeader = m_pEnv->addStaticText( strHeader.c_str(), core::rect<s32>(0, 0, screenDim.Width, txtDim.Height), false, false, 0, STATIC_HEADER );
   pHeader->setOverrideFont( m_pFontHeader );
   pHeader->setTextAlignment( EGUIA_CENTER, EGUIA_CENTER );
-  pHeader->setOverrideColor( video::SColor(255, 64, 64, 64) );
+  pHeader->setOverrideColor( video::SColor(255, 196, 196, 196) );
 
   for ( size_t i = 0; i < numChars; i++ )
   {

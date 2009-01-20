@@ -52,10 +52,7 @@ public:
 
 	void OnModelEvent(FCModelEvent event);
 		bool OnModelStateChange(FCModelEvent& event);
-/*
-		bool OnOpenApplication(FCModelEvent& event);
-		bool OnConsoleFileSystemInfo(FCModelEvent& event);
-*/
+
 private:
 
 	FCModel*					m_pModel;

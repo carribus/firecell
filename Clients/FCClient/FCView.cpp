@@ -19,6 +19,7 @@
 */
 #include "../../common/protocol/fcprotocol.h"
 #include "FCController.h"
+#include "FCGUIElementFactory.h"
 #include "FCView.h"
 
 FCView::FCView(void)
@@ -101,6 +102,11 @@ bool FCView::Initialise(E_DRIVER_TYPE driverType)
 	if ( !m_pScene )
 		return false;
 
+  // register the custom gui element factory
+  IGUIElementFactory* pFactory = new FCGUIElementFactory(m_pEnv);
+  m_pEnv->registerGUIElementFactory( pFactory );
+  pFactory->drop();
+
 	return true;
 }
 
@@ -149,31 +155,6 @@ void FCView::OnModelEvent(FCModelEvent event)
       break;
     }
   }
-/*
-	switch ( event.GetType() )
-	{
-	case	FCME_StateChange:
-		{
-			OnModelStateChange(event);
-		}
-		break;
-
-	case	FCME_OpenApplication:
-		{
-			OnOpenApplication(event);
-		}
-		break;
-
-	case	FCME_Console_FileSystemInfo:
-		{
-			OnConsoleFileSystemInfo(event);
-		}
-		break;
-
-	default:
-		break;
-	}
-*/
 }
 
 ///////////////////////////////////////////////////////////////////////

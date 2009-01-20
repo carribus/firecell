@@ -242,7 +242,6 @@ bool ViewLogicGame::OnLButtonDown(const SEvent::SMouseInput& event)
 		m_pDesktop->HighlightDesktopOption(d.optionID);
 	}
 
-
 	return false;
 }
 
