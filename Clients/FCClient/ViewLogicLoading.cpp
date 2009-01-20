@@ -32,6 +32,8 @@
 #define STATIC_USERNAME               6
 #define STATIC_PASSWORD               7
 
+#define CONSOLE_CONTROL               8
+
 ViewLogicLoading::ViewLogicLoading()
 : m_pContainer(NULL)
 , m_pDevice(NULL)
@@ -92,10 +94,16 @@ void ViewLogicLoading::SetActive()
   GUIConsoleCtrl* pConsole = (GUIConsoleCtrl*)m_pEnv->addGUIElement("console");
   if ( pConsole )
   {
+    pConsole->setID(CONSOLE_CONTROL);
     pConsole->setRelativePosition( core::rect<s32>(100, 100, 600, 500) );
     pConsole->setBackgroundColor(SColor(128, 255, 0, 0));
     pConsole->setTextColor(SColor(255, 255, 168, 168));
-    pConsole->setText(L"GUIConsoleCtrl tester");
+    pConsole->setTimer( m_pDevice->getTimer() );
+    pConsole->addTextLine(L"irrLicht GUIConsoleCtrl tester");
+    pConsole->addTextLine(L"Written by carribus (c) 2009");
+    pConsole->addTextLine(L"Another line of uselessnes....");
+    pConsole->addTextLine(L"------------------------------");
+    pConsole->setPrompt(L"C:\\>");
     pConsole->drop();
   }
 }
@@ -298,6 +306,7 @@ bool ViewLogicLoading::OnModelStateChange(FCModel::StateInfo state)
 				  core::rect<s32> wndRect = pWindow->getAbsoluteClippingRect();
 				  pWindow->setRelativePosition(core::position2di( dim.Width/2 - wndRect.getWidth() / 2, dim.Height/2 - wndRect.getHeight()/2 ));
 				  m_pEnv->setFocus( pWindow->getElementFromId( EDIT_USERNAME ) );
+				  m_pEnv->setFocus( m_pEnv->getRootGUIElement()->getElementFromId( CONSOLE_CONTROL ) );
 			  }
       }
 		}
