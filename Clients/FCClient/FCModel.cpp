@@ -249,6 +249,12 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
 		}
 		break;
 
+	case	FCMSG_CON_COMMAND:
+		{
+			bHandled = OnResponseConsoleCommand(pPkt, pSocket);
+		}
+		break;
+
   default:
 
 /*
@@ -486,6 +492,24 @@ bool FCModel::OnResponseConsoleGetFileSystemInfo(PEPacket* pPkt, BaseSocket* pSo
 
 ///////////////////////////////////////////////////////////////////////
 
+bool FCModel::OnResponseConsoleCommand(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_CON_COMMAND_RESP* d;
+  size_t dataLen;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  d = (__FCPKT_CON_COMMAND_RESP*) new FCBYTE[ dataLen ];
+  pPkt->GetField("data", d, dataLen);
+
+	FireEvent(FCME_Console_Command, (void*)d);
+
+  delete [] (FCBYTE*)d;
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCModel::OnError(PEPacket* pPkt, BaseSocket* pSocket)
 {
   if ( !pPkt || !pSocket )
@@ -657,6 +681,13 @@ void FCModel::ActivateDesktopOption(FCULONG optionID)
 void FCModel::ConsoleRefresh()
 {
 	m_server.RequestCharacterFileSystemInfo( m_pCharacter->GetID() );
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::ConsoleCommandIssued(string cmd, string curdir)
+{
+	m_server.SendConsoleCommand(curdir, cmd);
 }
 
 ///////////////////////////////////////////////////////////////////////

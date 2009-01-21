@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "../common/clienttypes.h"
 #include "../common/ResourceManager.h"
 #include "FCController.h"
 
@@ -119,6 +120,11 @@ void FCController::OnViewEvent(FCViewEvent& event)
 
 	case	VE_ConRefresh:
 		m_pModel->ConsoleRefresh();
+		break;
+
+	case	VE_ConCommandIssued:
+		ConsoleCommand* pCmd = (ConsoleCommand*)event.GetData();
+		m_pModel->ConsoleCommandIssued(pCmd->command, pCmd->currentDir);
 		break;
 	}
 }
