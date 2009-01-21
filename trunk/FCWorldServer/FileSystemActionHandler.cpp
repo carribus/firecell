@@ -58,7 +58,7 @@ string FileSystemActionHandler::Action_FileListing(FileSystem* pFS, const string
         ss << ( f.is_mutable ? "--r--r--r" : "wrxwrxwrx" ) << std::endl;
       }
 
-      ss << std::endl << (unsigned int)numFiles << " File(s)" << "\n";
+      ss << std::endl << (unsigned int)numFiles << " File(s)" << "\n\n";
 
       result = ss.str();
     }

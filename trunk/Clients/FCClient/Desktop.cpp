@@ -202,9 +202,13 @@ bool Desktop::OnConsoleEvent(FCModelEvent& event)
 
 		case	FCME_Console_Command:
 			{
-				char* pResponse = (char*)event.GetData();
-				if ( pResponse )
+				__FCPKT_CON_COMMAND_RESP* pResp = (__FCPKT_CON_COMMAND_RESP*)event.GetData();
+				if ( pResp )
 				{
+          std::string result;
+          // problem here: result is not being populated
+          result.assign( pResp->result, pResp->len );
+          pWnd->OnConsoleCommandResponse( pResp->currentDir, result );
 				}
 			}
 			break;

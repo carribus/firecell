@@ -31,6 +31,8 @@ public:
   bool OnEvent(const SEvent& event);
 
 	void registerEventSink(IGUIConsoleEventSink* pSink)						{ m_pEventSink = pSink; }
+  void freezeConsole(bool bFreeze)                              { m_bFreezeConsole = bFreeze; }
+  bool isConsoleFrozen()                                        { return m_bFreezeConsole; }
 
   u32 addTextLine(const std::wstring& line)                     { m_arrLogLines.push_back(line); return (u32)m_arrLogLines.size(); }
   void setBackgroundColor(SColor col)                           { m_backColor = col; }
@@ -55,9 +57,14 @@ protected:
   SColor            m_textColor;
 	IGUIFont*					m_pOverrideFont;
 
+  bool              m_bNeedRecalc;
+  bool              m_bFreezeConsole;
   bool              m_bCaretVisible;
   u32               m_maxLogSize;
   std::vector<std::wstring>   m_arrLogLines;
+
+  s32               m_fontHeight;
+  s32               m_maxVisibleLines;
 
   std::wstring      m_prompt;
   std::wstring      m_input;

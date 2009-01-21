@@ -7,8 +7,12 @@ GUIConsoleCtrl::GUIConsoleCtrl(IGUIEnvironment* environment, core::rect<s32>& re
 , m_backColor(backColor)
 , m_textColor(textColor)
 , m_pOverrideFont(NULL)
+, m_bNeedRecalc(true)
+, m_bFreezeConsole(false)
 , m_bCaretVisible(true)
 , m_maxLogSize(5000)
+, m_fontHeight(0)
+, m_maxVisibleLines(0)
 , m_posInput(0)
 , m_historySize(10)
 , m_historyIndex(0)
@@ -36,61 +40,78 @@ void GUIConsoleCtrl::draw()
 	if ( m_pOverrideFont )
 		pFont = m_pOverrideFont;
 
+  // check if we need to recalculate our metrics and dimensions
+  if ( m_bNeedRecalc )
+  {
+    core::dimension2d<s32> dim = pFont->getDimension(L"ABCDEFG");
+    m_fontHeight = dim.Height;
+    m_maxVisibleLines = AbsoluteRect.getHeight() / m_fontHeight;
+    m_bNeedRecalc = false;
+  }
+
   // draw the background
   Environment->getVideoDriver()->draw2DRectangle( AbsoluteRect, m_backColor, m_backColor, m_backColor, m_backColor );
-  
+
   // draw the text log
   core::dimension2d<s32> extents;
   core::rect<s32> rectTxt = AbsoluteRect;
   std::vector<std::wstring>::iterator it = m_arrLogLines.begin();
   std::vector<std::wstring>::iterator limit = m_arrLogLines.end();
+  // calculate which line we should be starting with (drawing top to bottom)
+  s32 ndx = (s32)(m_arrLogLines.size()-m_maxVisibleLines);
+  if ( ndx >= 0 )
+    it += m_arrLogLines.size()-(m_maxVisibleLines-1);
+  // start rendering the log
   for ( ; it != limit; it++ )
   {
     extents = pFont->getDimension( it->c_str() );
     rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
     rectTxt.LowerRightCorner.Y = rectTxt.UpperLeftCorner.Y + extents.Height;
     // draw the text line
-    pFont->draw( it->c_str(), rectTxt, m_textColor );
+    pFont->draw( it->c_str(), rectTxt, m_textColor, false, false, &rectTxt );
 
     // offset the text rect
     rectTxt.LowerRightCorner += core::position2d<s32>(0, extents.Height);
     rectTxt.UpperLeftCorner += core::position2d<s32>(0, extents.Height);
   }
 
-  // draw the prompt
-  if ( m_prompt.size() )
+  if ( !m_bFreezeConsole )
   {
-    extents = pFont->getDimension( m_prompt.c_str() );
-    rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
-    rectTxt.LowerRightCorner.Y = rectTxt.UpperLeftCorner.Y + extents.Height;
-    // draw the text line
-    pFont->draw( m_prompt.c_str(), rectTxt, m_textColor );
-  }
-
-  // if there is any input in the buffer, then draw it
-  if ( m_input.size() )
-  {
-    extents = pFont->getDimension( m_input.c_str() );
-    rectTxt.UpperLeftCorner.X = rectTxt.LowerRightCorner.X;
-    rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
-    pFont->draw( m_input.c_str(), rectTxt, m_textColor );
-  }
-
-  // draw a caret
-  if ( m_pTimer && Environment->hasFocus(this) )
-  {
-    u32 now = m_pTimer->getTime();
-    if ( now - lastTick > 500 )
+    // draw the prompt
+    if ( m_prompt.size() )
     {
-      // Toggle the caret's visibility
-      m_bCaretVisible ^= true;
-      lastTick = now;
+      extents = pFont->getDimension( m_prompt.c_str() );
+      rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
+      rectTxt.LowerRightCorner.Y = rectTxt.UpperLeftCorner.Y + extents.Height;
+      // draw the text line
+      pFont->draw( m_prompt.c_str(), rectTxt, m_textColor, false, false, &rectTxt );
     }
 
-    if ( m_bCaretVisible )
+    // if there is any input in the buffer, then draw it
+    if ( m_input.size() )
     {
-      extents = pFont->getDimension( L"_" );
-      DrawCaret( rectTxt );
+      extents = pFont->getDimension( m_input.c_str() );
+      rectTxt.UpperLeftCorner.X = rectTxt.LowerRightCorner.X;
+      rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
+      pFont->draw( m_input.c_str(), rectTxt, m_textColor, false, false, &rectTxt );
+    }
+
+    // draw a caret
+    if ( m_pTimer && Environment->hasFocus(this) )
+    {
+      u32 now = m_pTimer->getTime();
+      if ( now - lastTick > 500 )
+      {
+        // Toggle the caret's visibility
+        m_bCaretVisible ^= true;
+        lastTick = now;
+      }
+
+      if ( m_bCaretVisible )
+      {
+        extents = pFont->getDimension( L"_" );
+        DrawCaret( rectTxt );
+      }
     }
   }
 
@@ -151,7 +172,7 @@ void GUIConsoleCtrl::DrawCaret(const core::rect<s32>& rect)
 
 bool GUIConsoleCtrl::ProcessKeyInput(const SEvent& event)
 {
-  if ( !event.KeyInput.PressedDown )
+  if ( !event.KeyInput.PressedDown || m_bFreezeConsole )
     return false;
 
   bool bResult = false;

@@ -142,11 +142,11 @@ string FileSystem::ExecuteCommand(const std::string& cmd, const std::string& arg
     }
     else
     {
-      ret = "Unrecognised command";
+      ret = "Unrecognised command\n\n";
     }
   }
   else
-    ret = "Unrecognised command";
+    ret = "Unrecognised command\n\n";
 
   return ret;
 }

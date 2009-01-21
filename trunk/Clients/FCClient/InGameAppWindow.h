@@ -21,9 +21,10 @@ public:
 	virtual bool Create(FCUINT optionID, DesktopOptionType type, std::wstring caption);
 	void GetClientRect(core::rect<s32>& rect);
 
-	FCUINT GetOptionID()												{ return m_optionID; }
-	DesktopOptionType GetAppType()							{ return m_type; }
-	bool IsWaitingForResponse()									{ return m_bWaitingForResponse; }
+	FCUINT GetOptionID()												        { return m_optionID; }
+	DesktopOptionType GetAppType()							        { return m_type; }
+  virtual void SetWaitingForResponse(bool bWait)      { m_bWaitingForResponse = bWait; }
+	bool IsWaitingForResponse()									        { return m_bWaitingForResponse; }
 
 protected:
 	
