@@ -6,11 +6,13 @@ GUIConsoleCtrl::GUIConsoleCtrl(IGUIEnvironment* environment, core::rect<s32>& re
 , m_pTimer(NULL)
 , m_backColor(backColor)
 , m_textColor(textColor)
+, m_pOverrideFont(NULL)
 , m_bCaretVisible(true)
 , m_maxLogSize(5000)
 , m_posInput(0)
 , m_historySize(10)
 , m_historyIndex(0)
+, m_pEventSink(NULL)
 {
 	#ifdef _DEBUG
 	setDebugName("GUIConsoleCtrl");
@@ -30,6 +32,9 @@ void GUIConsoleCtrl::draw()
   static u32 lastTick = 0;
   std::wstring line;
   IGUIFont* pFont = Environment->getSkin()->getFont();
+
+	if ( m_pOverrideFont )
+		pFont = m_pOverrideFont;
 
   // draw the background
   Environment->getVideoDriver()->draw2DRectangle( AbsoluteRect, m_backColor, m_backColor, m_backColor, m_backColor );
@@ -101,9 +106,26 @@ bool GUIConsoleCtrl::OnEvent(const SEvent& event)
 
   switch ( event.EventType )
   {
+	case	EET_GUI_EVENT:
+		{
+			switch ( event.GUIEvent.EventType )
+			{
+			case	EGET_ELEMENT_FOCUSED:
+				m_bCaretVisible = true;
+				break;
+
+			default:
+				break;
+			}
+		}
+		break;
+
   case  EET_KEY_INPUT_EVENT:
     bResult = ProcessKeyInput(event);
     break;
+
+	default:
+		break;
   }
 
   return bResult;
@@ -140,13 +162,14 @@ bool GUIConsoleCtrl::ProcessKeyInput(const SEvent& event)
     {
       // add the prompt and text line to the log
       addTextLine( m_prompt + m_input );
-      // if we have an event sink registered, then we should fire a notification with the input text here
- 
       // add the input the history log
       m_arrHistory.push_back(m_input);
       if ( m_arrHistory.size() > m_historySize )
         m_arrHistory.erase( m_arrHistory.begin() );
       m_historyIndex = (u32)m_arrHistory.size();
+      // if we have an event sink registered, then we should fire a notification with the input text here
+			if ( m_pEventSink )
+				m_pEventSink->OnConsoleInputEvent(m_input);
       // clear the input text and reset the caret position
       m_input.clear();
       m_posInput = 0;

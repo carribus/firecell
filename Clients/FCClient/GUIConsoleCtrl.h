@@ -13,6 +13,11 @@ using namespace video;
 namespace gui
 {
 
+struct IGUIConsoleEventSink
+{
+	virtual void OnConsoleInputEvent(std::wstring input) = 0;
+};
+
 class GUIConsoleCtrl : public IGUIElement
 {
 public:
@@ -25,6 +30,8 @@ public:
   void draw();
   bool OnEvent(const SEvent& event);
 
+	void registerEventSink(IGUIConsoleEventSink* pSink)						{ m_pEventSink = pSink; }
+
   u32 addTextLine(const std::wstring& line)                     { m_arrLogLines.push_back(line); return (u32)m_arrLogLines.size(); }
   void setBackgroundColor(SColor col)                           { m_backColor = col; }
   void setTextColor(SColor col)                                 { m_textColor = col; }
@@ -36,6 +43,7 @@ public:
   u32 getHistoryLogSize()                                       { return m_historySize; }
   void setMaxLogSize(u32 size);
   u32 getMaxLogSize()                                           { return m_maxLogSize; }
+	void setOverrideFont(IGUIFont* pFont)													{ m_pOverrideFont = pFont; }
 
 protected:
 
@@ -45,6 +53,7 @@ protected:
   ITimer*           m_pTimer;
   SColor            m_backColor;
   SColor            m_textColor;
+	IGUIFont*					m_pOverrideFont;
 
   bool              m_bCaretVisible;
   u32               m_maxLogSize;
@@ -56,6 +65,8 @@ protected:
   u32               m_historySize;                  // size of input history backlog
   u32               m_historyIndex;
   std::vector<std::wstring> m_arrHistory;
+
+	IGUIConsoleEventSink*	m_pEventSink;
 };
 
 } // end of namespace gui

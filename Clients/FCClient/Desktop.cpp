@@ -144,7 +144,7 @@ bool Desktop::OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost
 				// at the moment, we only allow one instance per application type
 				if ( !IsApplicationRunning(option.type) )
 				{
-					ConsoleWindow* pConsole = new ConsoleWindow(m_owner.GetContainer()->GetController(), m_pDevice->getGUIEnvironment());
+					ConsoleWindow* pConsole = new ConsoleWindow(m_owner.GetContainer()->GetController(), m_pDevice);
 					if ( pConsole->Create(optionID, L"Console Window") )
 					{
 						m_arrApps.push_back(pConsole);

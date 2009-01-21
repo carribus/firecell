@@ -3,10 +3,11 @@
 #include "FCViewEvent.h"
 #include "ConsoleWindow.h"
 
-#define CWID_STATIC_LOG			1
+#define CONSOLE_CONTROL				1
 
-ConsoleWindow::ConsoleWindow(FCController* pController, IGUIEnvironment* pEnv)
-: InGameAppWindow(pController, pEnv)
+ConsoleWindow::ConsoleWindow(FCController* pController, IrrlichtDevice* pDevice)
+: InGameAppWindow(pController, pDevice->getGUIEnvironment())
+, m_pDevice(pDevice)
 , m_pLogWnd(NULL)
 {
 }
@@ -28,17 +29,34 @@ bool ConsoleWindow::Create(FCUINT optionID, std::wstring caption)
 	{
 		m_pWindow->setRelativePosition(wndRect);
 		GetClientRect(clientRect);
+/*
 		m_pLogWnd = m_pEnv->addStaticText(L"", clientRect, false, false, m_pWindow, CWID_STATIC_LOG);
     m_pWindow->addChild( m_pLogWnd );
 		m_pLogWnd->setBackgroundColor( video::SColor(255, 0, 0, 0) );
 		m_pLogWnd->setOverrideColor( video::SColor(255, 0, 196, 0) );
+*/
+		m_pLogWnd = (GUIConsoleCtrl*)m_pEnv->addGUIElement("console", m_pWindow);
+		if ( m_pLogWnd )
+		{
+			m_pLogWnd->setID(CONSOLE_CONTROL);
+			m_pLogWnd->registerEventSink(this);
+			m_pLogWnd->setRelativePosition( clientRect );
+			m_pLogWnd->setBackgroundColor(SColor(255, 0, 0, 0));
+			m_pLogWnd->setTextColor(SColor(255, 0, 255, 0));
+			m_pLogWnd->setTimer( m_pDevice->getTimer() );
+			m_pLogWnd->addTextLine(L"irrLicht GUIConsoleCtrl tester");
+			m_pLogWnd->addTextLine(L"Written by carribus (c) 2009");
+			m_pLogWnd->addTextLine(L"Another line of uselessnes....");
+			m_pLogWnd->addTextLine(L"------------------------------");
+			m_pLogWnd->drop();
+		}
 
     // create the font
-    IGUIFont* pFont = m_pEnv->getFont("./clientdata/fonts/fontfixedsys.xml");
-		m_pLogWnd->setOverrideFont( pFont );
+//    IGUIFont* pFont = m_pEnv->getFont("./clientdata/fonts/fontfixedsys.xml");
+//		m_pLogWnd->setOverrideFont( pFont );
 
     // get focus
-    m_pEnv->setFocus( m_pWindow );
+    m_pDevice->getGUIEnvironment()->setFocus( m_pLogWnd );
 
 		// request a refresh
     m_bWaitingForResponse = true;
@@ -60,34 +78,21 @@ void ConsoleWindow::OnFileSystemInfoReceived(FCModel::FileSystemInfo* pFSI)
   m_dirSeperator = pFSI->dirSeperator;
   m_fsStyle = pFSI->fsStyle;
 
-  AddPrompt();
-  Update();
+	wstringstream s;
+	s << m_currentDir.c_str() << L">";
+	m_pLogWnd->setPrompt(s.str());
 
   m_bWaitingForResponse = false;
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-void ConsoleWindow::AddPrompt()
+void ConsoleWindow::OnConsoleInputEvent(std::wstring input)
 {
-  std::wstringstream s;
+	if ( !input.size() )
+		return;
 
-  s << m_currentDir.c_str() << L" > ";
-  m_log.push_back(s.str());
+	
 }
 
 ///////////////////////////////////////////////////////////////////////
-
-void ConsoleWindow::Update()
-{
-  wstring str;
-  std::vector<wstring>::iterator it = m_log.begin();
-  std::vector<wstring>::iterator limit = m_log.end();
-
-  for ( ; it != limit; it++ )
-  {
-    str += *it;
-  }
-
-  m_pLogWnd->setText(str.c_str());
-}
