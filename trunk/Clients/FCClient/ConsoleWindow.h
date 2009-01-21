@@ -3,12 +3,14 @@
 
 #include <string>
 #include "FCModel.h"
+#include "GUIConsoleCtrl.h"
 #include "InGameAppWindow.h"
 
 class ConsoleWindow :	public InGameAppWindow
+										, public IGUIConsoleEventSink
 {
 public:
-	ConsoleWindow(FCController* pController, IGUIEnvironment* pEnv);
+	ConsoleWindow(FCController* pController, IrrlichtDevice* pDevice);
 	~ConsoleWindow(void);
 
 	bool Create(FCUINT optionID, std::wstring caption);
@@ -19,12 +21,15 @@ public:
 	void SetDirSeperator(const std::string& sep)					{ m_dirSeperator = sep; }
 	void SetFileSystemStyle(FCBYTE style)									{ m_fsStyle = style; }
 
+	/*
+	 *	IGUIConsoleEventSink implementation
+	 */
+	void OnConsoleInputEvent(std::wstring input);
+
 private:
 
-  void AddPrompt();
-  void Update();
-
-	IGUIStaticText*				m_pLogWnd;
+	IrrlichtDevice*				m_pDevice;
+	GUIConsoleCtrl* 			m_pLogWnd;
 	std::string						m_currentDir;
 	std::string						m_dirSeperator;
   FCBYTE								m_fsStyle;
