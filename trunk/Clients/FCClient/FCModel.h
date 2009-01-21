@@ -164,6 +164,7 @@ public:
 	void ActivateDesktopOption(FCULONG optionID);
 	/* Console methods */
 	void ConsoleRefresh();
+	void ConsoleCommandIssued(string cmd, string curdir);
 
   vector<Character>& GetCharacters()               { return m_characters; }
 	map<FCUINT, DesktopOption> GetDesktopOptions()	 { return m_desktopOptions; }
@@ -191,6 +192,7 @@ private:
 		bool OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponeActivateDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseConsoleGetFileSystemInfo(PEPacket* pPkt, BaseSocket* pSocket);
+		bool OnResponseConsoleCommand(PEPacket* pPkt, BaseSocket* pSocket);
 
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
 

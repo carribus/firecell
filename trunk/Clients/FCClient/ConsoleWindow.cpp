@@ -1,4 +1,5 @@
 #include <sstream>
+#include "../common/clienttypes.h"
 #include "FCController.h"
 #include "FCViewEvent.h"
 #include "ConsoleWindow.h"
@@ -92,7 +93,16 @@ void ConsoleWindow::OnConsoleInputEvent(std::wstring input)
 	if ( !input.size() )
 		return;
 
-	
+	ConsoleCommand cc;
+	char buffer[1024];
+
+	snprintf(buffer, sizeof(buffer)-1, "%S", input.c_str());
+	cc.command = buffer;
+	cc.currentDir = m_currentDir;
+
+	m_bWaitingForResponse = true;
+	FCViewEvent e(VE_ConCommandIssued, (long long)&cc);
+	m_pController->OnViewEvent(e);
 }
 
 ///////////////////////////////////////////////////////////////////////

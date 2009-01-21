@@ -13,7 +13,8 @@ enum e_FCViewEventType
 	VE_CharacterSelected,
 	VE_DesktopOptionActivated,
 	/* Console Events */
-	VE_ConRefresh
+	VE_ConRefresh,
+	VE_ConCommandIssued
 };
 
 /////////////////////////////////////////////////////////////////
