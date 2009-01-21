@@ -161,6 +161,12 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
       }
       break;
 
+		case	FCME_Console_Command:
+			{
+				m_pDesktop->OnConsoleEvent(event);
+			}
+			break;
+
     default:
       break;
     }

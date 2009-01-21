@@ -200,6 +200,15 @@ bool Desktop::OnConsoleEvent(FCModelEvent& event)
       }
       break;
 
+		case	FCME_Console_Command:
+			{
+				char* pResponse = (char*)event.GetData();
+				if ( pResponse )
+				{
+				}
+			}
+			break;
+
     default:
       break;
     }
