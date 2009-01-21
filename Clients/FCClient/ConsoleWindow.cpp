@@ -24,19 +24,14 @@ ConsoleWindow::~ConsoleWindow(void)
 bool ConsoleWindow::Create(FCUINT optionID, std::wstring caption)
 {
 	bool bResult = InGameAppWindow::Create(optionID, DOT_Console, caption);
-	core::rect<s32> wndRect(0, 0, 500, 400), clientRect;
+	core::rect<s32> wndRect(0, 0, 500, 420), clientRect;
 
 	if ( bResult )
 	{
 		m_pWindow->setRelativePosition(wndRect);
 		GetClientRect(clientRect);
-/*
-		m_pLogWnd = m_pEnv->addStaticText(L"", clientRect, false, false, m_pWindow, CWID_STATIC_LOG);
-    m_pWindow->addChild( m_pLogWnd );
-		m_pLogWnd->setBackgroundColor( video::SColor(255, 0, 0, 0) );
-		m_pLogWnd->setOverrideColor( video::SColor(255, 0, 196, 0) );
-*/
-		m_pLogWnd = (GUIConsoleCtrl*)m_pEnv->addGUIElement("console", m_pWindow);
+
+    m_pLogWnd = (GUIConsoleCtrl*)m_pEnv->addGUIElement("console", m_pWindow);
 		if ( m_pLogWnd )
 		{
 			m_pLogWnd->setID(CONSOLE_CONTROL);
@@ -60,7 +55,8 @@ bool ConsoleWindow::Create(FCUINT optionID, std::wstring caption)
     m_pDevice->getGUIEnvironment()->setFocus( m_pLogWnd );
 
 		// request a refresh
-    m_bWaitingForResponse = true;
+    SetWaitingForResponse(true);
+
 		FCViewEvent e(VE_ConRefresh);
 		m_pController->OnViewEvent(e);
 	}
@@ -75,15 +71,55 @@ void ConsoleWindow::OnFileSystemInfoReceived(FCModel::FileSystemInfo* pFSI)
   if ( !pFSI )
     return;
 
-  m_currentDir = pFSI->currentDir;
+  SetCurrentDir( pFSI->currentDir );
   m_dirSeperator = pFSI->dirSeperator;
   m_fsStyle = pFSI->fsStyle;
 
-	wstringstream s;
-	s << m_currentDir.c_str() << L">";
-	m_pLogWnd->setPrompt(s.str());
+  SetWaitingForResponse(false);
+}
 
-  m_bWaitingForResponse = false;
+///////////////////////////////////////////////////////////////////////
+
+void ConsoleWindow::OnConsoleCommandResponse(std::string currentDir, std::string result)
+{
+  std::string temp;
+  std::wstring line;
+  std::wstringstream s;
+
+  SetCurrentDir(currentDir);
+  size_t pos = result.find_first_of("\n");
+
+  while ( pos != std::string::npos )
+  {
+    temp = result.substr(0, pos);
+    s << temp.c_str();
+    line = s.str();
+    m_pLogWnd->addTextLine(line);
+    result.erase(0, pos+1);
+    pos = result.find_first_of("\n");
+    s.str(L"");
+  }
+
+  SetWaitingForResponse(false);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ConsoleWindow::SetCurrentDir(const std::string& curDir)
+{
+  m_currentDir = curDir;
+  // update the prompt
+  wstringstream s;
+  s << m_currentDir.c_str() << L">";
+  m_pLogWnd->setPrompt(s.str());
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ConsoleWindow::SetWaitingForResponse(bool bWait)
+{
+  InGameAppWindow::SetWaitingForResponse(bWait);
+  m_pLogWnd->freezeConsole(bWait);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -100,7 +136,7 @@ void ConsoleWindow::OnConsoleInputEvent(std::wstring input)
 	cc.command = buffer;
 	cc.currentDir = m_currentDir;
 
-	m_bWaitingForResponse = true;
+  SetWaitingForResponse(true);
 	FCViewEvent e(VE_ConCommandIssued, (long long)&cc);
 	m_pController->OnViewEvent(e);
 }

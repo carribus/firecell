@@ -67,8 +67,10 @@ void ViewLogicLoading::Create(FCView* pContainer, IrrlichtDevice* pDevice)
 
 void ViewLogicLoading::Destroy()
 {
+  m_mutexUpdates.Lock();
 	m_pEnv->clear();
 	m_pScene->clear();
+  m_mutexUpdates.Unlock();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -76,6 +78,8 @@ void ViewLogicLoading::Destroy()
 void ViewLogicLoading::SetActive()
 {
 	core::dimension2d<s32> dim = m_pDevice->getVideoDriver()->getScreenSize();
+
+  m_mutexUpdates.Lock();
 
 	// setup the font
 	IGUIFont* pFont = m_pEnv->getFont("./clientdata/fonts/fontcourier.png");
@@ -86,14 +90,19 @@ void ViewLogicLoading::SetActive()
 		
 	m_pTextObject->setOverrideColor( SColor(255, 0, 255, 0) );
 	m_pTextObject->setOverrideFont(pFont);
+
+  m_mutexUpdates.Unlock();
+
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void ViewLogicLoading::Refresh()
 {
+  m_mutexUpdates.Lock();
 	m_pScene->drawAll();
 	m_pEnv->drawAll();
+  m_mutexUpdates.Unlock();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -216,6 +225,8 @@ bool ViewLogicLoading::OnModelStateChange(FCModel::StateInfo state)
 	if ( state.state != FCModel::Loading && state.state != FCModel::Connecting && state.state != FCModel::Login )
     return false;
 
+  m_mutexUpdates.Lock();
+
   // check the Model's current sub-state and take necessary action
   switch ( state.state )
   {
@@ -294,6 +305,7 @@ bool ViewLogicLoading::OnModelStateChange(FCModel::StateInfo state)
   default:
     break;
   }
+  m_mutexUpdates.Unlock();
 
   return true;
 }

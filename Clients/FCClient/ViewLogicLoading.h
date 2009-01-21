@@ -22,6 +22,7 @@
 
 #include <string>
 #include <vector>
+#include "PThreadMutex.h"
 #include "IViewLogic.h"
 
 using namespace std;
@@ -70,6 +71,8 @@ private:
 	IGUIStaticText*							m_pTextObject;
 
 	std::wstring						    m_strDetails;
+
+  PThreadMutex                m_mutexUpdates;
 };
 
 #endif//_VIEWLOGICLOADING_H_
