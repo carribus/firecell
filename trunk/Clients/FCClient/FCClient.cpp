@@ -37,7 +37,7 @@ using namespace gui;
 
 int main(int argc, char** argv)
 {
-	FCModel				model;
+  FCModel&			model = FCModel::instance();
 	FCController	controller;
 	FCView				view;
 

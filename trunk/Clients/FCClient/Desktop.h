@@ -34,6 +34,7 @@ public:
   bool GetDesktopOptionFromPt(s32 x, s32 y, DesktopOption* d);
 	bool GetDesktopOptionByID(FCULONG optionID, DesktopOption& d);
 	void HighlightDesktopOption(FCULONG optionID, bool bHighlight = true);
+  void ClearAllHighlights();
   bool OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost);
 	bool IsApplicationRunning(FCUINT appType);
 

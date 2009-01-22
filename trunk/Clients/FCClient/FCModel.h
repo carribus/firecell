@@ -38,10 +38,19 @@ class FCModel : public IBaseSocketSink
 {
 	struct DataQueueItem
   {
+    enum DQIType
+    {
+      DQI_Disconnect,
+      DQI_Connect,
+      DQI_DataIn
+    } type;
     BaseSocket* pSocket;
     PEPacket* pPkt;
   };
   typedef queue<DataQueueItem> DataQueue;
+
+	FCModel(void);
+	~FCModel(void);
 
 public:
 
@@ -137,9 +146,9 @@ public:
 		FCBYTE fsStyle;
 	};
 
-  /* */
-	FCModel(void);
-	~FCModel(void);
+  /* static accessors */
+  static FCModel& instance();
+  static void destroy();
 
 	void SubscribeToEvents(IModelEventSink* pSink);
 	bool IsSubscribed(IModelEventSink* pSink);
@@ -148,6 +157,8 @@ public:
 	void SetState(e_ModelState newState);
   void SetStateStep(FCSHORT stateStep);
 	StateInfo GetState()														{ return m_state; }
+
+  Character* GetPlayer()                          { return m_pCharacter; }
 
 	bool ProcessData();
 
@@ -195,6 +206,8 @@ private:
 		bool OnResponseConsoleCommand(PEPacket* pPkt, BaseSocket* pSocket);
 
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
+
+  static FCModel*                 m_pThis;
 
   PThreadMutex                    m_mutexSinks;
 	vector<IModelEventSink*>				m_sinks;
