@@ -208,6 +208,12 @@ bool ViewLogicGame::OnEvent(const SEvent& event)
 		}
 		break;
 
+	case	EET_GUI_EVENT:
+		{
+			bHandled = m_pDesktop->OnGUIEvent(event.GUIEvent);
+		}
+		break;
+
 	default:
 		break;
 	}

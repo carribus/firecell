@@ -129,16 +129,65 @@ void ConsoleWindow::OnConsoleInputEvent(std::wstring input)
 	if ( !input.size() )
 		return;
 
-	ConsoleCommand cc;
-	char buffer[1024];
+	if ( !IsLocalCommand(input) )
+	{
+		ConsoleCommand cc;
+		char buffer[1024];
 
-	snprintf(buffer, sizeof(buffer)-1, "%S", input.c_str());
-	cc.command = buffer;
-	cc.currentDir = m_currentDir;
+		snprintf(buffer, sizeof(buffer)-1, "%S", input.c_str());
+		cc.command = buffer;
+		cc.currentDir = m_currentDir;
 
-  SetWaitingForResponse(true);
-	FCViewEvent e(VE_ConCommandIssued, (long long)&cc);
-	m_pController->OnViewEvent(e);
+		SetWaitingForResponse(true);
+		FCViewEvent e(VE_ConCommandIssued, (long long)&cc);
+		m_pController->OnViewEvent(e);
+	}
+	else
+	{
+		HandleLocalCommand(input);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////
+
+bool ConsoleWindow::IsLocalCommand(const std::wstring cmd)
+{
+  wchar_t* localCmds[] =
+  {
+    L"exit",
+    L"pwd",
+    NULL
+  };
+  wchar_t** pCmd = localCmds;
+
+  while ( *pCmd )
+  {
+    if ( !cmd.compare(*pCmd) )
+      return true;
+    pCmd++;
+  }
+
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ConsoleWindow::HandleLocalCommand(const std::wstring cmd)
+{
+	std::wstring c;
+  size_t pos = cmd.find(L" ");
+
+	if ( pos != std::wstring::npos )
+    c = cmd.substr(0, pos);
+
+  if ( c == L"exit" )
+  {
+/*
+    if ( m_pSink )
+      m_pSink->CloseModule(this);
+*/
+  }
+  else if ( c == L"pwd" )
+  {
+  }
+}

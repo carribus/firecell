@@ -25,6 +25,7 @@ public:
 	DesktopOptionType GetAppType()							        { return m_type; }
   virtual void SetWaitingForResponse(bool bWait)      { m_bWaitingForResponse = bWait; }
 	bool IsWaitingForResponse()									        { return m_bWaitingForResponse; }
+	IGUIWindow* GetGUIWindow()													{ return m_pWindow; }
 
 protected:
 	

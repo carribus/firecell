@@ -31,6 +31,9 @@ public:
 
 private:
 
+	bool IsLocalCommand(const std::wstring cmd);
+	void HandleLocalCommand(const std::wstring cmd);
+
 	IrrlichtDevice*				m_pDevice;
 	GUIConsoleCtrl* 			m_pLogWnd;
 	std::string						m_currentDir;
