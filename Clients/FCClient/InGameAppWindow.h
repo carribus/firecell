@@ -20,6 +20,7 @@ public:
 
 	virtual bool Create(FCUINT optionID, DesktopOptionType type, std::wstring caption);
 	void GetClientRect(core::rect<s32>& rect);
+  void CenterWindow();
 
 	FCUINT GetOptionID()												        { return m_optionID; }
 	DesktopOptionType GetAppType()							        { return m_type; }

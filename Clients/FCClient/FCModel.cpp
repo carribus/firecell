@@ -24,6 +24,10 @@
 #include "Settings.h"
 #include "FCModel.h"
 
+FCModel* FCModel::m_pThis = NULL;
+
+///////////////////////////////////////////////////////////////////////
+
 FCModel::FCModel(void)
 : m_connectRetry(1)
 , m_pCharacter(NULL)
@@ -38,6 +42,29 @@ FCModel::~FCModel(void)
 {
 	if ( m_pCharacter )
 		delete m_pCharacter;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+FCModel& FCModel::instance()
+{
+  if ( !m_pThis )
+  {
+    m_pThis = new FCModel;
+  }
+  
+  return *m_pThis;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::destroy()
+{
+  if ( m_pThis )
+  {
+    delete m_pThis;
+    m_pThis = NULL;
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -133,22 +160,62 @@ void FCModel::ProcessIncomingData()
 
 	while ( bContinue )
 	{
-    if ( dqi.pPkt->GetField("type", &type, sizeof(FCBYTE)) )
+    switch ( dqi.type )
     {
-      switch ( type )
+    case  DataQueueItem::DQI_DataIn:
       {
-      case  FCPKT_COMMAND:
-        OnCommand(dqi.pPkt, dqi.pSocket);
-        break;
+        if ( dqi.pPkt->GetField("type", &type, sizeof(FCBYTE)) )
+        {
+          switch ( type )
+          {
+          case  FCPKT_COMMAND:
+            OnCommand(dqi.pPkt, dqi.pSocket);
+            break;
 
-      case  FCPKT_RESPONSE:
-        OnResponse(dqi.pPkt, dqi.pSocket);
-        break;
+          case  FCPKT_RESPONSE:
+            OnResponse(dqi.pPkt, dqi.pSocket);
+            break;
 
-      case  FCPKT_ERROR:
-        OnError(dqi.pPkt, dqi.pSocket);
-        break;
+          case  FCPKT_ERROR:
+            OnError(dqi.pPkt, dqi.pSocket);
+            break;
+          }
+        }
       }
+      break;
+
+    case  DataQueueItem::DQI_Connect:
+      {
+		    SetStateStep( MS_Connecting_Connected );
+
+        switch ( m_state.state )
+        {
+        case  FCModel::Connecting:
+          // only move over to the login IF we are currently in the connecting state...
+          SetState( FCModel::Login );
+          break;
+
+        case  FCModel::Login:
+          break;
+
+        case  FCModel::Playing:
+          break;
+
+        default:
+          break;
+        }
+      }
+      break;
+
+    case  DataQueueItem::DQI_Disconnect:
+      {
+        if ( m_state.state != FCModel::ShuttingDown )
+        {
+          // if we are not shutting down, then we should probably try to reconnect...
+          ConnectToServer();
+        }
+      }
+      break;
     }
 
     m_mutexDataIn.Lock();
@@ -582,25 +649,17 @@ void FCModel::OnConnected(BaseSocket* pSocket, int nErrorCode)
 	m_bConnected = (nErrorCode == 0);
 	if ( m_bConnected )
 	{
+    DataQueueItem dqi;
+
     m_connectRetry = 0;
-		SetStateStep( MS_Connecting_Connected );
 
-    switch ( m_state.state )
-    {
-    case  FCModel::Connecting:
-      // only move over to the login IF we are currently in the connecting state...
-      SetState( FCModel::Login );
-      break;
+    dqi.pSocket = pSocket;
+    dqi.pPkt = NULL;
+    dqi.type = DataQueueItem::DQI_Connect;
 
-    case  FCModel::Login:
-      break;
-
-    case  FCModel::Playing:
-      break;
-
-    default:
-      break;
-    }
+		m_mutexDataIn.Lock();
+    m_qDataIn.push(dqi);
+    m_mutexDataIn.Unlock();
 	}
 	else
 	{
@@ -624,11 +683,15 @@ void FCModel::OnConnected(BaseSocket* pSocket, int nErrorCode)
 void FCModel::OnDisconnected(BaseSocket* pSocket, int nErrorCode)
 {
 	m_bConnected = false;
-  if ( m_state.state != FCModel::ShuttingDown )
-  {
-    // if we are not shutting down, then we should probably try to reconnect...
-    ConnectToServer();
-  }
+  DataQueueItem dqi;
+
+  dqi.type = DQI_Disconnect;
+  dqi.pPkt = NULL;
+  dqi.pSocket = pSocket;
+
+	m_mutexDataIn.Lock();
+  m_qDataIn.push(dqi);
+  m_mutexDataIn.Unlock();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -643,6 +706,7 @@ void FCModel::OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen)
   {
     dqi.pSocket = pSocket;
     dqi.pPkt = pPkt;
+    dqi.type = DataQueueItem::DQI_DataIn;
 
 		m_mutexDataIn.Lock();
     m_qDataIn.push(dqi);

@@ -24,11 +24,12 @@ ConsoleWindow::~ConsoleWindow(void)
 bool ConsoleWindow::Create(FCUINT optionID, std::wstring caption)
 {
 	bool bResult = InGameAppWindow::Create(optionID, DOT_Console, caption);
-	core::rect<s32> wndRect(0, 0, 500, 420), clientRect;
+	core::rect<s32> wndRect(0, 0, 640, 480), clientRect;
 
 	if ( bResult )
 	{
 		m_pWindow->setRelativePosition(wndRect);
+    CenterWindow();
 		GetClientRect(clientRect);
 
     m_pLogWnd = (GUIConsoleCtrl*)m_pEnv->addGUIElement("console", m_pWindow);
@@ -40,11 +41,9 @@ bool ConsoleWindow::Create(FCUINT optionID, std::wstring caption)
 			m_pLogWnd->setBackgroundColor(SColor(255, 0, 0, 0));
 			m_pLogWnd->setTextColor(SColor(255, 0, 255, 0));
 			m_pLogWnd->setTimer( m_pDevice->getTimer() );
-			m_pLogWnd->addTextLine(L"irrLicht GUIConsoleCtrl tester");
-			m_pLogWnd->addTextLine(L"Written by carribus (c) 2009");
-			m_pLogWnd->addTextLine(L"Another line of uselessnes....");
-			m_pLogWnd->addTextLine(L"------------------------------");
 			m_pLogWnd->drop();
+      // request the OS version string from the server
+      OnConsoleInputEvent(L"ver");
 		}
 
     // create the font
@@ -174,20 +173,26 @@ bool ConsoleWindow::IsLocalCommand(const std::wstring cmd)
 
 void ConsoleWindow::HandleLocalCommand(const std::wstring cmd)
 {
-	std::wstring c;
+	std::wstring c = cmd;
   size_t pos = cmd.find(L" ");
 
 	if ( pos != std::wstring::npos )
     c = cmd.substr(0, pos);
 
-  if ( c == L"exit" )
+  if ( !c.compare(L"exit") )
   {
-/*
-    if ( m_pSink )
-      m_pSink->CloseModule(this);
-*/
+    // close the console window
+    if ( m_pWindow->getParent() )
+    {
+		  SEvent e;
+		  e.EventType = EET_GUI_EVENT;
+		  e.GUIEvent.Caller = m_pWindow;
+		  e.GUIEvent.Element = 0;
+		  e.GUIEvent.EventType = EGET_ELEMENT_CLOSED;
+      m_pWindow->getParent()->OnEvent(e);
+    }
   }
-  else if ( c == L"pwd" )
+  else if ( !c.compare(L"pwd") )
   {
   }
 }

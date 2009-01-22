@@ -253,6 +253,10 @@ bool ViewLogicGame::OnLButtonDown(const SEvent::SMouseInput& event)
 	{
 		m_pDesktop->HighlightDesktopOption(d.optionID);
 	}
+  else
+  {
+    m_pDesktop->ClearAllHighlights();
+  }
 
 	return false;
 }

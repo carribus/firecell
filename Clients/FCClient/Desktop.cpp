@@ -127,6 +127,19 @@ void Desktop::HighlightDesktopOption(FCULONG optionID, bool bHighlight)
 
 ///////////////////////////////////////////////////////////////////////
 
+void Desktop::ClearAllHighlights()
+{
+  DesktopOptionMap::iterator it = m_mapDesktopOptions.begin();
+  DesktopOptionMap::iterator limit = m_mapDesktopOptions.end();
+
+  for ( ; it != limit; it++ )
+  {
+    it->second.isHighlighted = false;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool Desktop::OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost)
 {
   bool bResult = true;
@@ -371,7 +384,6 @@ void Desktop::DrawDesktopIcons()
 
 		if ( d.isHighlighted )
 		{
-//			pVideo->draw2DRectangle(SColor(128, 64, 128, 255), d.rect);
 			pVideo->draw2DImage( d.pTexture, 
 													iconPos, 
 													rect<s32>(0, 0, iconDim.Width, iconDim.Height), 

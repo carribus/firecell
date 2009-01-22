@@ -43,9 +43,22 @@ bool InGameAppWindow::Create(FCUINT optionID, DesktopOptionType type, std::wstri
 
 void InGameAppWindow::GetClientRect(core::rect<s32>& rect)
 {
-	rect = m_pWindow->getAbsoluteClippingRect();
-	rect.UpperLeftCorner.X += 3;
-	rect.UpperLeftCorner.Y += 21;
-	rect.LowerRightCorner.X -= 3;
-	rect.LowerRightCorner.Y -= 3;
+  core::rect<s32> absRect = m_pWindow->getAbsolutePosition();
+	rect.UpperLeftCorner.X = 3;
+  rect.UpperLeftCorner.Y = 21;
+  rect.LowerRightCorner.X = rect.UpperLeftCorner.X + absRect.getWidth() - 6;
+  rect.LowerRightCorner.Y = rect.UpperLeftCorner.Y + absRect.getHeight() - 24;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void InGameAppWindow::CenterWindow()
+{
+  core::dimension2d<s32> screenSize = m_pEnv->getVideoDriver()->getScreenSize();
+  core::rect<s32> wndSize = m_pWindow->getAbsolutePosition();
+  core::position2d<s32> newWndPos;
+
+  newWndPos.X = (screenSize.Width / 2) - wndSize.getWidth()/2;
+  newWndPos.Y = (screenSize.Height / 2) - wndSize.getHeight()/2;
+  m_pWindow->move(newWndPos);
 }
