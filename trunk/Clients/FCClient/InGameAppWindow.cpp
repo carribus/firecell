@@ -13,6 +13,8 @@ InGameAppWindow::InGameAppWindow(FCController* pController, IGUIEnvironment* pEn
 
 InGameAppWindow::~InGameAppWindow(void)
 {
+	if ( m_pWindow )
+		m_pWindow->remove();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -24,6 +26,7 @@ bool InGameAppWindow::Create(FCUINT optionID, DesktopOptionType type, std::wstri
 
 	if ( !(m_pWindow = m_pEnv->addWindow( core::rect<s32>(0, 0, 0, 0), false, caption.c_str() )) )
 		return false;
+	m_pWindow->grab();
 
   IGUIButton* pBtn = m_pWindow->getMaximizeButton();
   pBtn->setVisible(true);

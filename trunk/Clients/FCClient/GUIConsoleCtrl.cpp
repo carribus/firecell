@@ -67,12 +67,48 @@ void GUIConsoleCtrl::draw()
     extents = pFont->getDimension( it->c_str() );
     rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
     rectTxt.LowerRightCorner.Y = rectTxt.UpperLeftCorner.Y + extents.Height;
-    // draw the text line
-    pFont->draw( it->c_str(), rectTxt, m_textColor, false, false, &rectTxt );
+		if ( rectTxt.LowerRightCorner.X > AbsoluteRect.LowerRightCorner.X )
+		{
+			std::wstring::iterator itString = it->begin();
+			std::wstring::iterator itStringEnd = it->end();
+			core::rect<s32> lRect = rectTxt;
+			s32 xOffset = 0;
+			std::wstring c;
 
-    // offset the text rect
-    rectTxt.LowerRightCorner += core::position2d<s32>(0, extents.Height);
-    rectTxt.UpperLeftCorner += core::position2d<s32>(0, extents.Height);
+			while ( itString != itStringEnd )
+			{
+				c = *itString;
+				extents = pFont->getDimension( c.c_str() );
+				lRect.UpperLeftCorner.X += xOffset;
+				lRect.LowerRightCorner.X = lRect.UpperLeftCorner.X + extents.Width;
+				if ( lRect.LowerRightCorner.X > AbsoluteRect.LowerRightCorner.X )
+				{
+					lRect.UpperLeftCorner.Y = lRect.LowerRightCorner.Y;
+					lRect.UpperLeftCorner.X = AbsoluteRect.UpperLeftCorner.X;
+					lRect.LowerRightCorner.Y += extents.Height;
+					lRect.LowerRightCorner.X = lRect.UpperLeftCorner.X + extents.Width;
+
+					// offset the text rect
+					rectTxt.LowerRightCorner += core::position2d<s32>(0, extents.Height);
+					rectTxt.UpperLeftCorner += core::position2d<s32>(0, extents.Height);
+				}
+				pFont->draw( c.c_str(), lRect, m_textColor, false, false, &lRect );
+				xOffset = extents.Width;
+
+				itString++;
+			}
+			// offset the text rect
+			rectTxt.LowerRightCorner += core::position2d<s32>(0, extents.Height);
+			rectTxt.UpperLeftCorner += core::position2d<s32>(0, extents.Height);
+		}
+		else
+		{
+			// draw the text line
+			pFont->draw( it->c_str(), rectTxt, m_textColor, false, false, &rectTxt );
+			// offset the text rect
+			rectTxt.LowerRightCorner += core::position2d<s32>(0, extents.Height);
+			rectTxt.UpperLeftCorner += core::position2d<s32>(0, extents.Height);
+		}
   }
 
   if ( !m_bFreezeConsole )
@@ -90,10 +126,32 @@ void GUIConsoleCtrl::draw()
     // if there is any input in the buffer, then draw it
     if ( m_input.size() )
     {
-      extents = pFont->getDimension( m_input.c_str() );
+			// TODO: I'm sure this can be optimised quite drastically, but its late and I couldn't
+			// be bothered right now...
+			std::wstring::iterator it = m_input.begin();
+			std::wstring::iterator limit = m_input.end();
+			s32 xOffset = 0;
+			std::wstring c;
+
       rectTxt.UpperLeftCorner.X = rectTxt.LowerRightCorner.X;
-      rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
-      pFont->draw( m_input.c_str(), rectTxt, m_textColor, false, false, &rectTxt );
+
+			while ( it != limit )
+			{
+				c = *it;
+				extents = pFont->getDimension( c.c_str() );
+				rectTxt.UpperLeftCorner.X += xOffset;
+				rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
+				if ( rectTxt.LowerRightCorner.X > AbsoluteRect.LowerRightCorner.X )
+				{
+					rectTxt.UpperLeftCorner.Y = rectTxt.LowerRightCorner.Y;
+					rectTxt.UpperLeftCorner.X = AbsoluteRect.UpperLeftCorner.X;
+					rectTxt.LowerRightCorner.Y += extents.Height;
+					rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
+				}
+				pFont->draw( c.c_str(), rectTxt, m_textColor, false, false, &rectTxt );
+				xOffset = extents.Width;
+				it++;
+			}
     }
 
     // draw a caret

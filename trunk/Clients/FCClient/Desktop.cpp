@@ -181,6 +181,50 @@ bool Desktop::IsApplicationRunning(FCUINT appType)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool Desktop::OnGUIEvent(SEvent::SGUIEvent event)
+{
+	bool bHandled = false;
+
+	switch ( event.EventType )
+	{
+	case	EGET_ELEMENT_CLOSED:
+		{
+			IGUIElement* pElem = event.Caller;
+			switch ( pElem->getType() )
+			{
+			case	EGUIET_WINDOW:
+				{
+					InGameAppWindow* pWnd = NULL;
+					AppWindowVector::iterator it = m_arrApps.begin();
+					while ( it != m_arrApps.end() )
+					{
+						if ( (*it)->GetGUIWindow() == pElem )
+						{
+							pWnd = (*it);
+							m_arrApps.erase(it);
+							delete pWnd;
+							break;
+						}
+						it++;
+					}
+				}
+				break;
+
+			default:
+				break;
+			}
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	return bHandled;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool Desktop::OnConsoleEvent(FCModelEvent& event)
 {
   bool bResult = true;
@@ -206,7 +250,6 @@ bool Desktop::OnConsoleEvent(FCModelEvent& event)
 				if ( pResp )
 				{
           std::string result;
-          // problem here: result is not being populated
           result.assign( pResp->result, pResp->len );
           pWnd->OnConsoleCommandResponse( pResp->currentDir, result );
 				}
