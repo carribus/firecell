@@ -22,11 +22,37 @@
 
 struct IServiceLogic;
 
+/**
+ *  \brief The IService interface exposes a Win32 Service or *nix Daemon core functionality
+ *
+ *  The implementation of both W32Server and CDaemon implement this interface, thereby abstracting
+ *  the basic semantics of creating and using a win32 server/*nix daemon standard.
+ */
 struct IService
 {
+  /**
+   *  \brief Attaches the functional logic that this service/daemon will be hosting
+   *
+   *  Use this function to attach the class that implements the logic of the service/daemon to the implementation.
+   *  NOTE: The implementation object of the IServiceLogic interface should attempt to remain as platform neutral as possible.
+   */
   virtual bool ISRV_AttachLogic(IServiceLogic* pLogic) = 0;
+
+  /**
+   *  \brief Make the service run as an app (in console)
+   *
+   *  Use this function to flag the logic to run as a standard application.
+   */
   virtual void ISRV_RunAsApp(bool bAsApp) = 0;
+
+  /**
+   *  \brief Starts the service
+   */
   virtual int ISRV_Run(void* pData) = 0;
+
+  /**
+   *  \brief Stops the service
+   */
   virtual int ISRV_Stop() = 0;
 };
 
