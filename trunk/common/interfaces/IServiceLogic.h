@@ -20,6 +20,12 @@
 #ifndef _ISERVICELOGIC_H_
 #define _ISERVICELOGIC_H_
 
+/**
+ *  \brief The IServiceLogic interface exposes the required functions that a service logic objects must implement
+ *  \ingroup Interfaces
+ *
+ *  The implementation of any specific service logic must implement this interface
+ */
 struct IServiceLogic
 {
   virtual const char* GetName() = 0;

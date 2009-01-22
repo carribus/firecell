@@ -17,6 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+/**
+ *  \file IService.h
+    \brief Contains the IService interface definition
+    \defgroup Interfaces Abstract Interfaces
+ */
 #ifndef _ISERVICE_H_
 #define _ISERVICE_H_
 
@@ -24,8 +29,9 @@ struct IServiceLogic;
 
 /**
  *  \brief The IService interface exposes a Win32 Service or *nix Daemon core functionality
+ *  \ingroup Interfaces
  *
- *  The implementation of both W32Server and CDaemon implement this interface, thereby abstracting
+ *  The implementation of both W32Service and CDaemon implement this interface, thereby abstracting
  *  the basic semantics of creating and using a win32 server/*nix daemon standard.
  */
 struct IService
