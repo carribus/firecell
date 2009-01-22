@@ -324,11 +324,6 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
 
   default:
 
-/*
-		if ( m_pCurrentModule )
-      bHandled = m_pCurrentModule->OnResponse(msgID, pPkt, pSocket);
-*/
-
     if ( !bHandled )
     {
       printf("Unknown Response packet received (id:%ld)\n", msgID);
@@ -349,12 +344,7 @@ bool FCModel::OnResponseServiceInfo(PEPacket* pPkt, BaseSocket* pSocket)
 
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", &d, dataLen);
-/*
-  printf("\n\n\tv%d.%d\n" \
-          "\t%ld Connections\n\n", d.verMajor, d.verMinor, d.connectionCountRouter);
 
-  m_gameState = LoginRequired;
-*/
   return true;
 }
 
