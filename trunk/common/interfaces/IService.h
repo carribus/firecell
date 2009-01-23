@@ -31,7 +31,7 @@ struct IServiceLogic;
  *  \brief The IService interface exposes a Win32 Service or *nix Daemon core functionality
  *  \ingroup Interfaces
  *
- *  The implementation of both W32Service and CDaemon implement this interface, thereby abstracting
+ *  The implementation of both CW32Service and CDaemon implement this interface, thereby abstracting
  *  the basic semantics of creating and using a win32 server/*nix daemon standard.
  */
 struct IService
