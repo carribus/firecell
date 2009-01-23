@@ -177,10 +177,10 @@
 				RelativePath="..\common\inifile.h">
 			</File>
 			<File
-				RelativePath=".\interfaces\IService.h">
+				RelativePath="..\common\interfaces\IService.h">
 			</File>
 			<File
-				RelativePath=".\interfaces\IServiceLogic.h">
+				RelativePath="..\common\interfaces\IServiceLogic.h">
 			</File>
 			<File
 				RelativePath=".\interfaces\ISocketServer.h">
