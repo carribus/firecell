@@ -22,7 +22,7 @@
 
 #include <string>
 #include <vector>
-#include "PThreadMutex.h"
+#include "../../common/PThreadMutex.h"
 #include "IViewLogic.h"
 
 using namespace std;

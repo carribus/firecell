@@ -20,9 +20,12 @@ namespace gui
   {
   public:
 
+    /**
+     *  \brief Enumeration of GUI elements that this factory can create
+     */
     enum e_FCGUI_ElementType
     {
-      EGUIET_CONSOLE = (EGUIET_ELEMENT+1)
+      EGUIET_CONSOLE = (EGUIET_ELEMENT+1)         /**<A terminal-like console control */
     };
 
     FCGUIElementFactory(IGUIEnvironment* env);
