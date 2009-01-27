@@ -32,16 +32,12 @@
 FCLogicWorld::FCLogicWorld()
 : ServiceLogicBase("FireCell World Service", false)
 {
-  pthread_cond_init(&m_condSync, NULL);
-  pthread_mutex_init(&m_mutexSync, NULL);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 FCLogicWorld::~FCLogicWorld(void)
 {
-  pthread_cond_destroy(&m_condSync);
-  pthread_mutex_destroy(&m_mutexSync);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -53,7 +49,7 @@ void FCLogicWorld::Free()
 }
 
 ///////////////////////////////////////////////////////////////////////
-#include <sstream>
+
 int FCLogicWorld::Start()
 {
   string strEngine, strServer, strDBName, strUser, strPass;
@@ -114,9 +110,7 @@ int FCLogicWorld::Start()
     GetDatabase().ExecuteJob(DBQ_LOAD_ITEM_TYPES, (void*)pCtx);
 
     // we want to pause here until the item data required data is loaded
-    pthread_mutex_lock(&m_mutexSync);
-    pthread_cond_wait(&m_condSync, &m_mutexSync);
-    pthread_mutex_unlock(&m_mutexSync);
+    m_condSync.WaitForSignal();
 
     LoadWorldData();
   }
@@ -166,19 +160,15 @@ void FCLogicWorld::LoadWorldData()
   GetDatabase().ExecuteJob(DBQ_LOAD_WORLD_GEOGRAPHY, (void*)pCtx);
 
   // we want to pause here until the item data required data is loaded
-  pthread_mutex_lock(&m_mutexSync);
-  pthread_cond_wait(&m_condSync, &m_mutexSync);
-  pthread_mutex_unlock(&m_mutexSync);
+  m_condSync.WaitForSignal();
 
-	// load missions
+  // load missions
   pCtx = new DBJobContext;
   pCtx->pThis = this;
   GetDatabase().ExecuteJob(DBQ_LOAD_MISSIONS, (void*)pCtx);
 
   // we want to pause here until the mission data required data is loaded
-  pthread_mutex_lock(&m_mutexSync);
-  pthread_cond_wait(&m_condSync, &m_mutexSync);
-  pthread_mutex_unlock(&m_mutexSync);
+  m_condSync.WaitForSignal();
 
 	// load forum data
 	pCtx = new DBJobContext;
@@ -186,9 +176,7 @@ void FCLogicWorld::LoadWorldData()
 	GetDatabase().ExecuteJob(DBQ_LOAD_FORUM_CATEGORIES, (void*)pCtx);
 
   // we want to pause here until the forum data required data is loaded
-  pthread_mutex_lock(&m_mutexSync);
-  pthread_cond_wait(&m_condSync, &m_mutexSync);
-  pthread_mutex_unlock(&m_mutexSync);
+  m_condSync.WaitForSignal();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -1131,7 +1119,7 @@ void FCLogicWorld::OnDBJob_LoadObjectData(DBIResultSet& resultSet, void*& pConte
     pContext = NULL;
 
     // at this point, we should be signalling to the rest of the service to wake up and continue starting up.
-    pthread_cond_signal(&pThis->m_condSync);
+    pThis->m_condSync.Signal();
   }
 }
 
@@ -1284,7 +1272,7 @@ void FCLogicWorld::OnDBJob_LoadCompanyComputers(DBIResultSet& resultSet, void*& 
   if ( pThis->HasConsole() )
     printf("%ld company computers loaded\n", rowCount);
 
-  pthread_cond_signal(&pThis->m_condSync);
+  pThis->m_condSync.Signal();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -1323,7 +1311,7 @@ void FCLogicWorld::OnDBJob_LoadMissions(DBIResultSet& resultSet, void*& pContext
   if ( pThis->HasConsole() )
     printf("%ld missions loaded\n", rowCount);
 
-  pthread_cond_signal(&pThis->m_condSync);
+  pThis->m_condSync.Signal();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -1402,7 +1390,7 @@ void FCLogicWorld::OnDBJob_LoadForumPosts(DBIResultSet& resultSet, void*& pConte
 	delete pCtx;
 	pContext = NULL;
 
-  pthread_cond_signal(&pThis->m_condSync);
+  pThis->m_condSync.Signal();
 }
 
 ///////////////////////////////////////////////////////////////////////

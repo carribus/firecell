@@ -675,7 +675,7 @@ void FCModel::OnDisconnected(BaseSocket* pSocket, int nErrorCode)
 	m_bConnected = false;
   DataQueueItem dqi;
 
-  dqi.type = DQI_Disconnect;
+  dqi.type = DataQueueItem::DQI_Disconnect;
   dqi.pPkt = NULL;
   dqi.pSocket = pSocket;
 

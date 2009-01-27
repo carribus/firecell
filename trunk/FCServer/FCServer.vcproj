@@ -212,6 +212,36 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
 		</Filter>
+		<Filter
+			Name="Logging"
+			Filter="">
+			<Filter
+				Name="Source Files"
+				Filter="">
+				<File
+					RelativePath="..\common\Logging\DynLog.cpp">
+				</File>
+				<File
+					RelativePath="..\common\Logging\DynLogger.cpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="Header Files"
+				Filter="">
+				<File
+					RelativePath="..\common\Logging\DynLog.h">
+				</File>
+				<File
+					RelativePath="..\common\Logging\DynLogger.h">
+				</File>
+				<File
+					RelativePath="..\common\Logging\IDynLog.h">
+				</File>
+				<File
+					RelativePath="..\common\Logging\RefCounter.h">
+				</File>
+			</Filter>
+		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt">
 		</File>

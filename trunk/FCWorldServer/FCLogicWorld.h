@@ -29,6 +29,7 @@
 #include "WorldManager.h"
 #include "MissionManager.h"
 #include "Forum.h"
+#include "../common/PThreadCond.h"
 #include "../common/ServiceLogicBase.h"
 #include "../common/threading.h"
 
@@ -126,8 +127,9 @@ private:
   MissionManager        m_missionMgr;
 	Forum									m_forum;
 
-  pthread_cond_t        m_condSync;
-  pthread_mutex_t       m_mutexSync;
+  PThreadCond           m_condSync;
+//  pthread_cond_t        m_condSync;
+//  pthread_mutex_t       m_mutexSync;
 };
 
 #endif//_FCLOGICWORLD_H_
