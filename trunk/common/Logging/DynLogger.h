@@ -1,6 +1,3 @@
-/**
- *  \ingroup DynLog
- */
 #ifndef _DYNLOGGER_H_
 #define _DYNLOGGER_H_
 
@@ -13,6 +10,13 @@
 namespace Logging
 {
 
+/**
+ *  \class DynLogger
+ *  \brief This is the concrete implementation of the singleton IDynLogger object.
+ *
+ *  This class represents the object that sits behind the singleton IDynLogger interface that is returned from 
+ *  getLogger() and provides the front line interface to the logging framework.
+ */
 class DynLogger : public IDynLogger
 {
   DynLogger(void);
@@ -58,10 +62,10 @@ private:
    */
   struct stLogItem
   {
-    std::string data;
-    const char* sourceFile;
-    size_t sourceLineNum;
-    tm timestamp;
+    std::string data;           //!< the log item's data block
+    const char* sourceFile;     //!< the source file that generated the log item
+    size_t sourceLineNum;       //!< the line number in the source file that generated the log item
+    tm timestamp;               //!< the timestamp at which the logitem was generated
   };
   typedef std::deque<stLogItem> LogItemQueue;
   LogItemQueue            m_items;

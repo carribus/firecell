@@ -73,4 +73,4 @@ void DynLogStringItem::replacePlaceHolder(std::string& buffer, const std::string
   replacePlaceHolder(buffer, placeholder, ss.str());
 }
 
-}; // end of namespace Logging
+}

@@ -109,4 +109,4 @@ std::string DynLogTextfileWriter::getFilename()
   return m_filename;
 }
 
-} // end of namespace Logging
+}

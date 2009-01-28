@@ -6,6 +6,12 @@
 namespace Logging
 {
 
+/**
+ *  \class DynLogNullWriter
+ *  \brief This writer is used as a null output device.
+ *
+ *  If you intend to create your own Log writer, then you can use this as a template for your code
+ */
 class DynLogNullWriter : public IDynLogWriter
 {
 public:

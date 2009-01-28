@@ -141,4 +141,4 @@ void DynLogger::FreeWriters()
   m_writers.erase( m_writers.begin(), limit );
 }
 
-};// end of namespace Logging
+}

@@ -1,6 +1,3 @@
-/**
- *  \ingroup DynLog
- */
 #ifndef _DYNLOGTEXTFILEWRITER_H_
 #define _DYNLOGTEXTFILEWRITER_H_
 
@@ -12,6 +9,10 @@
 namespace Logging
 {
 
+/**
+ *  \class DynLogTextfileWriter
+ *  \brief This writer is used for log output to a specified file
+ */
 class DynLogTextfileWriter : public IDynLogTextFileWriter
 {
 public:

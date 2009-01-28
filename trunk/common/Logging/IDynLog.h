@@ -1,6 +1,3 @@
-/**
- *  \ingroup DynLog
- */
 #ifndef _IDYNLOG_H_
 #define _IDYNLOG_H_
 
@@ -15,16 +12,16 @@
 #define interface struct
 #endif//interface
 
+namespace Logging
+{
+
 #define DYNLOG_FORMAT_TIME    "[time]"
 #define DYNLOG_FORMAT_DATA    "[data]"
 #define DYNLOG_FORMAT_FILE    "[file]"
 #define DYNLOG_FORMAT_LINE    "[line]"
 #define DYNLOG_DEFAULTFORMAT  "[" DYNLOG_FORMAT_TIME "] " DYNLOG_FORMAT_DATA " (" DYNLOG_FORMAT_FILE ":" DYNLOG_FORMAT_LINE ")"
 
-namespace Logging
-{
-/**
- *  \ingroup DynLog
+ /**
  *  \brief This enumeration is used to specify the type of log writer
  */
 enum E_LOGWRITER_TYPE
@@ -36,8 +33,8 @@ enum E_LOGWRITER_TYPE
 };
 
 /**
- *  \ingroup DynLog
  *  \interface IDynLogItem
+ *  \ingroup DynLog
  *  \brief The IDynLogItem interface is the base interface that all log item implementations must expose
  */
 interface IDynLogItem : public IRefCounter
@@ -72,8 +69,8 @@ interface IDynLogItem : public IRefCounter
 };
 
 /**
- *  \ingroup DynLog
  *  \interface IDynLogWriter
+ *  \ingroup DynLog
  *  \brief The IDynLogWriter interface exposes functionality a particular writer.
  *
  *  If you wish to create your own writer object (for eg a database writer), you 
@@ -118,8 +115,8 @@ interface IDynLogWriter : public IRefCounter
 };
 
 /**
- *  \ingroup DynLog
  *  \interface IDynLogTextFileWriter
+ *  \ingroup DynLog
  *  \brief This interface is an extension of IDynLogWriter and exposes the required functions for setting/getting a target filename
  */
 interface IDynLogTextFileWriter : public IDynLogWriter
@@ -136,8 +133,8 @@ interface IDynLogTextFileWriter : public IDynLogWriter
 };
 
 /**
- *  \ingroup DynLog
  *  \interface IDynLogger
+ *  \ingroup DynLog
  *  \brief The IDynLogger interface is used by the consumers of the DynLog framework.
  *
  *  IDynLogger is received as the result of a call to createLogger().
