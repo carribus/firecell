@@ -15,9 +15,13 @@ namespace Logging
 
 class DynLogger : public IDynLogger
 {
-public:
   DynLogger(void);
   ~DynLogger(void);
+
+public:
+
+  static DynLogger* instance();
+  static void destroy();
 
   /*
    *  IDynLogger implementation
@@ -28,6 +32,7 @@ public:
   void flush();
   size_t getBackLog();
   size_t addLog(const std::string& data, const char* sourceFile, size_t sourceLineNum);
+  std::string formatLog(const char* data, ...);
 
 private:
 
@@ -39,6 +44,12 @@ private:
   /*
    *  Private Data Members
    */
+
+  /**
+   *  The singleton instance of the DynLogger object
+   */
+  static DynLogger* m_pThis;
+
   typedef std::vector<IDynLogWriter*> WritersVector;
   WritersVector           m_writers;
 

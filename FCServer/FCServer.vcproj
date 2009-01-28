@@ -222,7 +222,22 @@
 					RelativePath="..\common\Logging\DynLog.cpp">
 				</File>
 				<File
+					RelativePath="..\common\Logging\DynLogConsoleWriter.cpp">
+				</File>
+				<File
 					RelativePath="..\common\Logging\DynLogger.cpp">
+				</File>
+				<File
+					RelativePath="..\common\Logging\DynLogItemBase.cpp">
+				</File>
+				<File
+					RelativePath="..\common\Logging\DynLogNullWriter.cpp">
+				</File>
+				<File
+					RelativePath="..\common\Logging\DynLogStringItem.cpp">
+				</File>
+				<File
+					RelativePath="..\common\Logging\DynLogTextfileWriter.cpp">
 				</File>
 			</Filter>
 			<Filter
@@ -232,7 +247,22 @@
 					RelativePath="..\common\Logging\DynLog.h">
 				</File>
 				<File
+					RelativePath="..\common\Logging\DynLogConsoleWriter.h">
+				</File>
+				<File
 					RelativePath="..\common\Logging\DynLogger.h">
+				</File>
+				<File
+					RelativePath="..\common\Logging\DynLogItemBase.h">
+				</File>
+				<File
+					RelativePath="..\common\Logging\DynLogNullWriter.h">
+				</File>
+				<File
+					RelativePath="..\common\Logging\DynLogStringItem.h">
+				</File>
+				<File
+					RelativePath="..\common\Logging\DynLogTextfileWriter.h">
 				</File>
 				<File
 					RelativePath="..\common\Logging\IDynLog.h">

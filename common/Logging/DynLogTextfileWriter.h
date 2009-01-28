@@ -21,6 +21,7 @@ public:
   /*
    *  IDynLogTextFileWriter implementation
    */
+  void setOutputFormat(const std::string& format);
   bool startWriter();
   void stopWriter();
   E_LOGWRITER_TYPE getType();
@@ -34,6 +35,8 @@ private:
 
   std::string           m_filename;
   std::ofstream         m_file;  
+
+  std::string           m_format;
 };
 
 }; // end of namespace Logging

@@ -15,12 +15,17 @@ public:
   /*
    *  IDynLogWriter implementation
    */
+  void setOutputFormat(const std::string& format);
   bool startWriter();
   void stopWriter();
   E_LOGWRITER_TYPE getType();
   std::string getName();
   IDynLogItem* createLogItem(const std::string& data, const char* sourceFile, size_t sourceLineNum, tm& timestamp);
   bool writeItem(IDynLogItem* item);
+
+private:
+
+  std::string       m_format;
 };
 
 } // end of namespace Logging

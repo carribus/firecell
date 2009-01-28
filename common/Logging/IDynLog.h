@@ -15,6 +15,12 @@
 #define interface struct
 #endif//interface
 
+#define DYNLOG_FORMAT_TIME    "[time]"
+#define DYNLOG_FORMAT_DATA    "[data]"
+#define DYNLOG_FORMAT_FILE    "[file]"
+#define DYNLOG_FORMAT_LINE    "[line]"
+#define DYNLOG_DEFAULTFORMAT  "[" DYNLOG_FORMAT_TIME "] " DYNLOG_FORMAT_DATA " (" DYNLOG_FORMAT_FILE ":" DYNLOG_FORMAT_LINE ")"
+
 namespace Logging
 {
 /**
@@ -23,6 +29,7 @@ namespace Logging
  */
 enum E_LOGWRITER_TYPE
 {
+  LOGWRITER_NONE,
   LOGWRITER_NULL,             //!< A Null log writer - consumes log items like a normal writer, but has no output
   LOGWRITER_TEXTFILE,         //!< A text file writer - dumps log items to a pre-specified text file location
   LOGWRITER_CONSOLE           //!< A console writer - dumps log items to a console
@@ -76,6 +83,7 @@ interface IDynLogItem : public IRefCounter
  */
 interface IDynLogWriter : public IRefCounter
 {
+  virtual void setOutputFormat(const std::string& format = DYNLOG_DEFAULTFORMAT) = 0;
   /**
    *  \brief Allows the writer to initialise any sub-components it may have before it starts writing. This is automatically called
    *         when a writer is passed into the IDynLogger::addWriter() method
@@ -179,6 +187,8 @@ interface IDynLogger : public IRefCounter
    *  \endcode
    */
   virtual size_t addLog(const std::string& data, const char* sourceFile, size_t sourceLineNum) = 0;
+
+  virtual std::string formatLog(const char* data, ...) = 0;
 };
 
 }; // end of Logging namespace

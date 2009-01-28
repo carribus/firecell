@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <stdio.h>
+#include "../common/Logging/DynLog.h"
 #include "../common/threading.h"
 #include "../common/PacketExtractor.h"
 #include "../common/PEPacketHelper.h"
@@ -66,10 +67,8 @@ int FCLogicRouter::Start()
     m_pSockServer->Initialize(NULL, sPort ? sPort : 6666 );
     m_pSockServer->RegisterSink(this);
     m_pSockServer->Start();
-    if ( m_bHasConsole )
-    {
-      printf("Accepting connections on port %ld\n", sPort ? sPort : 6666);
-    }
+
+    DYNLOG_ADDLOG( DYNLOG_FORMAT("Accepting connections on port %ld", sPort ? sPort : 6666) );
 
     StartSocketMonitor();
   }
@@ -96,7 +95,7 @@ void FCLogicRouter::StartSocketMonitor()
   m_bStopSockMon = false;
   if ( pthread_create( &m_thrdSockMon, NULL, thrdSocketMonitor, (void*)this ) != 0 )
   {
-    // an error occurred...
+    DYNLOG_ADDLOG( "Failed to start socket monitor thread" );
   }
 }
 
@@ -118,10 +117,9 @@ void FCLogicRouter::OnConnect(FCSOCKET s)
 	getpeername(s, (sockaddr*)&addr, (socklen_t*)&nSize);
 	char* pAddr = inet_ntoa( *(in_addr*) &addr.sin_addr );
 
-	if ( m_bHasConsole )
-    printf("%s connected (SOCKET: %ld)\n", pAddr, s);
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("%s connected (SOCKET: %ld)", pAddr, s) );
 
-	ClientSocket* pSocket = new ClientSocket(s);
+  ClientSocket* pSocket = new ClientSocket(s);
 
   pthread_mutex_lock(&m_mutexSockets);
 	m_mapSockets[s] = pSocket;
@@ -138,8 +136,7 @@ void FCLogicRouter::OnDisconnect(FCSOCKET s, FCDWORD dwCode)
 	getpeername(s, (sockaddr*)&addr, (socklen_t*)&nSize);
 	char* pAddr = inet_ntoa( *(in_addr*) &addr.sin_addr );
 
-	if ( m_bHasConsole )
-		printf("%s disconnected\n", pAddr);
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("%s disconnected", pAddr) );
 
   pthread_mutex_lock(&m_mutexSockets);
 
@@ -177,9 +174,6 @@ void FCLogicRouter::OnDisconnect(FCSOCKET s, FCDWORD dwCode)
 
 void FCLogicRouter::OnDataReceived(FCSOCKET s, FCBYTE* pData, FCINT nLen)
 {
-//  if ( m_bHasConsole )
-//    printf("[DATA_IN-%ld bytes]\n", nLen);
-
 	ClientSocket* pSocket = NULL;
 	CSocketMap::iterator it = m_mapSockets.find(s);
   bool bFound = false;
@@ -201,8 +195,7 @@ void FCLogicRouter::OnDataReceived(FCSOCKET s, FCBYTE* pData, FCINT nLen)
 
   if ( bFound == false )
   {
-    if ( m_bHasConsole )
-      printf("\n*** ERROR: DATA RECEIVED BUT NOT ADDED TO SOCKET STREAM\n\n");
+    DYNLOG_ADDLOG( "*** ERROR: DATA RECEIVED BUT NOT ADDED TO SOCKET STREAM" );
   }
 }
 
@@ -287,10 +280,7 @@ void FCLogicRouter::ForwardPacket(PEPacket* pPkt, ClientSocket* pSocket)
       }
       else
       {
-        if ( m_bHasConsole )
-        {
-          printf("Failed to forward packet (reason: Service or Client %ld is not registered)\n", target);
-        }
+        DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to forward packet (reason: Service or Client %ld is not registered)", target) );
       }
     }
   }
@@ -352,10 +342,6 @@ bool FCLogicRouter::OnCommand(PEPacket* pPkt, ClientSocket* pSocket)
     break;
 
   default:
-/*
-    if ( m_bHasConsole )
-      printf("Unknown Message Received (%ld)\n", msgID);
-*/
     break;
   }
 
@@ -399,9 +385,7 @@ void FCLogicRouter::RegisterService(ServiceType type, ClientSocket* pSocket)
 
   SendServiceRegistrationResponse(pSocket, type, bResult);
 
-  if ( m_bHasConsole )
-    printf("Service registered (type:%s)\n", GetServiceTypeString(type).c_str());
-
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("Service registered (type:%s)", GetServiceTypeString(type).c_str()) );
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -421,10 +405,7 @@ bool FCLogicRouter::UnregisterService(ClientSocket* pSocket)
   {
     if ( it->pSocket == pSocket )
     {
-      if ( m_bHasConsole )
-      {
-        printf("Service unregistered (type:%s)\n", GetServiceTypeString(it->type).c_str());
-      }
+      DYNLOG_ADDLOG( DYNLOG_FORMAT("Service unregistered (type:%s)", GetServiceTypeString(it->type).c_str()) );
 
       m_arrServices.erase(it);
       bResult = true;

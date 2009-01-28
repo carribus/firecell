@@ -10,11 +10,19 @@ namespace Logging
 /**
  *  \brief This function must be called to create a new instance of the logger
  */
-IDynLogger* createLogger()
+IDynLogger* getLogger()
 {
-  IDynLogger* pLogger = new DynLogger;
+  IDynLogger* pLogger = DynLogger::instance();
 
   return pLogger;
+}
+
+/**
+ *  \brief This function must be called when you are ready to release the logger for good
+ */
+void destroyLogger()
+{
+  DynLogger::destroy();
 }
 
 /**

@@ -10,7 +10,7 @@ namespace Logging
 class DynLogItemBase : public IDynLogItem
 {
 public:
-  DynLogItemBase(const std::string& data, const char* sourceFile, size_t sourceLineNum, tm& timestamp);
+  DynLogItemBase(const std::string& data, const char* sourceFile, size_t sourceLineNum, tm& timestamp, const std::string& format = DYNLOG_DEFAULTFORMAT);
   ~DynLogItemBase(void);
 
   std::string getData();
@@ -23,6 +23,7 @@ protected:
   const char*         m_sourceFile;
   size_t              m_sourceLineNum;
   tm                  m_timestamp;
+  std::string         m_format;
 };
 
 };// end of namespace Logging
