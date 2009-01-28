@@ -3,11 +3,12 @@
 namespace Logging
 {
 
-DynLogItemBase::DynLogItemBase(const std::string& data, const char* sourceFile, size_t sourceLineNum, tm& timestamp)
+DynLogItemBase::DynLogItemBase(const std::string& data, const char* sourceFile, size_t sourceLineNum, tm& timestamp, const std::string& format)
 : m_data(data)
 , m_sourceFile(sourceFile)
 , m_sourceLineNum(sourceLineNum)
 , m_timestamp(timestamp)
+, m_format(format)
 {
 }
 

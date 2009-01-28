@@ -1,7 +1,12 @@
+#include <cstdarg>
 #include "DynLogger.h"
 
 namespace Logging
 {
+
+DynLogger* DynLogger::m_pThis = NULL;
+
+//////////////////////////////////////////////////////////////////////////////////////////
 
 DynLogger::DynLogger(void)
 {
@@ -12,6 +17,29 @@ DynLogger::DynLogger(void)
 DynLogger::~DynLogger(void)
 {
   FreeWriters();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+DynLogger* DynLogger::instance()
+{
+  if ( !m_pThis )
+  {
+    m_pThis = new DynLogger;
+  }
+
+  return m_pThis;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void DynLogger::destroy()
+{
+  if ( m_pThis )
+  {
+    delete m_pThis;
+    m_pThis = NULL;
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -78,6 +106,20 @@ size_t DynLogger::addLog(const std::string& data, const char* sourceFile, size_t
   }
 
   return 0;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+std::string DynLogger::formatLog(const char* data, ...)
+{
+  char buffer[4096];
+  va_list l;
+
+  va_start(l, data);
+  vsprintf(buffer, data, l);
+  va_end(l);
+
+  return buffer;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

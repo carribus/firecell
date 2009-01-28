@@ -6,13 +6,24 @@
 
 #include "IDynLog.h"
 
+#define DYNLOG_FORMAT \
+  Logging::getLogger()->formatLog
+
+#define DYNLOG_ADDLOG( str ) \
+  Logging::getLogger()->addLog(str, __FILE__, __LINE__);
+
 namespace Logging
 {
 
 /**
- *  \brief This function must be called to create a new instance of the logger
+ *  \brief This function must be called to retrieve the singleton instance of the logger object
  */
-IDynLogger* createLogger();
+IDynLogger* getLogger();
+
+/**
+ *  \brief This function must be called when you are ready to release the logger for good
+ */
+void destroyLogger();
 
 /**
  *  \brief Creates a log writer object

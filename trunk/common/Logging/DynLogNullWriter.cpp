@@ -18,6 +18,16 @@ DynLogNullWriter::~DynLogNullWriter(void)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
+void DynLogNullWriter::setOutputFormat(const std::string& format)
+{
+  if ( format.empty() )
+    m_format = DYNLOG_DEFAULTFORMAT;
+  else
+    m_format = format;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
 bool DynLogNullWriter::startWriter()
 {
   return true;

@@ -7,6 +7,7 @@ namespace Logging
 {
 
 DynLogConsoleWriter::DynLogConsoleWriter(void)
+: m_format(DYNLOG_DEFAULTFORMAT)
 {
 }
 
@@ -14,6 +15,16 @@ DynLogConsoleWriter::DynLogConsoleWriter(void)
 
 DynLogConsoleWriter::~DynLogConsoleWriter(void)
 {
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void DynLogConsoleWriter::setOutputFormat(const std::string& format)
+{
+  if ( format.empty() )
+    m_format = DYNLOG_DEFAULTFORMAT;
+  else
+    m_format = format;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -47,7 +58,7 @@ std::string DynLogConsoleWriter::getName()
 
 IDynLogItem* DynLogConsoleWriter::createLogItem(const std::string& data, const char* sourceFile, size_t sourceLineNum, tm& timestamp)
 {
-  return new DynLogStringItem(data, sourceFile, sourceLineNum, timestamp);
+  return new DynLogStringItem(data, sourceFile, sourceLineNum, timestamp, m_format);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
