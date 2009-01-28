@@ -1,12 +1,13 @@
-/**
- *  \ingroup DynLog
- */
 #ifndef _REFCOUNTER_H_
 #define _REFCOUNTER_H_
 
 namespace Logging
 {
 
+/**
+ *  \class IRefCounter
+ *  \brief IRefCounter provides a standard reference counting implementation and is the base class to all the DynLog Interfaces
+ */
 class IRefCounter
 {
 public:

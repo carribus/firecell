@@ -67,4 +67,4 @@ bool DynLogNullWriter::writeItem(IDynLogItem* item)
   return true;
 }
 
-}; // end of namespace Logging
+}

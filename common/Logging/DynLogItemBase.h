@@ -7,6 +7,11 @@
 namespace Logging
 {
 
+/**
+ *  \class DynLogItemBase
+ *  \brief This is the base class for LogItem objects. If you implement your own IDynLogItem object, you can use this object as a base class
+ *         to simplify development.
+ */
 class DynLogItemBase : public IDynLogItem
 {
 public:

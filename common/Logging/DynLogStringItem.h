@@ -7,6 +7,10 @@
 namespace Logging
 {
 
+/**
+ *  \class DynLogStringItem
+ *  \brief This is the string serialising class that generates standard string based output based on a format specifier
+ */
 class DynLogStringItem : public DynLogItemBase
 {
 public:

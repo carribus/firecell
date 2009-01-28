@@ -6,6 +6,10 @@
 namespace Logging
 {
 
+/**
+ *  \class DynLogConsoleWriter
+ *  \brief This writer is used for log output to a console
+ */
 class DynLogConsoleWriter : public IDynLogWriter
 {
 public:

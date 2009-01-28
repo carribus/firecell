@@ -39,4 +39,4 @@ size_t DynLogItemBase::getSourceLineNum()
   return m_sourceLineNum;
 }
 
-} // end of namespace Logging
+}

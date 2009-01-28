@@ -1,5 +1,5 @@
 /**
- *  \defgroup DynLog
+ *  \defgroup DynLog DynLog Logging Framework
  */
 #ifndef _DYNLOG_H_
 #define _DYNLOG_H_
@@ -16,16 +16,19 @@ namespace Logging
 {
 
 /**
+ *  \ingroup DynLog
  *  \brief This function must be called to retrieve the singleton instance of the logger object
  */
 IDynLogger* getLogger();
 
 /**
+ *  \ingroup DynLog
  *  \brief This function must be called when you are ready to release the logger for good
  */
 void destroyLogger();
 
 /**
+ *  \ingroup DynLog
  *  \brief Creates a log writer object
  *
  *  Call this function to create a log writer object. The kind of object created is specified by the type parameter
