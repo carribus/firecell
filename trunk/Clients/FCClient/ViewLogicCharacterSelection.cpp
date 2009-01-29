@@ -22,7 +22,6 @@
 #include "FCController.h"
 #include "FCView.h"
 #include "FCViewEvent.h"
-#include "FCDialog.h"
 #include "InGameAppWindow.h"
 #include "ViewLogicCharacterSelection.h"
 
@@ -142,7 +141,7 @@ bool ViewLogicCharacterSelection::OnEvent(const SEvent& event)
 					switch ( elemID )
 					{
 					case	BUTTON_NEWCHAR:
-						OpenNewCharacterDialog();
+						ShowNewCharacterForm();
 						break;
 
 					default:
@@ -268,12 +267,26 @@ void ViewLogicCharacterSelection::CreateGUIObjects()
 
 ///////////////////////////////////////////////////////////////////////
 
-void ViewLogicCharacterSelection::OpenNewCharacterDialog()
+void ViewLogicCharacterSelection::ShowNewCharacterForm()
 {
-	FCDialog dlg(m_pEnv);
+/*
+  IGUIElement* pElem = m_pEnv->addModalScreen(m_pEnv->getRootGUIElement());
 
-	dlg.Create( DIALOG_NEWCHAR, "./clientdata/ui/dialog.newchar.xml" );
-	dlg.CenterWindow();
+  if ( pElem )
+  {
+    m_pEnv->loadGUI("./clientdata/ui/dialog.newchar.xml", pElem);
+    // center the dialog
+    core::dimension2d<s32> dim = m_pEnv->getVideoDriver()->getScreenSize();
+    core::rect<s32> wndRect = pElem->getAbsolutePosition();
+
+    wndRect.UpperLeftCorner.X = (dim.Width / 2) - wndRect.getWidth()/2;
+    wndRect.UpperLeftCorner.Y = (dim.Height / 2) - wndRect.getHeight()/2;
+    wndRect.LowerRightCorner.X = wndRect.UpperLeftCorner.X + wndRect.getWidth();
+    wndRect.LowerRightCorner.Y = wndRect.UpperLeftCorner.Y + wndRect.getHeight();
+
+    pElem->setRelativePosition(wndRect);
+  }
+*/
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -57,7 +57,7 @@ private:
 	 * Private Methods
 	 */
 	void CreateGUIObjects();
-	void OpenNewCharacterDialog();
+	void ShowNewCharacterForm();
 
   void OnModelStateChange(FCModel::StateInfo state);
 
