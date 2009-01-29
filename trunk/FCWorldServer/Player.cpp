@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "../common/Logging/DynLog.h"
 #include "Player.h"
 
 DEFINE_EVENT_SOURCE(Player);
@@ -95,7 +96,7 @@ void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
   string eventCode = pEvent->GetCode();
   string eventName = eventCode.substr(eventCode.find('.')+1, eventCode.length());
 
-	printf("Player::OnEvent(): Event [%s] received from source [%s]\n", eventCode.c_str(), sourceType.c_str());
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("Player::OnEvent(): Event [%s] received from source [%s]\n", eventCode.c_str(), sourceType.c_str()) );
 
   if ( !sourceType.compare( Player::EVTSYS_ObjectType ) )      // player events
   {
@@ -112,7 +113,7 @@ void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
   }
   else
   {
-    printf("Player::OnEvent(): Unknown event received [source:%s / event:%s]\n", sourceType.c_str(), pEvent->GetCode().c_str());
+    DYNLOG_ADDLOG( DYNLOG_FORMAT("Player::OnEvent(): Unknown event received [source:%s / event:%s]\n", sourceType.c_str(), pEvent->GetCode().c_str()) );
   }
 }
 

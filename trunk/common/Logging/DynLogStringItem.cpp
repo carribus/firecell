@@ -22,8 +22,14 @@ std::string DynLogStringItem::serialise()
   std::stringstream ss;
   std::string result, ts = asctime(&m_timestamp);
 
-  if ( ts[ts.size()-1] == '\n' )
-    ts.erase( ts.size()-1 );
+  // format the timestamp into a string
+  ss << m_timestamp.tm_year+1900 << "-" 
+     << (m_timestamp.tm_mon <= 9 ? "0" : "") << m_timestamp.tm_mon+1 << "-" 
+     << (m_timestamp.tm_mday <= 9 ? "0" : "") << m_timestamp.tm_mday << " "
+     << (m_timestamp.tm_hour <= 9 ? "0" : "") << m_timestamp.tm_hour << ":" 
+     << (m_timestamp.tm_min <= 9 ? "0" : "") << m_timestamp.tm_min << ":" 
+     << (m_timestamp.tm_sec <= 9 ? "0" : "") << m_timestamp.tm_sec;
+  ts = ss.str();
 
   result = m_format;
   replacePlaceHolder(result, DYNLOG_FORMAT_TIME, ts);

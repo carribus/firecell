@@ -20,6 +20,7 @@
 #ifdef _WIN32
   #include <windows.h>
 #endif//_WIN32
+#include "../common/Logging/DynLog.h"
 #include "EventSystem.h"
 
 EventSystem* EventSystem::m_pThis = NULL;
@@ -71,9 +72,11 @@ void EventSystem::Shutdown()
 
 bool EventSystem::Start()
 {
+  DYNLOG_ADDLOG("Event System starting up");
   // kick off the eventing thread
   if ( pthread_create( &m_thrdEventMgr, NULL, thrdEventMgr, (void*)this ) != 0 )
   {
+    DYNLOG_ADDLOG("Event System startup aborted - failed to create thread");
     return false;
   }
 

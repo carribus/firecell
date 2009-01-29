@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <stdio.h>
+#include "../common/Logging/DynLog.h"
 #include "../common/fctypes.h"
 #ifdef _WIN32
   #include "../common/daemon/win/W32Service.h"
@@ -40,6 +41,12 @@ int main(int argc, FCSTR argv[])
   IService* pService = CreateServerObject();
   IServiceLogic* pLogic = new FCLogicWorld;
   CCmdLineInfo  cmdLine(argc, argv);
+
+  // create the logger
+  Logging::IDynLogWriter* pWriter = Logging::createLogWriter( Logging::LOGWRITER_TEXTFILE);
+  ((Logging::IDynLogTextFileWriter*)pWriter)->setFilename("./FCWorldServer.log");
+  Logging::getLogger()->addWriter(pWriter);
+  pWriter->release();
 
   if ( pService )
   {
@@ -116,6 +123,14 @@ bool HandleCommandLine(CCmdLineInfo& cmdLine, IService* pService)
   if ( cmdLine.IsSwitchPresent("a") )
   {
     pService->ISRV_RunAsApp(true);
+    // add a console writer to the log object
+    Logging::IDynLogWriter* pWriter = Logging::createLogWriter( Logging::LOGWRITER_CONSOLE );
+    if ( pWriter )
+    {
+      pWriter->setOutputFormat("[[time]] [data]");
+      Logging::getLogger()->addWriter(pWriter);
+      pWriter->release();
+    }
   }
 
   return true;

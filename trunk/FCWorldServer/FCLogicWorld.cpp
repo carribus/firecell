@@ -59,8 +59,7 @@ int FCLogicWorld::Start()
   // load the configuration
   if ( !LoadConfig("FCWorld.conf") )
   {
-    if ( HasConsole() )
-      printf("Failed to load FCWorld.conf configuration file\n");
+    DYNLOG_ADDLOG("Failed to load FCWorld.conf configuration file");
     return -1;
   }
 
@@ -79,8 +78,7 @@ int FCLogicWorld::Start()
   /*
    *  Initialise the Database object
    */
-  if ( HasConsole() )
-    printf("Setting up database connection...\n");
+  DYNLOG_ADDLOG("Setting up database connection...");
 
   if ( LoadDBSettingsFromConfig(strEngine, strServer, strDBName, strUser, strPass) )
   {
@@ -102,8 +100,7 @@ int FCLogicWorld::Start()
 		RegisterDBHandler(DBQ_LOAD_FORUM_POSTS, OnDBJob_LoadForumPosts);
 
     // Start the Item loading...
-    if ( HasConsole() )
-      printf("Loading Item Types...\n");
+    DYNLOG_ADDLOG("Loading Item Types...");
 
     DBJobContext* pCtx = new DBJobContext;
     pCtx->pThis = this;
@@ -915,22 +912,19 @@ bool FCLogicWorld::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
         if ( d.status )
         {
           // registration succeeded
-          if ( HasConsole() )
-            printf("Service registered with Router (%s:%ld)\n", pRouter->GetServer().c_str(), pRouter->GetPort());
+          DYNLOG_ADDLOG( DYNLOG_FORMAT("Service registered with Router (%s:%ld)", pRouter->GetServer().c_str(), pRouter->GetPort()) );
         }
         else
         {
           // registration failed
-          if ( HasConsole() )
-            printf("Service failed to register with Router (%s:%ld)\n", pRouter->GetServer().c_str(), pRouter->GetPort());
+          DYNLOG_ADDLOG( DYNLOG_FORMAT("Service failed to register with Router (%s:%ld)", pRouter->GetServer().c_str(), pRouter->GetPort()) );
         }
       }
     }
     break;
 
   default:
-    if ( HasConsole() )
-      printf("Unknown Message Received (%ld)\n", msgID);
+    DYNLOG_ADDLOG( DYNLOG_FORMAT("Unknown Message Received (%ld)", msgID) );
     break;
   }
 
@@ -957,8 +951,7 @@ void FCLogicWorld::OnDBJob_LoadItemTypes(DBIResultSet& resultSet, void*& pContex
 
   size_t rowCount = resultSet.GetRowCount();
 
-  if ( pThis->HasConsole() )
-    printf("%ld Item Types loaded\n", rowCount);
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("%ld Item Types loaded", rowCount));
 
   for ( size_t i = 0; i < rowCount; i++ )
   {
@@ -973,8 +966,7 @@ void FCLogicWorld::OnDBJob_LoadItemTypes(DBIResultSet& resultSet, void*& pContex
   pContext = NULL;
 
   // now try and load the items
-  if ( pThis->HasConsole() )
-    printf("Loading Item Definitions\n", rowCount);
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("Loading Item Definitions", rowCount) );
 
   pCtx = new DBJobContext;
   pCtx->pThis = pThis;
@@ -998,8 +990,7 @@ void FCLogicWorld::OnDBJob_LoadItemDefs(DBIResultSet& resultSet, void*& pContext
   size_t rowCount = resultSet.GetRowCount();
   string strObjDataQuery;
 
-  if ( pThis->HasConsole() )
-    printf("%ld Item Definitions loaded\n", rowCount);
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("%ld Item Definitions loaded", rowCount) );
 
   // create items with the core item data
   for ( size_t i = 0; i < rowCount; i++ )
@@ -1112,8 +1103,7 @@ void FCLogicWorld::OnDBJob_LoadObjectData(DBIResultSet& resultSet, void*& pConte
 
   if ( resultSet.IsLastResultSet() )
   {
-    if ( pThis->HasConsole() )
-      printf("%ld objects were loaded!\n", objectsLeftToLoad);
+    DYNLOG_ADDLOG( DYNLOG_FORMAT("%ld objects were loaded!", objectsLeftToLoad) );
 
     delete pCtx;
     pContext = NULL;
@@ -1185,10 +1175,7 @@ void FCLogicWorld::OnDBJob_LoadWorldGeography(DBIResultSet& resultSet, void*& pC
   delete pCtx;
   pContext = NULL;
 
-  if ( pThis->HasConsole() )
-  {
-    printf("%ld locations loaded\n", rowCount);
-  }
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("%ld locations loaded", rowCount) );
 
   pCtx = new DBJobContext;
   pCtx->pThis = pThis;
@@ -1227,8 +1214,7 @@ void FCLogicWorld::OnDBJob_LoadCompanies(DBIResultSet& resultSet, void*& pContex
   delete pCtx;
   pContext = NULL;
 
-  if ( pThis->HasConsole() )
-    printf("%ld companies loaded\n", rowCount);
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("%ld companies loaded", rowCount) );
 
   pCtx = new DBJobContext;
   pCtx->pThis = pThis;
@@ -1269,8 +1255,7 @@ void FCLogicWorld::OnDBJob_LoadCompanyComputers(DBIResultSet& resultSet, void*& 
   delete pCtx;
   pContext = NULL;
 
-  if ( pThis->HasConsole() )
-    printf("%ld company computers loaded\n", rowCount);
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("%ld company computers loaded", rowCount) );
 
   pThis->m_condSync.Signal();
 }
@@ -1308,8 +1293,7 @@ void FCLogicWorld::OnDBJob_LoadMissions(DBIResultSet& resultSet, void*& pContext
   delete pCtx;
   pContext = NULL;
 
-  if ( pThis->HasConsole() )
-    printf("%ld missions loaded\n", rowCount);
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("%ld missions loaded", rowCount) );
 
   pThis->m_condSync.Signal();
 }
@@ -1345,8 +1329,7 @@ void FCLogicWorld::OnDBJob_LoadForumCategories(DBIResultSet& resultSet, void*& p
 	delete pCtx;
 	pContext = NULL;
 
-	if ( pThis->HasConsole() )
-		printf("%ld forum categories loaded\n", rowCount);
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("%ld forum categories loaded", rowCount) );
 
 	pCtx = new DBJobContext;
   pCtx->pThis = pThis;
@@ -1384,8 +1367,7 @@ void FCLogicWorld::OnDBJob_LoadForumPosts(DBIResultSet& resultSet, void*& pConte
 		pThis->m_forum.AddForumPost(post_id, parent_id, category_id, order, title, content, author_id, date_created, mission_id);
 	}
 
-	if ( pThis->HasConsole() )
-		printf("%ld forum posts loaded\n", rowCount);
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("%ld forum posts loaded", rowCount) );
 
 	delete pCtx;
 	pContext = NULL;
