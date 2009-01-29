@@ -135,6 +135,9 @@
 				RelativePath=".\FCController.cpp">
 			</File>
 			<File
+				RelativePath=".\FCDialog.cpp">
+			</File>
+			<File
 				RelativePath=".\FCGUIElementFactory.cpp">
 			</File>
 			<File
@@ -203,10 +206,10 @@
 				RelativePath=".\clientstrings.h">
 			</File>
 			<File
-				RelativePath="..\common\clienttypes.h">
+				RelativePath="..\common\Socket\clienttypes.h">
 			</File>
 			<File
-				RelativePath="..\common\Socket\clienttypes.h">
+				RelativePath="..\common\clienttypes.h">
 			</File>
 			<File
 				RelativePath=".\ConsoleWindow.h">
@@ -216,6 +219,9 @@
 			</File>
 			<File
 				RelativePath=".\FCController.h">
+			</File>
+			<File
+				RelativePath=".\FCDialog.h">
 			</File>
 			<File
 				RelativePath=".\FCGUIElementFactory.h">
