@@ -22,9 +22,13 @@
 #include "FCController.h"
 #include "FCView.h"
 #include "FCViewEvent.h"
+#include "FCDialog.h"
+#include "InGameAppWindow.h"
 #include "ViewLogicCharacterSelection.h"
 
 #define STATIC_HEADER               1
+#define BUTTON_NEWCHAR							2
+#define DIALOG_NEWCHAR							50
 #define CHARSEL_OBJECT_BASE         100
 
 #define BORDER_EDGE_TOP             30
@@ -133,6 +137,20 @@ bool ViewLogicCharacterSelection::OnEvent(const SEvent& event)
 
       switch ( event.GUIEvent.EventType )
       {
+			case	EGET_BUTTON_CLICKED:
+				{
+					switch ( elemID )
+					{
+					case	BUTTON_NEWCHAR:
+						OpenNewCharacterDialog();
+						break;
+
+					default:
+						break;
+					}
+				}
+				break;
+
       case  EGET_ELEMENT_HOVERED:
         {
           if ( elemID >= 100 )
@@ -233,6 +251,29 @@ void ViewLogicCharacterSelection::CreateGUIObjects()
     // offset the position
     posItem.Y += pItem->getAbsoluteClippingRect().getHeight() + CHARSEL_ITEM_PADDING_TOP;
   }
+
+	// max number of characters per player is 8 at the moment...
+	// TODO: Make this a configuration in the database
+	if ( numChars < 8 )
+	{
+		core::dimension2d<s32> dim = m_pDevice->getVideoDriver()->getScreenSize();
+		core::rect<s32> btnRect( dim.Width - BORDER_EDGE_RIGHT - 200,
+														 dim.Height - BORDER_EDGE_BOTTOM - 50,
+                             dim.Width - BORDER_EDGE_RIGHT - 10,
+                             dim.Height - BORDER_EDGE_BOTTOM - 10 );
+		// create the "New Character" option
+		m_pEnv->addButton( btnRect, 0, BUTTON_NEWCHAR, ResourceManager::instance().GetClientString( STR_CHARSEL_NEWCHAR ).c_str() );
+	}
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewLogicCharacterSelection::OpenNewCharacterDialog()
+{
+	FCDialog dlg(m_pEnv);
+
+	dlg.Create( DIALOG_NEWCHAR, "./clientdata/ui/dialog.newchar.xml" );
+	dlg.CenterWindow();
 }
 
 ///////////////////////////////////////////////////////////////////////

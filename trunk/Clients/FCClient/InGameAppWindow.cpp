@@ -19,12 +19,12 @@ InGameAppWindow::~InGameAppWindow(void)
 
 ///////////////////////////////////////////////////////////////////////
 
-bool InGameAppWindow::Create(FCUINT optionID, DesktopOptionType type, std::wstring caption)
+bool InGameAppWindow::Create(FCUINT optionID, DesktopOptionType type, std::wstring caption, bool bModal)
 {
 	if ( !m_pEnv || !m_pController )
 		return false;
 
-	if ( !(m_pWindow = m_pEnv->addWindow( core::rect<s32>(0, 0, 0, 0), false, caption.c_str() )) )
+	if ( !(m_pWindow = m_pEnv->addWindow( core::rect<s32>(0, 0, 0, 0), bModal, caption.c_str() )) )
 		return false;
 	m_pWindow->grab();
 

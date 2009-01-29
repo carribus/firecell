@@ -17,4 +17,8 @@
 	<String id="LOGINWND_EXITBUTTON">Exit</String>
 	<!-- CHARACTER SELECTION SCREEN -->
 	<String id="CHARSEL_HEADER">Select a character</String>
+	<String id="CHARSEL_NEWCHAR">New Character</String>
+	<String id="CHARSEL_DELCHAR">Delete Character</String>
+	<!-- NEW CHARACTER DIALOG -->
+	<String id="CHARSEL_NEWCHAR_WNDCAPTION">Create a new character</String>
 </FCStrings>

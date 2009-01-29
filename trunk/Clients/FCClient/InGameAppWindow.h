@@ -18,7 +18,7 @@ public:
 	InGameAppWindow(FCController* pController, IGUIEnvironment* pEnv);
 	virtual ~InGameAppWindow(void);
 
-	virtual bool Create(FCUINT optionID, DesktopOptionType type, std::wstring caption);
+	virtual bool Create(FCUINT optionID, DesktopOptionType type, std::wstring caption, bool bModal = false);
 	void GetClientRect(core::rect<s32>& rect);
   void CenterWindow();
 
