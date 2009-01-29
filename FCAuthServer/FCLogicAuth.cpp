@@ -55,8 +55,7 @@ int FCLogicAuth::Start()
   // load the configuration
   if ( !LoadConfig("FCAuth.conf") )
   {
-    if ( HasConsole() )
-      printf("Failed to load FCauth.conf configuration file\n");
+    DYNLOG_ADDLOG("Failed to load FCauth.conf configuration file");
     return -1;
   }
 
@@ -64,8 +63,7 @@ int FCLogicAuth::Start()
   m_pktExtractor.Prepare( __FCPACKET_DEF );
 
   // kick off the database object
-  if ( HasConsole() )
-    printf("Setting up database connection...\n");
+  DYNLOG_ADDLOG("Setting up database connection...");
 
   if ( LoadDBSettingsFromConfig(strEngine, strServer, strDBName, strUser, strPass) )
   {
@@ -294,12 +292,6 @@ bool FCLogicAuth::OnCommandClientDisconnect(PEPacket* pPkt, RouterSocket* pSocke
   {
     // NOTE: This might be a bit brutal. Possibly investigate the potential of putting the account on a disconnect
     //       timer, at the end of which we log the account out. This will potentially make reconnects a little easier.
-/*
-    pCtx = new DBJobContext;
-    pCtx->pThis = this;
-    pCtx->clientSocket = clientSocket;
-    pCtx->pRouter = pSocket;
-*/
     GetDatabase().ExecuteJob(DBQ_LOGOUT_CHARACTER, NULL, pAccount->GetID(), pAccount->GetCurrentCharacterID());
 
     AccountLogout( pAccount );
@@ -329,8 +321,7 @@ bool FCLogicAuth::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     break;
 
   default:
-    if ( HasConsole() )
-      printf("Unknown Message Received (%ld)\n", msgID);
+    DYNLOG_ADDLOG( DYNLOG_FORMAT("Unknown Message Received (%ld)", msgID) );
     break;
   }
 
@@ -352,14 +343,13 @@ bool FCLogicAuth::OnResponseRegisterService(PEPacket* pPkt, RouterSocket* pSocke
     if ( d.status )
     {
       // registration succeeded
-      if ( HasConsole() )
-        printf("Service registered with Router (%s:%ld)\n", pSocket->GetServer().c_str(), pSocket->GetPort());
+      DYNLOG_ADDLOG( DYNLOG_FORMAT("Service registered with Router (%s:%ld)", pSocket->GetServer().c_str(), pSocket->GetPort()) );
     }
     else
     {
       // registration failed
-      if ( HasConsole() )
-        printf("Service failed to register with Router (%s:%ld)\n", pSocket->GetServer().c_str(), pSocket->GetPort());
+      DYNLOG_ADDLOG( DYNLOG_FORMAT("Service failed to register with Router (%s:%ld)", pSocket->GetServer().c_str(), pSocket->GetPort()) );
+
     }
 
   }
@@ -404,7 +394,7 @@ bool FCLogicAuth::OnErrorSelectCharacter(PEPacket* pPkt, RouterSocket* pSocket, 
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
 
-  printf("Character Selection failed on World Service (charID=%ld)\n", d.character_id);
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("Character Selection failed on World Service (charID=%ld)", d.character_id) );
 
   return true;
 }

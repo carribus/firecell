@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "../../Logging/DynLog.h"
 #include "../FCDBJob.h"
 #include "../DBIResults.h"
 #include "DBIMySqlResultSet.h"
@@ -52,6 +53,7 @@ bool DBIMySqlConnection::Connect(const std::string& server, short port, const st
                             CLIENT_MULTI_STATEMENTS) )
   {
     // failed to connect to the DB
+    DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to connect to database (%s:%ld as user %s)", server.c_str(), port, user.c_str()) );
     return false;
   }
 

@@ -34,8 +34,7 @@ void ServiceLogicBase::OnConnected(BaseSocket* pSocket, int nErrorCode)
   }
   else
   {
-    if ( HasConsole() )
-      printf("Failed to connect to router (%s:%ld)\n", pSock->GetServer().c_str(), pSock->GetPort());
+    DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to connect to router (%s:%ld)", pSock->GetServer().c_str(), pSock->GetPort()) );
   }
 }
 
@@ -171,8 +170,7 @@ bool ServiceLogicBase::ConnectToRouters()
         strServer = strValue.substr(0, strValue.find(':'));
         port = atoi( strValue.substr( strValue.find(':')+1, strValue.length() ).c_str() );
 
-        if ( HasConsole() )
-          printf("Connecting to router (%s:%ld)\n", strServer.c_str(), port);
+        DYNLOG_ADDLOG( DYNLOG_FORMAT("Connecting to router (%s:%ld)", strServer.c_str(), port) );
 
         RouterSocket* pSock = new RouterSocket;
         pSock->SetServer( strServer );
@@ -290,7 +288,7 @@ void ServiceLogicBase::HandleCompletedDBJob(FCDBJob& job)
   // NOTE: We do not delete the context (pCtx) since it was not created/initialised by us. We expect the db handler to clean up after itself.
   if ( pCtx != NULL && HasConsole() )
   {
-    printf("Possible leak of DBJob context: JobRef=%s\n", jobRef.c_str());
+    DYNLOG_ADDLOG( DYNLOG_FORMAT("Possible leak of DBJob context: JobRef=%s", jobRef.c_str()) );
   }
 
   // delete the results object

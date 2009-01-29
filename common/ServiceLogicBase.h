@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include "binstream.h"
+#include "Logging/DynLog.h"
 #include "threading.h"
 #include "fctypes.h"
 #include "inifile.h"

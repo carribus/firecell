@@ -21,8 +21,9 @@
 #include <windows.h>
 #endif//_WIN32
 #include <algorithm>
+#include "../Logging/DynLog.h"
 #include "IDBInterface.h"
-#include "mysql\DBIMySql.h"
+#include "mysql/DBIMySql.h"
 #include "FCDatabase.h"
 
 FCDatabase::FCDatabase(void)
@@ -81,7 +82,7 @@ bool FCDatabase::ExecuteJob(const string QueryName, void* pData, ...)
     return false;
 
   if ( QueryName.empty() )
-    printf("ExecuteJob: QueryName=%s\n", QueryName.c_str());
+    DYNLOG_ADDLOG( DYNLOG_FORMAT("ExecuteJob: QueryName=%s", QueryName.c_str()) );
 
   bool bResult = false;
   string sqlQuery = m_pQueries->GetValue(QueryName);
@@ -156,6 +157,7 @@ IDBInterface* FCDatabase::CreateInterface(string strEngine)
   else
   {
     /* no action to be taken when we don't have an engine */
+    DYNLOG_ADDLOG( "No database engine created. Failed to create interface." );
   }
 
   return pi;
@@ -301,7 +303,7 @@ void* FCDatabase::thrdDBWorker(void* pData)
 
           if ( strError.length() )
           {
-            printf("FCDatabase Error: %s\n", strError.c_str());
+            DYNLOG_ADDLOG( DYNLOG_FORMAT("FCDatabase Error: %s", strError.c_str()) );
           }
         }
       }

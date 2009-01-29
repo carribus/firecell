@@ -1,3 +1,4 @@
+#include "../common/Logging/DynLog.h"
 #include "Mission.h"
 
 DEFINE_EVENT_SOURCE(Mission);
@@ -46,7 +47,7 @@ void Mission::OnEvent(IEventSource* pSource, IEvent* pEvent)
   string eventCode = pEvent->GetCode();
   string eventName = eventCode.substr(eventCode.find('.')+1, eventCode.length());
 
-	printf("Mission::OnEvent(): Event [%s] received from source [%s]\n", eventCode.c_str(), sourceType.c_str());
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("Mission::OnEvent(): Event [%s] received from source [%s]\n", eventCode.c_str(), sourceType.c_str()) );
 
   if ( !sourceType.compare( Mission::EVTSYS_ObjectType ) )      // Mission events
   {
@@ -63,7 +64,7 @@ void Mission::OnEvent(IEventSource* pSource, IEvent* pEvent)
   }
   else
   {
-    printf("Mission::OnEvent(): Unknown event received [source:%s / event:%s]\n", sourceType.c_str(), pEvent->GetCode().c_str());
+    DYNLOG_ADDLOG( DYNLOG_FORMAT("Mission::OnEvent(): Unknown event received [source:%s / event:%s]\n", sourceType.c_str(), pEvent->GetCode().c_str()) );
   }
 }
 
