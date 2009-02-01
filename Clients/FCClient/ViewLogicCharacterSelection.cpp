@@ -22,6 +22,7 @@
 #include "FCController.h"
 #include "FCView.h"
 #include "FCViewEvent.h"
+#include "DlgNewCharacter.h"
 #include "InGameAppWindow.h"
 #include "ViewLogicCharacterSelection.h"
 
@@ -221,6 +222,18 @@ bool ViewLogicCharacterSelection::OnEvent(const SEvent& event)
 
 ///////////////////////////////////////////////////////////////////////
 
+void ViewLogicCharacterSelection::OnDlgNewCharacterCancelled()
+{
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewLogicCharacterSelection::OnDlgNewCharacterCompleted()
+{
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void ViewLogicCharacterSelection::CreateGUIObjects()
 {
   vector<Character>& characters = m_pModel->GetCharacters();
@@ -269,6 +282,11 @@ void ViewLogicCharacterSelection::CreateGUIObjects()
 
 void ViewLogicCharacterSelection::ShowNewCharacterForm()
 {
+	DlgNewCharacter* pDlg = new DlgNewCharacter(m_pEnv, (wchar_t*)ResourceManager::instance().GetClientString(STR_CHARSEL_NEWCHAR_WNDCAPTION).c_str(), 0, DIALOG_NEWCHAR);
+
+	pDlg->setCancelCallback(OnDlgNewCharacterCancelled);
+	pDlg->setSuccessCallback(OnDlgNewCharacterCompleted);
+
 /*
   IGUIElement* pElem = m_pEnv->addModalScreen(m_pEnv->getRootGUIElement());
 

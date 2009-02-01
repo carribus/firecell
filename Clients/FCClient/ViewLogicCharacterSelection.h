@@ -53,6 +53,9 @@ public:
 
 private:
 
+	static void OnDlgNewCharacterCancelled();
+	static void OnDlgNewCharacterCompleted();
+
 	/*
 	 * Private Methods
 	 */

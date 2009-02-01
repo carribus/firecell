@@ -129,10 +129,16 @@
 				RelativePath=".\Desktop.cpp">
 			</File>
 			<File
+				RelativePath=".\DlgNewCharacter.cpp">
+			</File>
+			<File
 				RelativePath=".\FCClient.cpp">
 			</File>
 			<File
 				RelativePath=".\FCController.cpp">
+			</File>
+			<File
+				RelativePath=".\FCDialog.cpp">
 			</File>
 			<File
 				RelativePath=".\FCGUIElementFactory.cpp">
@@ -171,7 +177,7 @@
 				RelativePath="..\..\common\PEPacketHelper.cpp">
 			</File>
 			<File
-				RelativePath=".\PThreadMutex.cpp">
+				RelativePath="..\..\common\PThreadMutex.cpp">
 			</File>
 			<File
 				RelativePath="..\common\ResourceManager.cpp">
@@ -203,10 +209,10 @@
 				RelativePath=".\clientstrings.h">
 			</File>
 			<File
-				RelativePath="..\common\clienttypes.h">
+				RelativePath="..\common\Socket\clienttypes.h">
 			</File>
 			<File
-				RelativePath="..\common\Socket\clienttypes.h">
+				RelativePath="..\common\clienttypes.h">
 			</File>
 			<File
 				RelativePath=".\ConsoleWindow.h">
@@ -215,7 +221,13 @@
 				RelativePath=".\Desktop.h">
 			</File>
 			<File
+				RelativePath=".\DlgNewCharacter.h">
+			</File>
+			<File
 				RelativePath=".\FCController.h">
+			</File>
+			<File
+				RelativePath=".\FCDialog.h">
 			</File>
 			<File
 				RelativePath=".\FCGUIElementFactory.h">
@@ -260,7 +272,7 @@
 				RelativePath="..\..\common\PEPacketHelper.h">
 			</File>
 			<File
-				RelativePath=".\PThreadMutex.h">
+				RelativePath="..\..\common\PThreadMutex.h">
 			</File>
 			<File
 				RelativePath=".\PThreadWrapper.h">
