@@ -13,6 +13,7 @@ public:
   void Login(const char* username, const char* password);
   void RequestCharacterInfo();
   void SendCharacterSelection(size_t character_id);
+  void RequestCharacterCreationParameters();
   void SendCharacterAssetRequest(size_t character_id);
   void RequestDesktopOptions(size_t character_id);
 	void RequestDesktopOptionActivate(FCULONG option_id);

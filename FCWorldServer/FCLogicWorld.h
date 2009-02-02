@@ -67,6 +67,9 @@ private:
   //
   // Packet sending functions
   void SendCharacterLoginStatus(FCULONG accountID, FCULONG characterID, e_SelectCharacterStatus status, RouterSocket* pRouter, FCSOCKET clientSocket);
+  void SendCharCreationParameters(std::vector<Country>& countries, std::vector<City>& cities, RouterSocket* pRouter, FCSOCKET clientSocket);
+    void SendCharCreationParameters_Countries(std::vector<Country>& countries, RouterSocket* pRouter, FCSOCKET clientSocket);
+    void SendCharCreationParameters_Cities(std::vector<City>& cities, RouterSocket* pRouter, FCSOCKET clientSocket);
   void SendCharacterAssetResponse(Player* pPlayer, RouterSocket* pRouter, FCSOCKET clientSocket);
   void SendCharacterDesktopOptions(Player* pPlayer, RouterSocket* pRouter, FCSOCKET clientSocket);
 	void SendActivateDesktopOptionResponse(FCULONG optionID, Player* pPlayer, RouterSocket* pRouter, FCSOCKET clientSocket);
@@ -80,6 +83,7 @@ private:
   // Packet handling functions
   bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
+    bool OnCommandGetCharacterCreationParams(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
     bool OnCommandCharacterAssetRequest(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
     bool OnCommandGetDesktopOptions(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
 		bool OnCommandActivateDesktopOption(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);

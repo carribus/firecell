@@ -53,8 +53,8 @@ public:
 
 private:
 
-	static void OnDlgNewCharacterCancelled();
-	static void OnDlgNewCharacterCompleted();
+	static void OnDlgNewCharacterCancelled(void* pCtx);
+	static void OnDlgNewCharacterCompleted(void* pCtx);
 
 	/*
 	 * Private Methods
@@ -73,6 +73,9 @@ private:
 	// Fonts
   IGUIFont*                   m_pNormalFont;
 	IGUIFont*										m_pFontHeader;
+
+  // Dialogs
+  IGUIElement*                m_pActiveDialog;
 };
 
 #endif//_VIEWLOGICCHARACTERSELECTION_H_

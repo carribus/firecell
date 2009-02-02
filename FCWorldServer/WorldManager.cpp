@@ -42,18 +42,23 @@ WorldManager::~WorldManager(void)
 
 ///////////////////////////////////////////////////////////////////////
 
-Country* WorldManager::AddCountry(FCULONG id, const string& name, FCSHORT IPGroupA)
+Country* WorldManager::AddCountry(FCULONG id, const string& name, FCSHORT IPGroupA, bool bCharCreationAllowed)
 {
   Country* pCountry = NULL;
 
   if ( !(pCountry = GetCountry(id)) )
   {
-    pCountry = new Country;
+    pCountry = new Country(bCharCreationAllowed);
     pCountry->SetID(id);
     pCountry->SetName(name);
     pCountry->SetIPGroupA(IPGroupA);
 
     m_mapCountries[id] = pCountry;
+  }
+  else
+  {
+    if ( !pCountry->IsCharCreationSupported() && bCharCreationAllowed )
+      pCountry->AllowCharCreation(bCharCreationAllowed);
   }
 
   return pCountry;
@@ -61,18 +66,23 @@ Country* WorldManager::AddCountry(FCULONG id, const string& name, FCSHORT IPGrou
 
 ///////////////////////////////////////////////////////////////////////
 
-City* WorldManager::AddCity(Country* pCountry, FCULONG id, const string& name, FCSHORT IPGroupB)
+City* WorldManager::AddCity(Country* pCountry, FCULONG id, const string& name, FCSHORT IPGroupB, bool bCharCreationAllowed)
 {
   City* pCity = NULL;
 
   if ( pCountry && !(pCity = GetCity(id)) )
   {
-    pCity = new City(pCountry);
+    pCity = new City(pCountry, bCharCreationAllowed);
     pCity->SetID(id);
     pCity->SetName(name);
     pCity->SetIPGroupB(IPGroupB);
 
     m_mapCities[id] = pCity;
+  }
+  else
+  {
+    if ( !pCity->IsCharCreationSupported() && bCharCreationAllowed )
+      pCity->AllowCharCreation(bCharCreationAllowed);
   }
 
   return pCity;
@@ -100,6 +110,46 @@ City* WorldManager::GetCity(FCULONG id)
     return it->second;
 
   return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+FCULONG WorldManager::GetAllCountries(std::vector<Country>& target, bool bSupportCharCreationOnly)
+{
+  CountryMap::iterator it = m_mapCountries.begin();
+  CountryMap::iterator limit = m_mapCountries.end();
+
+  for ( ; it != limit; it++ )
+  {
+    bool bCanAdd = true;
+    if ( bSupportCharCreationOnly )
+      bCanAdd = (it->second->IsCharCreationSupported());
+
+    if ( bCanAdd )
+      target.push_back( *(it->second) );
+  }
+
+  return (FCULONG)target.size();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+FCULONG WorldManager::GetAllCities(std::vector<City>& target, bool bSupportCharCreationOnly)
+{
+  CityMap::iterator it = m_mapCities.begin();
+  CityMap::iterator limit = m_mapCities.end();
+
+  for ( ; it != limit; it++ )
+  {
+    bool bCanAdd = true;
+    if ( bSupportCharCreationOnly )
+      bCanAdd = (it->second->IsCharCreationSupported());
+
+    if ( bCanAdd )
+      target.push_back( *(it->second) );
+  }
+
+  return (FCULONG)target.size();
 }
 
 ///////////////////////////////////////////////////////////////////////

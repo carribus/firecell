@@ -37,14 +37,16 @@ public:
   /*
    *  Countries
    */
-  Country* AddCountry(FCULONG id, const string& name, FCSHORT IPGroupA);
+  Country* AddCountry(FCULONG id, const string& name, FCSHORT IPGroupA, bool bCharCreationAllowed);
   Country* GetCountry(FCULONG id);
+  FCULONG GetAllCountries(std::vector<Country>& target, bool bSupportCharCreationOnly);
 
   /*
    *  Cities
    */
-  City* AddCity(Country* pCountry, FCULONG id, const string& name, FCSHORT IPGroupB);
+  City* AddCity(Country* pCountry, FCULONG id, const string& name, FCSHORT IPGroupB, bool bCharCreationAllowed);
   City* GetCity(FCULONG id);
+  FCULONG GetAllCities(std::vector<City>& target, bool bSupportCharCreationOnly);
 
   /*
    *  Companies

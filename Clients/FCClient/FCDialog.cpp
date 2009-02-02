@@ -6,6 +6,8 @@ FCDialog::FCDialog(IGUIEnvironment* env, IGUIElement* pParent, wchar_t* caption,
 , Dragging(false)
 , m_fpSuccessCallback(NULL)
 , m_fpCancelCallback(NULL)
+, m_pSuccessCtx(NULL)
+, m_pCancelCtx(NULL)
 {
 	IGUISkin* skin = Environment->getSkin();
 	IGUISpriteBank* sprites = 0;
@@ -33,6 +35,8 @@ FCDialog::FCDialog(IGUIEnvironment* env, IGUIElement* pParent, wchar_t* caption,
 	m_CloseButton->grab();
 
 	Text = caption;
+
+  Environment->setFocus(this);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -180,7 +184,7 @@ bool FCDialog::OnEvent(const SEvent& event)
 							if (event.GUIEvent.Caller == m_CloseButton )
 							{
 								if ( m_fpCancelCallback )
-									(*m_fpCancelCallback)();
+									(*m_fpCancelCallback)(m_pCancelCtx);
 								closeDialog();
 								delete this;
 								return true;

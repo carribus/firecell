@@ -22,6 +22,7 @@
 #include "FCController.h"
 #include "FCView.h"
 #include "FCViewEvent.h"
+#include "Country.h"
 #include "DlgNewCharacter.h"
 #include "InGameAppWindow.h"
 #include "ViewLogicCharacterSelection.h"
@@ -46,6 +47,7 @@ ViewLogicCharacterSelection::ViewLogicCharacterSelection(void)
 , m_pDevice(NULL)
 , m_pScene(NULL)
 , m_pEnv(NULL)
+, m_pActiveDialog(NULL)
 {
 }
 
@@ -117,6 +119,29 @@ bool ViewLogicCharacterSelection::OnModelEvent(FCModelEvent event)
 {
   bool bResult = false;
 
+  switch ( event.GetType() )
+  {
+  case  FCME_NewCharacterParamsReady:
+    {
+      FCModel::StateInfo state = m_pModel->GetState();
+
+      if ( state.state == FCModel::CharacterSelection && state.stateStep == FCModel::MS_CharacterSelection_NewCharacter )
+      {
+        if ( !m_pActiveDialog )
+        {
+          std::map<FCULONG, Country>& mapCountries = m_pModel->GetCountries();
+
+          ShowNewCharacterForm();
+          ((DlgNewCharacter*)m_pActiveDialog)->populateGeographyControls(mapCountries);
+        }
+      }
+    }
+    break;
+
+  default:
+    break;
+  }
+
   return bResult;
 }
 
@@ -142,7 +167,12 @@ bool ViewLogicCharacterSelection::OnEvent(const SEvent& event)
 					switch ( elemID )
 					{
 					case	BUTTON_NEWCHAR:
-						ShowNewCharacterForm();
+            {
+						  FCViewEvent e( VE_NewCharacterRequested );
+						  m_pContainer->GetController()->OnViewEvent(e);
+
+//						ShowNewCharacterForm();
+            }
 						break;
 
 					default:
@@ -222,14 +252,18 @@ bool ViewLogicCharacterSelection::OnEvent(const SEvent& event)
 
 ///////////////////////////////////////////////////////////////////////
 
-void ViewLogicCharacterSelection::OnDlgNewCharacterCancelled()
+void ViewLogicCharacterSelection::OnDlgNewCharacterCancelled(void* pCtx)
 {
+  ViewLogicCharacterSelection* pThis = (ViewLogicCharacterSelection*)pCtx;
+  pThis->m_pActiveDialog = NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-void ViewLogicCharacterSelection::OnDlgNewCharacterCompleted()
+void ViewLogicCharacterSelection::OnDlgNewCharacterCompleted(void* pCtx)
 {
+  ViewLogicCharacterSelection* pThis = (ViewLogicCharacterSelection*)pCtx;
+  pThis->m_pActiveDialog = NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -282,10 +316,31 @@ void ViewLogicCharacterSelection::CreateGUIObjects()
 
 void ViewLogicCharacterSelection::ShowNewCharacterForm()
 {
+  if ( m_pActiveDialog )
+    return;
+
 	DlgNewCharacter* pDlg = new DlgNewCharacter(m_pEnv, (wchar_t*)ResourceManager::instance().GetClientString(STR_CHARSEL_NEWCHAR_WNDCAPTION).c_str(), 0, DIALOG_NEWCHAR);
 
-	pDlg->setCancelCallback(OnDlgNewCharacterCancelled);
-	pDlg->setSuccessCallback(OnDlgNewCharacterCompleted);
+  if (pDlg)
+  {
+    // set the callbacks
+	  pDlg->setCancelCallback(OnDlgNewCharacterCancelled, (void*)this);
+	  pDlg->setSuccessCallback(OnDlgNewCharacterCompleted, (void*)this);
+
+    // center the dialog
+    core::dimension2d<s32> dim = m_pEnv->getVideoDriver()->getScreenSize();
+    core::rect<s32> wndRect = pDlg->getAbsolutePosition();
+
+    wndRect.UpperLeftCorner.X = (dim.Width / 2) - wndRect.getWidth()/2;
+    wndRect.UpperLeftCorner.Y = (dim.Height / 2) - wndRect.getHeight()/2;
+    wndRect.LowerRightCorner.X = wndRect.UpperLeftCorner.X + wndRect.getWidth();
+    wndRect.LowerRightCorner.Y = wndRect.UpperLeftCorner.Y + wndRect.getHeight();
+
+//    pDlg->setRelativePosition(wndRect);
+
+    // set the active dialog
+    m_pActiveDialog = pDlg;
+  }
 
 /*
   IGUIElement* pElem = m_pEnv->addModalScreen(m_pEnv->getRootGUIElement());

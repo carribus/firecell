@@ -214,6 +214,128 @@ void FCLogicWorld::SendCharacterLoginStatus(FCULONG accountID, FCULONG character
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCLogicWorld::SendCharCreationParameters(std::vector<Country>& countries, std::vector<City>& cities, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  size_t numCountries = countries.size();
+  size_t numCities = cities.size();
+
+  if ( !numCountries )
+  {
+    DYNLOG_ADDLOG("Unable to send character creation parameters because number of COUNTRIES available for character creation is ZERO");
+    return;
+  }
+
+  if ( !numCities )
+  {
+    DYNLOG_ADDLOG("Unable to send character creation parameters because number of CITIES available for character creation is ZERO");
+    return;
+  }
+
+  SendCharCreationParameters_Countries(countries, pRouter, clientSocket);
+  SendCharCreationParameters_Cities(cities, pRouter, clientSocket);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::SendCharCreationParameters_Countries(std::vector<Country>& countries, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  PEPacket pkt;
+  __FCPKT_GET_CHAR_CREATION_PARAMS_COUNTRIES_RESP* d = NULL;
+  FCUINT index = 0;
+  size_t nPktLen = 0;
+  size_t numCountries = countries.size();
+
+  // calculate the packet length
+  nPktLen = sizeof(__FCPKT_GET_CHAR_CREATION_PARAMS_COUNTRIES_RESP) + 
+            ((numCountries-1) * sizeof(__FCPKT_GET_CHAR_CREATION_PARAMS_COUNTRIES_RESP::Country));
+
+  d = (__FCPKT_GET_CHAR_CREATION_PARAMS_COUNTRIES_RESP*) new FCBYTE[nPktLen];
+  if ( d )
+  {
+    d->respType = 0;
+    d->numCountries = (FCULONG)numCountries;
+    // copy the countries into the packet
+    std::vector<Country>::iterator countryIt = countries.begin();
+    std::vector<Country>::iterator countryLimit = countries.end();
+
+    for ( ; countryIt != countryLimit; countryIt++, index++ )
+    {
+      d->countries[index].country_id = countryIt->GetID();
+      memset( d->countries[index].name, 0, sizeof(d->countries[index].name) );
+      strncpy( d->countries[index].name, countryIt->GetName().c_str(), countryIt->GetName().size() );
+    }
+
+    // send the packet
+    PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_GET_CHAR_CREATION_PARAMS, ST_None);
+    PEPacketHelper::SetPacketData(pkt, 
+                                  (void*)d, 
+                                  nPktLen);
+
+    // send notification to Client
+    pkt.SetFieldValue("target", (void*)&clientSocket);
+    pRouter->Send(&pkt);
+
+    // clear the data portion
+    delete [] d;
+  }
+  else
+  {
+    DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to allocate memory (%ld bytes) for packet __FCPKT_GET_CHAR_CREATION_PARAMS_COUNTRIES_RESP", nPktLen) );
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::SendCharCreationParameters_Cities(std::vector<City>& cities, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  PEPacket pkt;
+  __FCPKT_GET_CHAR_CREATION_PARAMS_CITIES_RESP* d = NULL;
+  FCUINT index = 0;
+  size_t nPktLen = 0;
+  size_t numCities = cities.size();
+
+  // calculate the packet length
+  nPktLen = sizeof(__FCPKT_GET_CHAR_CREATION_PARAMS_CITIES_RESP) +
+    ((numCities-1) * sizeof(__FCPKT_GET_CHAR_CREATION_PARAMS_CITIES_RESP::City));
+
+  d = (__FCPKT_GET_CHAR_CREATION_PARAMS_CITIES_RESP*) new FCBYTE[nPktLen];
+  if ( d )
+  {
+    d->respType = 1;
+    d->numCities = (FCULONG)numCities;
+    // copy the cities into the packet
+    std::vector<City>::iterator cityIt = cities.begin();
+    std::vector<City>::iterator cityLimit = cities.end();
+
+    for ( ; cityIt != cityLimit; cityIt++, index++ )
+    {
+      d->cities[index].country_id = cityIt->GetCountry()->GetID();
+      d->cities[index].city_id = cityIt->GetID(); 
+      memset( d->cities[index].name, 0, sizeof(d->cities[index].name) );
+      strncpy( d->cities[index].name, cityIt->GetName().c_str(), cityIt->GetName().size() );
+    }
+
+    // send the packet
+    PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_GET_CHAR_CREATION_PARAMS, ST_None);
+    PEPacketHelper::SetPacketData(pkt, 
+                                  (void*)d, 
+                                  nPktLen);
+
+    // send notification to Client
+    pkt.SetFieldValue("target", (void*)&clientSocket);
+    pRouter->Send(&pkt);
+
+    // clear the data portion
+    delete [] d;
+  }
+  else
+  {
+    DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to allocate memory (%ld bytes) for packet __FCPKT_GET_CHAR_CREATION_PARAMS_CITIES_RESP", nPktLen) );
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void FCLogicWorld::SendCharacterAssetResponse(Player* pPlayer, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
   if ( !pPlayer )
@@ -531,6 +653,12 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  case  FCMSG_GET_CHAR_CREATION_PARAMS:
+    {
+      bHandled = OnCommandGetCharacterCreationParams(pPkt, pRouter, clientSock);
+    }
+    break;
+
   case  FCMSG_CHARACTER_ASSET_REQUEST:
     {
       bHandled = OnCommandCharacterAssetRequest(pPkt, pRouter, clientSock);
@@ -645,6 +773,35 @@ bool FCLogicWorld::OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRou
 
     GetDatabase().ExecuteJob(DBQ_LOAD_CHARACTER_COMPUTER, (void*)pCtx, d.character_id);
   }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandGetCharacterCreationParams(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  __FCPKT_GET_CHAR_CREATION_PARAMS d;
+  size_t dataLen = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  std::vector<Country> arrCountries;
+  std::vector<City> arrCities;
+  FCUINT countriesAvailable = 0, citiesAvailable = 0;         // count of countries and cities that support character creation
+
+  // populate the packet with the available countries
+  if ( m_worldMgr.GetAllCountries(arrCountries, true) > 0 )
+  {
+  }
+
+  // populate the packet with the available cities
+  if ( m_worldMgr.GetAllCities(arrCities, true) > 0 )
+  {
+  }
+
+  SendCharCreationParameters(arrCountries, arrCities, pRouter, clientSocket);
 
   return true;
 }
@@ -1153,6 +1310,7 @@ void FCLogicWorld::OnDBJob_LoadWorldGeography(DBIResultSet& resultSet, void*& pC
   size_t rowCount = resultSet.GetRowCount();
   FCULONG countryID, cityID;
   FCSHORT countryIP, cityIP;
+  FCBYTE supportsCharCreation;
   string countryName, cityName;
   Country* pCountry = NULL;
 
@@ -1164,11 +1322,12 @@ void FCLogicWorld::OnDBJob_LoadWorldGeography(DBIResultSet& resultSet, void*& pC
     cityID = resultSet.GetULongValue("city_id", i);
     cityName = resultSet.GetStringValue("city_name", i);
     cityIP = resultSet.GetShortValue("IP_groupB", i);
+    supportsCharCreation = resultSet.GetByteValue("support_char_creation", i);
 
     // create the country...
-    if ( (pCountry = pThis->m_worldMgr.AddCountry(countryID, countryName, countryIP)) )
+    if ( (pCountry = pThis->m_worldMgr.AddCountry(countryID, countryName, countryIP, (supportsCharCreation ? true : false))) )
     {
-      pThis->m_worldMgr.AddCity(pCountry, cityID, cityName, cityIP);
+      pThis->m_worldMgr.AddCity(pCountry, cityID, cityName, cityIP, (supportsCharCreation ? true : false));
     }
   }
 

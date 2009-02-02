@@ -75,6 +75,19 @@ void FCServerObj::SendCharacterSelection(size_t character_id)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCServerObj::RequestCharacterCreationParameters()
+{
+  PEPacket pkt;
+  __FCPKT_GET_CHAR_CREATION_PARAMS d;
+
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_GET_CHAR_CREATION_PARAMS, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void FCServerObj::SendCharacterAssetRequest(size_t character_id)
 {
   PEPacket pkt;

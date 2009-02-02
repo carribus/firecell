@@ -31,6 +31,7 @@
 #include "IModelEventSink.h"
 #include "FCModelEvent.h"
 #include "Character.h"
+#include "Country.h"
 
 using namespace std;
 
@@ -171,13 +172,17 @@ public:
 	void OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen);
 
 	void StartLogin(wstring username, wstring password);
+  /* Character selection/creation/deletion */
 	void SelectCharacter(FCUINT characterID);
+  void StartNewCharacterCreation();
+  /* Desktop */
 	void ActivateDesktopOption(FCULONG optionID);
 	/* Console methods */
 	void ConsoleRefresh();
 	void ConsoleCommandIssued(string cmd, string curdir);
 
   vector<Character>& GetCharacters()               { return m_characters; }
+  map<FCULONG, Country>& GetCountries()            { return m_countries; }
 	map<FCUINT, DesktopOption> GetDesktopOptions()	 { return m_desktopOptions; }
 
 private:
@@ -199,6 +204,9 @@ private:
 		bool OnResponseLogin(PEPacket* pPkt, BaseSocket* pSocket);  
 		bool OnResponseGetCharacters(PEPacket* pPkt, BaseSocket* pSocket);  
 		bool OnResponseSelectCharacter(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnResponseCharacterCreationParams(PEPacket* pPkt, BaseSocket* pSocket);
+      bool OnResponseCharacterCreationParams_Countries(PEPacket* pPkt, BaseSocket* pSocket);
+      bool OnResponseCharacterCreationParams_Cities(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponeActivateDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket);
@@ -224,6 +232,11 @@ private:
 
   vector<Character> m_characters;
 	Character*				m_pCharacter;					// selected character
+
+  /*
+   *  Geography information
+   */
+  map<FCULONG, Country>   m_countries;
 
 	/*
 	 * Desktop Options available to player
