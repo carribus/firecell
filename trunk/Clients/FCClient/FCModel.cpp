@@ -292,6 +292,12 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  case  FCMSG_GET_CHAR_CREATION_PARAMS:
+    {
+      bHandled = OnResponseCharacterCreationParams(pPkt, pSocket);
+    }
+    break;
+
 	case  FCMSG_CHARACTER_ASSET_REQUEST:
     {
       bHandled = OnResponseCharacterAssetRequest(pPkt, pSocket);
@@ -448,6 +454,106 @@ bool FCModel::OnResponseSelectCharacter(PEPacket* pPkt, BaseSocket* pSocket)
   else
   {
 		SetStateStep( MS_CharacterSelection_Failed );
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseCharacterCreationParams(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_GET_CHAR_CREATION_PARAMS_RESP* d;
+  size_t dataLen;
+  bool bResult = false;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  if ( dataLen > sizeof(__FCPKT_GET_CHAR_CREATION_PARAMS_RESP) )
+  {
+    FCBYTE* pData = new FCBYTE[dataLen];
+    // first we get the base structure to determine what type of information we have received
+    pPkt->GetField("data", pData, dataLen);
+    d = (__FCPKT_GET_CHAR_CREATION_PARAMS_RESP*)pData;
+    switch ( d->respType )
+    {
+    case  0:          // countries
+      bResult = OnResponseCharacterCreationParams_Countries(pPkt, pSocket);
+      break;
+
+    case  1:          // cities
+      bResult = OnResponseCharacterCreationParams_Cities(pPkt, pSocket);
+      break;
+
+    default:          // unknown
+      break;
+    }
+    delete [] pData;
+  }
+
+  return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseCharacterCreationParams_Countries(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_GET_CHAR_CREATION_PARAMS_COUNTRIES_RESP* d = NULL;
+  size_t dataLen;
+  Country c;
+
+  // allocate memory for the data and fetch it
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  d = (__FCPKT_GET_CHAR_CREATION_PARAMS_COUNTRIES_RESP*) new FCBYTE[ dataLen ];
+  pPkt->GetField("data", d, dataLen);
+
+  for ( FCULONG i = 0; i < d->numCountries; i++ )
+  {
+    c.SetID( d->countries[i].country_id );
+    c.SetName( d->countries[i].name );
+
+    m_countries[ c.GetID() ] = c;
+  }
+
+  // free the memory
+  delete [] (FCBYTE*)d;
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseCharacterCreationParams_Cities(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_GET_CHAR_CREATION_PARAMS_CITIES_RESP* d = NULL;
+  size_t dataLen;
+  map<FCULONG, Country>::iterator it;
+  City c;
+
+  // allocate memory for the data and fetch it
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  d = (__FCPKT_GET_CHAR_CREATION_PARAMS_CITIES_RESP*) new FCBYTE[ dataLen ];
+  pPkt->GetField("data", d, dataLen);
+
+  for ( FCULONG i = 0; i < d->numCities; i++ )
+  {
+    // find the country this city object belongs to
+    it = m_countries.find( d->cities[i].country_id );
+    if ( it != m_countries.end() )
+    {
+      c.SetCountryID(d->cities[i].country_id);
+      c.SetID(d->cities[i].city_id);
+      c.SetName(d->cities[i].name);
+      it->second.AddCity(c);
+    }
+  }
+
+  // free the memory
+  delete [] (FCBYTE*)d;
+
+  // update the state
+  if ( m_state.state == FCModel::CharacterSelection && m_state.stateStep == FCModel::MS_CharacterSelection_NewCharacter )
+  {
+    FireEvent(FCME_NewCharacterParamsReady, 0);
   }
 
   return true;
@@ -721,6 +827,17 @@ void FCModel::SelectCharacter(FCUINT characterID)
 {
 	m_server.SendCharacterSelection(characterID);
 	SetStateStep( FCModel::MS_CharacterSelection_CharacterSelected );
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::StartNewCharacterCreation()
+{
+  if ( m_state.state == FCModel::CharacterSelection )
+  {
+    SetStateStep( FCModel::MS_CharacterSelection_NewCharacter );
+    m_server.RequestCharacterCreationParameters();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////

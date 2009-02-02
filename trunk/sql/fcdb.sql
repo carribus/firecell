@@ -1,5 +1,5 @@
 /*
-SQLyog Enterprise - MySQL GUI v7.13 
+SQLyog Enterprise - MySQL GUI v7.15 
 MySQL - 5.0.67-community-nt : Database - firecell
 *********************************************************************
 */
@@ -77,12 +77,13 @@ CREATE TABLE `fc_cities` (
   `country_id` int(10) unsigned NOT NULL COMMENT 'country that this city belongs to',
   `name` varchar(64) NOT NULL,
   `IP_groupB` smallint(6) unsigned NOT NULL COMMENT 'Group B IP range for city',
+  `support_char_creation` tinyint(1) NOT NULL default '1' COMMENT 'flag indicating whether characters can be created in this city',
   PRIMARY KEY  (`city_id`,`IP_groupB`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_cities` */
 
-insert  into `fc_cities`(`city_id`,`country_id`,`name`,`IP_groupB`) values (1,1,'New York',45),(2,2,'Moscow',232),(3,3,'Amsterdam',152),(4,4,'London',136),(5,5,'Sydney',221),(6,6,'Beijing',54),(7,7,'Johannesburg',23),(8,8,'Tokyo',97),(9,9,'Abuja',195),(10,10,'Paris',36),(11,11,'Rio de Janeiro',144);
+insert  into `fc_cities`(`city_id`,`country_id`,`name`,`IP_groupB`,`support_char_creation`) values (1,1,'New York',45,1),(2,2,'Moscow',232,1),(3,3,'Amsterdam',152,1),(4,4,'London',136,1),(5,5,'Sydney',221,1),(6,6,'Beijing',54,1),(7,7,'Johannesburg',23,1),(8,8,'Tokyo',97,1),(9,9,'Abuja',195,1),(10,10,'Paris',36,1),(11,11,'Rio de Janeiro',144,1);
 
 /*Table structure for table `fc_companies` */
 

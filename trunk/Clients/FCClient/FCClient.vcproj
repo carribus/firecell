@@ -206,16 +206,22 @@
 				RelativePath=".\Character.h">
 			</File>
 			<File
-				RelativePath=".\clientstrings.h">
+				RelativePath=".\City.h">
 			</File>
 			<File
-				RelativePath="..\common\Socket\clienttypes.h">
+				RelativePath=".\clientstrings.h">
 			</File>
 			<File
 				RelativePath="..\common\clienttypes.h">
 			</File>
 			<File
+				RelativePath="..\common\Socket\clienttypes.h">
+			</File>
+			<File
 				RelativePath=".\ConsoleWindow.h">
+			</File>
+			<File
+				RelativePath=".\Country.h">
 			</File>
 			<File
 				RelativePath=".\Desktop.h">

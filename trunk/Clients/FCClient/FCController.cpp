@@ -114,6 +114,17 @@ void FCController::OnViewEvent(FCViewEvent& event)
 		}
 		break;
 
+  case  VE_NewCharacterRequested:
+    {
+      FCModel::StateInfo state = m_pModel->GetState();
+
+      if ( state.state == FCModel::CharacterSelection )
+      {
+        m_pModel->StartNewCharacterCreation();
+      }
+    }
+    break;
+
 	case	VE_DesktopOptionActivated:
 		m_pModel->ActivateDesktopOption( (FCULONG)event.GetData() );
 		break;

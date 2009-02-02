@@ -124,7 +124,7 @@ struct __FCPKT_LOGIN_RESP
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-const FCSHORT FCMSG_GETCHARACTERS               = 4;
+const FCSHORT FCMSG_GETCHARACTERS               = 20;
 ///////////////////////////////////////////////////////////////////////////////////////////
 struct __FCPKT_CHARACTER_LIST
 {
@@ -144,7 +144,7 @@ struct __FCPKT_CHARACTER_LIST
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-const FCSHORT FCMSG_SELECT_CHARACTER            = 5;
+const FCSHORT FCMSG_SELECT_CHARACTER            = 21;
 ///////////////////////////////////////////////////////////////////////////////////////////
 struct __FCPKT_SELECT_CHARACTER
 {
@@ -158,7 +158,41 @@ struct __FCPKT_SELECT_CHARACTER_RESP
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-const FCSHORT FCMSG_CHARACTER_ASSET_REQUEST     = 6;
+const FCSHORT FCMSG_GET_CHAR_CREATION_PARAMS    = 22;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_GET_CHAR_CREATION_PARAMS
+{
+  FCUINT reserved1;           // not used
+};
+
+struct __FCPKT_GET_CHAR_CREATION_PARAMS_RESP
+{
+  FCBYTE respType;            // 0 = countries, 1 = cities
+};
+
+struct __FCPKT_GET_CHAR_CREATION_PARAMS_COUNTRIES_RESP : public __FCPKT_GET_CHAR_CREATION_PARAMS_RESP
+{
+  FCULONG numCountries;
+  struct Country
+  {
+    FCULONG country_id;
+    char name[32];
+  } countries[1];
+};
+
+struct __FCPKT_GET_CHAR_CREATION_PARAMS_CITIES_RESP : public __FCPKT_GET_CHAR_CREATION_PARAMS_RESP
+{
+  FCULONG numCities;
+  struct City
+  {
+    FCULONG country_id;
+    FCULONG city_id;
+    char name[32];
+  } cities[1];
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_CHARACTER_ASSET_REQUEST     = 23;
 ///////////////////////////////////////////////////////////////////////////////////////////
 struct __FCPKT_CHARACTER_ASSET_REQUEST
 {
@@ -199,7 +233,7 @@ struct __FCPKT_CHARACTER_ASSET_REQUEST_RESP
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-const FCSHORT FCMSG_GET_DESKTOP_OPTIONS         = 7;
+const FCSHORT FCMSG_GET_DESKTOP_OPTIONS         = 40;
 ///////////////////////////////////////////////////////////////////////////////////////////
 struct __FCPKT_GET_DESKTOP_OPTIONS
 {
@@ -229,7 +263,7 @@ struct __FCPKT_GET_DESKTOP_OPTIONS_RESP
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-const FCSHORT FCMSG_ACTIVATE_DESKTOP_OPTION      = 8;
+const FCSHORT FCMSG_ACTIVATE_DESKTOP_OPTION      = 41;
 ///////////////////////////////////////////////////////////////////////////////////////////
 struct __FCPKT_ACTIVATE_DESKTOP_OPTION
 {
