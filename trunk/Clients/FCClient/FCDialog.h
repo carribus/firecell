@@ -84,6 +84,12 @@ className::FormElement className::m_arrFormElements[] = \
 };
 
 /**
+ *  Standard button ID definitions
+ */
+#define FCBTN_OK            0x0000FFFE
+#define FCBTN_CANCEL        0x0000FFFF
+
+/**
  *  \class  FCDialog
  *  \brief  This object was designed to serve as a 'real' dialog class for irrLicht GUI development. 
  *          It supports modal operation, as well as cancel/complete callbacks
@@ -93,8 +99,10 @@ class FCDialog : public IGUIElement
 	typedef void(*DLG_CALLBACK)(void*);
 
 public:
-  FCDialog(IGUIEnvironment* env, IGUIElement* pParent = NULL, wchar_t* caption = NULL, bool bModal = false, s32 id = -1);
+  FCDialog(IGUIEnvironment* env, IGUIElement* pParent = NULL, wchar_t* caption = NULL, bool bModal = false, s32 id = -1, core::rect<s32> rect = core::rect<s32>(0, 0, 320, 240));
   ~FCDialog(void);
+
+  void CenterWindow();
 
 	virtual void setSuccessCallback(DLG_CALLBACK fpCallback, void* pCtx)								{ m_fpSuccessCallback = fpCallback; m_pSuccessCtx = pCtx; }
 	virtual void setCancelCallback(DLG_CALLBACK fpCallback, void* pCtx)									{ m_fpCancelCallback = fpCallback; m_pCancelCtx = pCtx; }
@@ -113,6 +121,9 @@ protected:
 	virtual bool OnListBoxSelectedAgain(s32 id, IGUIListBox* pLB) { return false; }
 	virtual bool OnScrollBarChanged(s32 id, IGUIScrollBar* pSB) { return false; }
 	virtual bool OnSpinBoxChanged(s32 id, IGUISpinBox* pSB) { return false; }
+
+  void OnOK();
+  void OnCancel();
 
 private:
 

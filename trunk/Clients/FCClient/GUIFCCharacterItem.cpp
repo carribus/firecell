@@ -1,4 +1,6 @@
 #include <sstream>
+#include "FCController.h"
+#include "FCViewevent.h"
 #include "GUIFCCharacterItem.h"
 
 #define CHARSEL_ITEM_HEIGHT         100
@@ -6,14 +8,13 @@
 
 GUIFCCharacterItem::GUIFCCharacterItem(IGUIEnvironment* pEnv, IGUIElement* pParent, s32 id)
 : IGUIElement(EGUIET_ELEMENT, pEnv, pParent ? pParent : (IGUIElement*)pEnv, id, core::rect<s32>(0, 0, CHARSEL_ITEM_WIDTH, CHARSEL_ITEM_HEIGHT))
+, m_pContainer(NULL)
 , m_pDriver(NULL)
 , m_pCharacter(NULL)
 , m_bHighlight(false)
 {
   if ( pEnv )
     m_pDriver = pEnv->getVideoDriver();
-
-  setText( L"THIS IS A GUIFCCHARACTERITEM OBJECT!!!" );
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -87,3 +88,74 @@ void GUIFCCharacterItem::draw()
 }
 
 ///////////////////////////////////////////////////////////////////////
+
+bool GUIFCCharacterItem::OnEvent(const SEvent& event)
+{
+  bool bHandled = false;
+
+  switch ( event.EventType )
+  {
+  case  EET_GUI_EVENT:
+    {
+      s32 elemID = event.GUIEvent.Caller->getID();
+
+      switch ( event.GUIEvent.EventType )
+      {
+      case  EGET_ELEMENT_HOVERED:
+        {
+          if ( event.GUIEvent.Caller == this )
+          {
+            SetHighlight(true);
+            bHandled = true;
+          }
+        }
+        break;
+
+      case  EGET_ELEMENT_LEFT:
+        {
+          if ( event.GUIEvent.Caller == this )
+          {
+            SetHighlight(false);
+            bHandled = true;
+          }
+        }
+        break;
+
+      default:
+        break;
+      }
+    }
+    break;
+
+	case	EET_MOUSE_INPUT_EVENT:
+		{
+			switch ( event.MouseInput.Event )
+			{
+			case	EMIE_LMOUSE_LEFT_UP:
+				{
+          if ( isPointInside( core::position2d<s32>( event.MouseInput.X, event.MouseInput.Y ) ) )
+          {
+						Character* pChar = GetCharacter();
+
+						if ( m_pContainer && pChar )
+						{
+							FCViewEvent e( VE_CharacterSelected, pChar->GetID() );
+							m_pContainer->GetController()->OnViewEvent(e);
+              bHandled = true;
+						}
+					}
+				}
+				break;
+
+			default:
+				break;
+			}
+		}
+		break;
+
+  default:
+    break;
+  }
+
+  return bHandled;
+}
