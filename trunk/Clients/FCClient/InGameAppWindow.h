@@ -10,17 +10,23 @@ using namespace irr;
 using namespace gui;
 
 class FCController;
+class Desktop;
 
 class InGameAppWindow
 {
 public:
 	
-	InGameAppWindow(FCController* pController, IGUIEnvironment* pEnv);
+	InGameAppWindow(Desktop* pDesktop, FCController* pController, IGUIEnvironment* pEnv);
 	virtual ~InGameAppWindow(void);
 
 	virtual bool Create(FCUINT optionID, DesktopOptionType type, std::wstring caption, bool bModal = false);
 	void GetClientRect(core::rect<s32>& rect);
   void CenterWindow();
+
+  /*
+   * Pure Abstract Functions
+   */
+  virtual const wchar_t* getAppName() = 0;
 
 	FCUINT GetOptionID()												        { return m_optionID; }
 	DesktopOptionType GetAppType()							        { return m_type; }
@@ -31,6 +37,7 @@ public:
 protected:
 	
 	FCController*						m_pController;
+  Desktop*                m_pDesktop;
 	IGUIEnvironment*				m_pEnv;
 	IGUIWindow*							m_pWindow;
 	FCUINT									m_optionID;

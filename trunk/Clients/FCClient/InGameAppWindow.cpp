@@ -1,8 +1,9 @@
 #include "InGameAppWindow.h"
 
-InGameAppWindow::InGameAppWindow(FCController* pController, IGUIEnvironment* pEnv)
+InGameAppWindow::InGameAppWindow(Desktop* pDesktop, FCController* pController, IGUIEnvironment* pEnv)
 : m_pEnv(pEnv)
 , m_pController(pController)
+, m_pDesktop(pDesktop)
 , m_pWindow(NULL)
 , m_optionID(0)
 , m_bWaitingForResponse(false)
@@ -24,7 +25,7 @@ bool InGameAppWindow::Create(FCUINT optionID, DesktopOptionType type, std::wstri
 	if ( !m_pEnv || !m_pController )
 		return false;
 
-	if ( !(m_pWindow = m_pEnv->addWindow( core::rect<s32>(0, 0, 0, 0), bModal, caption.c_str() )) )
+	if ( !(m_pWindow = m_pEnv->addWindow( core::rect<s32>(0, 0, 0, 0), bModal, caption.c_str(), (IGUIElement*)m_pDesktop )) )
 		return false;
 	m_pWindow->grab();
 

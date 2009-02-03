@@ -1,18 +1,45 @@
 #include <sstream>
+#include "clientstrings.h"
 #include "FCModel.h"
 #include "FCView.h"
+#include "../common/ResourceManager.h"
 #include "ViewLogicGame.h"
 #include "Desktop.h"
 
+#include "ForumWindow.h"
 #include "ConsoleWindow.h"
 
 #define ICON_PADDING_X						0
 #define ICON_PADDING_Y						30
 
 Desktop::Desktop(ViewLogicGame& owner, IrrlichtDevice* pDevice)
-: m_owner(owner)
+: IGUIElement(EGUIET_ELEMENT, pDevice->getGUIEnvironment(), 0, -1, core::rect<s32>(0, 0, 0, 0))
+, m_owner(owner)
 , m_pDevice(pDevice)
+, m_pAppBar(NULL)
 {
+  // set the desktop dimensions
+  core::dimension2d<s32> screenRes = pDevice->getVideoDriver()->getScreenSize();
+  AbsoluteRect = core::rect<s32>(0, 0, screenRes.Width, screenRes.Height);
+  AbsoluteClippingRect = AbsoluteRect;
+
+  // load the desktop graphic and scale it as the wallpaper
+	IImage* pImg = m_pDevice->getVideoDriver()->createImageFromFile("./clientdata/desktop.jpg");
+	IImage* pImg2 = m_pDevice->getVideoDriver()->createImage(pImg->getColorFormat(), screenRes);
+
+	pImg->copyToScaling( pImg2 );
+  pImg->drop();
+
+	m_pBackground = m_pDevice->getVideoDriver()->addTexture("desktop", pImg2);
+  pImg2->drop();
+
+	// create the font(s)
+	m_pFontCourier = m_pDevice->getGUIEnvironment()->getFont("./clientdata/fonts/fontcourier.png");
+
+  // create the desktop app bar
+  m_pAppBar = new DesktopAppBar(Environment, this);
+
+  // initialise the max icon height and width threshholds
 	m_iconMax.Height = m_iconMax.Width = 0;
 }
 
@@ -26,20 +53,6 @@ Desktop::~Desktop(void)
 
 bool Desktop::Create()
 {
-  // load the desktop graphic and create a scaled version of it to act as the wallpaper
-	core::dimension2d<s32> screenDim = m_pDevice->getVideoDriver()->getScreenSize();
-	IImage* pImg = m_pDevice->getVideoDriver()->createImageFromFile("./clientdata/desktop.jpg");
-	IImage* pImg2 = m_pDevice->getVideoDriver()->createImage(pImg->getColorFormat(), screenDim);
-
-	pImg->copyToScaling( pImg2 );
-  pImg->drop();
-
-	m_pBackground = m_pDevice->getVideoDriver()->addTexture("desktop", pImg2);
-  pImg2->drop();
-
-	// create the font(s)
-	m_pFontCourier = m_pDevice->getGUIEnvironment()->getFont("./clientdata/fonts/fontcourier.png");
-
   // Get the desktop options available to the player
   UpdateDesktopOptions();
 
@@ -50,12 +63,26 @@ bool Desktop::Create()
 
 void Desktop::Draw()
 {
+  // draw the wallpaper
 	core::dimension2d<s32> screenDim = m_pDevice->getVideoDriver()->getScreenSize();
 	m_pDevice->getVideoDriver()->draw2DImage( m_pBackground, 
 																					 core::position2d<s32>(0, 0),
 																					 core::rect<s32>(0, 0, screenDim.Width, screenDim.Height) );
 
+  // draw the app bar
+  if ( m_pAppBar )
+    m_pAppBar->draw();
+
+  // draw the icons
   DrawDesktopIcons();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Desktop::GetDesktopRect(core::rect<s32>& rect)
+{
+  rect = AbsoluteRect;
+  rect.UpperLeftCorner.Y += m_pAppBar->getAbsolutePosition().getHeight();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -152,19 +179,78 @@ bool Desktop::OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost
 		
 		switch ( option.type )
 		{
+    case  DOT_Forum:
+      {
+        if ( !IsApplicationRunning(option.type) )
+        {
+          ForumWindow* pForum = new ForumWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
+
+          if ( pForum->Create( optionID, ResourceManager::instance().GetClientString( STR_APP_FORUM_CAPTION ) ) )
+          {
+            m_arrApps.push_back(pForum);
+          }
+        }
+      }
+      break;
+
+    case  DOT_News:
+      {
+        if ( !IsApplicationRunning(option.type) )
+        {
+          m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening News!", L"This will be the news browser app window");
+        }
+      }
+      break;
+
+    case  DOT_Email:
+      {
+        if ( !IsApplicationRunning(option.type) )
+        {
+          m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Email!", L"This will be the email app window");
+        }
+      }
+      break;
+
 		case	 DOT_Console:
 			{
 				// at the moment, we only allow one instance per application type
 				if ( !IsApplicationRunning(option.type) )
 				{
-					ConsoleWindow* pConsole = new ConsoleWindow(m_owner.GetContainer()->GetController(), m_pDevice);
-					if ( pConsole->Create(optionID, L"Console Window") )
+					ConsoleWindow* pConsole = new ConsoleWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
+          if ( pConsole->Create(optionID, ResourceManager::instance().GetClientString(STR_APP_CONSOLE_CAPTION) ) )
 					{
 						m_arrApps.push_back(pConsole);
 					}
 				}				
 			}
 			break;
+
+    case  DOT_Bank:
+      {
+        if ( !IsApplicationRunning(option.type) )
+        {
+          m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Bank!", L"This will be the banking app window");
+        }
+      }
+      break;
+
+    case  DOT_Chat:
+      {
+        if ( !IsApplicationRunning(option.type) )
+        {
+          m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Chat!", L"This will be the chatting app window");
+        }
+      }
+      break;
+
+    case  DOT_HackingTools:
+      {
+        if ( !IsApplicationRunning(option.type) )
+        {
+          m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Hacking Toolkit!", L"This will be the hacking toolkit app window");
+        }
+      }
+      break;
 
 		default:
 			break;
@@ -369,6 +455,12 @@ void Desktop::DrawDesktopIcons()
 
 	core::position2d<s32> pos(10, 10), iconPos, offset;;
 	core::dimension2d<s32> iconDim;
+
+  // offset the Y starting position based on the available desktop area
+  core::rect<s32> dRect;
+  GetDesktopRect(dRect);
+
+  pos.Y += dRect.UpperLeftCorner.Y;
 
 	for ( ; it != limit; it++ )
 	{
