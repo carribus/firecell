@@ -129,6 +129,9 @@
 				RelativePath=".\Desktop.cpp">
 			</File>
 			<File
+				RelativePath=".\DesktopAppBar.cpp">
+			</File>
+			<File
 				RelativePath=".\DlgNewCharacter.cpp">
 			</File>
 			<File
@@ -157,6 +160,9 @@
 			</File>
 			<File
 				RelativePath=".\FCViewEvent.cpp">
+			</File>
+			<File
+				RelativePath=".\ForumWindow.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIConsoleCtrl.cpp">
@@ -227,6 +233,9 @@
 				RelativePath=".\Desktop.h">
 			</File>
 			<File
+				RelativePath=".\DesktopAppBar.h">
+			</File>
+			<File
 				RelativePath=".\DlgNewCharacter.h">
 			</File>
 			<File
@@ -252,6 +261,9 @@
 			</File>
 			<File
 				RelativePath=".\FCViewEvent.h">
+			</File>
+			<File
+				RelativePath=".\ForumWindow.h">
 			</File>
 			<File
 				RelativePath=".\GUIConsoleCtrl.h">

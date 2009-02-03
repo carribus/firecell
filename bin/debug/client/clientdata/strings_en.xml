@@ -21,4 +21,9 @@
 	<String id="CHARSEL_DELCHAR">Delete Character</String>
 	<!-- NEW CHARACTER DIALOG -->
 	<String id="CHARSEL_NEWCHAR_WNDCAPTION">Create a new character</String>
+	
+	<!-- CONSOLE APPLICATION -->
+	<String id="APP_CONSOLE_CAPTION">Console Window</String>
+	<!-- FORUM APPLICATION -->
+	<String id="APP_FORUM_CAPTION">Forum Browser</String>
 </FCStrings>

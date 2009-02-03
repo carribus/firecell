@@ -40,10 +40,10 @@ public:
   static ResourceManager& instance();
   static void destroy();
 
-	int LoadClientStrings(string string_file);
-  int LoadMissionStrings(string mission_file);
+  int LoadClientStrings(std::string string_file);
+  int LoadMissionStrings(std::string mission_file);
 
-	std::wstring GetClientString(const wstring& key);
+  std::wstring GetClientString(const std::wstring& key);
 
 private:
 
@@ -56,7 +56,7 @@ private:
 	/*
 	 *	Client string related objects
 	 */
-	typedef std::map<wstring, wstring> StringMap;
+  typedef std::map<std::wstring, std::wstring> StringMap;
 	StringMap m_mapStrings;
 
   /*
@@ -65,9 +65,9 @@ private:
   struct MissionStrings
   {
     FCULONG id;
-    string name;
-    string prelude;
-    string description;
+    std::string name;
+    std::string prelude;
+    std::string description;
   };
 	typedef std::map<FCULONG, MissionStrings> MissionMap;
   MissionMap m_mapMissions;

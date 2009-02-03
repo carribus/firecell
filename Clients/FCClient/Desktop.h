@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <irrlicht.h>
+#include "DesktopAppBar.h"
 #include "InGameAppWindow.h"
 
 using namespace irr;
@@ -10,7 +11,7 @@ using namespace video;
 
 class ViewLogicGame;
 
-class Desktop
+class Desktop : public IGUIElement
 {
 public:
   /*
@@ -31,6 +32,7 @@ public:
 
   bool Create();
   void Draw();
+  void GetDesktopRect(core::rect<s32>& rect);
   bool GetDesktopOptionFromPt(s32 x, s32 y, DesktopOption* d);
 	bool GetDesktopOptionByID(FCULONG optionID, DesktopOption& d);
 	void HighlightDesktopOption(FCULONG optionID, bool bHighlight = true);
@@ -58,6 +60,8 @@ private:
   IrrlichtDevice*             m_pDevice;
 	ITexture*										m_pBackground;
 	IGUIFont*										m_pFontCourier;
+
+  DesktopAppBar*              m_pAppBar;
 
   /*
    *  Desktop option container and utility members

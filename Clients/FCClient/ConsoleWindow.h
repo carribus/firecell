@@ -10,10 +10,12 @@ class ConsoleWindow :	public InGameAppWindow
 										, public IGUIConsoleEventSink
 {
 public:
-	ConsoleWindow(FCController* pController, IrrlichtDevice* pDevice);
+	ConsoleWindow(Desktop* pDesktop, FCController* pController, IrrlichtDevice* pDevice);
 	~ConsoleWindow(void);
 
 	bool Create(FCUINT optionID, std::wstring caption);
+
+  const wchar_t* getAppName()                           { return L"Console"; }
 
   void OnFileSystemInfoReceived(FCModel::FileSystemInfo* pFSI);
   void OnConsoleCommandResponse(std::string currentDir, std::string result);
