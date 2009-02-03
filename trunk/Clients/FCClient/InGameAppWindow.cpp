@@ -25,7 +25,7 @@ bool InGameAppWindow::Create(FCUINT optionID, DesktopOptionType type, std::wstri
 	if ( !m_pEnv || !m_pController )
 		return false;
 
-	if ( !(m_pWindow = m_pEnv->addWindow( core::rect<s32>(0, 0, 0, 0), bModal, caption.c_str(), (IGUIElement*)m_pDesktop )) )
+	if ( !(m_pWindow = m_pEnv->addWindow( core::rect<s32>(0, 0, 0, 0), bModal, caption.c_str() /*, (IGUIElement*)m_pDesktop*/ )) )
 		return false;
 	m_pWindow->grab();
 
