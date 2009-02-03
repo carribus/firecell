@@ -35,6 +35,7 @@ public:
   std::string GetName()                   { return m_name; }
   void SetName(const std::string& name)   { m_name = name; }
   size_t GetCityCount()                   { return m_cities.size(); }
+	std::map<FCULONG, City>& GetCities()		{ return m_cities; }
 
 private:
 

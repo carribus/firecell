@@ -236,7 +236,7 @@ private:
   /*
    *  Geography information
    */
-  map<FCULONG, Country>   m_countries;
+	std::map<FCULONG, Country>   m_countries;
 
 	/*
 	 * Desktop Options available to player
