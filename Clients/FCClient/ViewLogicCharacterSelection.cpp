@@ -125,8 +125,10 @@ bool ViewLogicCharacterSelection::OnModelEvent(FCModelEvent event)
     {
       FCModel::StateInfo state = m_pModel->GetState();
 
+      // check that we are in character selection phase, and that the model is ready for new character creation
       if ( state.state == FCModel::CharacterSelection && state.stateStep == FCModel::MS_CharacterSelection_NewCharacter )
       {
+        // check if we have an active dialog already showing (we shouldn't at this point)
         if ( !m_pActiveDialog )
         {
           std::map<FCULONG, Country>& mapCountries = m_pModel->GetCountries();
@@ -169,10 +171,12 @@ bool ViewLogicCharacterSelection::OnEvent(const SEvent& event)
 					{
 					case	BUTTON_NEWCHAR:
             {
+              // the user has chosen to create a new character...
+              // Notify the model of the request
 						  FCViewEvent e( VE_NewCharacterRequested );
 						  m_pContainer->GetController()->OnViewEvent(e);
 
-//						ShowNewCharacterForm();
+              bHandled = true;
             }
 						break;
 
@@ -181,71 +185,12 @@ bool ViewLogicCharacterSelection::OnEvent(const SEvent& event)
 					}
 				}
 				break;
-
-      case  EGET_ELEMENT_HOVERED:
-        {
-          if ( elemID >= 100 )
-          {
-            GUIFCCharacterItem* pItem = (GUIFCCharacterItem*) pElem;
-
-            if ( pItem )
-            {
-              pItem->SetHighlight(true);
-            }
-          }
-        }
-        break;
-
-      case  EGET_ELEMENT_LEFT:
-        {
-          if ( elemID >= 100 )
-          {
-            GUIFCCharacterItem* pItem = (GUIFCCharacterItem*) pElem;
-
-            if ( pItem )
-            {
-              pItem->SetHighlight(false);
-            }
-          }
-        }
-        break;
       }
     }
 		break;
 
-	case	EET_MOUSE_INPUT_EVENT:
-		{
-			switch ( event.MouseInput.Event )
-			{
-			case	EMIE_LMOUSE_LEFT_UP:
-				{
-					IGUIElement* pElem = m_pEnv->getRootGUIElement()->getElementFromPoint( core::position2d<s32>( event.MouseInput.X, event.MouseInput.Y ) );
-					
-					if ( pElem )
-					{
-						if ( pElem->getID() >= 100 )
-						{
-							GUIFCCharacterItem* pItem = (GUIFCCharacterItem*) pElem;
-
-							Character* pChar = pItem->GetCharacter();
-
-							if ( pChar )
-							{
-								FCViewEvent e( VE_CharacterSelected, pChar->GetID() );
-								m_pContainer->GetController()->OnViewEvent(e);
-							}
-						}
-					}
-				}
-				break;
-
-			default:
-				break;
-			}
-		}
-		break;
-
-
+  default:
+    break;
   }
 
 	return bHandled;
@@ -292,6 +237,9 @@ void ViewLogicCharacterSelection::CreateGUIObjects()
     Character& c = characters[i];
     pItem->SetCharacter(&c);
 
+    // pass the container to the gui object
+    pItem->setContainer( m_pContainer );
+
     // position the gui object
     pItem->setRelativePosition( posItem );
 
@@ -328,44 +276,9 @@ void ViewLogicCharacterSelection::ShowNewCharacterForm()
 	  pDlg->setCancelCallback(OnDlgNewCharacterCancelled, (void*)this);
 	  pDlg->setSuccessCallback(OnDlgNewCharacterCompleted, (void*)this);
 
-    // center the dialog
-    core::dimension2d<s32> dim = m_pEnv->getVideoDriver()->getScreenSize();
-    core::rect<s32> wndRect = pDlg->getAbsolutePosition();
-
-    wndRect.UpperLeftCorner.X = (dim.Width / 2) - wndRect.getWidth()/2;
-    wndRect.UpperLeftCorner.Y = (dim.Height / 2) - wndRect.getHeight()/2;
-    wndRect.LowerRightCorner.X = wndRect.UpperLeftCorner.X + wndRect.getWidth();
-    wndRect.LowerRightCorner.Y = wndRect.UpperLeftCorner.Y + wndRect.getHeight();
-
-//    pDlg->setRelativePosition(wndRect);
-
     // set the active dialog
     m_pActiveDialog = pDlg;
   }
-
-/*
-  IGUIElement* pElem = m_pEnv->addModalScreen(m_pEnv->getRootGUIElement());
-
-  if ( pElem )
-  {
-    m_pEnv->loadGUI("./clientdata/ui/dialog.newchar.xml", pElem);
-    // center the dialog
-    core::dimension2d<s32> dim = m_pEnv->getVideoDriver()->getScreenSize();
-    core::rect<s32> wndRect = pElem->getAbsolutePosition();
-
-    wndRect.UpperLeftCorner.X = (dim.Width / 2) - wndRect.getWidth()/2;
-    wndRect.UpperLeftCorner.Y = (dim.Height / 2) - wndRect.getHeight()/2;
-    wndRect.LowerRightCorner.X = wndRect.UpperLeftCorner.X + wndRect.getWidth();
-    wndRect.LowerRightCorner.Y = wndRect.UpperLeftCorner.Y + wndRect.getHeight();
-
-    pElem->setRelativePosition(wndRect);
-  }
-*/
 }
 
 ///////////////////////////////////////////////////////////////////////
-
-void ViewLogicCharacterSelection::OnModelStateChange(FCModel::StateInfo state)
-{
-}
-

@@ -1,7 +1,7 @@
 #include "FCDialog.h"
 
-FCDialog::FCDialog(IGUIEnvironment* env, IGUIElement* pParent, wchar_t* caption, bool bModal, s32 id)
-: IGUIElement(EGUIET_ELEMENT, env, pParent ? pParent : env->getRootGUIElement(), id, core::rect<s32>(0, 0, 640, 480))
+FCDialog::FCDialog(IGUIEnvironment* env, IGUIElement* pParent, wchar_t* caption, bool bModal, s32 id, core::rect<s32> rect)
+: IGUIElement(EGUIET_ELEMENT, env, pParent ? pParent : env->getRootGUIElement(), id, rect)
 , m_bModal(bModal)
 , Dragging(false)
 , m_fpSuccessCallback(NULL)
@@ -45,6 +45,16 @@ FCDialog::~FCDialog(void)
 {
 	if (m_CloseButton)
 		m_CloseButton->drop();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void FCDialog::CenterWindow()
+{
+  core::dimension2d<s32> screenDim = Environment->getVideoDriver()->getScreenSize();
+  core::rect<s32> wndRect = AbsoluteRect;
+
+  setRelativePosition( position2di( screenDim.Width/2 - wndRect.getWidth()/2, screenDim.Height/2 - wndRect.getHeight()/2) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -183,10 +193,7 @@ bool FCDialog::OnEvent(const SEvent& event)
 						{
 							if (event.GUIEvent.Caller == m_CloseButton )
 							{
-								if ( m_fpCancelCallback )
-									(*m_fpCancelCallback)(m_pCancelCtx);
-								closeDialog();
-								delete this;
+                OnCancel();
 								return true;
 							}
 
@@ -269,14 +276,35 @@ bool FCDialog::OnEvent(const SEvent& event)
 
 ////////////////////////////////////////////////////////////////////////////////
 
+void FCDialog::OnOK()
+{
+  if ( m_fpSuccessCallback )
+    (*m_fpSuccessCallback)(m_pSuccessCtx);
+  closeDialog();
+  delete this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void FCDialog::OnCancel()
+{
+  if ( m_fpCancelCallback )
+	  (*m_fpCancelCallback)(m_pCancelCtx);
+  closeDialog();
+  delete this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 void FCDialog::closeDialog()
 {
+/*
 	SEvent event;
 	event.EventType = EET_GUI_EVENT;
 	event.GUIEvent.Caller = this;
 	event.GUIEvent.Element = 0;
 	event.GUIEvent.EventType = EGET_FILE_CHOOSE_DIALOG_CANCELLED;
 	Parent->OnEvent(event);
-
+*/
 	remove();
 }

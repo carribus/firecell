@@ -79,11 +79,11 @@ CREATE TABLE `fc_cities` (
   `IP_groupB` smallint(6) unsigned NOT NULL COMMENT 'Group B IP range for city',
   `support_char_creation` tinyint(1) NOT NULL default '1' COMMENT 'flag indicating whether characters can be created in this city',
   PRIMARY KEY  (`city_id`,`IP_groupB`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_cities` */
 
-insert  into `fc_cities`(`city_id`,`country_id`,`name`,`IP_groupB`,`support_char_creation`) values (1,1,'New York',45,1),(2,2,'Moscow',232,1),(3,3,'Amsterdam',152,1),(4,4,'London',136,1),(5,5,'Sydney',221,1),(6,6,'Beijing',54,1),(7,7,'Johannesburg',23,1),(8,8,'Tokyo',97,1),(9,9,'Abuja',195,1),(10,10,'Paris',36,1),(11,11,'Rio de Janeiro',144,1);
+insert  into `fc_cities`(`city_id`,`country_id`,`name`,`IP_groupB`,`support_char_creation`) values (1,1,'New York',45,1),(2,2,'Moscow',232,1),(3,3,'Amsterdam',152,1),(4,4,'London',136,1),(5,5,'Sydney',221,1),(6,6,'Beijing',54,1),(7,7,'Johannesburg',23,1),(8,8,'Tokyo',97,1),(9,9,'Abuja',195,1),(10,10,'Paris',36,1),(11,11,'Rio de Janeiro',144,1),(12,7,'Cape Town',34,1),(13,7,'Durban',111,0),(14,1,'Chicago',220,1),(15,1,'Houston',12,0);
 
 /*Table structure for table `fc_companies` */
 

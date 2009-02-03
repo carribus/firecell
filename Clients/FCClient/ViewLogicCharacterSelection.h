@@ -62,8 +62,6 @@ private:
 	void CreateGUIObjects();
 	void ShowNewCharacterForm();
 
-  void OnModelStateChange(FCModel::StateInfo state);
-
   FCModel*                    m_pModel;
 	FCView*											m_pContainer;
 	IrrlichtDevice*							m_pDevice;

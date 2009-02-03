@@ -18,6 +18,7 @@ public:
 protected:
 
 	bool OnComboBoxChanged(s32 id, IGUIComboBox* pCB);
+  bool OnButtonClicked(s32 id, IGUIButton* pBtn);
 
 private:
 

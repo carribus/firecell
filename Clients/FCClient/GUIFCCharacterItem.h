@@ -3,6 +3,7 @@
 
 #include <irrlicht.h>
 #include "Character.h"
+#include "FCView.h"
 
 using namespace irr;
 using namespace gui;
@@ -18,10 +19,12 @@ public:
 	 *	IGUIElement overrides
 	 */
 	void draw();
+  bool OnEvent(const SEvent& event);
 
 	/*
 	 *	Public Methods
 	 */
+  void setContainer(FCView* pContainer)                           { m_pContainer = pContainer; }
   void SetCharacter(Character* pCharacter)                        { m_pCharacter = pCharacter; }
 	Character* GetCharacter()																				{ return m_pCharacter; }
   void SetHighlight(bool bHighlight)                              { m_bHighlight = bHighlight; }
@@ -29,6 +32,7 @@ public:
 private:
 
   IVideoDriver*              m_pDriver;
+  FCView*                    m_pContainer;
   Character*                 m_pCharacter;
   bool                       m_bHighlight;
 };
