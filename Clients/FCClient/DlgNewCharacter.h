@@ -15,7 +15,13 @@ public:
 
   void populateGeographyControls(std::map<FCULONG, Country>& countries);
 
+protected:
+
+	bool OnComboBoxChanged(s32 id, IGUIComboBox* pCB);
+
 private:
+
+	void populateCitiesComboBox(FCULONG countryID);
 
   DEFINE_IRRLICHT_FORM();
 
@@ -24,7 +30,12 @@ private:
    */
 
   // Form elements
-  std::string                  m_strCharName;
+  std::string                 m_strCharName;
+
+	// copy of the country's map from the model
+	std::map<FCULONG, Country>	m_mapCountries;
+	// country combo index to object mapping
+	std::map<u32, FCULONG>			m_mapCountryIndexToID;
 };
 
 #endif//_DLGNEWCHARACTER_H_

@@ -39,6 +39,7 @@ void DlgNewCharacter::populateGeographyControls(std::map<FCULONG, Country>& coun
   std::wstringstream ss;
   std::map<FCULONG, Country>::iterator it = countries.begin();
   std::map<FCULONG, Country>::iterator limit = countries.end();
+	u32 itemIndex = 0;
   IGUIComboBox* pCountryCB = (IGUIComboBox*) getElementFromId(4, true);
 
   if ( pCountryCB )
@@ -47,7 +48,62 @@ void DlgNewCharacter::populateGeographyControls(std::map<FCULONG, Country>& coun
     {
       ss.str(L"");
       ss << it->second.GetName().c_str();
-      u32 itemIndex = pCountryCB->addItem( ss.str().c_str() );
+      itemIndex = pCountryCB->addItem( ss.str().c_str() );
+			m_mapCountryIndexToID[itemIndex] = it->second.GetID();
     }
   }
+
+	m_mapCountries = countries;
+
+	// get the currently selected item in the countries combo box
+	s32 selItem = pCountryCB->getSelected();
+	if ( selItem != -1 )
+	{
+		// get the matching countryID for the selected item
+		FCULONG countryID = m_mapCountryIndexToID[selItem];
+		populateCitiesComboBox(countryID);
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void DlgNewCharacter::populateCitiesComboBox(FCULONG countryID)
+{
+	std::map<FCULONG, Country>::iterator it = m_mapCountries.find(countryID);
+
+	if ( it != m_mapCountries.end() )
+	{
+	  std::wstringstream ss;
+		std::map<FCULONG, City>& cities = it->second.GetCities();
+		std::map<FCULONG, City>::iterator cityIT = cities.begin();
+		IGUIComboBox* pCityCB = (IGUIComboBox*) getElementFromId(6, true);
+
+		while ( cityIT != cities.end() )
+		{
+      ss.str(L"");
+      ss << cityIT->second.GetName().c_str();
+			pCityCB->addItem( ss.str().c_str() );
+			cityIT++;
+		}
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bool DlgNewCharacter::OnComboBoxChanged(s32 id, IGUIComboBox* pCB)
+{
+	switch ( id )
+	{
+	case	4:				// country combo
+#error You left off here
+		break;
+
+	case	6:				// city combo
+		break;
+
+	default:
+		break;
+	}
+
+	return true;
 }

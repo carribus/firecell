@@ -132,6 +132,7 @@ bool ViewLogicCharacterSelection::OnModelEvent(FCModelEvent event)
           std::map<FCULONG, Country>& mapCountries = m_pModel->GetCountries();
 
           ShowNewCharacterForm();
+
           ((DlgNewCharacter*)m_pActiveDialog)->populateGeographyControls(mapCountries);
         }
       }
