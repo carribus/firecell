@@ -5,6 +5,7 @@
 #include <string>
 #include "../../common/fctypes.h"
 #include "../../common/protocol/fcprotocol.h"
+#include "IDesktop.h"
 
 using namespace irr;
 using namespace gui;
@@ -16,10 +17,10 @@ class InGameAppWindow
 {
 public:
 	
-	InGameAppWindow(Desktop* pDesktop, FCController* pController, IGUIEnvironment* pEnv);
+	InGameAppWindow(IDesktop* pDesktop, FCController* pController, IGUIEnvironment* pEnv);
 	virtual ~InGameAppWindow(void);
 
-	virtual bool Create(FCUINT optionID, DesktopOptionType type, std::wstring caption, bool bModal = false);
+	virtual bool Create(s32 AppElemID, FCUINT optionID, DesktopOptionType type, std::wstring caption, bool bModal = false);
 	void GetClientRect(core::rect<s32>& rect);
   void CenterWindow();
 
@@ -37,7 +38,7 @@ public:
 protected:
 	
 	FCController*						m_pController;
-  Desktop*                m_pDesktop;
+  IDesktop*               m_pDesktop;
 	IGUIEnvironment*				m_pEnv;
 	IGUIWindow*							m_pWindow;
 	FCUINT									m_optionID;

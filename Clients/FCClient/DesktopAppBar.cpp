@@ -6,6 +6,7 @@ DesktopAppBar::DesktopAppBar(IGUIEnvironment* env, IGUIElement* pParent, s32 id)
 : IGUIElement(EGUIET_ELEMENT, env, pParent, id, core::rect<s32>(0, 0, 0, 0))
 , m_height(24)
 , m_pClockFont(NULL)
+, m_pActiveApp(NULL)
 {
   core::dimension2d<s32> screenSize = env->getVideoDriver()->getScreenSize();
   if ( getParent() )
@@ -31,6 +32,13 @@ DesktopAppBar::~DesktopAppBar(void)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
+void DesktopAppBar::setActiveApp(InGameAppWindow* pApp)
+{
+  m_pActiveApp = pApp;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
 void DesktopAppBar::draw()
 {
   IVideoDriver* pVideo = Environment->getVideoDriver();
@@ -38,6 +46,24 @@ void DesktopAppBar::draw()
   // draw the app bar background
   SColor topColor(128, 164, 164, 164), bottomColor(128, 0, 0, 0), shade(128, 0, 0, 0);
   pVideo->draw2DRectangle(AbsoluteRect, topColor, topColor, bottomColor, bottomColor, &AbsoluteClippingRect); 
+
+  // draw the Active App context
+  if ( m_pActiveApp )
+  {
+    IGUIFont* pFont = Environment->getSkin()->getFont();
+
+    if ( !pFont )
+      pFont = m_pClockFont;
+
+    core::rect<s32> cRect = AbsoluteRect;
+
+    cRect.UpperLeftCorner.X += 10;
+    pFont->draw( m_pActiveApp->getAppName(),
+                 cRect,
+                 SColor(255, 255, 255, 255),
+                 false,
+                 true );
+  }
 
   // draw the timestamp
   if ( m_pClockFont )

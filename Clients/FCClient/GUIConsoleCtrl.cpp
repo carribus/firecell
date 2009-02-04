@@ -131,7 +131,20 @@ bool GUIConsoleCtrl::OnEvent(const SEvent& event)
 			switch ( event.GUIEvent.EventType )
 			{
 			case	EGET_ELEMENT_FOCUSED:
-				m_bCaretVisible = true;
+        {
+          static bool bIgnoreFocus = false;
+				  m_bCaretVisible = true;
+          if ( Parent )
+          {
+            if ( !bIgnoreFocus )              // avoid re-entry
+            {
+              Environment->setFocus(Parent);
+              bIgnoreFocus = true;
+              Environment->setFocus(this);
+              bIgnoreFocus = false;
+            }
+          }
+        }
 				break;
 
 			default:

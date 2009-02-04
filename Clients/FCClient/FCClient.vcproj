@@ -272,6 +272,9 @@
 				RelativePath=".\GUIFCCharacterItem.h">
 			</File>
 			<File
+				RelativePath=".\IDesktop.h">
+			</File>
+			<File
 				RelativePath=".\IModelEventSink.h">
 			</File>
 			<File

@@ -13,7 +13,7 @@ public:
 	ConsoleWindow(Desktop* pDesktop, FCController* pController, IrrlichtDevice* pDevice);
 	~ConsoleWindow(void);
 
-	bool Create(FCUINT optionID, std::wstring caption);
+	bool Create(s32 AppElemID, FCUINT optionID, std::wstring caption);
 
   const wchar_t* getAppName()                           { return L"Console"; }
 

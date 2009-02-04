@@ -2,6 +2,7 @@
 #define _DESKTOPAPPBAR_H_
 
 #include <irrlicht.h>
+#include "InGameAppWindow.h"
 
 using namespace irr;
 using namespace core;
@@ -14,6 +15,8 @@ public:
   DesktopAppBar(IGUIEnvironment* env, IGUIElement* pParent = 0, s32 id = -1);
   ~DesktopAppBar(void);
 
+  void setActiveApp(InGameAppWindow* pApp);
+
   void draw();
 
   void setHeight(u32 height)                                { m_height = height; }
@@ -21,9 +24,10 @@ public:
 
 private:
 
-  u32           m_height;
+  u32                 m_height;
 
-  IGUIFont*     m_pClockFont;
+  IGUIFont*           m_pClockFont;
+  InGameAppWindow*    m_pActiveApp;
 };
 
 #endif//_DESKTOPAPPBAR_H_
