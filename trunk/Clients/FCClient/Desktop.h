@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <irrlicht.h>
+#include "IDesktop.h"
 #include "DesktopAppBar.h"
 #include "InGameAppWindow.h"
 
@@ -12,6 +13,7 @@ using namespace video;
 class ViewLogicGame;
 
 class Desktop : public IGUIElement
+              , public IDesktop
 {
 public:
   /*
@@ -42,6 +44,11 @@ public:
 
 	bool OnGUIEvent(SEvent::SGUIEvent event);
   bool OnConsoleEvent(FCModelEvent& event);
+
+  /*
+   *  IDesktop implementation
+   */
+  void OnApplicationActivated(InGameAppWindow* pApp);
 
 private:
 

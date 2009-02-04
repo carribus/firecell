@@ -12,6 +12,8 @@
 #define ICON_PADDING_X						0
 #define ICON_PADDING_Y						30
 
+#define INGAMEAPP_BASE_ID         0xA000
+
 Desktop::Desktop(ViewLogicGame& owner, IrrlichtDevice* pDevice)
 : IGUIElement(EGUIET_ELEMENT, pDevice->getGUIEnvironment(), 0, -1, core::rect<s32>(0, 0, 0, 0))
 , m_owner(owner)
@@ -75,6 +77,8 @@ void Desktop::Draw()
 
   // draw the icons
   DrawDesktopIcons();
+
+  IGUIElement::draw();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -185,9 +189,11 @@ bool Desktop::OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost
         {
           ForumWindow* pForum = new ForumWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
 
-          if ( pForum->Create( optionID, ResourceManager::instance().GetClientString( STR_APP_FORUM_CAPTION ) ) )
+          if ( pForum->Create( INGAMEAPP_BASE_ID+optionID, optionID, ResourceManager::instance().GetClientString( STR_APP_FORUM_CAPTION ) ) )
           {
             m_arrApps.push_back(pForum);
+            if ( m_pAppBar )
+              m_pAppBar->setActiveApp( pForum );
           }
         }
       }
@@ -217,9 +223,11 @@ bool Desktop::OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost
 				if ( !IsApplicationRunning(option.type) )
 				{
 					ConsoleWindow* pConsole = new ConsoleWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
-          if ( pConsole->Create(optionID, ResourceManager::instance().GetClientString(STR_APP_CONSOLE_CAPTION) ) )
+          if ( pConsole->Create(INGAMEAPP_BASE_ID+optionID, optionID, ResourceManager::instance().GetClientString(STR_APP_CONSOLE_CAPTION) ) )
 					{
 						m_arrApps.push_back(pConsole);
+            if ( m_pAppBar )
+              m_pAppBar->setActiveApp( pConsole );
 					}
 				}				
 			}
@@ -286,6 +294,31 @@ bool Desktop::OnGUIEvent(SEvent::SGUIEvent event)
 
 	switch ( event.EventType )
 	{
+  case  EGET_ELEMENT_FOCUSED:
+    {
+      s32 elemID = event.Caller->getID();
+
+      switch ( elemID )
+      {
+      case  INGAMEAPP_BASE_ID+DOT_Forum:
+      case  INGAMEAPP_BASE_ID+DOT_News:
+      case  INGAMEAPP_BASE_ID+DOT_Email:
+      case  INGAMEAPP_BASE_ID+DOT_Console:
+      case  INGAMEAPP_BASE_ID+DOT_Bank:
+      case  INGAMEAPP_BASE_ID+DOT_Chat:
+      case  INGAMEAPP_BASE_ID+DOT_HackingTools:
+        {
+          // an application has been activated...
+          OnApplicationActivated( this->GetAppWindowByType(elemID-INGAMEAPP_BASE_ID) );
+        }
+        break;
+
+      default:
+        break;
+      }
+    }
+    break;
+
 	case	EGET_ELEMENT_CLOSED:
 		{
 			IGUIElement* pElem = event.Caller;
@@ -301,6 +334,8 @@ bool Desktop::OnGUIEvent(SEvent::SGUIEvent event)
 						{
 							pWnd = (*it);
 							m_arrApps.erase(it);
+              if ( m_pAppBar )
+                m_pAppBar->setActiveApp(NULL);
 							delete pWnd;
 							break;
 						}
@@ -363,6 +398,16 @@ bool Desktop::OnConsoleEvent(FCModelEvent& event)
     bResult = false;
 
   return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Desktop::OnApplicationActivated(InGameAppWindow* pApp)
+{
+  if ( !pApp )
+    return;
+
+  m_pAppBar->setActiveApp(pApp);
 }
 
 ///////////////////////////////////////////////////////////////////////
