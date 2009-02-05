@@ -24,6 +24,10 @@
 #include "FCViewEvent.h"
 #include "ViewLogicGame.h"
 
+#ifdef _DEBUG
+  #include "../common/irrlichtUtil/irrDiag.h"
+#endif//_DEBUG
+
 ViewLogicGame::ViewLogicGame(void)
 : m_pContainer(NULL)
 , m_pDevice(NULL)
@@ -59,17 +63,13 @@ void ViewLogicGame::Create(FCView* pContainer, IrrlichtDevice* pDevice)
 
 	// setup the event receiver
 	pDevice->setEventReceiver(this);
+
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void ViewLogicGame::Destroy()
 {
-  if ( m_pDesktop )
-  {
-    delete m_pDesktop;
-    m_pDesktop = NULL;
-  }
 	m_pEnv->clear();
 	m_pScene->clear();
 }

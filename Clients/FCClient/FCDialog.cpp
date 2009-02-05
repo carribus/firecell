@@ -9,6 +9,10 @@ FCDialog::FCDialog(IGUIEnvironment* env, IGUIElement* pParent, wchar_t* caption,
 , m_pSuccessCtx(NULL)
 , m_pCancelCtx(NULL)
 {
+#ifdef _DEBUG
+  setDebugName("FCDialog");
+#endif//_DEBUG
+
 	IGUISkin* skin = Environment->getSkin();
 	IGUISpriteBank* sprites = 0;
 	video::SColor color(255,255,255,255);

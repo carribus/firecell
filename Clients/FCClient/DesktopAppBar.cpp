@@ -12,6 +12,10 @@ DesktopAppBar::DesktopAppBar(IGUIEnvironment* env, IGUIElement* pParent, s32 id)
 , m_colShaderNormal(128, 0, 0, 0)
 , m_colShaderHilite(64, 0, 0, 194)
 {
+#ifdef _DEBUG
+  setDebugName("DesktopAppBar");
+#endif//_DEBUG
+
   core::dimension2d<s32> screenSize = env->getVideoDriver()->getScreenSize();
   if ( getParent() )
   {
@@ -91,6 +95,24 @@ bool DesktopAppBar::OnEvent(const SEvent& event)
 	{
 	case	EET_GUI_EVENT:
 		{
+      switch ( event.GUIEvent.EventType )
+      {
+      case  EGET_ELEMENT_LEFT:
+        {
+          // clear the highlights
+					AppBarOptionVector::iterator it = m_appBarOptions.begin();
+
+					while ( it != m_appBarOptions.end() )
+					{
+						it->bHighlight = false;
+						it++;
+					}
+        }
+        break;
+
+      default:
+        break;
+      }
 		}
 		break;
 

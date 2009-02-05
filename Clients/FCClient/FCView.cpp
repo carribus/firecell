@@ -194,9 +194,12 @@ bool FCView::OnModelStateChange(FCModelEvent& event)
 
 		if ( pNewView )
 		{
-			pNewView->Create(this, m_pDevice);
 			if ( m_pCurrentViewLogic )
+      {
 				m_pCurrentViewLogic->Destroy();
+        m_pCurrentViewLogic = NULL;
+      }
+			pNewView->Create(this, m_pDevice);
 			m_pCurrentViewLogic = pNewView;
 			m_pCurrentViewLogic->SetActive();
 		}
