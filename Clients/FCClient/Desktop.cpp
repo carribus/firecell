@@ -19,6 +19,7 @@ Desktop::Desktop(ViewLogicGame& owner, IrrlichtDevice* pDevice)
 , m_owner(owner)
 , m_pDevice(pDevice)
 , m_pAppBar(NULL)
+, m_mutexApps(true)
 {
   // set the desktop dimensions
   core::dimension2d<s32> screenRes = pDevice->getVideoDriver()->getScreenSize();
@@ -189,12 +190,14 @@ bool Desktop::OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost
         {
           ForumWindow* pForum = new ForumWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
 
+					m_mutexApps.Lock();
           if ( pForum->Create( INGAMEAPP_BASE_ID+optionID, optionID, ResourceManager::instance().GetClientString( STR_APP_FORUM_CAPTION ) ) )
           {
             m_arrApps.push_back(pForum);
             if ( m_pAppBar )
               m_pAppBar->setActiveApp( pForum );
           }
+					m_mutexApps.Unlock();
         }
       }
       break;
@@ -223,12 +226,15 @@ bool Desktop::OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost
 				if ( !IsApplicationRunning(option.type) )
 				{
 					ConsoleWindow* pConsole = new ConsoleWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
+
+					m_mutexApps.Lock();
           if ( pConsole->Create(INGAMEAPP_BASE_ID+optionID, optionID, ResourceManager::instance().GetClientString(STR_APP_CONSOLE_CAPTION) ) )
 					{
 						m_arrApps.push_back(pConsole);
             if ( m_pAppBar )
               m_pAppBar->setActiveApp( pConsole );
 					}
+					m_mutexApps.Unlock();
 				}				
 			}
 			break;
@@ -274,14 +280,20 @@ bool Desktop::OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost
 
 bool Desktop::IsApplicationRunning(FCUINT appType)
 {
+	m_mutexApps.Lock();
 	vector<InGameAppWindow*>::iterator it = m_arrApps.begin();
 	vector<InGameAppWindow*>::iterator limit = m_arrApps.end();
 
 	for ( ; it != limit; it++ )
 	{
 		if ( (*it)->GetAppType() == appType )
+		{
+			m_mutexApps.Unlock();
 			return true;
+		}
 	}
+
+	m_mutexApps.Unlock();
 
 	return false;
 }
@@ -327,6 +339,8 @@ bool Desktop::OnGUIEvent(SEvent::SGUIEvent event)
 			case	EGUIET_WINDOW:
 				{
 					InGameAppWindow* pWnd = NULL;
+
+					m_mutexApps.Lock();
 					AppWindowVector::iterator it = m_arrApps.begin();
 					while ( it != m_arrApps.end() )
 					{
@@ -341,6 +355,7 @@ bool Desktop::OnGUIEvent(SEvent::SGUIEvent event)
 						}
 						it++;
 					}
+					m_mutexApps.Unlock();
 				}
 				break;
 
@@ -552,14 +567,21 @@ void Desktop::DrawDesktopIcons()
 
 InGameAppWindow* Desktop::GetAppWindowByType(FCULONG type)
 {
+	m_mutexApps.Lock();
+
 	AppWindowVector::iterator it = m_arrApps.begin();
 	AppWindowVector::iterator limit = m_arrApps.end();
 
 	for ( ; it != limit; it++ )
 	{
 		if ( (*it)->GetAppType() == type )
+		{
+			m_mutexApps.Unlock();
 			return (*it);
+		}
 	}
+
+	m_mutexApps.Unlock();
 
 	return NULL;
 }
