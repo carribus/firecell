@@ -110,6 +110,23 @@ bool DesktopAppBar::OnEvent(const SEvent& event)
         }
         break;
 
+      case  EGET_ELEMENT_HOVERED:
+        {
+					AppBarOptionVector::iterator it = m_appBarOptions.begin();
+
+					while ( it != m_appBarOptions.end() )
+					{
+						if ( it->rect.isPointInside( position2d<s32>(event.MouseInput.X, event.MouseInput.Y) ) )
+						{
+							it->bHighlight = true;
+						}
+						else
+							it->bHighlight = false;
+						it++;
+					}
+        }
+        break;
+
       default:
         break;
       }

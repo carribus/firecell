@@ -132,6 +132,9 @@
 				RelativePath=".\DesktopAppBar.cpp">
 			</File>
 			<File
+				RelativePath=".\DesktopIcon.cpp">
+			</File>
+			<File
 				RelativePath=".\DlgNewCharacter.cpp">
 			</File>
 			<File
@@ -237,6 +240,9 @@
 			</File>
 			<File
 				RelativePath=".\DesktopAppBar.h">
+			</File>
+			<File
+				RelativePath=".\DesktopIcon.h">
 			</File>
 			<File
 				RelativePath=".\DlgNewCharacter.h">

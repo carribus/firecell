@@ -19,6 +19,7 @@
 	<String id="CHARSEL_HEADER">Select a character</String>
 	<String id="CHARSEL_NEWCHAR">New Character</String>
 	<String id="CHARSEL_DELCHAR">Delete Character</String>
+	<String id="CHARSEL_LOADINGCHAR">Booting up...</String>
 	<!-- NEW CHARACTER DIALOG -->
 	<String id="CHARSEL_NEWCHAR_WNDCAPTION">Create a new character</String>
 	<!-- CONSOLE APPLICATION -->

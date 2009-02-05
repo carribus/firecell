@@ -121,6 +121,31 @@ bool ViewLogicCharacterSelection::OnModelEvent(FCModelEvent event)
 
   switch ( event.GetType() )
   {
+  case  FCME_StateChange:
+    {
+      FCModel::StateInfo state = m_pModel->GetState();
+
+      if ( state.state == FCModel::CharacterSelection )
+      {
+        switch ( state.stateStep )
+        {
+        case  FCModel::MS_CharacterSelection_CharacterSelected:
+          {
+            core::dimension2d<s32> screenSize = m_pDevice->getVideoDriver()->getScreenSize();
+            core::rect<s32> tRect( 0, 0, screenSize.Width, screenSize.Height );
+            IGUIStaticText* pText = m_pEnv->addStaticText( ResourceManager::instance().GetClientString(STR_CHARSEL_LOADINGCHAR).c_str(), tRect, false, false );
+            pText->setTextAlignment( EGUIA_CENTER, EGUIA_CENTER );
+            pText->setOverrideColor( SColor(255, 255, 0, 0) );
+          }
+          break;
+
+        default:
+          break;
+        }
+      }
+    }
+    break;
+
   case  FCME_NewCharacterParamsReady:
     {
       FCModel::StateInfo state = m_pModel->GetState();
