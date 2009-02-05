@@ -6,6 +6,7 @@
 #include "../../common/PThreadMutex.h"
 #include "IDesktop.h"
 #include "DesktopAppBar.h"
+#include "DesktopIcon.h"
 #include "InGameAppWindow.h"
 
 using namespace irr;
@@ -36,10 +37,12 @@ public:
   bool Create();
   void Draw();
   void GetDesktopRect(core::rect<s32>& rect);
+/*
   bool GetDesktopOptionFromPt(s32 x, s32 y, DesktopOption* d);
 	bool GetDesktopOptionByID(FCULONG optionID, DesktopOption& d);
 	void HighlightDesktopOption(FCULONG optionID, bool bHighlight = true);
   void ClearAllHighlights();
+*/
   bool OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost);
 	bool IsApplicationRunning(FCUINT appType);
 
@@ -57,6 +60,7 @@ private:
    *  Private Methods
    */
   void UpdateDesktopOptions();
+  void updateIconPositions();
   void DrawDesktopIcons();
 
 	InGameAppWindow* GetAppWindowByType(FCULONG type);
@@ -74,9 +78,13 @@ private:
   /*
    *  Desktop option container and utility members
    */
+  typedef std::map<FCUINT, DesktopIcon*> DesktopIconMap;
+  DesktopIconMap              m_mapDesktopIcons;
+/*
   typedef std::map<FCUINT, DesktopOption> DesktopOptionMap;
 	DesktopOptionMap						m_mapDesktopOptions;
   core::dimension2d<s32>			m_iconMax;
+*/
 
   /*
    * Running applications on the desktop

@@ -24,6 +24,10 @@
 #include "FCViewEvent.h"
 #include "ViewLogicGame.h"
 
+#ifdef _DEBUG
+#include "../common/irrlichtUtil/irrDiag.h"
+#endif//_DEBUG
+
 ViewLogicGame::ViewLogicGame(void)
 : m_pContainer(NULL)
 , m_pDevice(NULL)
@@ -60,6 +64,11 @@ void ViewLogicGame::Create(FCView* pContainer, IrrlichtDevice* pDevice)
 	// setup the event receiver
 	pDevice->setEventReceiver(this);
 
+#ifdef _DEBUG
+  irrDiag diag;
+  std::string dump = diag.dumpElementTree(m_pEnv->getRootGUIElement());
+  OutputDebugString( dump.c_str() );
+#endif//_DEBUG
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -198,7 +207,7 @@ bool ViewLogicGame::OnEvent(const SEvent& event)
 				break;
 
 			case	EMIE_MOUSE_MOVED:
-				bHandled = m_pDesktop->OnEvent(event);
+				bHandled = OnMouseMove(event.MouseInput);
 				break;
 			}
 		}
@@ -241,7 +250,7 @@ bool ViewLogicGame::OnLButtonDown(const SEvent::SMouseInput& event)
 	m_LButtonLastClick.last_tick = now;
 	m_LButtonLastClick.lastX = event.X;
 	m_LButtonLastClick.lastY = event.Y;
-
+/*
 	// if we didn't get to double click, the lets check if the player clicked on an item
 	Desktop::DesktopOption d;
 
@@ -253,7 +262,7 @@ bool ViewLogicGame::OnLButtonDown(const SEvent::SMouseInput& event)
   {
     m_pDesktop->ClearAllHighlights();
   }
-
+*/
 	return false;
 }
 
@@ -269,6 +278,7 @@ bool ViewLogicGame::OnLButtonUp(const SEvent::SMouseInput& event)
 bool ViewLogicGame::OnLButtonDblClick(const SEvent::SMouseInput& event)
 {
   bool bResult = false;
+/*
   Desktop::DesktopOption d;
   
   if ( m_pDesktop->GetDesktopOptionFromPt( event.X, event.Y, &d ) )
@@ -278,7 +288,7 @@ bool ViewLogicGame::OnLButtonDblClick(const SEvent::SMouseInput& event)
 	  m_pContainer->GetController()->OnViewEvent(e);
     bResult = true;
   }
-
+*/
   return bResult;
 }
 

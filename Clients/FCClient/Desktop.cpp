@@ -13,6 +13,7 @@
 #define ICON_PADDING_Y						30
 
 #define INGAMEAPP_BASE_ID         0xA000
+#define DESKTOPICON_BASE_ID       0xB000
 
 Desktop::Desktop(ViewLogicGame& owner, IrrlichtDevice* pDevice)
 : IGUIElement(EGUIET_ELEMENT, pDevice->getGUIEnvironment(), pDevice->getGUIEnvironment()->getRootGUIElement(), -1, core::rect<s32>(0, 0, 0, 0))
@@ -46,7 +47,7 @@ Desktop::Desktop(ViewLogicGame& owner, IrrlichtDevice* pDevice)
   m_pAppBar = new DesktopAppBar(Environment, this);
 
   // initialise the max icon height and width threshholds
-	m_iconMax.Height = m_iconMax.Width = 0;
+//	m_iconMax.Height = m_iconMax.Width = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -94,7 +95,7 @@ void Desktop::GetDesktopRect(core::rect<s32>& rect)
 }
 
 ///////////////////////////////////////////////////////////////////////
-
+/*
 bool Desktop::GetDesktopOptionFromPt(s32 x, s32 y, DesktopOption* d)
 {
 	// check if the point is on any of our desktop icons
@@ -172,12 +173,13 @@ void Desktop::ClearAllHighlights()
     it->second.isHighlighted = false;
   }
 }
-
+*/
 ///////////////////////////////////////////////////////////////////////
 
 bool Desktop::OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost)
 {
   bool bResult = true;
+/*
 	DesktopOptionMap::iterator it = m_mapDesktopOptions.find(optionID);
 
 	if ( it != m_mapDesktopOptions.end() )
@@ -275,7 +277,7 @@ bool Desktop::OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost
 	}
 	else
 		bResult = false;
-
+*/
   return bResult;
 }
 
@@ -436,25 +438,25 @@ void Desktop::UpdateDesktopOptions()
 	std::map<FCUINT, FCModel::DesktopOption> mapOptions = pModel->GetDesktopOptions();
 	std::map<FCUINT, FCModel::DesktopOption>::iterator it = mapOptions.begin();
 	std::map<FCUINT, FCModel::DesktopOption>::iterator limit = mapOptions.end();
-	wstringstream ss;
+  core::dimension2d<s32> iconMax;
+  core::rect<s32> iRect;
+  wstringstream ss;
 	std::string iconFilename;
+  DesktopIcon* pIcon = NULL;
 
 	for ( ; it != limit; it++ )
-	{
-		DesktopOption d;
-
-		if ( m_mapDesktopOptions.find( it->second.optionID ) == m_mapDesktopOptions.end() )
-		{
-			d.optionID = it->second.optionID;
-			d.type = it->second.type;
-			ss << it->second.name;
-			d.name = ss.str();
-
-			// clear the stringstream
-			ss.str(L"");
-
-			// load the desktop option graphic
-			switch ( d.type )
+  {
+    // get the text into a wchar_t format
+  	ss << it->second.name;
+    // create the desktop icon element
+    pIcon = new DesktopIcon(Environment, this, ss.str().c_str(), it->second.optionID+DESKTOPICON_BASE_ID);
+    ss.str(L"");
+    if ( pIcon )
+    {
+      // set the font
+      pIcon->setFont(m_pFontCourier);
+			// determine which graphic file the icon should be using
+			switch ( it->second.type )
 			{
 			case	DOT_Forum:
 				iconFilename = "./clientdata/gfx/icons/web_normal.png";
@@ -484,34 +486,60 @@ void Desktop::UpdateDesktopOptions()
 				iconFilename = "./clientdata/gfx/icons/web_normal.png";
 				break;
 			}
-			IImage* pIcon = m_pDevice->getVideoDriver()->createImageFromFile(iconFilename.c_str());
-			ITexture* pTexture = m_pDevice->getVideoDriver()->addTexture(iconFilename.c_str(), pIcon);
+      pIcon->setIcon(iconFilename);
+      iRect = pIcon->getAbsolutePosition();
 
-			core::dimension2d<s32> txtExtents = m_pFontCourier->getDimension( d.name.c_str() );
-			d.rect = core::rect<s32>(0, 
-															 0, 
-															 txtExtents.Width > pTexture->getSize().Width ? txtExtents.Width : pTexture->getSize().Width, 
-															 pTexture->getSize().Height + txtExtents.Height + 4);
-	
-			if ( d.rect.getWidth() > m_iconMax.Width )
-				m_iconMax.Width = d.rect.getWidth();
-			if ( d.rect.getHeight() > m_iconMax.Height )
-				m_iconMax.Height = d.rect.getHeight();
+			if ( iRect.getWidth() > iconMax.Width )
+				iconMax.Width = iRect.getWidth();
+			if ( iRect.getHeight() > iconMax.Height )
+				iconMax.Height = iRect.getHeight();
 
-			d.pTexture = pTexture;
-			d.isHighlighted = false;
-			pIcon->drop();
-
-			// map the desktop option structure
-			m_mapDesktopOptions[d.optionID] = d;
-		}
+      m_mapDesktopIcons[ it->second.optionID ] = pIcon;
+    }
 	}
+
+  // make all icons the same size
+  for ( DesktopIconMap::iterator it2 = m_mapDesktopIcons.begin(); it2 != m_mapDesktopIcons.end(); it2++ )
+  {
+    pIcon = it2->second;
+    pIcon->setWidth( iconMax.Width );
+    pIcon->setHeight( iconMax.Height );
+  }
+
+  updateIconPositions();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Desktop::updateIconPositions()
+{
+  DesktopIconMap::iterator it = m_mapDesktopIcons.begin();
+  DesktopIconMap::iterator limit = m_mapDesktopIcons.end();
+  DesktopIcon* pIcon = NULL;
+	core::position2d<s32> pos(10, 10), iconPos, offset;
+
+  // offset the Y starting position based on the available desktop area
+  core::rect<s32> dRect;
+  GetDesktopRect(dRect);
+  pos.Y += dRect.UpperLeftCorner.Y;
+
+  for ( ; it != limit; it++ )
+  {
+    pIcon = it->second;
+    pIcon->moveTo( pos.X, pos.Y );
+
+		offset.X = 0;
+		offset.Y = pIcon->getAbsolutePosition().getHeight() + ICON_PADDING_Y;
+		
+		pos += offset;
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void Desktop::DrawDesktopIcons()
 {
+/*
 	DesktopOptionMap::iterator it = m_mapDesktopOptions.begin();
 	DesktopOptionMap::iterator limit = m_mapDesktopOptions.end();
   IVideoDriver* pVideo = m_pDevice->getVideoDriver();
@@ -564,6 +592,7 @@ void Desktop::DrawDesktopIcons()
 		
 		pos += offset;
 	}
+*/
 }
 
 ///////////////////////////////////////////////////////////////////////
