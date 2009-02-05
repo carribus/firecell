@@ -15,12 +15,15 @@
 #define INGAMEAPP_BASE_ID         0xA000
 
 Desktop::Desktop(ViewLogicGame& owner, IrrlichtDevice* pDevice)
-: IGUIElement(EGUIET_ELEMENT, pDevice->getGUIEnvironment(), 0, -1, core::rect<s32>(0, 0, 0, 0))
+: IGUIElement(EGUIET_ELEMENT, pDevice->getGUIEnvironment(), pDevice->getGUIEnvironment()->getRootGUIElement(), -1, core::rect<s32>(0, 0, 0, 0))
 , m_owner(owner)
 , m_pDevice(pDevice)
 , m_pAppBar(NULL)
 , m_mutexApps(true)
 {
+#ifdef _DEBUG
+  setDebugName("Desktop");
+#endif//_DEBUG
   // set the desktop dimensions
   core::dimension2d<s32> screenRes = pDevice->getVideoDriver()->getScreenSize();
   AbsoluteRect = core::rect<s32>(0, 0, screenRes.Width, screenRes.Height);

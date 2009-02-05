@@ -13,6 +13,10 @@ GUIFCCharacterItem::GUIFCCharacterItem(IGUIEnvironment* pEnv, IGUIElement* pPare
 , m_pCharacter(NULL)
 , m_bHighlight(false)
 {
+#ifdef _DEBUG
+  setDebugName("GUIFCCharacterItem");
+#endif//_DEBUG
+
   if ( pEnv )
     m_pDriver = pEnv->getVideoDriver();
 }
@@ -21,6 +25,16 @@ GUIFCCharacterItem::GUIFCCharacterItem(IGUIEnvironment* pEnv, IGUIElement* pPare
 
 GUIFCCharacterItem::~GUIFCCharacterItem(void)
 {
+}
+
+void GUIFCCharacterItem::grab()
+{
+  IGUIElement::grab();
+}
+
+bool GUIFCCharacterItem::drop()
+{
+  return IGUIElement::drop();
 }
 
 ///////////////////////////////////////////////////////////////////////

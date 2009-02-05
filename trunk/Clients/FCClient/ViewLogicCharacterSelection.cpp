@@ -245,6 +245,7 @@ void ViewLogicCharacterSelection::CreateGUIObjects()
 
     // offset the position
     posItem.Y += pItem->getAbsoluteClippingRect().getHeight() + CHARSEL_ITEM_PADDING_TOP;
+    pItem->drop();
   }
 
 	// max number of characters per player is 8 at the moment...

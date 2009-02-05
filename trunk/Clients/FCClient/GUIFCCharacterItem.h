@@ -18,6 +18,8 @@ public:
 	/*
 	 *	IGUIElement overrides
 	 */
+  void grab();
+  bool drop();
 	void draw();
   bool OnEvent(const SEvent& event);
 
