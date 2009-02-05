@@ -42,6 +42,11 @@ enum e_SelectCharacterStatus
 ///////////////////////////////////////////////////////////////////////////////////////////
 const FCSHORT FCSMSG_CLIENT_DISCONNECT                 = SERVERMSG_ID(1);
 ///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  @brief Packet sent from Router service to all connected services indicating
+ *         that a connect client has disconnected
+ *  @ingroup fcprotocol
+ */
 struct __FCSPKT_CLIENT_DISCONNECT
 {
   FCUINT    clientSocket;
@@ -50,6 +55,11 @@ struct __FCSPKT_CLIENT_DISCONNECT
 ///////////////////////////////////////////////////////////////////////////////////////////
 const FCSHORT FCSMSG_CHARACTER_LOGGEDIN                = SERVERMSG_ID(2);
 ///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  @brief Packet sent from Auth Service to World Service specifying that a specific character
+ *         has logged in (includes character details)
+ *  @ingroup fcprotocol
+ */
 struct __FCSPKT_CHARACTER_LOGGEDIN
 {
   FCSOCKET clientSocket;
@@ -63,6 +73,11 @@ struct __FCSPKT_CHARACTER_LOGGEDIN
   FCBYTE city_id;
 };
 
+/**
+ *  @brief Packet sent from World Service to Auth Service indicating that character creation failed
+ *         in the world service. This will be sent in response to the __FCSPKT_CHARACTER_LOGGEDIN packet
+ *  @ingroup fcprotocol
+ */
 struct __FCSPKT_CHARACTER_LOGGEDIN_ERROR
 {
   FCUINT account_id;

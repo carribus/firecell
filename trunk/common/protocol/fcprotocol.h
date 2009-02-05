@@ -17,6 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+/**
+ *  @defgroup fcprotocol FireCell Protocol
+ *  @file fcprotocol.h
+ *  @ingroup fcprotocol
+ */
 #ifndef _FCPROTOCOL_H_
 #define _FCPROTOCOL_H_
 
@@ -46,6 +51,10 @@ enum ServiceType
 
 */
 
+/**
+ *  @brief This is the PEPacketExtractor packet defintion for a firecell packet
+ *  @ingroup fcprotocol
+ */
 static const char* __FCPACKET_DEF = 
 "[" \
 ":magic:1:8|" \
@@ -55,7 +64,7 @@ static const char* __FCPACKET_DEF =
 ":dataLen:4:1|" \
 ":data:*dataLen:1|" \
 "]";
-                      
+/*                      
 struct __FCPACKET
 {
   FCBYTE          magic[8];           // must be [0A 0A 00 10 00 20 00 40]
@@ -65,6 +74,7 @@ struct __FCPACKET
   unsigned long   lDataLen;
   char*           pData;
 };
+*/
 
 /*
  *  Basic structures for serialisation
@@ -86,6 +96,11 @@ struct _game_item
 ///////////////////////////////////////////////////////////////////////////////////////////
 const FCSHORT FCMSG_INFO_SERVER                 = 1;
 ///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  @brief Packet that is sent from server to client giving general server information
+ *  @ingroup fcprotocol
+ */
+
 struct __FCPKT_INFO_SERVER
 {
   FCBYTE    verMajor;
@@ -96,6 +111,10 @@ struct __FCPKT_INFO_SERVER
 ///////////////////////////////////////////////////////////////////////////////////////////
 const FCSHORT FCMSG_REGISTER_SERVICE            = 2;
 ///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  @brief Packet sent/received when a service attempts to register with another service
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_REGISTER_SERVER
 {
   ServiceType     type;
@@ -105,6 +124,10 @@ struct __FCPKT_REGISTER_SERVER
 ///////////////////////////////////////////////////////////////////////////////////////////
 const FCSHORT FCMSG_LOGIN                       = 3;
 ///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  @brief Packet sent from client to auth server when a player attempts to login
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_LOGIN
 {
   char username[65];
@@ -118,6 +141,10 @@ enum e_LoginStatus
   LoginAccountLoggedInAlready = 2
 };
 
+/**
+ *  @brief Packet sent from server to client in response to a login attempt
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_LOGIN_RESP
 {
   e_LoginStatus loginStatus;
@@ -126,6 +153,10 @@ struct __FCPKT_LOGIN_RESP
 ///////////////////////////////////////////////////////////////////////////////////////////
 const FCSHORT FCMSG_GETCHARACTERS               = 20;
 ///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  @brief Packet sent from server to client listing the available characters for the player's account
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_CHARACTER_LIST
 {
   FCBYTE numCharacters;
@@ -146,11 +177,19 @@ struct __FCPKT_CHARACTER_LIST
 ///////////////////////////////////////////////////////////////////////////////////////////
 const FCSHORT FCMSG_SELECT_CHARACTER            = 21;
 ///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  @brief Packet sent from client to server to select a specific character
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_SELECT_CHARACTER
 {
   FCUINT character_id;
 };
 
+/**
+ *  @brief Response packet from server to indicate character selection result
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_SELECT_CHARACTER_RESP
 {
   FCUINT character_id;
@@ -160,6 +199,10 @@ struct __FCPKT_SELECT_CHARACTER_RESP
 ///////////////////////////////////////////////////////////////////////////////////////////
 const FCSHORT FCMSG_GET_CHAR_CREATION_PARAMS    = 22;
 ///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  @brief Packet sent from client to server to retrieve character creation parameters
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_GET_CHAR_CREATION_PARAMS
 {
   FCUINT reserved1;           // not used
@@ -170,6 +213,10 @@ struct __FCPKT_GET_CHAR_CREATION_PARAMS_RESP
   FCBYTE respType;            // 0 = countries, 1 = cities
 };
 
+/**
+ *  @brief Packet send from server to client detailing available in-game countries for character location
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_GET_CHAR_CREATION_PARAMS_COUNTRIES_RESP : public __FCPKT_GET_CHAR_CREATION_PARAMS_RESP
 {
   FCULONG numCountries;
@@ -180,6 +227,10 @@ struct __FCPKT_GET_CHAR_CREATION_PARAMS_COUNTRIES_RESP : public __FCPKT_GET_CHAR
   } countries[1];
 };
 
+/**
+ *  @brief Packet sent from server to client detailing available in-game cities for character creation
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_GET_CHAR_CREATION_PARAMS_CITIES_RESP : public __FCPKT_GET_CHAR_CREATION_PARAMS_RESP
 {
   FCULONG numCities;
@@ -194,17 +245,29 @@ struct __FCPKT_GET_CHAR_CREATION_PARAMS_CITIES_RESP : public __FCPKT_GET_CHAR_CR
 ///////////////////////////////////////////////////////////////////////////////////////////
 const FCSHORT FCMSG_CHARACTER_ASSET_REQUEST     = 23;
 ///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  @brief Packet sent from client to server requesting a character's assets
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_CHARACTER_ASSET_REQUEST
 {
   FCUINT character_id;
 };
 
+/**
+ *  @brief Response packet sent from server to client containing a characters assets
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_CHARACTER_ASSET_REQUEST_RESP
 {
   struct _ip_address
   {
     FCSHORT a, b, c, d;
   } ip_address;
+
+  /**
+   *  @brief Defines the computer equipment available to a character
+   */
 
   struct _computer
   {
@@ -235,6 +298,10 @@ struct __FCPKT_CHARACTER_ASSET_REQUEST_RESP
 ///////////////////////////////////////////////////////////////////////////////////////////
 const FCSHORT FCMSG_GET_DESKTOP_OPTIONS         = 40;
 ///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  @brief Request packet from client to server for available desktop options for the character
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_GET_DESKTOP_OPTIONS
 {
   FCUINT character_id;
@@ -251,25 +318,37 @@ enum DesktopOptionType
   DOT_HackingTools
 };
 
+/**
+ *  @brief Response packet from server to client listing available desktop options
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_GET_DESKTOP_OPTIONS_RESP
 {
   FCUSHORT  numOptions;
   struct DesktopOptions
   {
-    FCULONG optionID;
-    DesktopOptionType type;
-    char name[32];
+    FCULONG optionID;                     //!> ID of the application/desktop option
+    DesktopOptionType type;               //!> Application type that desktop option represents
+    char name[32];                        //!> Name of the desktop option/application
   } Options[1];
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 const FCSHORT FCMSG_ACTIVATE_DESKTOP_OPTION      = 41;
 ///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  @brief Request packet from client to server to attempt to activate a desktop option/application
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_ACTIVATE_DESKTOP_OPTION
 {
   FCULONG optionID;
 };
 
+/**
+ *  @brief Response packet from server to client for desktop option activation
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_ACTIVATE_DESKTOP_OPTION_RESP
 {
 	FCULONG optionID;
@@ -287,11 +366,19 @@ struct __FCPKT_ACTIVATE_DESKTOP_OPTION_RESP
 ///////////////////////////////////////////////////////////////////////////////////////////
 const FCSHORT FCMSG_CON_GET_FS_INFO             = 100;
 ///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  @brief Request packet from client to server to retrieve file system information
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_CON_GET_FS_INFO
 {
   FCULONG character_id;
 };
 
+/**
+ *  @brief Response packet from server to client providing filesystem information for a particular host
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_CON_GET_FS_INFO_RESP
 {
   FCINT fsStyle;
@@ -302,11 +389,19 @@ struct __FCPKT_CON_GET_FS_INFO_RESP
 ///////////////////////////////////////////////////////////////////////////////////////////
 const FCSHORT FCMSG_CON_GET_FILE_LIST           = 101;
 ///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  @brief Request packet from client to server to retrieve a structured list of files in a specific directory
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_CON_GET_FILE_LIST
 {
   char currentDir[256];
 };
 
+/**
+ *  @brief Response packet from server to client providing a list of available files in a specific directory
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_CON_GET_FILE_LIST_RESP
 {
   FCULONG numFiles;
@@ -322,12 +417,20 @@ struct __FCPKT_CON_GET_FILE_LIST_RESP
 ///////////////////////////////////////////////////////////////////////////////////////////
 const FCSHORT FCMSG_CON_COMMAND                 = 102;
 ///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  @brief Packet sent from client to server with an explicit console command
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_CON_COMMAND
 {
   char currentDir[256];
   char command[64];
 };
 
+/**
+ *  @brief Response packet sent from server to client with result string of the explicit console command
+ *  @ingroup fcprotocol
+ */
 struct __FCPKT_CON_COMMAND_RESP
 {
   FCINT len;

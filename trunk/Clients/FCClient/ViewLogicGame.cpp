@@ -24,10 +24,6 @@
 #include "FCViewEvent.h"
 #include "ViewLogicGame.h"
 
-#ifdef _DEBUG
-  #include "../common/irrlichtUtil/irrDiag.h"
-#endif//_DEBUG
-
 ViewLogicGame::ViewLogicGame(void)
 : m_pContainer(NULL)
 , m_pDevice(NULL)
