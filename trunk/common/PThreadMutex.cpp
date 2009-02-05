@@ -1,8 +1,19 @@
 #include "PThreadMutex.h"
 
-PThreadMutex::PThreadMutex(void)
+PThreadMutex::PThreadMutex(bool bRecursive)
 {
-	pthread_mutex_init(&m_mutex, NULL);
+	pthread_mutexattr_t attr;
+
+	if ( bRecursive )
+	{
+	  pthread_mutexattr_init(&attr);
+	  pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+	}
+
+	pthread_mutex_init(&m_mutex, (bRecursive ? &attr : NULL) );
+
+	if ( bRecursive )
+		pthread_mutexattr_destroy(&attr);
 }
 
 ///////////////////////////////////////////////////////////////////////

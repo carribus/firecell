@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <irrlicht.h>
+#include "../../common/PThreadMutex.h"
 #include "IDesktop.h"
 #include "DesktopAppBar.h"
 #include "InGameAppWindow.h"
@@ -82,8 +83,7 @@ private:
    */
   typedef std::vector<InGameAppWindow*> AppWindowVector;
   AppWindowVector         		m_arrApps;
-	
-
+	PThreadMutex								m_mutexApps;							// Might want to change this to a read/write lock
 };
 
 #endif//_DESKTOP_H_

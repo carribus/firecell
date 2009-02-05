@@ -1,5 +1,7 @@
 #include <ctime>
 #include <sstream>
+#include "../common/ResourceManager.h"
+#include "clientstrings.h"
 #include "DesktopAppBar.h"
 
 DesktopAppBar::DesktopAppBar(IGUIEnvironment* env, IGUIElement* pParent, s32 id)
@@ -7,6 +9,8 @@ DesktopAppBar::DesktopAppBar(IGUIEnvironment* env, IGUIElement* pParent, s32 id)
 , m_height(24)
 , m_pClockFont(NULL)
 , m_pActiveApp(NULL)
+, m_colShaderNormal(128, 0, 0, 0)
+, m_colShaderHilite(64, 0, 0, 194)
 {
   core::dimension2d<s32> screenSize = env->getVideoDriver()->getScreenSize();
   if ( getParent() )
@@ -22,6 +26,23 @@ DesktopAppBar::DesktopAppBar(IGUIEnvironment* env, IGUIElement* pParent, s32 id)
   m_pClockFont = Environment->getFont("./clientdata/fonts/fontfixedsys.xml");
   if ( !m_pClockFont )
     m_pClockFont = Environment->getBuiltInFont();
+
+	// create the system app bar option
+	// check if we need to add the rect to the appbar options vector
+  IGUIFont* pFont = Environment->getSkin()->getFont();
+	AppBarOption abo;
+
+	if ( !pFont )
+		pFont = m_pClockFont;
+
+	abo.bAppOption = false;
+	abo.bHighlight = false;
+	abo.str = ResourceManager::instance().GetClientString( STR_APP_APPBAR_SYSTEM );
+	abo.rect = AbsoluteRect;
+	dimension2d<s32> txtExtents = pFont->getDimension( abo.str.c_str() );
+	abo.rect.LowerRightCorner.X = abo.rect.UpperLeftCorner.X + txtExtents.Width + 30;
+	
+	m_appBarOptions.push_back(abo);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -34,7 +55,15 @@ DesktopAppBar::~DesktopAppBar(void)
 
 void DesktopAppBar::setActiveApp(InGameAppWindow* pApp)
 {
-  m_pActiveApp = pApp;
+	if ( pApp != m_pActiveApp )
+	{
+		if ( m_pActiveApp )
+			removeApplicationOptions();
+
+		m_pActiveApp = pApp;
+		if ( m_pActiveApp )
+			addApplicationOptions();
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -44,9 +73,89 @@ void DesktopAppBar::draw()
   IVideoDriver* pVideo = Environment->getVideoDriver();
 
   // draw the app bar background
-  SColor topColor(128, 164, 164, 164), bottomColor(128, 0, 0, 0), shade(128, 0, 0, 0);
+  SColor topColor(128, 164, 164, 164), bottomColor(128, 0, 0, 0);
   pVideo->draw2DRectangle(AbsoluteRect, topColor, topColor, bottomColor, bottomColor, &AbsoluteClippingRect); 
 
+	drawSystemContext(pVideo);
+	drawActiveAppContext();
+	drawClock(pVideo);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+bool DesktopAppBar::OnEvent(const SEvent& event)
+{
+	bool bHandled = false;
+
+	switch ( event.EventType )
+	{
+	case	EET_GUI_EVENT:
+		{
+		}
+		break;
+
+	case	EET_MOUSE_INPUT_EVENT:
+		{
+			switch ( event.MouseInput.Event )
+			{
+			case	EMIE_MOUSE_MOVED:
+				{
+					AppBarOptionVector::iterator it = m_appBarOptions.begin();
+
+					while ( it != m_appBarOptions.end() )
+					{
+						if ( it->rect.isPointInside( position2d<s32>(event.MouseInput.X, event.MouseInput.Y) ) )
+						{
+							it->bHighlight = true;
+						}
+						else
+							it->bHighlight = false;
+						it++;
+					}
+				}
+				break;
+
+			default:
+				break;
+			}
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	return bHandled;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void DesktopAppBar::drawSystemContext(IVideoDriver* pVideo)
+{
+  IGUIFont* pFont = Environment->getSkin()->getFont();
+	std::wstring str = ResourceManager::instance().GetClientString( STR_APP_APPBAR_SYSTEM );
+	AppBarOption& abo = m_appBarOptions[0];
+	rect<s32> rect = abo.rect;
+
+  if ( !pFont )
+    pFont = m_pClockFont;
+
+	// shade the background
+	pVideo->draw2DRectangle( (abo.bHighlight ? m_colShaderHilite : m_colShaderNormal), rect );
+  // draw the seperator
+	pVideo->draw2DLine( core::position2d<s32>( rect.LowerRightCorner.X, rect.UpperLeftCorner.Y ), 
+										  core::position2d<s32>( rect.LowerRightCorner.X, rect.LowerRightCorner.Y ), SColor(194, 64, 64, 64) );
+	pVideo->draw2DLine( core::position2d<s32>( rect.LowerRightCorner.X+1, rect.UpperLeftCorner.Y), 
+											core::position2d<s32>( rect.LowerRightCorner.X+1, rect.LowerRightCorner.Y ), SColor(64, 255, 255, 255) );
+
+	// draw the text
+	pFont->draw( abo.str.c_str(), rect, SColor(194, 255, 255, 255), true, true );
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void DesktopAppBar::drawActiveAppContext()
+{
   // draw the Active App context
   if ( m_pActiveApp )
   {
@@ -55,17 +164,26 @@ void DesktopAppBar::draw()
     if ( !pFont )
       pFont = m_pClockFont;
 
-    core::rect<s32> cRect = AbsoluteRect;
+		// iterate through the application context options
+		AppBarOptionVector::iterator it = m_appBarOptions.begin() + 1;
 
-    cRect.UpperLeftCorner.X += 10;
-    pFont->draw( m_pActiveApp->getAppName(),
-                 cRect,
-                 SColor(255, 255, 255, 255),
-                 false,
-                 true );
+		for ( ; it != m_appBarOptions.end(); it++ )
+		{
+			pFont->draw( it->str.c_str(),
+									 it->rect,
+									 SColor(255, 255, 255, 255),
+									 true,
+									 true );
+		}
   }
+}
 
-  // draw the timestamp
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void DesktopAppBar::drawClock(IVideoDriver* pVideo)
+{
+	SColor shade(128, 0, 0, 0);
+
   if ( m_pClockFont )
   {
     core::rect<s32> tRect = AbsoluteRect;
@@ -79,7 +197,7 @@ void DesktopAppBar::draw()
     // setup the rectangle for the text
     tRect.UpperLeftCorner.X = tRect.LowerRightCorner.X - m_pClockFont->getDimension( ss.str().c_str() ).Width - 30;
     // draw a slight darker version of the app bar for the timer
-    pVideo->draw2DRectangle( shade, tRect );
+    pVideo->draw2DRectangle( m_colShaderNormal, tRect );
     // draw the offset shadow
     tRect.UpperLeftCorner.X += 3;
     tRect.UpperLeftCorner.Y += 2;
@@ -92,4 +210,48 @@ void DesktopAppBar::draw()
     pVideo->draw2DLine( tRect.UpperLeftCorner, core::position2d<s32>( tRect.UpperLeftCorner.X, tRect.LowerRightCorner.Y ), SColor(194, 64, 64, 64) );
     pVideo->draw2DLine( core::position2d<s32>( tRect.UpperLeftCorner.X+1, tRect.UpperLeftCorner.Y), core::position2d<s32>( tRect.UpperLeftCorner.X+1, tRect.LowerRightCorner.Y ), SColor(128, 255, 255, 255) );
   }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void DesktopAppBar::addApplicationOptions()
+{
+	if ( m_pActiveApp )
+	{
+    IGUIFont* pFont = Environment->getSkin()->getFont();
+		dimension2d<s32> txtExtents;
+
+    if ( !pFont )
+      pFont = m_pClockFont;
+
+    core::rect<s32> cRect = AbsoluteRect;
+		AppBarOption abo = m_appBarOptions[0];
+		// move the start X position to the right of the System option
+		cRect.UpperLeftCorner.X = abo.rect.LowerRightCorner.X;
+		// measure the text
+		txtExtents = pFont->getDimension( m_pActiveApp->getAppName() );
+		cRect.LowerRightCorner.X = cRect.UpperLeftCorner.X + txtExtents.Width + 30;
+
+		// create the app bar option
+		abo.bAppOption = true;
+		abo.bHighlight = false;
+		abo.rect = cRect;
+		abo.str = m_pActiveApp->getAppName();
+
+		m_appBarOptions.push_back(abo);
+	}	
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void DesktopAppBar::removeApplicationOptions()
+{
+	for ( size_t i = 0; i < m_appBarOptions.size(); i++ )
+	{
+		if ( m_appBarOptions[i].bAppOption )
+		{
+			m_appBarOptions.erase( m_appBarOptions.begin() + i );
+			i--;
+		}
+	}
 }

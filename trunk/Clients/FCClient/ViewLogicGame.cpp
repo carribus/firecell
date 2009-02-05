@@ -202,7 +202,7 @@ bool ViewLogicGame::OnEvent(const SEvent& event)
 				break;
 
 			case	EMIE_MOUSE_MOVED:
-				bHandled = OnMouseMove(event.MouseInput);
+				bHandled = m_pDesktop->OnEvent(event);
 				break;
 			}
 		}
