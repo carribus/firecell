@@ -1,7 +1,9 @@
+#include "../common/irrlichtUtil/irrfontfx.h"
 #include "DesktopIcon.h"
 
-DesktopIcon::DesktopIcon(IGUIEnvironment* env, IGUIElement* pParent, const wchar_t* text, s32 id)
+DesktopIcon::DesktopIcon(IDesktop* pDesktop, IGUIEnvironment* env, IGUIElement* pParent, const wchar_t* text, s32 id)
 : IGUIElement(EGUIET_ELEMENT, env, (pParent?pParent:env->getRootGUIElement()), id, rect<s32>(0, 0, 0, 0) )
+, m_pDesktop(pDesktop)
 , m_pTexture(NULL)
 , m_pFont(NULL)
 , m_bSelected(false)
@@ -56,7 +58,7 @@ void DesktopIcon::setHeight(s32 height)
 void DesktopIcon::moveTo(s32 x, s32 y)
 {
   rect<s32> oldRect = AbsoluteRect;
-  AbsoluteRect = rect<s32>(x, y, x + oldRect.getWidth(), y + oldRect.getHeight());
+  AbsoluteClippingRect = AbsoluteRect = rect<s32>(x, y, x + oldRect.getWidth(), y + oldRect.getHeight());
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -89,32 +91,9 @@ void DesktopIcon::draw()
 											   SColor(128, 255, 255, 255), 
 											   true );
   }
-  m_pFont->draw( Text.c_str(), 
-                 core::rect<s32>( AbsoluteRect.UpperLeftCorner.X, AbsoluteRect.UpperLeftCorner.Y + iconDim.Height + 4, AbsoluteRect.LowerRightCorner.X, AbsoluteRect.LowerRightCorner.Y ), 
-                 SColor(255, 0, 0, 0), 
-                 true, 
-                 true );
 
-/*
-	if ( d.isHighlighted )
-	{
-		pVideo->draw2DImage( d.pTexture, 
-												iconPos, 
-												rect<s32>(0, 0, iconDim.Width, iconDim.Height), 
-												0, 
-												SColor(255, 255, 255, 255), 
-												true );
-	}
-	else
-	{
-		pVideo->draw2DImage( d.pTexture, 
-												iconPos, 
-												rect<s32>(0, 0, iconDim.Width, iconDim.Height), 
-												0, 
-												SColor(128, 255, 255, 255), 
-												true );
-	}
-*/
+	rect<s32> r = core::rect<s32>( AbsoluteRect.UpperLeftCorner.X, AbsoluteRect.UpperLeftCorner.Y + iconDim.Height + 4, AbsoluteRect.LowerRightCorner.X, AbsoluteRect.LowerRightCorner.Y );
+	drawStrokedFont(m_pFont, Text.c_str(), SColor(128, 0, 0, 0), SColor(255, 255, 255, 255), r, true, true);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -131,12 +110,13 @@ bool DesktopIcon::OnEvent(const SEvent& event)
       {
       case  EMIE_LMOUSE_PRESSED_DOWN:
         m_bSelected = true;
+				if ( m_pDesktop )
+					m_pDesktop->OnDesktopIconSelected(this);
         break;
 
       default:
         break;
       }
-      bResult = true;
     }
     break;
 
@@ -154,6 +134,7 @@ rect<s32> DesktopIcon::calculateDimensions()
   if ( m_pFont )
   {
     core::dimension2d<s32> txtExtents = m_pFont->getDimension( Text.c_str() );
+		AbsoluteClippingRect = 
     AbsoluteRect = core::rect<s32>(AbsoluteRect.UpperLeftCorner.X, 
 									     				    AbsoluteRect.UpperLeftCorner.Y, 
 													        AbsoluteRect.UpperLeftCorner.X + (txtExtents.Width > m_pTexture->getSize().Width ? txtExtents.Width : m_pTexture->getSize().Width), 

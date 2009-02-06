@@ -1,6 +1,11 @@
 #include <sstream>
 #include "irrDiag.h"
 
+namespace irr
+{
+namespace gui
+{
+
 irrDiag::irrDiag(void)
 {
 }
@@ -54,3 +59,7 @@ std::string irrDiag::enumerateElements(IGUIElement* pParentNode, u32 level)
 
   return ss.str();
 }
+
+
+}	// end of namespace gui
+} // end of namespace irr

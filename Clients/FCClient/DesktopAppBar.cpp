@@ -1,6 +1,7 @@
 #include <ctime>
 #include <sstream>
 #include "../common/ResourceManager.h"
+#include "../common/irrlichtUtil/irrfontfx.h"
 #include "clientstrings.h"
 #include "DesktopAppBar.h"
 
@@ -188,7 +189,7 @@ void DesktopAppBar::drawSystemContext(IVideoDriver* pVideo)
 											core::position2d<s32>( rect.LowerRightCorner.X+1, rect.LowerRightCorner.Y ), SColor(64, 255, 255, 255) );
 
 	// draw the text
-	pFont->draw( abo.str.c_str(), rect, SColor(194, 255, 255, 255), true, true );
+	drawStrokedFont( pFont, abo.str.c_str(), SColor(128, 0, 0, 0), SColor(194, 255, 255, 255), rect, true, true ); 
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -237,14 +238,8 @@ void DesktopAppBar::drawClock(IVideoDriver* pVideo)
     tRect.UpperLeftCorner.X = tRect.LowerRightCorner.X - m_pClockFont->getDimension( ss.str().c_str() ).Width - 30;
     // draw a slight darker version of the app bar for the timer
     pVideo->draw2DRectangle( m_colShaderNormal, tRect );
-    // draw the offset shadow
-    tRect.UpperLeftCorner.X += 3;
-    tRect.UpperLeftCorner.Y += 2;
-    m_pClockFont->draw(ss.str().c_str(), tRect, SColor(194, 0, 0, 0), true, true);
     // draw the text
-    tRect.UpperLeftCorner.X -= 3;
-    tRect.UpperLeftCorner.Y -= 2;
-    m_pClockFont->draw(ss.str().c_str(), tRect, SColor(194, 255, 255, 255), true, true);
+		drawStrokedFont( m_pClockFont, ss.str().c_str(), SColor(194, 0, 0, 0), SColor(194, 255, 255, 255), tRect, true, true );
     // draw the seperator
     pVideo->draw2DLine( tRect.UpperLeftCorner, core::position2d<s32>( tRect.UpperLeftCorner.X, tRect.LowerRightCorner.Y ), SColor(194, 64, 64, 64) );
     pVideo->draw2DLine( core::position2d<s32>( tRect.UpperLeftCorner.X+1, tRect.UpperLeftCorner.Y), core::position2d<s32>( tRect.UpperLeftCorner.X+1, tRect.LowerRightCorner.Y ), SColor(128, 255, 255, 255) );

@@ -20,8 +20,8 @@ public:
 
   // console commands
   void RequestCharacterFileSystemInfo(FCULONG character_id);
-  void RequestFileSystemList(const string& currentDir);
-  void SendConsoleCommand(const string& currentDir, const string cmd);
+	void RequestFileSystemList(const std::string& currentDir);
+	void SendConsoleCommand(const std::string& currentDir, const std::string cmd);
 
   // forum commands
   void RequestForumCategories(FCULONG character_id);

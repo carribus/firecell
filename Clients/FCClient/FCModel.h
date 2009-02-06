@@ -142,8 +142,8 @@ public:
 	 */
 	struct FileSystemInfo
 	{
-	  string currentDir;
-		string dirSeperator;
+		std::string currentDir;
+		std::string dirSeperator;
 		FCBYTE fsStyle;
 	};
 
@@ -179,7 +179,7 @@ public:
 	void ActivateDesktopOption(FCULONG optionID);
 	/* Console methods */
 	void ConsoleRefresh();
-	void ConsoleCommandIssued(string cmd, string curdir);
+	void ConsoleCommandIssued(std::string cmd, std::string curdir);
 
   vector<Character>& GetCharacters()               { return m_characters; }
   map<FCULONG, Country>& GetCountries()            { return m_countries; }

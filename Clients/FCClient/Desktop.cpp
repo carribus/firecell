@@ -88,6 +88,51 @@ void Desktop::Draw()
 
 ///////////////////////////////////////////////////////////////////////
 
+bool Desktop::OnEvent(const SEvent& event)
+{
+	bool bResult = false;
+
+	switch ( event.EventType )
+	{
+	case	EET_MOUSE_INPUT_EVENT:
+		{
+			switch ( event.MouseInput.Event )
+			{
+			case	EMIE_LMOUSE_PRESSED_DOWN:
+				{
+					DesktopIconMap::iterator it = m_mapDesktopIcons.begin();
+					DesktopIconMap::iterator limit = m_mapDesktopIcons.end();
+
+					for ( ; it != limit; it++ )
+					{
+						it->second->setSelected(false);
+					}
+					bResult = true;
+				}
+				break;
+
+			case	EMIE_MOUSE_MOVED:
+				{
+					rect<s32> abRect = m_pAppBar->getAbsolutePosition();
+					if ( abRect.isPointInside( position2d<s32>(event.MouseInput.X, event.MouseInput.Y) ) )
+					{
+						Environment->setFocus(m_pAppBar);
+					}
+				}
+				break;
+			}
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void Desktop::GetDesktopRect(core::rect<s32>& rect)
 {
   rect = AbsoluteRect;
@@ -422,6 +467,22 @@ bool Desktop::OnConsoleEvent(FCModelEvent& event)
 
 ///////////////////////////////////////////////////////////////////////
 
+void Desktop::OnDesktopIconSelected(DesktopIcon* pIcon)
+{
+	DesktopIconMap::iterator it = m_mapDesktopIcons.begin();
+	DesktopIconMap::iterator limit = m_mapDesktopIcons.end();
+
+	for ( ; it != limit; it++ )
+	{
+		if ( it->second != pIcon )
+			it->second->setSelected(false);
+	}
+
+	Environment->setFocus(this);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void Desktop::OnApplicationActivated(InGameAppWindow* pApp)
 {
   if ( !pApp )
@@ -449,7 +510,7 @@ void Desktop::UpdateDesktopOptions()
     // get the text into a wchar_t format
   	ss << it->second.name;
     // create the desktop icon element
-    pIcon = new DesktopIcon(Environment, this, ss.str().c_str(), it->second.optionID+DESKTOPICON_BASE_ID);
+    pIcon = new DesktopIcon(this, Environment, this, ss.str().c_str(), it->second.optionID+DESKTOPICON_BASE_ID);
     ss.str(L"");
     if ( pIcon )
     {

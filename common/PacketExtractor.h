@@ -46,7 +46,7 @@
   PacketExtractor extractor;
   PEPacket* pPkt = NULL;
 
-  const string PKTDEF_SAMPLE = "[" \
+  const std::string PKTDEF_SAMPLE = "[" \
                                ":magic:1:5|" \
                                ":verMajor:2:1|" \
                                ":verMinor:2:1|" \
@@ -101,10 +101,10 @@ class PacketExtractor
 {
   struct EPField
   {
-    string name;
-    string varRefWidth;
+    std::string name;
+    std::string varRefWidth;
     size_t elem_width;
-    string varRefCount;
+    std::string varRefCount;
     size_t elem_count;
   };
 
@@ -112,12 +112,12 @@ public:
   PacketExtractor(void);
   virtual ~PacketExtractor(void);
 
-  bool Prepare(string strPacketFormat);
+  bool Prepare(std::string strPacketFormat);
   PEPacket* Extract(const char* pSrc, size_t& streamOffset, const size_t streamLen);
 
 protected:
 
-  virtual bool ParseFieldDef(string strDef, PacketExtractor::EPField& field);
+  virtual bool ParseFieldDef(std::string strDef, PacketExtractor::EPField& field);
   virtual void ClearField(PacketExtractor::EPField& field);
 
   virtual bool ReadElement(const char* pSrc, size_t& streamOffset, const size_t streamLen, void* pDest, const size_t elemsize);

@@ -180,6 +180,9 @@
 				RelativePath="..\common\irrlichtUtil\irrDiag.cpp">
 			</File>
 			<File
+				RelativePath="..\common\irrlichtUtil\irrfontfx.cpp">
+			</File>
+			<File
 				RelativePath="..\..\common\PacketExtractor.cpp">
 			</File>
 			<File
@@ -291,6 +294,9 @@
 			</File>
 			<File
 				RelativePath="..\common\irrlichtUtil\irrDiag.h">
+			</File>
+			<File
+				RelativePath="..\common\irrlichtUtil\irrfontfx.h">
 			</File>
 			<File
 				RelativePath=".\IViewLogic.h">
