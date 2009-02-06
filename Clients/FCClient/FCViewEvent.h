@@ -15,7 +15,9 @@ enum e_FCViewEventType
 	VE_DesktopOptionActivated,
 	/* Console Events */
 	VE_ConRefresh,
-	VE_ConCommandIssued
+	VE_ConCommandIssued,
+  /* Forum Events */
+  VE_ForumRefreshCategories
 };
 
 /////////////////////////////////////////////////////////////////

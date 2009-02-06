@@ -180,6 +180,8 @@ public:
 	/* Console methods */
 	void ConsoleRefresh();
 	void ConsoleCommandIssued(std::string cmd, std::string curdir);
+  /* Forum methods */
+  void ForumGetCategories();
 
   vector<Character>& GetCharacters()               { return m_characters; }
   map<FCULONG, Country>& GetCountries()            { return m_countries; }
@@ -212,8 +214,13 @@ private:
 		bool OnResponeActivateDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseConsoleGetFileSystemInfo(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseConsoleCommand(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnResponseForumGetCategories(PEPacket* pPkt, BaseSocket* pSocket);
 
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
+
+  /*
+   *  Private Data Members
+   */
 
   static FCModel*                 m_pThis;
 
@@ -247,6 +254,10 @@ private:
 	 *	Console specific stuff
 	 */
 	FileSystemInfo		m_fsInfo;
+
+  /*
+   *  Forum stuff
+   */
 };
 
 #endif//_FCMODEL_H_

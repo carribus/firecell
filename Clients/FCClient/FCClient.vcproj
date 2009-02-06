@@ -165,6 +165,12 @@
 				RelativePath=".\FCViewEvent.cpp">
 			</File>
 			<File
+				RelativePath=".\ForumCategory.cpp">
+			</File>
+			<File
+				RelativePath=".\ForumModel.cpp">
+			</File>
+			<File
 				RelativePath=".\ForumWindow.cpp">
 			</File>
 			<File
@@ -172,6 +178,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIFCCharacterItem.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIForumCatBrowser.cpp">
 			</File>
 			<File
 				RelativePath=".\InGameAppWindow.cpp">
@@ -278,6 +287,12 @@
 				RelativePath=".\FCViewEvent.h">
 			</File>
 			<File
+				RelativePath=".\ForumCategory.h">
+			</File>
+			<File
+				RelativePath=".\ForumModel.h">
+			</File>
+			<File
 				RelativePath=".\ForumWindow.h">
 			</File>
 			<File
@@ -285,6 +300,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIFCCharacterItem.h">
+			</File>
+			<File
+				RelativePath=".\GUIForumCatBrowser.h">
 			</File>
 			<File
 				RelativePath=".\IDesktop.h">

@@ -22,6 +22,8 @@ public:
   void setWidth(s32 width);
   void setHeight(s32 height);
 	void setSelected(bool bSelected)															{ m_bSelected = bSelected; }
+  void setType(unsigned int type)                               { m_type = type; }
+  unsigned int getType()                                        { return m_type; }
   void moveTo(s32 x, s32 y);
 
   rect<s32> calculateDimensions();
@@ -29,12 +31,27 @@ public:
   void draw();
   bool OnEvent(const SEvent& event);
 
+  bool OnLButtonDown(const SEvent::SMouseInput& event);
+  bool OnLButtonDblClick(const SEvent::SMouseInput& event);
+
 private:
 
 	IDesktop*								m_pDesktop;
   ITexture*               m_pTexture;
   IGUIFont*               m_pFont;
   bool                    m_bSelected;
+  unsigned int            m_type;
+
+  /*
+   *  Double click tracking
+   */
+	struct LastClick
+	{
+		u32 last_tick;
+		s32 lastX;
+		s32	lastY;
+	};
+	LastClick										m_LButtonLastClick;
 };
 
 #endif//_DESKTOPICON_H_

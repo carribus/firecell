@@ -7,7 +7,8 @@ enum e_FCEventType
   FCME_NewCharacterParamsReady,
 	FCME_OpenApplication,
 	FCME_Console_FileSystemInfo,
-	FCME_Console_Command
+	FCME_Console_Command,
+  FCME_Forum_CategoriesReceived
 };
 
 class FCModelEvent

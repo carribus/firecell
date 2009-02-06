@@ -55,11 +55,13 @@ void InGameAppWindow::GetClientRect(core::rect<s32>& rect)
 
 void InGameAppWindow::CenterWindow()
 {
-  core::dimension2d<s32> screenSize = m_pEnv->getVideoDriver()->getScreenSize();
+  core::rect<s32> dRect;
   core::rect<s32> wndSize = m_pWindow->getAbsolutePosition();
   core::position2d<s32> newWndPos;
 
-  newWndPos.X = (screenSize.Width / 2) - wndSize.getWidth()/2;
-  newWndPos.Y = (screenSize.Height / 2) - wndSize.getHeight()/2;
-  m_pWindow->move(newWndPos);
+  m_pDesktop->GetDesktopRect(dRect);
+
+  newWndPos.X = dRect.UpperLeftCorner.X + ((dRect.getWidth() / 2) - wndSize.getWidth()/2);
+  newWndPos.Y = dRect.UpperLeftCorner.Y + ((dRect.getHeight() / 2) - wndSize.getHeight()/2);
+  m_pWindow->setRelativePosition(newWndPos);
 }

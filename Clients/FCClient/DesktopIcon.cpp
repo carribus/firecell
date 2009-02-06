@@ -110,6 +110,7 @@ bool DesktopIcon::OnEvent(const SEvent& event)
       switch ( event.MouseInput.Event )
       {
       case  EMIE_LMOUSE_PRESSED_DOWN:
+        bResult = OnLButtonDown(event.MouseInput);
         m_bSelected = true;
 				if ( m_pDesktop )
 					m_pDesktop->OnDesktopIconSelected(this);
@@ -126,6 +127,46 @@ bool DesktopIcon::OnEvent(const SEvent& event)
   }
 
   return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool DesktopIcon::OnLButtonDown(const SEvent::SMouseInput& event)
+{
+  ITimer* pTimer = irrSingleton::instance().getTimer();
+	u32 now = pTimer->getTime();
+
+  m_bSelected = true;
+
+	if ( m_LButtonLastClick.last_tick )
+	{
+		if ( (event.X > m_LButtonLastClick.lastX-3 && event.X < m_LButtonLastClick.lastX+3) &&
+			   (event.Y > m_LButtonLastClick.lastY-3 && event.Y < m_LButtonLastClick.lastY+3) )
+		{
+			if ( now - m_LButtonLastClick.last_tick <= 300 )
+			{
+				memset( &m_LButtonLastClick, 0, sizeof(LastClick) );
+				return OnLButtonDblClick(event);
+			}
+		}
+	}
+
+	// update the tracking structure
+	m_LButtonLastClick.last_tick = now;
+	m_LButtonLastClick.lastX = event.X;
+	m_LButtonLastClick.lastY = event.Y;
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool DesktopIcon::OnLButtonDblClick(const SEvent::SMouseInput& event)
+{
+  if ( m_pDesktop )
+    m_pDesktop->OnDesktopIconActivated(this);
+
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
