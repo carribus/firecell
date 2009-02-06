@@ -17,7 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include <sstream>
 #include "../../common/protocol/fcprotocol.h"
+#include "../common/irrlichtUtil/irrfontfx.h"
 #include "FCController.h"
 #include "FCGUIElementFactory.h"
 #include "FCView.h"
@@ -124,6 +126,21 @@ bool FCView::Update()
 		m_pDriver->beginScene(true, true, colBkg);
 		if ( m_pCurrentViewLogic )
 			m_pCurrentViewLogic->Refresh();
+#ifdef _DEBUG
+	
+		// draw the FPS
+		std::wstringstream ss;
+		dimension2d<s32> screenSize = m_pDriver->getScreenSize();
+		ss << L"FPS: " << m_pDriver->getFPS();
+		drawStrokedFont( m_pDevice->getGUIEnvironment()->getSkin()->getFont(),
+										 ss.str().c_str(), 
+										 SColor(255, 0, 0, 0),
+										 SColor(255, 0, 255, 0),
+										 rect<s32>(0, screenSize.Height-16, screenSize.Width, screenSize.Height), 
+										 false, 
+										 false );
+
+#endif//_DEBUG
 		m_pDriver->endScene();
 	}
 	else

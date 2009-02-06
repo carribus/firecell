@@ -62,13 +62,7 @@ void ViewLogicGame::Create(FCView* pContainer, IrrlichtDevice* pDevice)
     m_pDesktop = new Desktop(*this, pDevice);
 
 	// setup the event receiver
-	pDevice->setEventReceiver(this);
-
-#ifdef _DEBUG
-  irrDiag diag;
-  std::string dump = diag.dumpElementTree(m_pEnv->getRootGUIElement());
-  OutputDebugString( dump.c_str() );
-#endif//_DEBUG
+//	pDevice->setEventReceiver(this);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -92,6 +86,12 @@ void ViewLogicGame::SetActive()
   m_pScene->setAmbientLight(SColorf(1.0f, 1.0f, 1.0f));
 
   m_pDesktop->Create();
+
+#ifdef _DEBUG
+  irrDiag diag;
+  std::string dump = diag.dumpElementTree(m_pEnv->getRootGUIElement());
+  OutputDebugString( dump.c_str() );
+#endif//_DEBUG
 
 /*
 	// temporary 3d code

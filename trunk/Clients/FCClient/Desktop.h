@@ -36,6 +36,7 @@ public:
 
   bool Create();
   void Draw();
+	bool OnEvent(const SEvent& event);
   void GetDesktopRect(core::rect<s32>& rect);
 /*
   bool GetDesktopOptionFromPt(s32 x, s32 y, DesktopOption* d);
@@ -52,6 +53,7 @@ public:
   /*
    *  IDesktop implementation
    */
+	void OnDesktopIconSelected(DesktopIcon* pIcon);
   void OnApplicationActivated(InGameAppWindow* pApp);
 
 private:
