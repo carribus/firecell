@@ -20,6 +20,7 @@
 #include <sstream>
 #include "../../common/protocol/fcprotocol.h"
 #include "../common/irrlichtUtil/irrfontfx.h"
+#include "irrSingleton.h"
 #include "FCController.h"
 #include "FCGUIElementFactory.h"
 #include "FCView.h"
@@ -108,6 +109,10 @@ bool FCView::Initialise(E_DRIVER_TYPE driverType)
   IGUIElementFactory* pFactory = new FCGUIElementFactory(m_pEnv);
   m_pEnv->registerGUIElementFactory( pFactory );
   pFactory->drop();
+
+	// create the singleton object for irrlicht object access throughout the system
+	irrSingleton::instance().setDevice( m_pDevice );
+	irrSingleton::instance().setTimer( m_pDevice->getTimer() );
 
 	return true;
 }

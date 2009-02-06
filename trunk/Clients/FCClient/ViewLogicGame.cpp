@@ -250,19 +250,7 @@ bool ViewLogicGame::OnLButtonDown(const SEvent::SMouseInput& event)
 	m_LButtonLastClick.last_tick = now;
 	m_LButtonLastClick.lastX = event.X;
 	m_LButtonLastClick.lastY = event.Y;
-/*
-	// if we didn't get to double click, the lets check if the player clicked on an item
-	Desktop::DesktopOption d;
 
-	if ( m_pDesktop->GetDesktopOptionFromPt( event.X, event.Y, &d ) )
-	{
-		m_pDesktop->HighlightDesktopOption(d.optionID);
-	}
-  else
-  {
-    m_pDesktop->ClearAllHighlights();
-  }
-*/
 	return false;
 }
 
