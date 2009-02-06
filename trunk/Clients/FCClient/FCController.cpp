@@ -129,13 +129,23 @@ void FCController::OnViewEvent(FCViewEvent& event)
 		m_pModel->ActivateDesktopOption( (FCULONG)event.GetData() );
 		break;
 
+  //
+  // Console View events
 	case	VE_ConRefresh:
 		m_pModel->ConsoleRefresh();
 		break;
 
 	case	VE_ConCommandIssued:
-		ConsoleCommand* pCmd = (ConsoleCommand*)event.GetData();
-		m_pModel->ConsoleCommandIssued(pCmd->command, pCmd->currentDir);
+    {
+		  ConsoleCommand* pCmd = (ConsoleCommand*)event.GetData();
+		  m_pModel->ConsoleCommandIssued(pCmd->command, pCmd->currentDir);
+    }
 		break;
+
+  //
+  // Forum View Events
+  case  VE_ForumRefreshCategories:
+    m_pModel->ForumGetCategories();
+    break;
 	}
 }

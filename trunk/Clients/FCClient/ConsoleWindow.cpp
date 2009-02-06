@@ -6,7 +6,7 @@
 
 #define CONSOLE_CONTROL				1
 
-ConsoleWindow::ConsoleWindow(Desktop* pDesktop, FCController* pController, IrrlichtDevice* pDevice)
+ConsoleWindow::ConsoleWindow(IDesktop* pDesktop, FCController* pController, IrrlichtDevice* pDevice)
 : InGameAppWindow(pDesktop, pController, pDevice->getGUIEnvironment())
 , m_pDevice(pDevice)
 , m_pLogWnd(NULL)

@@ -10,7 +10,7 @@ class ConsoleWindow :	public InGameAppWindow
 										, public IGUIConsoleEventSink
 {
 public:
-	ConsoleWindow(Desktop* pDesktop, FCController* pController, IrrlichtDevice* pDevice);
+	ConsoleWindow(IDesktop* pDesktop, FCController* pController, IrrlichtDevice* pDevice);
 	~ConsoleWindow(void);
 
 	bool Create(s32 AppElemID, FCUINT optionID, std::wstring caption);

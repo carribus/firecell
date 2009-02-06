@@ -1,7 +1,9 @@
 #include <sstream>
 #include "clientstrings.h"
+#include "FCController.h"
 #include "FCModel.h"
 #include "FCView.h"
+#include "FCViewEvent.h"
 #include "../common/ResourceManager.h"
 #include "ViewLogicGame.h"
 #include "Desktop.h"
@@ -100,6 +102,7 @@ bool Desktop::OnEvent(const SEvent& event)
 			{
 			case	EMIE_LMOUSE_PRESSED_DOWN:
 				{
+          // unselect all desktop icons
 					DesktopIconMap::iterator it = m_mapDesktopIcons.begin();
 					DesktopIconMap::iterator limit = m_mapDesktopIcons.end();
 
@@ -113,6 +116,7 @@ bool Desktop::OnEvent(const SEvent& event)
 
 			case	EMIE_MOUSE_MOVED:
 				{
+          // monitor the mouse and if it goes over the AppBar, give the appBar focus
 					rect<s32> abRect = m_pAppBar->getAbsolutePosition();
 					if ( abRect.isPointInside( position2d<s32>(event.MouseInput.X, event.MouseInput.Y) ) )
 					{
@@ -124,9 +128,77 @@ bool Desktop::OnEvent(const SEvent& event)
 		}
 		break;
 
-	default:
-		break;
-	}
+  case  EET_GUI_EVENT:
+    {
+      switch ( event.GUIEvent.EventType )
+      {
+      case  EGET_ELEMENT_FOCUSED:
+        {
+          s32 elemID = event.GUIEvent.Caller->getID();
+
+          switch ( elemID )
+          {
+          case  INGAMEAPP_BASE_ID+DOT_Forum:
+          case  INGAMEAPP_BASE_ID+DOT_News:
+          case  INGAMEAPP_BASE_ID+DOT_Email:
+          case  INGAMEAPP_BASE_ID+DOT_Console:
+          case  INGAMEAPP_BASE_ID+DOT_Bank:
+          case  INGAMEAPP_BASE_ID+DOT_Chat:
+          case  INGAMEAPP_BASE_ID+DOT_HackingTools:
+            {
+              // an application has been activated...
+              OnApplicationActivated( this->GetAppWindowByType(elemID-INGAMEAPP_BASE_ID) );
+            }
+            break;
+
+          default:
+            break;
+          }
+        }
+        break;
+
+	    case	EGET_ELEMENT_CLOSED:
+		    {
+			    IGUIElement* pElem = event.GUIEvent.Caller;
+			    switch ( pElem->getType() )
+			    {
+			    case	EGUIET_WINDOW:
+				    {
+					    InGameAppWindow* pWnd = NULL;
+
+					    m_mutexApps.Lock();
+					    AppWindowVector::iterator it = m_arrApps.begin();
+					    while ( it != m_arrApps.end() )
+					    {
+						    if ( (*it)->GetGUIWindow() == pElem )
+						    {
+                  // get the InGameAppWindow object
+							    pWnd = (*it);
+                  // remove it from the active apps list
+							    m_arrApps.erase(it);
+                  // notify the AppBar that the app has closed
+                  if ( m_pAppBar )
+                    m_pAppBar->setActiveApp(NULL);
+                  // delete the InGameAppWindow Object
+							    delete pWnd;
+                  // set focus back to the desktop
+                  Environment->setFocus(this);
+							    break;
+						    }
+						    it++;
+					    }
+					    m_mutexApps.Unlock();
+				    }
+				    break;
+          }
+        }
+        break;
+
+	    default:
+		    break;
+      }
+  	}
+  }
 
 	return bResult;
 }
@@ -140,189 +212,90 @@ void Desktop::GetDesktopRect(core::rect<s32>& rect)
 }
 
 ///////////////////////////////////////////////////////////////////////
-/*
-bool Desktop::GetDesktopOptionFromPt(s32 x, s32 y, DesktopOption* d)
-{
-	// check if the point is on any of our desktop icons
-	DesktopOptionMap::iterator it = m_mapDesktopOptions.begin();
-	DesktopOptionMap::iterator limit = m_mapDesktopOptions.end();
-	core::rect<s32> iconRect;
-
-	for ( ; it != limit; it++ )
-	{
-		iconRect = it->second.rect;
-		if ( iconRect.isPointInside(position2d<s32>(x, y) ) )
-		{
-      *d = it->second;
-      return true;
-		}
-	}
-
-  return false;
-}
-
-///////////////////////////////////////////////////////////////////////
-
-bool Desktop::GetDesktopOptionByID(FCULONG optionID, DesktopOption& d)
-{
-	DesktopOptionMap::iterator it = m_mapDesktopOptions.begin();
-	DesktopOptionMap::iterator limit = m_mapDesktopOptions.end();
-
-	for ( ; it != limit; it++ )
-	{
-		if ( it->second.optionID == optionID )
-		{
-			d = it->second;
-			return true;
-		}
-	}
-
-	return false;
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void Desktop::HighlightDesktopOption(FCULONG optionID, bool bHighlight)
-{
-	DesktopOptionMap::iterator it = m_mapDesktopOptions.begin();
-	DesktopOptionMap::iterator limit = m_mapDesktopOptions.end();
-
-	for ( ; it != limit; it++ )
-	{
-		if ( it->second.optionID == optionID )
-		{
-			it->second.isHighlighted = bHighlight;
-		}
-		else
-		{
-			if ( bHighlight )
-				it->second.isHighlighted = false;
-		}
-	}
-
-	if ( it != m_mapDesktopOptions.end() )
-	{
-		it->second.isHighlighted = bHighlight;
-	}
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void Desktop::ClearAllHighlights()
-{
-  DesktopOptionMap::iterator it = m_mapDesktopOptions.begin();
-  DesktopOptionMap::iterator limit = m_mapDesktopOptions.end();
-
-  for ( ; it != limit; it++ )
-  {
-    it->second.isHighlighted = false;
-  }
-}
-*/
-///////////////////////////////////////////////////////////////////////
 
 bool Desktop::OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost)
 {
   bool bResult = true;
-/*
-	DesktopOptionMap::iterator it = m_mapDesktopOptions.find(optionID);
+  DesktopIconMap::iterator it = m_mapDesktopIcons.find(optionID);
+  InGameAppWindow* pAppWnd = NULL;
 
-	if ( it != m_mapDesktopOptions.end() )
-	{
-		DesktopOption option = it->second;
-		InGameAppWindow* pAppWnd = NULL;
-		
-		switch ( option.type )
-		{
-    case  DOT_Forum:
+  if ( it != m_mapDesktopIcons.end() )
+  {
+		// at the moment, we only allow one instance per application type
+    if ( !IsApplicationRunning( it->second->getType() ) )
+    {
+      switch ( it->second->getType() )
       {
-        if ( !IsApplicationRunning(option.type) )
+      case  DOT_Forum:
         {
           ForumWindow* pForum = new ForumWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
 
 					m_mutexApps.Lock();
           if ( pForum->Create( INGAMEAPP_BASE_ID+optionID, optionID, ResourceManager::instance().GetClientString( STR_APP_FORUM_CAPTION ) ) )
           {
+            addChild( pForum->GetGUIWindow() );
             m_arrApps.push_back(pForum);
             if ( m_pAppBar )
               m_pAppBar->setActiveApp( pForum );
           }
 					m_mutexApps.Unlock();
         }
-      }
-      break;
+        break;
 
-    case  DOT_News:
-      {
-        if ( !IsApplicationRunning(option.type) )
+      case  DOT_News:
         {
           m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening News!", L"This will be the news browser app window");
         }
-      }
-      break;
+        break;
 
-    case  DOT_Email:
-      {
-        if ( !IsApplicationRunning(option.type) )
+      case  DOT_Email:
         {
           m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Email!", L"This will be the email app window");
         }
-      }
-      break;
+        break;
 
-		case	 DOT_Console:
-			{
-				// at the moment, we only allow one instance per application type
-				if ( !IsApplicationRunning(option.type) )
-				{
+		  case	 DOT_Console:
+			  {
 					ConsoleWindow* pConsole = new ConsoleWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
 
 					m_mutexApps.Lock();
           if ( pConsole->Create(INGAMEAPP_BASE_ID+optionID, optionID, ResourceManager::instance().GetClientString(STR_APP_CONSOLE_CAPTION) ) )
 					{
+            addChild( pConsole->GetGUIWindow() );
 						m_arrApps.push_back(pConsole);
             if ( m_pAppBar )
               m_pAppBar->setActiveApp( pConsole );
 					}
 					m_mutexApps.Unlock();
-				}				
-			}
-			break;
+			  }
+			  break;
 
-    case  DOT_Bank:
-      {
-        if ( !IsApplicationRunning(option.type) )
+      case  DOT_Bank:
         {
           m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Bank!", L"This will be the banking app window");
         }
-      }
-      break;
+        break;
 
-    case  DOT_Chat:
-      {
-        if ( !IsApplicationRunning(option.type) )
+      case  DOT_Chat:
         {
           m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Chat!", L"This will be the chatting app window");
         }
-      }
-      break;
+        break;
 
-    case  DOT_HackingTools:
-      {
-        if ( !IsApplicationRunning(option.type) )
+      case  DOT_HackingTools:
         {
           m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Hacking Toolkit!", L"This will be the hacking toolkit app window");
         }
-      }
-      break;
+        break;
 
-		default:
-			break;
-		}
-	}
-	else
-		bResult = false;
-*/
+		  default:
+			  break;
+
+      }
+    }
+
+  }
+
   return bResult;
 }
 
@@ -353,71 +326,6 @@ bool Desktop::IsApplicationRunning(FCUINT appType)
 bool Desktop::OnGUIEvent(SEvent::SGUIEvent event)
 {
 	bool bHandled = false;
-
-	switch ( event.EventType )
-	{
-  case  EGET_ELEMENT_FOCUSED:
-    {
-      s32 elemID = event.Caller->getID();
-
-      switch ( elemID )
-      {
-      case  INGAMEAPP_BASE_ID+DOT_Forum:
-      case  INGAMEAPP_BASE_ID+DOT_News:
-      case  INGAMEAPP_BASE_ID+DOT_Email:
-      case  INGAMEAPP_BASE_ID+DOT_Console:
-      case  INGAMEAPP_BASE_ID+DOT_Bank:
-      case  INGAMEAPP_BASE_ID+DOT_Chat:
-      case  INGAMEAPP_BASE_ID+DOT_HackingTools:
-        {
-          // an application has been activated...
-          OnApplicationActivated( this->GetAppWindowByType(elemID-INGAMEAPP_BASE_ID) );
-        }
-        break;
-
-      default:
-        break;
-      }
-    }
-    break;
-
-	case	EGET_ELEMENT_CLOSED:
-		{
-			IGUIElement* pElem = event.Caller;
-			switch ( pElem->getType() )
-			{
-			case	EGUIET_WINDOW:
-				{
-					InGameAppWindow* pWnd = NULL;
-
-					m_mutexApps.Lock();
-					AppWindowVector::iterator it = m_arrApps.begin();
-					while ( it != m_arrApps.end() )
-					{
-						if ( (*it)->GetGUIWindow() == pElem )
-						{
-							pWnd = (*it);
-							m_arrApps.erase(it);
-              if ( m_pAppBar )
-                m_pAppBar->setActiveApp(NULL);
-							delete pWnd;
-							break;
-						}
-						it++;
-					}
-					m_mutexApps.Unlock();
-				}
-				break;
-
-			default:
-				break;
-			}
-		}
-		break;
-
-	default:
-		break;
-	}
 
 	return bHandled;
 }
@@ -483,6 +391,15 @@ void Desktop::OnDesktopIconSelected(DesktopIcon* pIcon)
 
 ///////////////////////////////////////////////////////////////////////
 
+void Desktop::OnDesktopIconActivated(DesktopIcon* pIcon)
+{
+	// fire an event to the controller
+	FCViewEvent e(VE_DesktopOptionActivated, pIcon->getID()-DESKTOPICON_BASE_ID);
+	m_owner.GetContainer()->GetController()->OnViewEvent(e);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void Desktop::OnApplicationActivated(InGameAppWindow* pApp)
 {
   if ( !pApp )
@@ -514,6 +431,8 @@ void Desktop::UpdateDesktopOptions()
     ss.str(L"");
     if ( pIcon )
     {
+      // set the application type that this icon represents
+      pIcon->setType( it->second.type );
       // set the font
       pIcon->setFont(m_pFontCourier);
 			// determine which graphic file the icon should be using

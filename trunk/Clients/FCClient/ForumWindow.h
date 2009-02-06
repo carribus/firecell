@@ -4,6 +4,7 @@
 #include <string>
 #include "FCModel.h"
 #include "InGameAppWindow.h"
+#include "GUIForumCatBrowser.h"
 
 class ForumWindow : public InGameAppWindow
 {
@@ -17,7 +18,16 @@ public:
 
 private:
 
+  /*
+   *  Private Methods
+   */
+  void RequestForumCategoryRefresh();
+
+  /*
+   *  Private Members
+   */
   IrrlichtDevice*         m_pDevice;
+  GUIForumCatBrowser*     m_pForumCatBrowser;
 };
 
 #endif//_FORUMWINDOW_H_

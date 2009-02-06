@@ -22,6 +22,7 @@
 #include "../../common/protocol/fcprotocol.h"
 #include "../common/ResourceManager.h"
 #include "Settings.h"
+#include "ForumModel.h"
 #include "FCModel.h"
 
 FCModel* FCModel::m_pThis = NULL;
@@ -316,6 +317,9 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
 		}
 		break;
 
+  /*
+   *  Console responses
+   */
 	case	FCMSG_CON_GET_FS_INFO:
 		{
 			bHandled = OnResponseConsoleGetFileSystemInfo(pPkt, pSocket);
@@ -327,6 +331,15 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
 			bHandled = OnResponseConsoleCommand(pPkt, pSocket);
 		}
 		break;
+
+  /*
+   *  Forum Responses
+   */
+  case  FCMSG_FORUM_GET_CATEGORIES:
+    {
+      bHandled = OnResponseForumGetCategories(pPkt, pSocket);
+    }
+    break;
 
   default:
 
@@ -673,6 +686,34 @@ bool FCModel::OnResponseConsoleCommand(PEPacket* pPkt, BaseSocket* pSocket)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool FCModel::OnResponseForumGetCategories(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_FORUM_GET_CATEGORIES_RESP* d;
+  size_t dataLen;
+  ForumModel* pForum = ForumModel::instance();
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  d = (__FCPKT_FORUM_GET_CATEGORIES_RESP*) new FCBYTE[ dataLen ];
+  pPkt->GetField("data", d, dataLen);
+
+  for ( FCSHORT i = 0; i < d->category_count; i++ )
+  {
+    pForum->addCategory( d->categories[i].category_id,
+                         d->categories[i].parent_id,
+                         d->categories[i].order,
+                         d->categories[i].name,
+                         d->categories[i].desc );
+  }
+
+  FireEvent(FCME_Forum_CategoriesReceived, (void*)ForumModel::instance());
+
+  delete [] (FCBYTE*)d;
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCModel::OnError(PEPacket* pPkt, BaseSocket* pSocket)
 {
   if ( !pPkt || !pSocket )
@@ -859,6 +900,13 @@ void FCModel::ConsoleRefresh()
 void FCModel::ConsoleCommandIssued(string cmd, string curdir)
 {
 	m_server.SendConsoleCommand(curdir, cmd);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::ForumGetCategories()
+{
+  m_server.RequestForumCategories( m_pCharacter->GetID() );
 }
 
 ///////////////////////////////////////////////////////////////////////

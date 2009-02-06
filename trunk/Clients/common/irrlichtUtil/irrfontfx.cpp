@@ -7,6 +7,9 @@ namespace gui
 
 void drawStrokedFont(IGUIFont* pFont, const wchar_t* text, const SColor& strokeCol, const SColor& textCol, const rect<s32>& rect, bool hcenter, bool vcenter)
 {
+  if ( !pFont )
+    return;
+
 	core::rect<s32> tRect = rect;
 	struct offset_values
 	{
@@ -21,7 +24,6 @@ void drawStrokedFont(IGUIFont* pFont, const wchar_t* text, const SColor& strokeC
 		tRect.UpperLeftCorner.X += offsets[i].xOff; tRect.UpperLeftCorner.Y += offsets[i].yOff;
 		tRect.LowerRightCorner.X += offsets[i].xOff; tRect.UpperLeftCorner.Y += offsets[i].yOff;
 		pFont->draw( text, tRect, strokeCol, hcenter, vcenter, &tRect);
-
 	}
 
 	// draw the white text
