@@ -183,6 +183,9 @@
 				RelativePath="..\common\irrlichtUtil\irrfontfx.cpp">
 			</File>
 			<File
+				RelativePath=".\irrSingleton.cpp">
+			</File>
+			<File
 				RelativePath="..\..\common\PacketExtractor.cpp">
 			</File>
 			<File
@@ -297,6 +300,9 @@
 			</File>
 			<File
 				RelativePath="..\common\irrlichtUtil\irrfontfx.h">
+			</File>
+			<File
+				RelativePath=".\irrSingleton.h">
 			</File>
 			<File
 				RelativePath=".\IViewLogic.h">

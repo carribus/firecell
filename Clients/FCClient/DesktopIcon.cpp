@@ -1,4 +1,5 @@
 #include "../common/irrlichtUtil/irrfontfx.h"
+#include "irrSingleton.h"
 #include "DesktopIcon.h"
 
 DesktopIcon::DesktopIcon(IDesktop* pDesktop, IGUIEnvironment* env, IGUIElement* pParent, const wchar_t* text, s32 id)
