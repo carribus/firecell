@@ -476,6 +476,7 @@ struct __FCPKT_FORUM_GET_THREADS
 struct __FCPKT_FORUM_GET_THREADS_RESP
 {
 	FCULONG thread_count;
+	FCULONG category_id;
 	struct thread_data
 	{
 		FCULONG thread_id;

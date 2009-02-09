@@ -173,6 +173,9 @@
 				RelativePath=".\ForumModel.cpp">
 			</File>
 			<File
+				RelativePath=".\ForumThread.cpp">
+			</File>
+			<File
 				RelativePath=".\ForumWindow.cpp">
 			</File>
 			<File
@@ -293,6 +296,9 @@
 			</File>
 			<File
 				RelativePath=".\ForumModel.h">
+			</File>
+			<File
+				RelativePath=".\ForumThread.h">
 			</File>
 			<File
 				RelativePath=".\ForumWindow.h">

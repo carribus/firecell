@@ -17,7 +17,8 @@ enum e_FCViewEventType
 	VE_ConRefresh,
 	VE_ConCommandIssued,
   /* Forum Events */
-  VE_ForumRefreshCategories
+  VE_ForumRefreshCategories,
+	VE_ForumCategorySelected
 };
 
 /////////////////////////////////////////////////////////////////

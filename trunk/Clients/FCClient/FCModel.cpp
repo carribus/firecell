@@ -341,6 +341,12 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+	case	FCMSG_FORUM_GET_THREADS:
+		{
+			bHandled = OnResponseForumGetThreads(pPkt, pSocket);
+		}
+		break;
+
   default:
 
     if ( !bHandled )
@@ -688,7 +694,7 @@ bool FCModel::OnResponseConsoleCommand(PEPacket* pPkt, BaseSocket* pSocket)
 
 bool FCModel::OnResponseForumGetCategories(PEPacket* pPkt, BaseSocket* pSocket)
 {
-  __FCPKT_FORUM_GET_CATEGORIES_RESP* d;
+  __FCPKT_FORUM_GET_CATEGORIES_RESP* d = NULL;
   size_t dataLen;
   ForumModel* pForum = ForumModel::instance();
 
@@ -710,6 +716,41 @@ bool FCModel::OnResponseForumGetCategories(PEPacket* pPkt, BaseSocket* pSocket)
   delete [] (FCBYTE*)d;
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseForumGetThreads(PEPacket* pPkt, BaseSocket* pSocket)
+{
+	__FCPKT_FORUM_GET_THREADS_RESP* d = NULL;
+  size_t dataLen;
+  ForumModel* pForum = ForumModel::instance();
+	ForumCategory* pCat = NULL;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  d = (__FCPKT_FORUM_GET_THREADS_RESP*) new FCBYTE[ dataLen ];
+  pPkt->GetField("data", d, dataLen);
+
+	if ( (pCat = pForum->getCategoryByID( d->category_id )) )
+	{
+		for ( FCULONG i = 0; i < d->thread_count; i++ )
+		{
+			pCat->addThread(d->threads[i].thread_id,
+											d->threads[i].parent_id,
+											d->threads[i].order,
+											d->threads[i].title,
+											d->threads[i].author_id,
+											d->threads[i].author_name,
+											d->threads[i].date_created,
+											d->threads[i].mission_id);
+		}
+
+		FireEvent(FCME_Forum_CategoryThreadsReceived, (void*)ForumModel::instance());
+	}
+
+	delete [] (FCBYTE*)d;
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -907,6 +948,13 @@ void FCModel::ConsoleCommandIssued(string cmd, string curdir)
 void FCModel::ForumGetCategories()
 {
   m_server.RequestForumCategories( m_pCharacter->GetID() );
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::ForumGetThreads(FCULONG category_id)
+{
+	m_server.RequestForumThreads(category_id);
 }
 
 ///////////////////////////////////////////////////////////////////////

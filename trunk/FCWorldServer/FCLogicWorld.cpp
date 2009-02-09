@@ -592,7 +592,7 @@ void FCLogicWorld::SendForumCategories(vector<ForumCategory*>& categories, Route
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCLogicWorld::SendForumThreads(vector<ForumPost>& threads, RouterSocket* pRouter, FCSOCKET clientSocket)
+void FCLogicWorld::SendForumThreads(FCULONG category_id, vector<ForumPost>& threads, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
 	PEPacket pkt;
 	__FCPKT_FORUM_GET_THREADS_RESP* d;
@@ -602,6 +602,7 @@ void FCLogicWorld::SendForumThreads(vector<ForumPost>& threads, RouterSocket* pR
 	d = (__FCPKT_FORUM_GET_THREADS_RESP*) new FCBYTE[ pktLen ];
 	memset(d, 0, pktLen);
 	d->thread_count = (FCSHORT)threadCount;
+	d->category_id = category_id;
 
 	vector<ForumPost>::iterator it = threads.begin();
 
@@ -996,7 +997,7 @@ bool FCLogicWorld::OnCommandForumGetThreads(PEPacket* pPkt, RouterSocket* pSocke
 		vector<ForumPost> target;
 		m_forum.GetForumThreads( d.category_id, target );
 
-		SendForumThreads(target, pSocket, clientSocket);
+		SendForumThreads(d.category_id, target, pSocket, clientSocket);
   }
 
   return true;
