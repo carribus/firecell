@@ -68,9 +68,22 @@ bool ForumWindow::OnCategoriesReceived(ForumModel* pModel)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool ForumWindow::OnCategoryThreadsReceived(FCULONG category_id)
+{
+  if ( !m_pModel )
+    return false;
+
+  m_pForumCatBrowser->updateCategoryThreads(category_id);
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void ForumWindow::OnCategorySelected(FCULONG category_id)
 {
 	SetWaitingForResponse(true);
+
 	FCViewEvent e(VE_ForumCategorySelected, (long long)category_id);
 	m_pController->OnViewEvent(e);
 }

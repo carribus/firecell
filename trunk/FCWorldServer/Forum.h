@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "../common/fctypes.h"
+#include "../common/PThreadMutex.h"
 #include "ForumCategory.h"
 #include "Player.h"
 
@@ -25,6 +26,7 @@ public:
 
 private:
 
+  PThreadMutex                m_mutexCategories;
 	vector<ForumCategory*>			m_categories;
 };
 

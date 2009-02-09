@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "../common/fctypes.h"
+#include "../common/PThreadMutex.h"
 #include "ForumPost.h"
 
 using namespace std;
@@ -13,11 +14,13 @@ class ForumCategory
 public:
 	ForumCategory()
 		: m_id(0), m_parentID(0), m_accountTypeRequired(0), m_minLevel(0), m_maxLevel(0)
+    , m_mutexPosts(true)
 	{
 	}
 
 	~ForumCategory()
 	{
+    m_mutexPosts.Lock();
 		PostsVector::iterator it = m_posts.begin();
 
 		while ( it != m_posts.end() )
@@ -25,6 +28,7 @@ public:
 			delete (*it);
 			it++;
 		}
+    m_mutexPosts.Unlock();
 	}
 
 	size_t AddForumPost(ForumPost* pPost)
@@ -36,8 +40,10 @@ public:
 
 		if ( pPost->GetParentID() == 0 )
 		{
+      m_mutexPosts.Lock();
 			m_posts.push_back(pPost);
 			result = m_posts.size();
+      m_mutexPosts.Unlock();
 		}
 		else
 		{
@@ -54,19 +60,26 @@ public:
 
 	ForumPost* GetPostByID(FCULONG id)
 	{
+    m_mutexPosts.Lock();
 		vector<ForumPost*>::iterator it = m_posts.begin();
 
 		while ( it != m_posts.end() )
 		{
 			if ( (*it)->GetID() == id )
+      {
+        m_mutexPosts.Unlock();
 				return (*it);
+      }
 		}
+
+    m_mutexPosts.Unlock();
 
 		return NULL;
 	}
 
 	size_t GetForumPosts(vector<ForumPost>& target)
 	{
+    m_mutexPosts.Lock();
 		PostsVector::iterator it = m_posts.begin();
 		ForumPost* pPost = NULL;
 
@@ -77,6 +90,7 @@ public:
 			it++;
 		}
 
+    m_mutexPosts.Unlock();
 		return target.size();
 	}
 
@@ -109,6 +123,7 @@ private:
 	FCULONG						m_minLevel;
 	FCULONG						m_maxLevel;
 
+  PThreadMutex      m_mutexPosts;
 	typedef vector<ForumPost*> PostsVector;
 	PostsVector				m_posts;
 };

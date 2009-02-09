@@ -21,6 +21,11 @@ public:
 	 */
 	bool OnCategoriesReceived(ForumModel* pModel);
 
+  /**
+   *  @brief Event handler for when threads for a specific category have been received from the server
+   */
+  bool OnCategoryThreadsReceived(FCULONG category_id);
+
 	/*
 	 *	IForumCatBrowserSink implementation
 	 */

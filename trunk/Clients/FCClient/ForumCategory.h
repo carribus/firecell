@@ -21,6 +21,7 @@ public:
 
 	bool addThread(FCULONG thread_id, FCULONG parent_id, FCULONG order, std::string title, FCULONG author_id,	std::string author_name, std::string date_created, FCULONG mission_id);
 	ForumThread* getThread(FCULONG thread_id);
+  const ForumThreadMap& getThreads()              { return m_mapThreads; }      
 
 	FCULONG getID()																	{ return m_id; }
 	FCULONG getParentID()														{ return m_parentID; }

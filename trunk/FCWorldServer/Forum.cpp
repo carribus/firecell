@@ -2,6 +2,7 @@
 #include "Forum.h"
 
 Forum::Forum(void)
+: m_mutexCategories(true)
 {
 }
 
@@ -29,7 +30,9 @@ size_t Forum::AddCategory(FCULONG id, FCULONG parentID, FCULONG order, string na
 		pCat->SetMinLevel(minLevel);
 		pCat->SetMaxLevel(maxLevel);
 
+    m_mutexCategories.Lock();
 		m_categories.push_back(pCat);
+    m_mutexCategories.Unlock();
 	}
 
 	return m_categories.size();
@@ -52,6 +55,7 @@ size_t Forum::GetCategoriesForPlayer(const Player* pPlayer, vector<ForumCategory
 	size_t count = 0;
 	ForumCategory* pCat = NULL;
 
+  m_mutexCategories.Lock();
 	// Enumerate all categories that the player can see and return them in target
 	count = m_categories.size();
 	for ( size_t i = 0; i < count; i++ )
@@ -65,6 +69,7 @@ size_t Forum::GetCategoriesForPlayer(const Player* pPlayer, vector<ForumCategory
 			target.push_back(pCat);
 		}
 	}
+  m_mutexCategories.Unlock();
 
 	return target.size();
 }
@@ -73,14 +78,21 @@ size_t Forum::GetCategoriesForPlayer(const Player* pPlayer, vector<ForumCategory
 
 ForumCategory* Forum::GetCategoryByID(FCULONG id)
 {
+  m_mutexCategories.Lock();
+
 	vector<ForumCategory*>::iterator it = m_categories.begin();
 
 	while ( it != m_categories.end() )
 	{
 		if ( (*it)->GetID() == id )
+    {
+      m_mutexCategories.Unlock();
 			return *it;
+    }
 		it++;
 	}
+
+  m_mutexCategories.Unlock();
 
 	return NULL;
 }
