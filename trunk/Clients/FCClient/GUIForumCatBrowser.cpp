@@ -1,11 +1,16 @@
 #include <sstream>
+#include "clientstrings.h"
+#include "../common/ResourceManager.h"
 #include "irrSingleton.h"
 #include "GUIForumCatBrowser.h"
 
 #define FORUM_SCROLLBAR_WIDTH				20
 #define FORUM_HORZ_INDENT_SIZE      20
 
-#define FORUM_CATITEM_HEIGHT				30
+#define FORUM_HEADER_HEIGHT         30
+#define FORUM_CATVIEW_THREADCOUNT_WIDTH   125
+
+#define FORUM_CATITEM_HEIGHT				55
 #define FORUM_CATITEM_PADDING_LEFT	15
 
 #define FORUM_THREADITEM_HEIGHT     25
@@ -20,6 +25,7 @@ GUIForumCatBrowser::GUIForumCatBrowser(IGUIEnvironment* environment, core::rect<
 , m_backColor(backColor)
 , m_textColor(textColor)
 , m_currentCategory(NULL)
+, m_pFontDesc(NULL)
 {
 	core::rect<s32> sbRect = rect;
 
@@ -34,12 +40,17 @@ GUIForumCatBrowser::GUIForumCatBrowser(IGUIEnvironment* environment, core::rect<
 	pSB->setVisible(true);
 
 	AbsoluteClippingRect.LowerRightCorner.X -= FORUM_SCROLLBAR_WIDTH;
+
+  // create the description font
+  m_pFontDesc = Environment->getFont("./clientdata/fonts/fontlucidaconsole_8px.xml");
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 GUIForumCatBrowser::~GUIForumCatBrowser(void)
 {
+  if ( m_pFontDesc )
+    m_pFontDesc->drop();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -87,6 +98,9 @@ void GUIForumCatBrowser::updateCategoryThreads(FCULONG category_id)
 
 void GUIForumCatBrowser::draw()
 {
+  if ( !IsVisible )
+    return;
+
   IVideoDriver* pVideo = Environment->getVideoDriver();
 
   pVideo->draw2DRectangle( AbsoluteRect, m_backColor, m_backColor, m_backColor, m_backColor );
@@ -98,6 +112,7 @@ void GUIForumCatBrowser::draw()
 	CategoryVector::iterator limit = m_categories.end();
 
 	// create the template rectangle
+  cRect.UpperLeftCorner.Y += FORUM_HEADER_HEIGHT;
 	cRect.LowerRightCorner.Y = cRect.UpperLeftCorner.Y + FORUM_CATITEM_HEIGHT;
 
 	for ( ; it != limit; it++ )
@@ -210,7 +225,7 @@ bool GUIForumCatBrowser::OnLButtonDown(const SEvent::SMouseInput& event)
 	m_LButtonLastClick.last_tick = now;
 	m_LButtonLastClick.lastX = event.X;
 	m_LButtonLastClick.lastY = event.Y;
-
+/*
 	// expand/collapse (if possible) the clicked on category
 	std::vector<ForumCatStruct>::iterator it = m_categories.begin();
 	std::vector<ForumCatStruct>::iterator limit = m_categories.end();
@@ -222,6 +237,8 @@ bool GUIForumCatBrowser::OnLButtonDown(const SEvent::SMouseInput& event)
 			it->bExpanded ^= true;
 		}
 	}
+*/
+
   return true;
 }
 
@@ -249,7 +266,7 @@ bool GUIForumCatBrowser::OnLButtonDblClick(const SEvent::SMouseInput& event)
 
 void GUIForumCatBrowser::addCategory(ForumCategory* pCat)
 {
-	ForumCatStruct fcs = { pCat, false, false };
+	ForumCatStruct fcs = { pCat, true, false };
 	m_categories.push_back(fcs);
 
 	const ForumCategoryMap& children = pCat->getChildren();
@@ -266,6 +283,20 @@ void GUIForumCatBrowser::addCategory(ForumCategory* pCat)
 
 void GUIForumCatBrowser::drawHeader(IVideoDriver* pVideo)
 {
+  IGUIFont* pFont = Environment->getSkin()->getFont();
+	rect<s32> hRect = AbsoluteClippingRect;
+  SColor darkRed(128, 255, 0, 0), black(128, 0, 0, 0), white(255, 255, 255, 255);
+  hRect.LowerRightCorner.Y = hRect.UpperLeftCorner.Y + FORUM_HEADER_HEIGHT;
+
+  pVideo->draw2DRectangle( hRect, darkRed, darkRed, black, black, &AbsoluteClippingRect );
+  hRect.UpperLeftCorner.X += FORUM_CATITEM_PADDING_LEFT;
+
+  // draw the first title
+  pFont->draw( ResourceManager::instance().GetClientString( STR_APP_FORUM_HEADER_FORUMCAT ).c_str(), hRect, white, false, true );
+
+  // draw the thread count title
+  hRect.UpperLeftCorner.X = hRect.LowerRightCorner.X - FORUM_CATVIEW_THREADCOUNT_WIDTH;
+  pFont->draw( ResourceManager::instance().GetClientString( STR_APP_FORUM_HEADER_THREADCOUNT ).c_str(), hRect, white, true, true );
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -275,6 +306,7 @@ void GUIForumCatBrowser::drawForumCategory(ForumCatStruct& fcs, rect<s32>& rect,
   IVideoDriver* pVideo = Environment->getVideoDriver();
 	std::wstringstream ss;
 	IGUIFont* pFont = Environment->getSkin()->getFont();
+  SColor darkGrey(255, 64, 64, 64), black(255, 0, 0, 0);
 
 	if ( !pFont )
 		pFont = Environment->getBuiltInFont();
@@ -283,23 +315,39 @@ void GUIForumCatBrowser::drawForumCategory(ForumCatStruct& fcs, rect<s32>& rect,
 	fcs.rect = rect;
 	// do a highlight if needed
 	if ( fcs.bHighlighted )
-		pVideo->draw2DRectangle( rect, SColor(255, 64, 64, 64), SColor(255, 64, 64, 64), SColor(255, 0, 0, 0), SColor(255, 0, 0, 0) );
-/*
-	// draw the rectangle border
-	pVideo->draw2DLine( rect.UpperLeftCorner, position2d<s32>( rect.LowerRightCorner.X, rect.UpperLeftCorner.Y ), m_textColor );
-	pVideo->draw2DLine( position2d<s32>( rect.LowerRightCorner.X, rect.UpperLeftCorner.Y), rect.LowerRightCorner, m_textColor );
-	pVideo->draw2DLine( rect.LowerRightCorner, position2d<s32>( rect.UpperLeftCorner.X, rect.LowerRightCorner.Y ), m_textColor );
-	pVideo->draw2DLine( position2d<s32>( rect.UpperLeftCorner.X, rect.LowerRightCorner.Y ), rect.UpperLeftCorner, m_textColor );
-*/
-	if ( fcs.pCat->getChildren().size() || fcs.pCat->getThreads().size() )
+		pVideo->draw2DRectangle( rect, darkGrey, darkGrey, black, black );
+	// draw lines across the top and bottom of the rectangle
+	pVideo->draw2DLine( position2d<s32>(AbsoluteRect.UpperLeftCorner.X, rect.UpperLeftCorner.Y), position2d<s32>( rect.LowerRightCorner.X, rect.UpperLeftCorner.Y ), m_textColor );
+	pVideo->draw2DLine( rect.LowerRightCorner, position2d<s32>( AbsoluteRect.UpperLeftCorner.X, rect.LowerRightCorner.Y ), m_textColor );
+
+  // draw the expander/collapser icon if needed
+  if ( fcs.pCat->getChildren().size() )
 	{
 		drawExpanderIcon(fcs, level, pVideo, pFont);
 	}
+
+  // pad the item
 	rect.UpperLeftCorner.X += FORUM_CATITEM_PADDING_LEFT + FORUM_EXPANDER_ICON_WIDTH;
 	// draw the text
+  rect.UpperLeftCorner.Y += 10;
 	ss << fcs.pCat->getName().c_str();
-	pFont->draw( ss.str().c_str(), rect, m_textColor, false, true );
+	pFont->draw( ss.str().c_str(), rect, m_textColor, false, false );
 	ss.str(L"");
+  // draw the description
+  rect.UpperLeftCorner.Y += 20;
+  ss << fcs.pCat->getDesc().c_str();
+  m_pFontDesc->draw( ss.str().c_str(), rect, SColor(255, 164, 164, 164), false, false );
+  ss.str(L"");
+  rect.UpperLeftCorner.Y -= 30;
+
+  // draw the thread count
+  core::rect<s32> cntRect( position2d<s32>( rect.LowerRightCorner.X-FORUM_CATVIEW_THREADCOUNT_WIDTH, rect.UpperLeftCorner.Y ),
+                     position2d<s32>( rect.LowerRightCorner.X, rect.LowerRightCorner.Y ));
+
+  pVideo->draw2DLine( cntRect.UpperLeftCorner, position2d<s32>( cntRect.UpperLeftCorner.X, cntRect.LowerRightCorner.Y ), m_textColor );
+  ss << fcs.pCat->getThreadCount();
+  pFont->draw( ss.str().c_str(), cntRect, m_textColor, true, true );
+
 	rect.UpperLeftCorner.X -= FORUM_CATITEM_PADDING_LEFT + FORUM_EXPANDER_ICON_WIDTH;
 	rect.UpperLeftCorner.X = AbsoluteRect.UpperLeftCorner.X + (level+1)*FORUM_HORZ_INDENT_SIZE;
 	rect.UpperLeftCorner.Y += FORUM_CATITEM_HEIGHT;
@@ -308,11 +356,12 @@ void GUIForumCatBrowser::drawForumCategory(ForumCatStruct& fcs, rect<s32>& rect,
 	// if the category is expanded, the draw the children
 	if ( fcs.bExpanded )
 	{
+/*
     // first, lets check if there are any threads in this category...
     const ForumThreadMap& threads = fcs.pCat->getThreads();
     if ( threads.size() )
       drawCategoryThreads(threads, rect);
-
+*/
     // next, try and draw the child categories
 		std::vector<ForumCatStruct>::iterator it = m_categories.begin();
 		std::vector<ForumCatStruct>::iterator limit = m_categories.end();

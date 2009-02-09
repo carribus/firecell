@@ -18,6 +18,8 @@ public:
 	{
 	}
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	~ForumCategory()
 	{
     m_mutexPosts.Lock();
@@ -30,6 +32,8 @@ public:
 		}
     m_mutexPosts.Unlock();
 	}
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	size_t AddForumPost(ForumPost* pPost)
 	{
@@ -58,6 +62,8 @@ public:
 		return result;
 	}
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	ForumPost* GetPostByID(FCULONG id)
 	{
     m_mutexPosts.Lock();
@@ -77,6 +83,8 @@ public:
 		return NULL;
 	}
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	size_t GetForumPosts(vector<ForumPost>& target)
 	{
     m_mutexPosts.Lock();
@@ -94,6 +102,8 @@ public:
 		return target.size();
 	}
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	FCULONG						GetID()												{ return m_id; }
 	FCULONG						GetParentID()									{ return m_parentID; }
 	FCULONG						GetOrder()										{ return m_order; }
@@ -102,6 +112,7 @@ public:
 	FCULONG						GetAccountTypeRequired()			{ return m_accountTypeRequired; }
 	FCULONG						GetMinLevel()									{ return m_minLevel; }
 	FCULONG						GetMaxLevel()									{ return m_maxLevel; }
+  size_t            GetPostCount()                { return m_posts.size(); }
 
 	void							SetID(FCULONG id)							{ m_id = id; }
 	void							SetParentID(FCULONG id)				{ m_parentID = id; }

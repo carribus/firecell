@@ -8,6 +8,7 @@ ForumWindow::ForumWindow(IDesktop* pDesktop, FCController* pController, Irrlicht
 : InGameAppWindow(pDesktop, pController, pDevice->getGUIEnvironment())
 , m_pDevice(pDevice)
 , m_pForumCatBrowser(NULL)
+, m_pForumThreadBrowser(NULL)
 , m_pModel(NULL)
 {
 }
@@ -42,7 +43,14 @@ bool ForumWindow::Create(s32 AppElemID, FCUINT optionID, std::wstring caption)
 	GetClientRect(clientRect);
   m_pForumCatBrowser = new GUIForumCatBrowser(m_pEnv, clientRect, m_pWindow);
 	m_pForumCatBrowser->registerSink(this);
+  m_pForumCatBrowser->setVisible(true);
   m_pForumCatBrowser->drop();
+
+  // create the thread browsing component
+  m_pForumThreadBrowser = new GUIForumThreadBrowser(m_pEnv, clientRect, m_pWindow);
+  m_pForumThreadBrowser->registerSink(this);
+  m_pForumThreadBrowser->setVisible(false);
+  m_pForumThreadBrowser->drop();
 
   RequestForumCategoryRefresh();
 
@@ -82,10 +90,26 @@ bool ForumWindow::OnCategoryThreadsReceived(FCULONG category_id)
 
 void ForumWindow::OnCategorySelected(FCULONG category_id)
 {
-	SetWaitingForResponse(true);
+  ForumCategory* pCat = m_pModel->getCategoryByID(category_id);
+  if ( pCat )
+  {
+    m_pForumCatBrowser->setVisible(false);
+    m_pForumThreadBrowser->setCategory(pCat);
+    m_pForumThreadBrowser->setVisible(true);
 
-	FCViewEvent e(VE_ForumCategorySelected, (long long)category_id);
-	m_pController->OnViewEvent(e);
+    // request the threads for the category from the server
+	  SetWaitingForResponse(true);
+	  FCViewEvent e(VE_ForumCategorySelected, (long long)category_id);
+	  m_pController->OnViewEvent(e);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ForumWindow::OnThreadSelected(FCULONG category_id, FCULONG thread_id)
+{
+  // request the selected thread's details
+  SetWaitingForResponse(true);
 }
 
 ///////////////////////////////////////////////////////////////////////

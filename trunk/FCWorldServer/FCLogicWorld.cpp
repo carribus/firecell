@@ -570,6 +570,7 @@ void FCLogicWorld::SendForumCategories(vector<ForumCategory*>& categories, Route
 		pCat = (*it);
 		d->categories[index].category_id = pCat->GetID();
 		d->categories[index].parent_id = pCat->GetParentID();
+    d->categories[index].thread_count = (FCULONG)pCat->GetPostCount();
 		strncpy( d->categories[index].name, pCat->GetName().c_str(), sizeof(d->categories[index].name) );
 		strncpy( d->categories[index].desc, pCat->GetDescription().c_str(), sizeof(d->categories[index].desc) );
 		it++;
