@@ -43,6 +43,7 @@ public:
 
 	bool OnGUIEvent(SEvent::SGUIEvent event);
   bool OnConsoleEvent(FCModelEvent& event);
+	bool OnForumEvent(FCModelEvent& event);
 
   /*
    *  IDesktop implementation

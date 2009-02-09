@@ -3,7 +3,9 @@
 ForumModel* ForumModel::m_pThis = NULL;
 
 ForumModel::ForumModel(void)
+: m_pRootCat(NULL)
 {
+	m_pRootCat = new ForumCategory(0, 0, 0, "", "");
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -36,9 +38,42 @@ void ForumModel::destroy()
 
 ///////////////////////////////////////////////////////////////////////
 
-ForumCategory* ForumModel::addCategory(FCULONG category_id, FCULONG parent_id, FCULONG order, const std::string& name, const std::string desc)
+ForumCategory* ForumModel::addCategory(FCULONG category_id, FCULONG parent_id, FCULONG order, const std::string& name, const std::string& desc)
 {
-  ForumCategory* pCat = NULL;
+	ForumCategoryMap::iterator it = m_mapForumCategories.find(category_id);
+	ForumCategory* pCat = NULL, *pParent = m_pRootCat;
+
+	// check if we already have the category
+	if ( it == m_mapForumCategories.end() )		
+	{
+		// we need to create the category
+		if ( (pCat = new ForumCategory(category_id, parent_id, order, name, desc)) )
+		{
+			m_mapForumCategories[category_id] = pCat;
+			pParent = getCategoryByID(parent_id);
+			if ( !pParent )
+				pParent = m_pRootCat;
+
+			pParent->addChild(pCat);
+		}
+	}
+	else
+	{
+		// we have the category... 
+		pCat = it->second;
+	}
 
   return pCat;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+ForumCategory* ForumModel::getCategoryByID(FCULONG catID)
+{
+	ForumCategoryMap::iterator it = m_mapForumCategories.find(catID);
+
+	if ( it == m_mapForumCategories.end() )
+		return NULL;
+
+	return it->second;
 }

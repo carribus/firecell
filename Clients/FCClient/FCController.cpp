@@ -147,5 +147,9 @@ void FCController::OnViewEvent(FCViewEvent& event)
   case  VE_ForumRefreshCategories:
     m_pModel->ForumGetCategories();
     break;
+
+	case	VE_ForumCategorySelected:
+		m_pModel->ForumGetThreads( (FCULONG)event.GetData() );
+		break;
 	}
 }

@@ -4,6 +4,7 @@
 #include "FCModel.h"
 #include "FCView.h"
 #include "FCViewEvent.h"
+#include "ForumModel.h"
 #include "../common/ResourceManager.h"
 #include "ViewLogicGame.h"
 #include "Desktop.h"
@@ -371,6 +372,29 @@ bool Desktop::OnConsoleEvent(FCModelEvent& event)
     bResult = false;
 
   return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Desktop::OnForumEvent(FCModelEvent& event)
+{
+	bool bResult = true;
+	ForumWindow* pWnd = (ForumWindow*) GetAppWindowByType( DOT_Forum );
+
+	if ( pWnd )
+	{
+		switch ( event.GetType() )
+		{
+		case	FCME_Forum_CategoriesReceived:
+			bResult = pWnd->OnCategoriesReceived((ForumModel*)event.GetData());
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	return bResult;
 }
 
 ///////////////////////////////////////////////////////////////////////
