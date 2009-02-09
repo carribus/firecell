@@ -30,6 +30,9 @@ public:
 	std::string getName()														{ return m_name; }
 	std::string getDesc()														{ return m_desc; }
 
+	ForumCategory* getParent()											{ return m_pParent; }
+	void setParent(ForumCategory* pParent)					{ m_pParent = pParent; }
+
 private:
 
   FCULONG m_id;
@@ -38,6 +41,7 @@ private:
   FCULONG m_threadCount;
   std::string m_name;
   std::string m_desc;
+	ForumCategory* m_pParent;
 
 	ForumCategoryMap m_mapCategories;
 	ForumThreadMap	m_mapThreads;
