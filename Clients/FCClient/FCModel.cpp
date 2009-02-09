@@ -709,6 +709,8 @@ bool FCModel::OnResponseForumGetCategories(PEPacket* pPkt, BaseSocket* pSocket)
                          d->categories[i].order,
                          d->categories[i].name,
                          d->categories[i].desc );
+    // request the threads for this category...
+    ForumGetThreads( d->categories[i].category_id );
   }
 
   FireEvent(FCME_Forum_CategoriesReceived, (void*)ForumModel::instance());
@@ -745,7 +747,7 @@ bool FCModel::OnResponseForumGetThreads(PEPacket* pPkt, BaseSocket* pSocket)
 											d->threads[i].mission_id);
 		}
 
-		FireEvent(FCME_Forum_CategoryThreadsReceived, (void*)ForumModel::instance());
+		FireEvent(FCME_Forum_CategoryThreadsReceived, (void*)pCat->getID());
 	}
 
 	delete [] (FCBYTE*)d;

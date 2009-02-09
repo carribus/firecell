@@ -178,6 +178,12 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
 			}
 			break;
 
+    case  FCME_Forum_CategoryThreadsReceived:
+      {
+        m_pDesktop->OnForumEvent(event);
+      }
+      break;
+
     default:
       break;
     }

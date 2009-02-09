@@ -60,7 +60,7 @@ void ServiceLogicBase::OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nL
 
   pRouter->AddData(pData, (FCULONG)nLen);
 
-  if ( (pPkt = m_pktExtractor.Extract( (const char*)(FCBYTE*)stream, offset, (size_t)stream.GetLength() )) )
+  while ( (pPkt = m_pktExtractor.Extract( (const char*)(FCBYTE*)stream, offset, (size_t)stream.GetLength() )) )
   {
     pPkt->DebugDump();
     stream.Delete(0, (unsigned long)offset);

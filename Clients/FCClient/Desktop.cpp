@@ -389,6 +389,10 @@ bool Desktop::OnForumEvent(FCModelEvent& event)
 			bResult = pWnd->OnCategoriesReceived((ForumModel*)event.GetData());
 			break;
 
+    case  FCME_Forum_CategoryThreadsReceived:
+      bResult = pWnd->OnCategoryThreadsReceived((FCULONG)event.GetData());
+      break;
+
 		default:
 			break;
 		}

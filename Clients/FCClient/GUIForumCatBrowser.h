@@ -25,6 +25,7 @@ public:
 
 	void registerSink(IForumCatBrowserSink* pSink)									{ m_pSink = pSink; }
 	void updateCategories();
+  void updateCategoryThreads(FCULONG category_id);
 
   /*
    *  IGUIElement overrides
@@ -51,6 +52,7 @@ private:
 	void drawHeader(IVideoDriver* pVideo);
 	void drawForumCategory(ForumCatStruct& fcs, rect<s32>& rect, s32 level = 0);
 	void drawExpanderIcon(ForumCatStruct& fcs, s32 level, IVideoDriver* pVideo, IGUIFont* pFont);
+  void drawCategoryThreads(const ForumThreadMap& threads, rect<s32>& rect);
 
 	IForumCatBrowserSink*	m_pSink;
 
