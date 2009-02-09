@@ -1,9 +1,10 @@
 #include "ForumCategory.h"
 
-ForumCategory::ForumCategory(FCULONG id, FCULONG parent_id, FCULONG order, const std::string& name, const std::string& desc)
+ForumCategory::ForumCategory(FCULONG id, FCULONG parent_id, FCULONG order, FCULONG thread_count, const std::string& name, const std::string& desc)
 : m_id(id)
 , m_parentID(parent_id)
 , m_order(order)
+, m_threadCount(thread_count)
 , m_name(name)
 , m_desc(desc)
 {

@@ -20,7 +20,7 @@ struct IForumCatBrowserSink
 class GUIForumCatBrowser : public IGUIElement
 {
 public:
-  GUIForumCatBrowser(IGUIEnvironment* environment, core::rect<s32>& rect, IGUIElement* pParent = 0, SColor backColor = SColor(255, 0, 0, 0), SColor textColor = SColor(255, 128, 128, 128), s32 id = -1);
+  GUIForumCatBrowser(IGUIEnvironment* environment, core::rect<s32>& rect, IGUIElement* pParent = 0, SColor backColor = SColor(255, 0, 0, 0), SColor textColor = SColor(255, 255, 255, 255), s32 id = -1);
   ~GUIForumCatBrowser(void);
 
 	void registerSink(IForumCatBrowserSink* pSink)									{ m_pSink = pSink; }
@@ -59,6 +59,7 @@ private:
 	ForumModel*				m_pModel;
   SColor            m_backColor;
   SColor            m_textColor;
+  IGUIFont*         m_pFontDesc;
 	ForumCatStruct*		m_currentCategory;
 	position2d<s32>		m_offset;
 

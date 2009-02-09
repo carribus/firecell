@@ -6,9 +6,11 @@
 #include "ForumModel.h"
 #include "InGameAppWindow.h"
 #include "GUIForumCatBrowser.h"
+#include "GUIForumThreadBrowser.h"
 
 class ForumWindow : public InGameAppWindow
 									, public IForumCatBrowserSink
+                  , public IForumThreadBrowserSink
 {
 public:
   ForumWindow(IDesktop* pDesktop, FCController* pController, IrrlichtDevice* pDevice);
@@ -31,6 +33,11 @@ public:
 	 */
 	void OnCategorySelected(FCULONG category_id);
 
+  /*
+   *  IForumThreadBrowserSink implementation
+   */
+  void OnThreadSelected(FCULONG category_id, FCULONG thread_id);
+
   const wchar_t* getAppName()                             { return L"Forum Browser"; }
 
 private:
@@ -45,6 +52,7 @@ private:
    */
   IrrlichtDevice*         m_pDevice;
   GUIForumCatBrowser*     m_pForumCatBrowser;
+  GUIForumThreadBrowser*  m_pForumThreadBrowser;
 
 	ForumModel*							m_pModel;
 };

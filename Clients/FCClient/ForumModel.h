@@ -33,7 +33,7 @@ public:
 	 *	If the category already exists (based on category_id), the existing ForumCategory object will be fetched and 
 	 *	then returned as the result. If the ForumCategory is created, it will be populated with the data and returned
 	 */
-  ForumCategory* addCategory(FCULONG category_id, FCULONG parent_id, FCULONG order, const std::string& name, const std::string& desc);
+  ForumCategory* addCategory(FCULONG category_id, FCULONG parent_id, FCULONG order, FCULONG threadCount, const std::string& name, const std::string& desc);
 
 	ForumCategory* getCategoryByID(FCULONG catID);
 	ForumCategory* getRootCategory()										{ return m_pRootCat; }

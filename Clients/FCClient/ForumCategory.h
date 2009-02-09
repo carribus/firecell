@@ -13,7 +13,7 @@ typedef std::map<FCULONG, ForumThread*> ForumThreadMap;
 class ForumCategory
 {
 public:
-  ForumCategory(FCULONG id, FCULONG parent_id, FCULONG order, const std::string& name, const std::string& desc);
+  ForumCategory(FCULONG id, FCULONG parent_id, FCULONG order, FCULONG thread_count, const std::string& name, const std::string& desc);
   ~ForumCategory(void);
 
 	bool addChild(ForumCategory* pCategory);
@@ -26,6 +26,7 @@ public:
 	FCULONG getID()																	{ return m_id; }
 	FCULONG getParentID()														{ return m_parentID; }
 	FCULONG getOrder()															{ return m_order; }
+  FCULONG getThreadCount()                        { return m_threadCount; }
 	std::string getName()														{ return m_name; }
 	std::string getDesc()														{ return m_desc; }
 
@@ -34,6 +35,7 @@ private:
   FCULONG m_id;
   FCULONG m_parentID;
   FCULONG m_order;
+  FCULONG m_threadCount;
   std::string m_name;
   std::string m_desc;
 

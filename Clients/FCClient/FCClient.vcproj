@@ -188,6 +188,9 @@
 				RelativePath=".\GUIForumCatBrowser.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIForumThreadBrowser.cpp">
+			</File>
+			<File
 				RelativePath=".\InGameAppWindow.cpp">
 			</File>
 			<File
@@ -311,6 +314,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIForumCatBrowser.h">
+			</File>
+			<File
+				RelativePath=".\GUIForumThreadBrowser.h">
 			</File>
 			<File
 				RelativePath=".\IDesktop.h">

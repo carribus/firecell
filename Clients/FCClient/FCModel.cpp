@@ -707,6 +707,7 @@ bool FCModel::OnResponseForumGetCategories(PEPacket* pPkt, BaseSocket* pSocket)
     pForum->addCategory( d->categories[i].category_id,
                          d->categories[i].parent_id,
                          d->categories[i].order,
+                         d->categories[i].thread_count,
                          d->categories[i].name,
                          d->categories[i].desc );
     // request the threads for this category...
