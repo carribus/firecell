@@ -30,7 +30,8 @@ public:
 
 private:
 
-  void drawHeader(IVideoDriver* pVideo);
+	void drawHeader(IVideoDriver* pVideo);
+	void drawThread(ForumThread* pThread, core::rect<s32> rect);
 
   ForumModel*                         m_pModel;
   IForumThreadBrowserSink*            m_pSink;

@@ -60,6 +60,7 @@ private:
   SColor            m_backColor;
   SColor            m_textColor;
   IGUIFont*         m_pFontDesc;
+	IGUIScrollBar*		m_pSB;
 	ForumCatStruct*		m_currentCategory;
 	position2d<s32>		m_offset;
 

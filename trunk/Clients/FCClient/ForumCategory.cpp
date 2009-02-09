@@ -7,6 +7,7 @@ ForumCategory::ForumCategory(FCULONG id, FCULONG parent_id, FCULONG order, FCULO
 , m_threadCount(thread_count)
 , m_name(name)
 , m_desc(desc)
+, m_pParent(NULL)
 {
 }
 
@@ -28,6 +29,7 @@ bool ForumCategory::addChild(ForumCategory* pCategory)
 	if ( it == m_mapCategories.end() )
 	{
 		m_mapCategories[ pCategory->getID() ] = pCategory;
+		pCategory->setParent(this);
 		return true;
 	}
 

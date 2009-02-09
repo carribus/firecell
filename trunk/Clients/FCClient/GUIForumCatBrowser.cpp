@@ -10,7 +10,7 @@
 #define FORUM_HEADER_HEIGHT         30
 #define FORUM_CATVIEW_THREADCOUNT_WIDTH   125
 
-#define FORUM_CATITEM_HEIGHT				55
+#define FORUM_CATITEM_HEIGHT				50
 #define FORUM_CATITEM_PADDING_LEFT	15
 
 #define FORUM_THREADITEM_HEIGHT     25
@@ -26,18 +26,20 @@ GUIForumCatBrowser::GUIForumCatBrowser(IGUIEnvironment* environment, core::rect<
 , m_textColor(textColor)
 , m_currentCategory(NULL)
 , m_pFontDesc(NULL)
+, m_pSB(NULL)
 {
 	core::rect<s32> sbRect = rect;
 
-	sbRect.UpperLeftCorner.Y = 0;
+	sbRect.UpperLeftCorner.Y = FORUM_HEADER_HEIGHT;
 	sbRect.LowerRightCorner.X -= 2;
 	sbRect.UpperLeftCorner.X = sbRect.LowerRightCorner.X - FORUM_SCROLLBAR_WIDTH;
-	sbRect.LowerRightCorner.Y = sbRect.UpperLeftCorner.Y + rect.getHeight();
-	IGUIScrollBar* pSB = environment->addScrollBar(false, sbRect, this);
-	pSB->setMax(0);
-	pSB->setPos(0);
-	pSB->setSubElement(true);
-	pSB->setVisible(true);
+	sbRect.LowerRightCorner.Y = rect.getHeight();
+
+	m_pSB = environment->addScrollBar(false, sbRect, this);
+	m_pSB->setMax(0);
+	m_pSB->setPos(0);
+	m_pSB->setSubElement(true);
+	m_pSB->setVisible(true);
 
 	AbsoluteClippingRect.LowerRightCorner.X -= FORUM_SCROLLBAR_WIDTH;
 
@@ -287,8 +289,9 @@ void GUIForumCatBrowser::drawHeader(IVideoDriver* pVideo)
 	rect<s32> hRect = AbsoluteClippingRect;
   SColor darkRed(128, 255, 0, 0), black(128, 0, 0, 0), white(255, 255, 255, 255);
   hRect.LowerRightCorner.Y = hRect.UpperLeftCorner.Y + FORUM_HEADER_HEIGHT;
+	hRect.LowerRightCorner.X = AbsoluteRect.LowerRightCorner.X;
 
-  pVideo->draw2DRectangle( hRect, darkRed, darkRed, black, black, &AbsoluteClippingRect );
+  pVideo->draw2DRectangle( hRect, darkRed, darkRed, black, black );
   hRect.UpperLeftCorner.X += FORUM_CATITEM_PADDING_LEFT;
 
   // draw the first title
@@ -313,9 +316,10 @@ void GUIForumCatBrowser::drawForumCategory(ForumCatStruct& fcs, rect<s32>& rect,
 
 	// set the item rectangle
 	fcs.rect = rect;
+	fcs.rect.UpperLeftCorner.X = AbsoluteRect.UpperLeftCorner.X;
 	// do a highlight if needed
 	if ( fcs.bHighlighted )
-		pVideo->draw2DRectangle( rect, darkGrey, darkGrey, black, black );
+		pVideo->draw2DRectangle( fcs.rect, darkGrey, darkGrey, black, black );
 	// draw lines across the top and bottom of the rectangle
 	pVideo->draw2DLine( position2d<s32>(AbsoluteRect.UpperLeftCorner.X, rect.UpperLeftCorner.Y), position2d<s32>( rect.LowerRightCorner.X, rect.UpperLeftCorner.Y ), m_textColor );
 	pVideo->draw2DLine( rect.LowerRightCorner, position2d<s32>( AbsoluteRect.UpperLeftCorner.X, rect.LowerRightCorner.Y ), m_textColor );
@@ -348,6 +352,7 @@ void GUIForumCatBrowser::drawForumCategory(ForumCatStruct& fcs, rect<s32>& rect,
   ss << fcs.pCat->getThreadCount();
   pFont->draw( ss.str().c_str(), cntRect, m_textColor, true, true );
 
+	// offset the rectangle downwards
 	rect.UpperLeftCorner.X -= FORUM_CATITEM_PADDING_LEFT + FORUM_EXPANDER_ICON_WIDTH;
 	rect.UpperLeftCorner.X = AbsoluteRect.UpperLeftCorner.X + (level+1)*FORUM_HORZ_INDENT_SIZE;
 	rect.UpperLeftCorner.Y += FORUM_CATITEM_HEIGHT;
@@ -357,12 +362,12 @@ void GUIForumCatBrowser::drawForumCategory(ForumCatStruct& fcs, rect<s32>& rect,
 	if ( fcs.bExpanded )
 	{
 /*
-    // first, lets check if there are any threads in this category...
-    const ForumThreadMap& threads = fcs.pCat->getThreads();
-    if ( threads.size() )
-      drawCategoryThreads(threads, rect);
+		// first, lets check if there are any threads in this category...
+		const ForumThreadMap& threads = fcs.pCat->getThreads();
+		if ( threads.size() )
+			drawCategoryThreads(threads, rect);
 */
-    // next, try and draw the child categories
+		// next, try and draw the child categories
 		std::vector<ForumCatStruct>::iterator it = m_categories.begin();
 		std::vector<ForumCatStruct>::iterator limit = m_categories.end();
 
