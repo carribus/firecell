@@ -52,6 +52,8 @@ bool ForumWindow::Create(s32 AppElemID, FCUINT optionID, std::wstring caption)
   m_pForumThreadBrowser->setVisible(false);
   m_pForumThreadBrowser->drop();
 
+  m_pEnv->setFocus( m_pForumCatBrowser );
+
   RequestForumCategoryRefresh();
 
   return bResult;
@@ -81,7 +83,7 @@ bool ForumWindow::OnCategoryThreadsReceived(FCULONG category_id)
   if ( !m_pModel )
     return false;
 
-  m_pForumCatBrowser->updateCategoryThreads(category_id);
+//  m_pForumCatBrowser->updateCategoryThreads(category_id);
 
   return true;
 }

@@ -25,7 +25,6 @@ public:
 
 	void registerSink(IForumCatBrowserSink* pSink)									{ m_pSink = pSink; }
 	void updateCategories();
-  void updateCategoryThreads(FCULONG category_id);
 
   /*
    *  IGUIElement overrides
@@ -54,6 +53,18 @@ private:
 	void drawExpanderIcon(ForumCatStruct& fcs, s32 level, IVideoDriver* pVideo, IGUIFont* pFont);
   void drawCategoryThreads(const ForumThreadMap& threads, rect<s32>& rect);
 
+  /**
+   *  @brief Checks if drawing to the specified rectangle will cause an overflow.
+   *
+   *  @param rect Target rectangle that drawing will take place in
+   *  @return number of pixels of overflop
+   */
+  u32 checkForOverflow(core::rect<s32> rect);
+
+  void checkHighlights();
+
+  void offsetRect(core::rect<s32>& rect, s32 xOffs, s32 yOffs);
+
 	IForumCatBrowserSink*	m_pSink;
 
 	ForumModel*				m_pModel;
@@ -63,6 +74,10 @@ private:
 	IGUIScrollBar*		m_pSB;
 	ForumCatStruct*		m_currentCategory;
 	position2d<s32>		m_offset;
+  bool              m_bOverflow;
+  u32               m_pixelOverflow;
+  u32               m_pixelUnderflow;
+  position2d<s32>   m_mousePos;
 
 	typedef std::vector<ForumCatStruct> CategoryVector;
 	CategoryVector		m_categories;
