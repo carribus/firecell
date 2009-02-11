@@ -83,7 +83,8 @@ bool ForumWindow::OnCategoryThreadsReceived(FCULONG category_id)
   if ( !m_pModel )
     return false;
 
-//  m_pForumCatBrowser->updateCategoryThreads(category_id);
+  m_pForumThreadBrowser->setModel(m_pModel);
+  m_pForumThreadBrowser->updateCategoryThreads(category_id);
 
   return true;
 }

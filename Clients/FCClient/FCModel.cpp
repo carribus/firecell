@@ -710,8 +710,10 @@ bool FCModel::OnResponseForumGetCategories(PEPacket* pPkt, BaseSocket* pSocket)
                          d->categories[i].thread_count,
                          d->categories[i].name,
                          d->categories[i].desc );
+/*
     // request the threads for this category...
     ForumGetThreads( d->categories[i].category_id );
+*/
   }
 
   FireEvent(FCME_Forum_CategoriesReceived, (void*)ForumModel::instance());

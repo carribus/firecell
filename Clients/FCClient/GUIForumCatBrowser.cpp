@@ -13,8 +13,6 @@
 #define FORUM_CATITEM_HEIGHT				50
 #define FORUM_CATITEM_PADDING_LEFT	15
 
-#define FORUM_THREADITEM_HEIGHT     25
-
 #define FORUM_EXPANDER_ICON_WIDTH		16
 #define FORUM_EXPANDER_ICON_HEIGHT	16
 
@@ -28,6 +26,9 @@ GUIForumCatBrowser::GUIForumCatBrowser(IGUIEnvironment* environment, core::rect<
 , m_pFontDesc(NULL)
 , m_pSB(NULL)
 {
+#ifdef _DEBUG
+  setDebugName("GUIForumCatBrowser");
+#endif//_DEBUG
 	core::rect<s32> sbRect = rect;
 
 	sbRect.UpperLeftCorner.Y = FORUM_HEADER_HEIGHT;
@@ -92,18 +93,14 @@ void GUIForumCatBrowser::draw()
 
   AbsoluteClippingRect.UpperLeftCorner.Y += FORUM_HEADER_HEIGHT;
 
-	rect<s32> cRect = AbsoluteClippingRect;
 	CategoryVector::iterator it = m_categories.begin();
 	CategoryVector::iterator limit = m_categories.end();
-
-	// create the template rectangle
-	cRect.LowerRightCorner.Y = cRect.UpperLeftCorner.Y + FORUM_CATITEM_HEIGHT;
 
 	for ( ; it != limit; it++ )
 	{
 		if ( it->pCat->getParentID() == 0 )
     {
-			drawForumCategory(*it, cRect);
+			drawForumCategory(*it);
     }
 	}
 
@@ -260,6 +257,9 @@ bool GUIForumCatBrowser::OnLButtonDblClick(const SEvent::SMouseInput& event)
 
 void GUIForumCatBrowser::addCategory(ForumCategory* pCat)
 {
+  if ( !pCat )
+    return;
+
 	ForumCatStruct fcs = { pCat, true, false };
 
   if ( m_categories.size() > 0 )
@@ -312,10 +312,11 @@ void GUIForumCatBrowser::drawHeader(IVideoDriver* pVideo)
 
 ///////////////////////////////////////////////////////////////////////
 
-void GUIForumCatBrowser::drawForumCategory(ForumCatStruct& fcs, rect<s32>& rect, s32 level)
+void GUIForumCatBrowser::drawForumCategory(ForumCatStruct& fcs, s32 level)
 {
   IVideoDriver* pVideo = Environment->getVideoDriver();
 	std::wstringstream ss;
+  core::rect<s32> rect;
 	IGUIFont* pFont = Environment->getSkin()->getFont();
   SColor darkGrey(255, 64, 64, 64), black(255, 0, 0, 0);
   u32 overFlow = 0;
@@ -378,12 +379,6 @@ void GUIForumCatBrowser::drawForumCategory(ForumCatStruct& fcs, rect<s32>& rect,
     ss << fcs.pCat->getThreadCount();
     pFont->draw( ss.str().c_str(), cntRect, m_textColor, true, true, &AbsoluteClippingRect );
 
-	  // offset the rectangle downwards
-	  rect.UpperLeftCorner.X -= FORUM_CATITEM_PADDING_LEFT + FORUM_EXPANDER_ICON_WIDTH;
-	  rect.UpperLeftCorner.X = AbsoluteRect.UpperLeftCorner.X + (level+1)*FORUM_HORZ_INDENT_SIZE;
-	  rect.UpperLeftCorner.Y = fcs.rect.LowerRightCorner.Y+m_pixelUnderflow;
-	  rect.LowerRightCorner.Y = rect.UpperLeftCorner.Y + FORUM_CATITEM_HEIGHT;
-
 	  // if the category is expanded, then draw the children
 	  if ( fcs.bExpanded )
 	  {
@@ -394,7 +389,7 @@ void GUIForumCatBrowser::drawForumCategory(ForumCatStruct& fcs, rect<s32>& rect,
 		  for ( ; it != limit; it++ )
 		  {
 			  if ( it->pCat->getParentID() == fcs.pCat->getID() )
-			    drawForumCategory(*it, rect, level+1);
+			    drawForumCategory(*it, level+1);
 		  }
 	  }
     rect.UpperLeftCorner.X = AbsoluteRect.UpperLeftCorner.X + (level)*FORUM_HORZ_INDENT_SIZE;
@@ -412,43 +407,6 @@ void GUIForumCatBrowser::drawExpanderIcon(ForumCatStruct& fcs, s32 level, IVideo
 
 	eRect.UpperLeftCorner.X += FORUM_CATITEM_PADDING_LEFT;
 	pFont->draw( fcs.bExpanded ? L"-" : L"+", eRect, m_textColor, false, true, &AbsoluteClippingRect );
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void GUIForumCatBrowser::drawCategoryThreads(const ForumThreadMap& threads, rect<s32>& rect)
-{
-  IVideoDriver* pVideo = Environment->getVideoDriver();
-	std::wstringstream ss;
-	IGUIFont* pFont = Environment->getSkin()->getFont();
-
-	if ( !pFont )
-		pFont = Environment->getBuiltInFont();
-
-	rect.LowerRightCorner.Y = rect.UpperLeftCorner.Y + FORUM_THREADITEM_HEIGHT;
-
-  ForumThreadMap::const_iterator it = threads.begin();
-  ForumThreadMap::const_iterator limit = threads.end();
-
-  for ( ; it != limit; it++ )
-  {
-	  // draw the rectangle border
-	  pVideo->draw2DLine( rect.UpperLeftCorner, position2d<s32>( rect.LowerRightCorner.X, rect.UpperLeftCorner.Y ), m_textColor );
-	  pVideo->draw2DLine( position2d<s32>( rect.LowerRightCorner.X, rect.UpperLeftCorner.Y), rect.LowerRightCorner, m_textColor );
-	  pVideo->draw2DLine( rect.LowerRightCorner, position2d<s32>( rect.UpperLeftCorner.X, rect.LowerRightCorner.Y ), m_textColor );
-	  pVideo->draw2DLine( position2d<s32>( rect.UpperLeftCorner.X, rect.LowerRightCorner.Y ), rect.UpperLeftCorner, m_textColor );
-
-	  // draw the text
-	  ss << it->second->getTitle().c_str();
-	  pFont->draw( ss.str().c_str(), rect, m_textColor, false, true );
-	  ss.str(L"");
-
-    // move the rect down one item
-    rect.UpperLeftCorner.Y = rect.LowerRightCorner.Y;
-    rect.LowerRightCorner.Y = rect.UpperLeftCorner.Y + FORUM_THREADITEM_HEIGHT;
-  }
-
-	rect.LowerRightCorner.Y = rect.UpperLeftCorner.Y + FORUM_CATITEM_HEIGHT;
 }
 
 ///////////////////////////////////////////////////////////////////////
