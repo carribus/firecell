@@ -349,6 +349,7 @@ void GUIForumCatBrowser::drawForumCategory(ForumCatStruct& fcs, s32 level)
 
     // pad the item
     rect = fcs.rect;
+		rect.UpperLeftCorner.X += level*FORUM_HORZ_INDENT_SIZE;
 	  rect.UpperLeftCorner.X += FORUM_CATITEM_PADDING_LEFT + FORUM_EXPANDER_ICON_WIDTH;
 	  // draw the text
     rect.UpperLeftCorner.Y += 10;

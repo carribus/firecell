@@ -39,10 +39,16 @@ private:
 		rect<s32> rect;
 	};
 
+	void drawOptionBar(IVideoDriver* pVideo);
 	void drawHeader(IVideoDriver* pVideo);
 	void drawThread(const ForumThreadStruct& thread);
 
   void addThread(ForumThread* pThread);
+
+  /**
+   *  @brief Utility function to quickly offset a rectangle's position by a specific XY offset
+   */
+  void offsetRect(core::rect<s32>& rect, s32 xOffs, s32 yOffs);
 
   ForumModel*                         m_pModel;
   IForumThreadBrowserSink*            m_pSink;
@@ -53,6 +59,13 @@ private:
 	typedef std::vector<ForumThreadStruct> ThreadVector;
 	ThreadVector                        m_threads;
 
+	struct ThreadOption
+	{
+		bool bVisible;
+		std::wstring label;
+		core::rect<s32> rectBtn;
+	};
+	ThreadOption											m_optionBtns[4];
 };
 
 #endif//_GUIFORUMTHREADBROWSER_H_
