@@ -5,6 +5,7 @@
 #include "GUIForumThreadBrowser.h"
 
 #define FORUM_SCROLLBAR_WIDTH				20
+#define FORUM_OPTIONBAR_HEIGHT			30
 #define FORUM_HEADER_HEIGHT         30
 #define FORUM_THREAD_ITEM_HEIGHT		45
 
@@ -21,7 +22,7 @@ GUIForumThreadBrowser::GUIForumThreadBrowser(IGUIEnvironment* environment, core:
 #endif//_DEBUG
 	core::rect<s32> sbRect = rect;
 
-	sbRect.UpperLeftCorner.Y = 0;
+	sbRect.UpperLeftCorner.Y = FORUM_HEADER_HEIGHT + FORUM_OPTIONBAR_HEIGHT;
 	sbRect.LowerRightCorner.X -= 2;
 	sbRect.UpperLeftCorner.X = sbRect.LowerRightCorner.X - FORUM_SCROLLBAR_WIDTH;
 	sbRect.LowerRightCorner.Y = sbRect.UpperLeftCorner.Y + rect.getHeight();
@@ -29,6 +30,23 @@ GUIForumThreadBrowser::GUIForumThreadBrowser(IGUIEnvironment* environment, core:
 	pSB->setMax(0);
 	pSB->setSubElement(true);
 	pSB->setVisible(true);
+
+	// create option buttons
+	core::rect<s32> btnRect = AbsoluteRect;
+	btnRect.LowerRightCorner.Y = btnRect.UpperLeftCorner.Y + FORUM_OPTIONBAR_HEIGHT;
+	btnRect.UpperLeftCorner.X += 5;
+	btnRect.UpperLeftCorner.Y += 5;
+	btnRect.LowerRightCorner.X = btnRect.UpperLeftCorner.X + 100;
+	btnRect.LowerRightCorner.Y -= 5;
+
+	m_optionBtns[0].bVisible = true;
+	m_optionBtns[0].rectBtn = btnRect;
+	m_optionBtns[0].label = L"<< Back";
+
+	offsetRect(btnRect, btnRect.getWidth() + 10, 0);
+	m_optionBtns[1].bVisible = true;
+	m_optionBtns[1].rectBtn = btnRect;
+	m_optionBtns[1].label = L"New Topic";
 
 	AbsoluteClippingRect.LowerRightCorner.X -= FORUM_SCROLLBAR_WIDTH;
 }
@@ -72,10 +90,10 @@ void GUIForumThreadBrowser::draw()
   std::wstringstream ss;
 
   pVideo->draw2DRectangle( AbsoluteRect, m_backColor, m_backColor, m_backColor, m_backColor );
+	drawOptionBar(pVideo);
   drawHeader(pVideo);
-//	drawColumnHeaders(pVideo
 	
-  AbsoluteClippingRect.UpperLeftCorner.Y += FORUM_HEADER_HEIGHT;
+  AbsoluteClippingRect.UpperLeftCorner.Y += (FORUM_OPTIONBAR_HEIGHT + FORUM_HEADER_HEIGHT);
 
 	// draw the threads
 	ThreadVector::const_iterator it = m_threads.begin();
@@ -86,9 +104,38 @@ void GUIForumThreadBrowser::draw()
 		drawThread(*it);
 	}
 
-  AbsoluteClippingRect.UpperLeftCorner.Y -= FORUM_HEADER_HEIGHT;
+  AbsoluteClippingRect.UpperLeftCorner.Y -= (FORUM_OPTIONBAR_HEIGHT + FORUM_HEADER_HEIGHT);
 
   IGUIElement::draw();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void GUIForumThreadBrowser::drawOptionBar(IVideoDriver* pVideo)
+{
+	core::rect<s32> bRect = AbsoluteRect,
+									btnRect;
+	SColor darkBlue(128, 0, 0, 255), black(255, 0, 0, 0), blueAlpha(128, 0, 0, 255), white(255, 255, 255, 255);
+
+	bRect.LowerRightCorner.Y = bRect.UpperLeftCorner.Y + FORUM_OPTIONBAR_HEIGHT;
+	pVideo->draw2DRectangle( bRect, blueAlpha, blueAlpha, black, black );
+
+	pVideo->draw2DLine( position2d<s32>(bRect.UpperLeftCorner.X, bRect.LowerRightCorner.Y-1),
+											position2d<s32>(bRect.LowerRightCorner.X, bRect.LowerRightCorner.Y-1),
+											SColor(255, 64, 64, 64) );
+
+	// draw buttona
+	IGUISkin* pSkin = Environment->getSkin();
+	IGUIFont* pFont = pSkin->getFont();
+
+	for ( int i = 0; i < 4; i++ )
+	{
+		if ( m_optionBtns[i].bVisible )
+		{
+			pSkin->draw3DButtonPaneStandard(0, m_optionBtns[i].rectBtn);
+			pFont->draw(m_optionBtns[i].label.c_str(), m_optionBtns[i].rectBtn, black, true, true);
+		}
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -96,12 +143,16 @@ void GUIForumThreadBrowser::draw()
 void GUIForumThreadBrowser::drawHeader(IVideoDriver* pVideo)
 {
   std::wstringstream ss;
-  core::rect<s32> hRect = AbsoluteClippingRect;
+  core::rect<s32> hRect = AbsoluteRect;
   IGUIFont* pFont = Environment->getSkin()->getFont();
   SColor darkBlue(128, 0, 0, 255), black(255, 0, 0, 0), whiteAlpha(128, 255, 255, 255), white(255, 255, 255, 255);
 
+	hRect.UpperLeftCorner.Y += FORUM_OPTIONBAR_HEIGHT;
   hRect.LowerRightCorner.Y = hRect.UpperLeftCorner.Y + FORUM_HEADER_HEIGHT;
-  pVideo->draw2DRectangle( hRect, darkBlue, darkBlue, whiteAlpha, whiteAlpha, &AbsoluteClippingRect );
+  pVideo->draw2DRectangle( hRect, darkBlue, darkBlue, whiteAlpha, whiteAlpha );
+	pVideo->draw2DLine( position2d<s32>(hRect.UpperLeftCorner.X, hRect.UpperLeftCorner.Y),
+										  position2d<s32>(hRect.LowerRightCorner.X, hRect.UpperLeftCorner.Y),
+											SColor(128, 196, 196, 196) );
   // draw the header
   hRect.UpperLeftCorner.X += 10;
 
@@ -137,9 +188,9 @@ void GUIForumThreadBrowser::drawThread(const ForumThreadStruct& thread)
 	cRect.UpperLeftCorner.Y -= 23;
 
 	// draw the date created
-	cRect.UpperLeftCorner.X = cRect.LowerRightCorner.X - 200;
-  if ( cRect.UpperLeftCorner.Y > AbsoluteClippingRect.UpperLeftCorner.Y &&
-       cRect.UpperLeftCorner.Y < AbsoluteClippingRect.LowerRightCorner.Y )
+	cRect.UpperLeftCorner.X = cRect.LowerRightCorner.X - 170;
+  if ( cRect.UpperLeftCorner.Y >= AbsoluteClippingRect.UpperLeftCorner.Y &&
+       cRect.UpperLeftCorner.Y <= AbsoluteClippingRect.LowerRightCorner.Y )
   {
 	  pVideo->draw2DLine( cRect.UpperLeftCorner, position2d<s32>(cRect.UpperLeftCorner.X, cRect.LowerRightCorner.Y), m_textColor );
   }
@@ -177,10 +228,20 @@ void GUIForumThreadBrowser::addThread(ForumThread* pThread)
   }
   else
   {
-    fts.rect.UpperLeftCorner = position2d<s32>(AbsoluteClippingRect.UpperLeftCorner.X, AbsoluteClippingRect.UpperLeftCorner.Y + FORUM_HEADER_HEIGHT);
+    fts.rect.UpperLeftCorner = position2d<s32>(AbsoluteClippingRect.UpperLeftCorner.X, AbsoluteClippingRect.UpperLeftCorner.Y + FORUM_HEADER_HEIGHT + FORUM_OPTIONBAR_HEIGHT);
     fts.rect.LowerRightCorner.Y = fts.rect.UpperLeftCorner.Y + FORUM_THREAD_ITEM_HEIGHT;
     fts.rect.LowerRightCorner.X = AbsoluteClippingRect.LowerRightCorner.X;
   }
 
 	m_threads.push_back(fts);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void GUIForumThreadBrowser::offsetRect(core::rect<s32>& rect, s32 xOffs, s32 yOffs)
+{
+  rect.UpperLeftCorner.Y += yOffs;
+  rect.UpperLeftCorner.X += xOffs;
+  rect.LowerRightCorner.Y += yOffs;
+  rect.LowerRightCorner.X += xOffs;
 }
