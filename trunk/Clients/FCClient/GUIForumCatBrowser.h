@@ -49,9 +49,8 @@ private:
 	void addCategory(ForumCategory* pCat);
 
 	void drawHeader(IVideoDriver* pVideo);
-	void drawForumCategory(ForumCatStruct& fcs, rect<s32>& rect, s32 level = 0);
+	void drawForumCategory(ForumCatStruct& fcs, s32 level = 0);
 	void drawExpanderIcon(ForumCatStruct& fcs, s32 level, IVideoDriver* pVideo, IGUIFont* pFont);
-  void drawCategoryThreads(const ForumThreadMap& threads, rect<s32>& rect);
 
   /**
    *  @brief Checks if drawing to the specified rectangle will cause an overflow.
@@ -61,8 +60,14 @@ private:
    */
   u32 checkForOverflow(core::rect<s32> rect);
 
+  /**
+   *  @brief Loops through all ForumCatStruct objects in the m_categories vector and updates the highlight flag based on the mouse position
+   */
   void checkHighlights();
 
+  /**
+   *  @brief Utility function to quickly offset a rectangle's position by a specific XY offset
+   */
   void offsetRect(core::rect<s32>& rect, s32 xOffs, s32 yOffs);
 
 	IForumCatBrowserSink*	m_pSink;
