@@ -140,6 +140,9 @@
 				RelativePath=".\DlgNewCharacter.cpp">
 			</File>
 			<File
+				RelativePath=".\DlgNewThread.cpp">
+			</File>
+			<File
 				RelativePath=".\FCClient.cpp">
 			</File>
 			<File
@@ -250,10 +253,10 @@
 				RelativePath=".\clientstrings.h">
 			</File>
 			<File
-				RelativePath="..\common\clienttypes.h">
+				RelativePath="..\common\Socket\clienttypes.h">
 			</File>
 			<File
-				RelativePath="..\common\Socket\clienttypes.h">
+				RelativePath="..\common\clienttypes.h">
 			</File>
 			<File
 				RelativePath=".\ConsoleWindow.h">
@@ -272,6 +275,9 @@
 			</File>
 			<File
 				RelativePath=".\DlgNewCharacter.h">
+			</File>
+			<File
+				RelativePath=".\DlgNewThread.h">
 			</File>
 			<File
 				RelativePath=".\FCController.h">

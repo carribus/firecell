@@ -3,6 +3,7 @@
 #include "../common/irrlichtUtil/irrutils.h"
 #include "../common/ResourceManager.h"
 #include "clientstrings.h"
+#include "DlgNewThread.h"
 #include "irrSingleton.h"
 #include "GUIForumThreadBrowser.h"
 
@@ -21,6 +22,7 @@ GUIForumThreadBrowser::GUIForumThreadBrowser(IGUIEnvironment* environment, core:
 , m_bOverflow(false)
 , m_pixelOverflow(0)
 , m_pixelUnderflow(0)
+, m_pActiveDialog(NULL)
 {
 #ifdef _DEBUG
   setDebugName("GUIForumThreadBrowser");
@@ -531,6 +533,9 @@ void GUIForumThreadBrowser::OnOptionButtonPressed(int index)
     break;
 
   case  1:      // the NEW TOPIC button
+		{
+			OpenNewThreadWindow();
+		}
     break;
 
   case  2:      // reserved
@@ -543,3 +548,33 @@ void GUIForumThreadBrowser::OnOptionButtonPressed(int index)
 
 ///////////////////////////////////////////////////////////////////////
 
+void GUIForumThreadBrowser::OpenNewThreadWindow()	
+{
+	DlgNewThread* pDlg = new DlgNewThread(Environment, L"New Thread", 0, -1);
+
+	pDlg->setSuccessCallback( onNewThreadDlgComplete, (void*)this );
+	pDlg->setCancelCallback( onNewThreadDlgCancel, (void*)this );
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void GUIForumThreadBrowser::onNewThreadDlgComplete(void* pParam)
+{
+	GUIForumThreadBrowser* pThis = (GUIForumThreadBrowser*) pParam;
+	DlgNewThread* pDlg = (DlgNewThread*)pThis->m_pActiveDialog;
+
+	// get forum post information
+	pDlg->getSubject();
+	pDlg->getMessage();
+
+	delete pDlg;
+	pThis->m_pActiveDialog = NULL;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void GUIForumThreadBrowser::onNewThreadDlgCancel(void* pParam)
+{
+	GUIForumThreadBrowser* pThis = (GUIForumThreadBrowser*) pParam;
+	delete pThis->m_pActiveDialog;
+}
