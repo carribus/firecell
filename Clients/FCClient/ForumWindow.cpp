@@ -72,6 +72,7 @@ bool ForumWindow::OnCategoriesReceived(ForumModel* pModel)
 
 	m_pForumCatBrowser->setModel(pModel);
 	m_pForumCatBrowser->updateCategories();
+  SetWaitingForResponse(false);
 
 	return true;
 }
@@ -85,6 +86,7 @@ bool ForumWindow::OnCategoryThreadsReceived(FCULONG category_id)
 
   m_pForumThreadBrowser->setModel(m_pModel);
   m_pForumThreadBrowser->updateCategoryThreads(category_id);
+  SetWaitingForResponse(false);
 
   return true;
 }
@@ -98,7 +100,9 @@ void ForumWindow::OnCategorySelected(FCULONG category_id)
   {
     m_pForumCatBrowser->setVisible(false);
     m_pForumThreadBrowser->setCategory(pCat);
+    m_pForumThreadBrowser->clearThreads();
     m_pForumThreadBrowser->setVisible(true);
+    m_pEnv->setFocus( m_pForumThreadBrowser );
 
     // request the threads for the category from the server
 	  SetWaitingForResponse(true);
@@ -112,7 +116,16 @@ void ForumWindow::OnCategorySelected(FCULONG category_id)
 void ForumWindow::OnThreadSelected(FCULONG category_id, FCULONG thread_id)
 {
   // request the selected thread's details
-  SetWaitingForResponse(true);
+//  SetWaitingForResponse(true);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ForumWindow::OnThreadViewClosed()
+{
+  m_pForumThreadBrowser->setVisible(false);
+  m_pForumCatBrowser->setVisible(true);
+  m_pEnv->setFocus(m_pForumCatBrowser);
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -40,11 +40,13 @@ public:
   DBIResults* Execute(FCDBJob job);
   void Disconnect();
   std::string GetLastError();
+  unsigned int GetLastErrorNum()                  { return m_lastErrorNum; }
 
 private:
 
   MYSQL*       m_conn;
   std::string  m_strLastError;
+  unsigned int m_lastErrorNum;
 };
 
 #endif//_DBIMYSQLCONNECTION_H_
