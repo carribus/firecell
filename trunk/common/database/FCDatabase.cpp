@@ -303,7 +303,7 @@ void* FCDatabase::thrdDBWorker(void* pData)
 
           if ( strError.length() )
           {
-            DYNLOG_ADDLOG( DYNLOG_FORMAT("FCDatabase Error: %s", strError.c_str()) );
+            DYNLOG_ADDLOG( DYNLOG_FORMAT("FCDatabase Error [%ld]: %s", pConn->GetLastErrorNum(), strError.c_str()) );
           }
         }
       }

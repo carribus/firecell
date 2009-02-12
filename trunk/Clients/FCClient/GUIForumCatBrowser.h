@@ -53,22 +53,9 @@ private:
 	void drawExpanderIcon(ForumCatStruct& fcs, s32 level, IVideoDriver* pVideo, IGUIFont* pFont);
 
   /**
-   *  @brief Checks if drawing to the specified rectangle will cause an overflow.
-   *
-   *  @param rect Target rectangle that drawing will take place in
-   *  @return number of pixels of overflop
-   */
-  u32 checkForOverflow(core::rect<s32> rect);
-
-  /**
    *  @brief Loops through all ForumCatStruct objects in the m_categories vector and updates the highlight flag based on the mouse position
    */
   void checkHighlights();
-
-  /**
-   *  @brief Utility function to quickly offset a rectangle's position by a specific XY offset
-   */
-  void offsetRect(core::rect<s32>& rect, s32 xOffs, s32 yOffs);
 
 	IForumCatBrowserSink*	m_pSink;
 
@@ -78,7 +65,6 @@ private:
   IGUIFont*         m_pFontDesc;
 	IGUIScrollBar*		m_pSB;
 	ForumCatStruct*		m_currentCategory;
-	position2d<s32>		m_offset;
   bool              m_bOverflow;
   u32               m_pixelOverflow;
   u32               m_pixelUnderflow;

@@ -37,6 +37,7 @@ public:
    *  IForumThreadBrowserSink implementation
    */
   void OnThreadSelected(FCULONG category_id, FCULONG thread_id);
+  void OnThreadViewClosed();
 
   const wchar_t* getAppName()                             { return L"Forum Browser"; }
 

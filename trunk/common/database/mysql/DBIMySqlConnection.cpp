@@ -25,6 +25,7 @@
 
 DBIMySqlConnection::DBIMySqlConnection(void)
 : m_conn(NULL)
+, m_lastErrorNum(0)
 {
   m_conn = mysql_init(NULL);
 }
@@ -107,6 +108,7 @@ DBIResults* DBIMySqlConnection::Execute(FCDBJob job)
   {
     // figure out what went wrong
     m_strLastError = mysql_error(m_conn);
+    m_lastErrorNum = mysql_errno(m_conn);
     delete pResults;
     pResults = NULL;
     // error handling ..

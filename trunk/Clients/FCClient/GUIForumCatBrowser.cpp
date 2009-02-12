@@ -1,6 +1,7 @@
 #include <sstream>
 #include "clientstrings.h"
 #include "../common/ResourceManager.h"
+#include "../common/irrlichtUtil/irrutils.h"
 #include "irrSingleton.h"
 #include "GUIForumCatBrowser.h"
 
@@ -71,6 +72,20 @@ void GUIForumCatBrowser::updateCategories()
 	{
 		addCategory( it->second );
 	}
+
+  // convert all category rectangles into relative co-ordinate rects
+  if ( m_categories.size() )
+  {
+    CategoryVector::iterator it = m_categories.begin();
+    CategoryVector::iterator limit = m_categories.end();
+
+    for ( ; it != limit; it++ )
+    {
+      absToRelRect( this, it->rect );
+    }
+  }
+
+  m_pSB->setMax(m_pixelOverflow);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -103,12 +118,6 @@ void GUIForumCatBrowser::draw()
 			drawForumCategory(*it);
     }
 	}
-
-  // if there is overflow, update the scrollbar
-  if ( m_bOverflow )
-  {
-    m_pSB->setMax( m_pixelOverflow + m_pixelUnderflow );
-  }
 
   AbsoluteClippingRect.UpperLeftCorner.Y -= FORUM_HEADER_HEIGHT;
 
@@ -239,10 +248,13 @@ bool GUIForumCatBrowser::OnLButtonDblClick(const SEvent::SMouseInput& event)
 {
 	std::vector<ForumCatStruct>::iterator it = m_categories.begin();
 	std::vector<ForumCatStruct>::iterator limit = m_categories.end();
+  core::rect<s32> itemRect;
 
 	for ( ; it != limit; it++ )
 	{
-		if ( it->rect.isPointInside( position2d<s32>( event.X, event.Y ) ) )
+    itemRect = it->rect;
+    relToAbsRect(this, itemRect);
+		if ( itemRect.isPointInside( position2d<s32>( event.X, event.Y ) ) )
 		{
 			if ( m_pSink )
 				m_pSink->OnCategorySelected( it->pCat->getID() );
@@ -275,6 +287,15 @@ void GUIForumCatBrowser::addCategory(ForumCategory* pCat)
     fcs.rect.UpperLeftCorner = position2d<s32>(AbsoluteClippingRect.UpperLeftCorner.X, AbsoluteClippingRect.UpperLeftCorner.Y + FORUM_HEADER_HEIGHT);
     fcs.rect.LowerRightCorner.Y = fcs.rect.UpperLeftCorner.Y + FORUM_CATITEM_HEIGHT;
     fcs.rect.LowerRightCorner.X = AbsoluteClippingRect.LowerRightCorner.X;
+  }
+
+  // check if the item's rect is overflowing
+  if ( fcs.rect.LowerRightCorner.Y > AbsoluteClippingRect.LowerRightCorner.Y )
+  {
+    if ( fcs.rect.UpperLeftCorner.Y > AbsoluteClippingRect.LowerRightCorner.Y )
+      m_pixelOverflow += FORUM_CATITEM_HEIGHT;
+    else
+      m_pixelOverflow += fcs.rect.LowerRightCorner.Y - AbsoluteClippingRect.LowerRightCorner.Y;
   }
 
 	m_categories.push_back(fcs);
@@ -324,11 +345,7 @@ void GUIForumCatBrowser::drawForumCategory(ForumCatStruct& fcs, s32 level)
 	if ( !pFont )
 		pFont = Environment->getBuiltInFont();
 
-  if ( (overFlow = checkForOverflow(fcs.rect)) > 0 )
-  {
-    // add to the existing pixel overflow
-    m_pixelOverflow += overFlow;
-  }
+  relToAbsRect(this, fcs.rect);
 
   if ( fcs.rect.UpperLeftCorner.Y < AbsoluteClippingRect.LowerRightCorner.Y )
   {
@@ -395,6 +412,8 @@ void GUIForumCatBrowser::drawForumCategory(ForumCatStruct& fcs, s32 level)
 	  }
     rect.UpperLeftCorner.X = AbsoluteRect.UpperLeftCorner.X + (level)*FORUM_HORZ_INDENT_SIZE;
   }
+
+  absToRelRect(this, fcs.rect);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -412,34 +431,20 @@ void GUIForumCatBrowser::drawExpanderIcon(ForumCatStruct& fcs, s32 level, IVideo
 
 ///////////////////////////////////////////////////////////////////////
 
-u32 GUIForumCatBrowser::checkForOverflow(core::rect<s32> rect)
-{
-  u32 pixelOverflow = 0;
-
-  if ( rect.LowerRightCorner.Y > AbsoluteClippingRect.LowerRightCorner.Y )
-  {
-    m_bOverflow = true;
-    pixelOverflow = rect.LowerRightCorner.Y - AbsoluteClippingRect.LowerRightCorner.Y;
-    if ( pixelOverflow > (u32)rect.getHeight() )
-      pixelOverflow = rect.getHeight();
-  }
-
-  return pixelOverflow;
-}
-
-///////////////////////////////////////////////////////////////////////
-
 void GUIForumCatBrowser::checkHighlights()
 {
 	// do the highlighting
 	std::vector<ForumCatStruct>::iterator it = m_categories.begin();
 	std::vector<ForumCatStruct>::iterator limit = m_categories.end();
+  core::rect<s32> itemRect;
 
   AbsoluteClippingRect.UpperLeftCorner.Y += FORUM_HEADER_HEIGHT;
 	for ( ; it != limit; it++ )
 	{
+    itemRect = it->rect;
+    relToAbsRect(this, itemRect);
 		if ( AbsoluteClippingRect.isPointInside( m_mousePos ) &&
-          it->rect.isPointInside( m_mousePos ) )
+          itemRect.isPointInside( m_mousePos ) )
 		{
 			it->bHighlighted = true;
 		}
@@ -452,11 +457,3 @@ void GUIForumCatBrowser::checkHighlights()
 }
 
 ///////////////////////////////////////////////////////////////////////
-
-void GUIForumCatBrowser::offsetRect(core::rect<s32>& rect, s32 xOffs, s32 yOffs)
-{
-  rect.UpperLeftCorner.Y += yOffs;
-  rect.UpperLeftCorner.X += xOffs;
-  rect.LowerRightCorner.Y += yOffs;
-  rect.LowerRightCorner.X += xOffs;
-}
