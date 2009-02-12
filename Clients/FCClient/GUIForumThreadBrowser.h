@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <irrlicht.h>
+#include "FCDialog.h"
 #include "ForumCategory.h"
 #include "ForumModel.h"
 
@@ -53,6 +54,10 @@ private:
 
   void OnOptionButtonPressed(int index);
 
+	void OpenNewThreadWindow();
+		static void onNewThreadDlgComplete(void* pParam);
+		static void onNewThreadDlgCancel(void* pParam);
+
   /**
    *  @brief Loops through all ForumCatStruct objects in the m_categories vector and updates the highlight flag based on the mouse position
    */
@@ -68,6 +73,7 @@ private:
   u32                                 m_pixelOverflow;
   u32                                 m_pixelUnderflow;
   position2d<s32>                     m_mousePos;
+	FCDialog*														m_pActiveDialog;
 
 	typedef std::vector<ForumThreadStruct> ThreadVector;
 	ThreadVector                        m_threads;
