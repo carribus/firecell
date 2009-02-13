@@ -183,6 +183,7 @@ public:
   /* Forum methods */
   void ForumGetCategories();
 	void ForumGetThreads(FCULONG category_id);
+  void ForumCreateNewThread(FCULONG category_id, std::wstring& subject, std::wstring& message);
 
   vector<Character>& GetCharacters()               { return m_characters; }
   map<FCULONG, Country>& GetCountries()            { return m_countries; }

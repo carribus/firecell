@@ -554,6 +554,7 @@ void GUIForumThreadBrowser::OpenNewThreadWindow()
 
 	pDlg->setSuccessCallback( onNewThreadDlgComplete, (void*)this );
 	pDlg->setCancelCallback( onNewThreadDlgCancel, (void*)this );
+  m_pActiveDialog = pDlg;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -563,11 +564,9 @@ void GUIForumThreadBrowser::onNewThreadDlgComplete(void* pParam)
 	GUIForumThreadBrowser* pThis = (GUIForumThreadBrowser*) pParam;
 	DlgNewThread* pDlg = (DlgNewThread*)pThis->m_pActiveDialog;
 
-	// get forum post information
-	pDlg->getSubject();
-	pDlg->getMessage();
+  if ( pThis->m_pSink )
+    pThis->m_pSink->OnNewThreadPost( pThis->m_currentCategory->getID(), pDlg->getSubject(), pDlg->getMessage() );
 
-	delete pDlg;
 	pThis->m_pActiveDialog = NULL;
 }
 
@@ -576,5 +575,6 @@ void GUIForumThreadBrowser::onNewThreadDlgComplete(void* pParam)
 void GUIForumThreadBrowser::onNewThreadDlgCancel(void* pParam)
 {
 	GUIForumThreadBrowser* pThis = (GUIForumThreadBrowser*) pParam;
-	delete pThis->m_pActiveDialog;
+
+	pThis->m_pActiveDialog = NULL;
 }

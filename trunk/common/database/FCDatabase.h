@@ -59,6 +59,8 @@ private:
   void QueueJob(const string query, const string ref = "", void* pData = NULL);
   void JobComplete(FCDBJob& job);
 
+  bool HandleError(unsigned int nError);
+
   static void* thrdDBWorker(void* pData);
 
   /*

@@ -505,6 +505,17 @@ struct __FCPKT_FORUM_GET_THREAD_DETAILS_RESP
 
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_FORUM_CREATE_NEW_THREAD     = 203;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_FORUM_CREATE_NEW_THREAD
+{
+  FCULONG category_id;
+  char title[255];
+  FCULONG contentLength;
+  char content[1];
+};
+
 #pragma pack(pop)
 
 #endif//_FCPROTOCOL_H_

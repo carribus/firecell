@@ -29,8 +29,12 @@ public:
   FCULONG getThreadCount()                        { return m_threadCount; }
 	std::string getName()														{ return m_name; }
 	std::string getDesc()														{ return m_desc; }
-
 	ForumCategory* getParent()											{ return m_pParent; }
+
+  void setOrder(FCULONG order)                    { m_order = order; }
+  void setThreadCount(FCULONG count)              { m_threadCount = count; }
+  void setName(const std::string& name)           { m_name = name; }
+  void setDesc(const std::string& desc)           { m_desc = desc; }
 	void setParent(ForumCategory* pParent)					{ m_pParent = pParent; }
 
 private:

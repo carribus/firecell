@@ -1,6 +1,7 @@
 #ifndef _FCVIEWEVENT_H_
 #define _FCVIEWEVENT_H_
 
+#include "../../common/fctypes.h"
 #include <string>
 
 using namespace std;
@@ -18,7 +19,8 @@ enum e_FCViewEventType
 	VE_ConCommandIssued,
   /* Forum Events */
   VE_ForumRefreshCategories,
-	VE_ForumCategorySelected
+	VE_ForumCategorySelected,
+  VE_ForumNewThread,
 };
 
 /////////////////////////////////////////////////////////////////
@@ -57,6 +59,30 @@ private:
 
 	wstring									m_username;
 	wstring									m_password;
+};
+
+/////////////////////////////////////////////////////////////////
+
+class FCViewEventNewForumPost : public FCViewEvent
+{
+public:
+  FCViewEventNewForumPost(FCULONG category_id, const wstring& subject, const wstring& message)
+    : FCViewEvent( VE_ForumNewThread )
+    , m_category_id(category_id)
+    , m_subject(subject)
+    , m_message(message)
+  {
+  }
+
+  FCULONG getCategoryID()                    { return m_category_id; }
+  wstring getSubject()                       { return m_subject; }
+  wstring getMessage()                       { return m_message; }
+
+private:
+
+  wstring                 m_subject;
+  wstring                 m_message;
+  FCULONG                 m_category_id;
 };
 
 #endif//_FCVIEWEVENT_H_

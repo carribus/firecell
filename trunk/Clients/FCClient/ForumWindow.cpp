@@ -130,6 +130,15 @@ void ForumWindow::OnThreadViewClosed()
 
 ///////////////////////////////////////////////////////////////////////
 
+void ForumWindow::OnNewThreadPost(FCULONG category_id, std::wstring& subject, std::wstring& message)
+{
+  SetWaitingForResponse(true);
+  FCViewEventNewForumPost e(category_id, subject, message);
+  m_pController->OnViewEvent(e);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void ForumWindow::RequestForumCategoryRefresh()
 {
   FCViewEvent e(VE_ForumRefreshCategories);
