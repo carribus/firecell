@@ -131,6 +131,7 @@ bool FCView::Update()
 		m_pDriver->beginScene(true, true, colBkg);
 		if ( m_pCurrentViewLogic )
 			m_pCurrentViewLogic->Refresh();
+
 #ifdef _DEBUG
 	
 		// draw the FPS
@@ -146,6 +147,7 @@ bool FCView::Update()
 										 false );
 
 #endif//_DEBUG
+
 		m_pDriver->endScene();
 	}
 	else

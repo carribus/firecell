@@ -217,6 +217,32 @@ void FCServerObj::RequestForumThreadDetails(FCULONG category_id, FCULONG thread_
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCServerObj::SendNewForumPost(FCULONG category_id, const char* pSubject, FCULONG msgLen, const char* pMessage)
+{
+  PEPacket pkt;
+  __FCPKT_FORUM_CREATE_NEW_THREAD* d;
+  size_t pktLen = sizeof(__FCPKT_FORUM_CREATE_NEW_THREAD) + msgLen-1;
+
+  d = (__FCPKT_FORUM_CREATE_NEW_THREAD*) new FCBYTE[ pktLen ];
+  if ( d )
+  {
+    d->category_id = category_id;
+    strncpy(d->title, pSubject, sizeof(d->title));
+    d->contentLength = msgLen;
+    strncpy(d->content, pMessage, d->contentLength);
+
+    PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_FORUM_CREATE_NEW_THREAD, ST_World);
+    PEPacketHelper::SetPacketData(pkt, (void*)d, pktLen);
+
+    SendPacket(pkt);
+
+    delete [] (FCBYTE*)d;
+  }
+
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCServerObj::SendPacket(PEPacket& pkt)
 {
   char* pData = NULL;

@@ -61,6 +61,10 @@ ForumCategory* ForumModel::addCategory(FCULONG category_id, FCULONG parent_id, F
 	{
 		// we have the category... 
 		pCat = it->second;
+    pCat->setName(name);
+    pCat->setDesc(desc);
+    pCat->setOrder(order);
+    pCat->setThreadCount(threadCount);
 	}
 
   return pCat;

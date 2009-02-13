@@ -1,8 +1,10 @@
+#include "../common/Logging/DynLog.h"
 #include "ForumPost.h"
 #include "Forum.h"
 
 Forum::Forum(void)
 : m_mutexCategories(true)
+, m_lastPostID(0)
 {
 }
 
@@ -99,6 +101,32 @@ ForumCategory* Forum::GetCategoryByID(FCULONG id)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool Forum::CreateNewForumThread(FCULONG category_id, FCULONG author_id, std::string title, std::string content)
+{
+  bool bResult = false;
+  std::string now;
+  ForumCategory* pCat = GetCategoryByID(category_id);
+
+  if ( pCat )
+  {
+    time_t t = time(NULL);
+    tm* pTime = gmtime( &t );
+    char now[256];
+
+    sprintf(now, "%ld-%02ld-%02ld %02ld:%02ld:%02ld", pTime->tm_year+1900, pTime->tm_mon+1, pTime->tm_mday, pTime->tm_hour, pTime->tm_min, pTime->tm_sec);
+    AddForumPost( 0, 0, category_id, (FCULONG)-1, title, content, author_id, now );
+    bResult = true;
+  }
+  else
+  {
+    DYNLOG_ADDLOG( DYNLOG_FORMAT("Forum::CreateNewForumThread() - could not locate category id %ld", category_id) );
+  }
+
+  return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 size_t Forum::AddForumPost(FCULONG id, FCULONG parentID, FCULONG category_id, FCULONG order, string title, string content, FCULONG author_id, string date_created, FCULONG mission_id)
 {
 	ForumCategory* pCat = GetCategoryByID(category_id);
@@ -107,6 +135,8 @@ size_t Forum::AddForumPost(FCULONG id, FCULONG parentID, FCULONG category_id, FC
 
 	if ( pCat )
 	{
+    if ( id == 0 )
+      id = GetNewPostID();
 		pPost = new ForumPost;
 		pPost->SetID(id);
 		pPost->SetParentID(parentID);
@@ -118,6 +148,9 @@ size_t Forum::AddForumPost(FCULONG id, FCULONG parentID, FCULONG category_id, FC
 		pPost->SetMissionID(mission_id);
 
 		result = pCat->AddForumPost(pPost);
+
+    if ( m_lastPostID < id )
+      m_lastPostID = id;
 	}
 
 	return result;
@@ -135,4 +168,18 @@ size_t Forum::GetForumThreads(FCULONG category_id, vector<ForumPost>& target)
 	}
 
 	return target.size();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+FCULONG Forum::GetNewPostID()
+{
+  FCULONG returnVal = 0;
+
+  m_mutexPostID.Lock();
+  returnVal = ++m_lastPostID;
+  m_mutexPostID.Unlock();
+
+  return returnVal;
+
 }

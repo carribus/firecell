@@ -721,6 +721,12 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
 		}
 		break;
 
+  case  FCMSG_FORUM_CREATE_NEW_THREAD:
+    {
+      bHandled = OnCommandForumCreateNewThread(pPkt, pRouter, clientSock);
+    }
+    break;
+
   /*
    * Inter-service Messages
    */
@@ -1021,6 +1027,33 @@ bool FCLogicWorld::OnCommandForumGetThreadDetails(PEPacket* pPkt, RouterSocket* 
 	}
 
 	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandForumCreateNewThread(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCPKT_FORUM_CREATE_NEW_THREAD* d = NULL;
+  size_t dataLen = 0;
+  Player* pPlayer = NULL;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  d = (__FCPKT_FORUM_CREATE_NEW_THREAD*) new FCBYTE[dataLen];
+  pPkt->GetField("data", (void*)d, dataLen);
+
+  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+  {
+    std::string message;
+    message.assign( d->content, d->contentLength );
+    if ( !m_forum.CreateNewForumThread( d->category_id, pPlayer->GetID(), d->title, message ) )
+    {
+      DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to add new forum thread to categoryID:%ld (Author:%s[%ld])", d->category_id, pPlayer->GetName().c_str(), pPlayer->GetID()) );
+    }
+  }
+
+  delete [] (FCBYTE*)d;
+
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////

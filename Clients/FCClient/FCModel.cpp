@@ -793,7 +793,6 @@ bool FCModel::ProcessData()
 
 	case	FCModel::CharacterSelection:
 		{
-
 		}
 		break;
 
@@ -801,6 +800,8 @@ bool FCModel::ProcessData()
 		break;
 
 	case	FCModel::Playing:
+    {
+    }
 		break;
 
 	case	FCModel::ShuttingDown:
@@ -956,6 +957,24 @@ void FCModel::ForumGetCategories()
 void FCModel::ForumGetThreads(FCULONG category_id)
 {
 	m_server.RequestForumThreads(category_id);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::ForumCreateNewThread(FCULONG category_id, std::wstring& subject, std::wstring& message)
+{
+  size_t subLen = subject.size(), msgLen = message.size();
+  char* pSubject = new char[ subLen+1 ];
+  char* pMessage = new char[ msgLen+1 ];
+
+  memset(pSubject, 0, subLen+1);
+  memset(pMessage, 0, msgLen+1);
+	sprintf(pSubject, "%S", subject.c_str());
+	sprintf(pMessage, "%S", message.c_str());
+  m_server.SendNewForumPost(category_id, pSubject, (FCULONG)message.size(), pMessage);
+
+  delete [] pSubject;
+  delete [] pMessage;
 }
 
 ///////////////////////////////////////////////////////////////////////
