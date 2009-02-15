@@ -40,6 +40,7 @@ DesktopAppBar::DesktopAppBar(IGUIEnvironment* env, IGUIElement* pParent, s32 id)
 	if ( !pFont )
 		pFont = m_pClockFont;
 
+	abo.id = 0;
 	abo.bAppOption = false;
 	abo.bHighlight = false;
 	abo.str = ResourceManager::instance().GetClientString( STR_APP_APPBAR_SYSTEM );
@@ -150,6 +151,30 @@ bool DesktopAppBar::OnEvent(const SEvent& event)
 						}
 						else
 							it->bHighlight = false;
+						it++;
+					}
+				}
+				break;
+
+			case	EMIE_LMOUSE_LEFT_UP:
+				{
+					AppBarOptionVector::iterator it = m_appBarOptions.begin();
+
+					while ( it != m_appBarOptions.end() && !bHandled )
+					{
+						if ( it->rect.isPointInside( position2d<s32>(event.MouseInput.X, event.MouseInput.Y) ) )
+						{
+							switch ( it->id )
+							{
+							case	0:					// the system option
+								showSystemMenu();
+								bHandled = true;
+								break;
+
+							default:
+								break;
+							}
+						}
 						it++;
 					}
 				}
@@ -288,4 +313,27 @@ void DesktopAppBar::removeApplicationOptions()
 			i--;
 		}
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void DesktopAppBar::showSystemMenu()
+{
+	AppBarOption& sysOption = m_appBarOptions[0];
+	core::rect<s32> r = sysOption.rect;
+	IGUIContextMenu* pMenu = NULL;
+	
+	r.UpperLeftCorner.Y = r.LowerRightCorner.Y;
+	r.LowerRightCorner.X = r.UpperLeftCorner.X + 200;
+	r.LowerRightCorner.Y = r.UpperLeftCorner.Y + 300;
+	pMenu = Environment->addContextMenu(r, Parent);
+
+	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_CHARINFO).c_str(), 0xFFFFFFFC);
+	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_SYSTEMINFO).c_str(), 0xFFFFFFFD);
+	pMenu->addSeparator();
+	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_ABOUT).c_str(), 0xFFFFFFFE);
+	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_EXIT).c_str(), 0xFFFFFFFF);
+	r.LowerRightCorner.X += 200;
+	pMenu->setRelativePosition(r);
+	Environment->setFocus(pMenu);
 }
