@@ -246,33 +246,6 @@ void FCDatabase::JobComplete(FCDBJob& job)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-bool FCDatabase::HandleError(unsigned int nError)
-{
-  bool bResult = false;
-
-  switch ( nError )
-  {
-  case  2006:       // server has gone away
-    {
-      // try to reconnect to the server
-      DYNLOG_ADDLOG("Attempting to reconnect to database...");
-      if ( m_pDBI )
-      {
-        if ( m_pDBI->Connect(m_strServer, 0, m_strDBName, m_strUser, m_strPass) )
-          DYNLOG_ADDLOG("Connect to database re-established");
-      }
-    }
-    break;
-
-  default:
-    break;
-  }
-
-  return bResult;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
 void* FCDatabase::thrdDBWorker(void* pData)
 {
   if ( !pData )
@@ -334,8 +307,18 @@ void* FCDatabase::thrdDBWorker(void* pData)
             DYNLOG_ADDLOG( DYNLOG_FORMAT("FCDatabase Error [%ld]: %s", nError, strError.c_str()) );
           }
 
-          if ( !pThis->HandleError(nError) )
-            DYNLOG_ADDLOG("No specific error handling performed for this error");
+					switch ( nError )
+					{
+					case	2006:				// server has gone away
+						{
+							DYNLOG_ADDLOG("Attempting to re-establish database connection...");
+							pDB->Disconnect(pConn);
+							pConn = pDB->Connect(pThis->m_strServer, 0, pThis->m_strDBName, pThis->m_strUser, pThis->m_strPass);
+							if ( pConn )
+								DYNLOG_ADDLOG( "Connection to database restored..." );
+						}
+						break;
+					}
         }
       }
       else

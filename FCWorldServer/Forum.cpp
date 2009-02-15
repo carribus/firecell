@@ -109,13 +109,19 @@ bool Forum::CreateNewForumThread(FCULONG category_id, FCULONG author_id, std::st
 
   if ( pCat )
   {
+		ForumPost* pNewPost = NULL;
     time_t t = time(NULL);
+		FCULONG postID = GetNewPostID();
     tm* pTime = gmtime( &t );
     char now[256];
 
     sprintf(now, "%ld-%02ld-%02ld %02ld:%02ld:%02ld", pTime->tm_year+1900, pTime->tm_mon+1, pTime->tm_mday, pTime->tm_hour, pTime->tm_min, pTime->tm_sec);
-    AddForumPost( 0, 0, category_id, (FCULONG)-1, title, content, author_id, now );
-    bResult = true;
+    if ( (pNewPost = AddForumPost( postID, 0, category_id, (FCULONG)-1, title, content, author_id, now )) )
+		{
+			// persist the new object to the database...
+
+			bResult = true;
+		}
   }
   else
   {
@@ -127,7 +133,7 @@ bool Forum::CreateNewForumThread(FCULONG category_id, FCULONG author_id, std::st
 
 ///////////////////////////////////////////////////////////////////////
 
-size_t Forum::AddForumPost(FCULONG id, FCULONG parentID, FCULONG category_id, FCULONG order, string title, string content, FCULONG author_id, string date_created, FCULONG mission_id)
+ForumPost* Forum::AddForumPost(FCULONG id, FCULONG parentID, FCULONG category_id, FCULONG order, string title, string content, FCULONG author_id, string date_created, FCULONG mission_id)
 {
 	ForumCategory* pCat = GetCategoryByID(category_id);
 	ForumPost* pPost = NULL;
@@ -135,8 +141,6 @@ size_t Forum::AddForumPost(FCULONG id, FCULONG parentID, FCULONG category_id, FC
 
 	if ( pCat )
 	{
-    if ( id == 0 )
-      id = GetNewPostID();
 		pPost = new ForumPost;
 		pPost->SetID(id);
 		pPost->SetParentID(parentID);
@@ -153,7 +157,7 @@ size_t Forum::AddForumPost(FCULONG id, FCULONG parentID, FCULONG category_id, FC
       m_lastPostID = id;
 	}
 
-	return result;
+	return pPost;
 }
 
 ///////////////////////////////////////////////////////////////////////

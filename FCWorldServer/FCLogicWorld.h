@@ -125,6 +125,7 @@ private:
    *  Private members
    */
   string                m_pathFileSystems;
+	string								m_pathIntermediateData;
 
   PlayerManager         m_playerMgr;
   ItemManager           m_itemMgr;
