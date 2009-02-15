@@ -24,6 +24,7 @@
 
 class DBIResults;
 class FCDBJob;
+
 struct IDBConnection
 {
   virtual DBIResults* Execute(FCDBJob job) = 0;
@@ -35,6 +36,7 @@ struct IDBConnection
 struct IDBInterface
 {
   virtual IDBConnection* Connect(std::string server, short port, std::string dbname, std::string user, std::string pass) = 0;
+	virtual void Disconnect(IDBConnection* pConn) = 0;
   virtual void Release() = 0;
 };
 

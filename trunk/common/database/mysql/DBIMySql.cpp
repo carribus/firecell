@@ -83,6 +83,31 @@ IDBConnection* DBIMySql::Connect(std::string server, short port, std::string dbn
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
+void DBIMySql::Disconnect(IDBConnection* pConn)
+{
+	if ( !pConn )
+		return;
+
+  pthread_mutex_lock(&m_mutexConns);
+
+	vector<DBIMySqlConnection*>::iterator it = m_connections.begin();
+	vector<DBIMySqlConnection*>::iterator limit = m_connections.end();
+
+	for ( ; it != limit; it++ )
+	{
+		if ( *it == pConn )
+		{
+			m_connections.erase(it);
+			delete (DBIMySqlConnection*) pConn;
+			break;
+		}
+	}
+
+  pthread_mutex_unlock(&m_mutexConns);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
 void DBIMySql::Release()
 {
   delete this;
