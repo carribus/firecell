@@ -195,6 +195,41 @@ bool Desktop::OnEvent(const SEvent& event)
         }
         break;
 
+			case	EGET_MENU_ITEM_SELECTED:
+				{
+					IGUIContextMenu* pMenu = (IGUIContextMenu*)event.GUIEvent.Caller;
+					s32 selItem = pMenu->getSelectedItem();
+
+					switch ( pMenu->getItemCommandId(selItem) )
+					{
+					case	0xFFFFFFFC:					// Character Info
+						{
+						}
+						break;
+
+					case	0xFFFFFFFD:					// System Info
+						{
+						}
+						break;
+
+					case	0xFFFFFFFE:					// About FireCell
+						{
+						}
+						break;
+
+					case	0xFFFFFFFF:					// Quit FireCell
+						{
+							FCViewEvent e(VE_ClientExit);
+							m_owner.GetContainer()->GetController()->OnViewEvent(e);
+						}
+						break;
+
+					default:
+						break;
+					}
+				}
+				break;
+
 	    default:
 		    break;
       }

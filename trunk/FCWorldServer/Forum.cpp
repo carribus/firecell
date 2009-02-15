@@ -118,7 +118,7 @@ bool Forum::CreateNewForumThread(FCULONG category_id, FCULONG author_id, std::st
     sprintf(now, "%ld-%02ld-%02ld %02ld:%02ld:%02ld", pTime->tm_year+1900, pTime->tm_mon+1, pTime->tm_mday, pTime->tm_hour, pTime->tm_min, pTime->tm_sec);
     if ( (pNewPost = AddForumPost( postID, 0, category_id, (FCULONG)-1, title, content, author_id, now )) )
 		{
-			// persist the new object to the database...
+			
 
 			bResult = true;
 		}

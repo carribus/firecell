@@ -33,6 +33,8 @@ private:
 	void addApplicationOptions();
 	void removeApplicationOptions();
 
+	void showSystemMenu();
+
   u32                 m_height;
 
   IGUIFont*           m_pClockFont;
@@ -44,6 +46,7 @@ private:
 
 	struct AppBarOption
 	{
+		FCULONG id;
 		bool bAppOption;
 		bool bHighlight;
 		rect<s32> rect;

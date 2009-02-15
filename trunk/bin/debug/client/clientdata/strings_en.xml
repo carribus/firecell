@@ -31,4 +31,9 @@
 	<String id="APP_FORUM_CATEGORY">Category</String>
 	<!-- APP BAR -->
 	<String id="APP_APPBAR_SYSTEM">System</String>
+	<!-- APP BAR: System Menu -->
+	<String id="APP_APPBAR_SYSTEM_MENU_CHARINFO">Character Info</String>
+	<String id="APP_APPBAR_SYSTEM_MENU_SYSTEMINFO">System Info</String>
+	<String id="APP_APPBAR_SYSTEM_MENU_ABOUT">About FireCell</String>
+	<String id="APP_APPBAR_SYSTEM_MENU_EXIT">Quit FireCell</String>
 </FCStrings>
