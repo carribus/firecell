@@ -27,6 +27,7 @@ public:
   void RequestForumCategories(FCULONG character_id);
 	void RequestForumThreads(FCULONG category_id);
 	void RequestForumThreadDetails(FCULONG category_id, FCULONG thread_id);
+  void RequestForumThreadContentBlob(FCULONG category_id, FCULONG thread_id);
   void SendNewForumPost(FCULONG category_id, const char* pSubject, FCULONG msgLen, const char* pMessage);
 
   void SetSocket(BaseSocket* pSock)                             { m_pSock = pSock; }

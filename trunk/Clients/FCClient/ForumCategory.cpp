@@ -38,13 +38,14 @@ bool ForumCategory::addChild(ForumCategory* pCategory)
 
 ///////////////////////////////////////////////////////////////////////
 
-bool ForumCategory::addThread(FCULONG thread_id, FCULONG parent_id, FCULONG order, std::string title, FCULONG author_id, std::string author_name, std::string date_created, FCULONG mission_id)
+bool ForumCategory::addThread(FCULONG category_id, FCULONG thread_id, FCULONG parent_id, FCULONG order, std::string title, FCULONG author_id, std::string author_name, std::string date_created, FCULONG mission_id)
 {
 	ForumThread* pThread = getThread(thread_id);
 
 	if ( !pThread )
 	{
-		pThread = new ForumThread(thread_id, 
+		pThread = new ForumThread(category_id, 
+                              thread_id, 
 															parent_id,
 															order,
 															title,

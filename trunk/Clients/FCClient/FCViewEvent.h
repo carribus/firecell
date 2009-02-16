@@ -21,6 +21,7 @@ enum e_FCViewEventType
   VE_ForumRefreshCategories,
 	VE_ForumCategorySelected,
   VE_ForumNewThread,
+  VE_ForumThreadSelected
 };
 
 /////////////////////////////////////////////////////////////////
@@ -83,6 +84,27 @@ private:
   wstring                 m_subject;
   wstring                 m_message;
   FCULONG                 m_category_id;
+};
+
+/////////////////////////////////////////////////////////////////
+
+class FCViewEventThreadSelected : public FCViewEvent
+{
+public:
+  FCViewEventThreadSelected(FCULONG category_id, FCULONG thread_id)
+    : FCViewEvent( VE_ForumThreadSelected )
+    , m_category_id(category_id)
+    , m_thread_id(thread_id)
+  {
+  }
+
+  FCULONG getCategoryID()                   { return m_category_id; }
+  FCULONG getThreadID()                     { return m_thread_id; }
+
+private:
+
+  FCULONG                 m_category_id;
+  FCULONG                 m_thread_id;
 };
 
 #endif//_FCVIEWEVENT_H_

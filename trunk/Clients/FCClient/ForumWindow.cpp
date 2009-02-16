@@ -93,6 +93,19 @@ bool ForumWindow::OnCategoryThreadsReceived(FCULONG category_id)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool ForumWindow::OnThreadContentReceived(ForumThread* pThread)
+{
+  if ( !pThread )
+    return false;
+
+  // TODO: Update the forum thread reader
+  SetWaitingForResponse(false);
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void ForumWindow::OnCategorySelected(FCULONG category_id)
 {
   ForumCategory* pCat = m_pModel->getCategoryByID(category_id);
@@ -115,8 +128,13 @@ void ForumWindow::OnCategorySelected(FCULONG category_id)
 
 void ForumWindow::OnThreadSelected(FCULONG category_id, FCULONG thread_id)
 {
+  // hide the thread browser and show the thread details view
+//  m_pForumThreadBrowser->setVisible(false);
+
   // request the selected thread's details
-//  SetWaitingForResponse(true);
+  SetWaitingForResponse(true);
+  FCViewEventThreadSelected e(category_id, thread_id);
+  m_pController->OnViewEvent(e);
 }
 
 ///////////////////////////////////////////////////////////////////////

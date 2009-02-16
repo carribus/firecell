@@ -28,6 +28,11 @@ public:
    */
   bool OnCategoryThreadsReceived(FCULONG category_id);
 
+  /**
+   *  @brief Event handler for when the content for a particular thread has been received from the server
+   */
+  bool OnThreadContentReceived(ForumThread* pThread);
+
 	/*
 	 *	IForumCatBrowserSink implementation
 	 */

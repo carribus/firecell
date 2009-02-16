@@ -1,6 +1,13 @@
 #include "../common/Logging/DynLog.h"
+#include "EventSystem.h"
+#include "Event.h"
 #include "ForumPost.h"
 #include "Forum.h"
+
+DEFINE_EVENT_SOURCE(Forum);
+DEFINE_EVENT(Forum, NewCategory);
+DEFINE_EVENT(Forum, NewThread);
+DEFINE_EVENT(Forum, NewReply);
 
 Forum::Forum(void)
 : m_mutexCategories(true)
@@ -118,7 +125,8 @@ bool Forum::CreateNewForumThread(FCULONG category_id, FCULONG author_id, std::st
     sprintf(now, "%ld-%02ld-%02ld %02ld:%02ld:%02ld", pTime->tm_year+1900, pTime->tm_mon+1, pTime->tm_mday, pTime->tm_hour, pTime->tm_min, pTime->tm_sec);
     if ( (pNewPost = AddForumPost( postID, 0, category_id, (FCULONG)-1, title, content, author_id, now )) )
 		{
-			
+      // emit an event for the new forum post
+      EventSystem::GetInstance()->Emit( this, NULL, new Event(Forum::EVT_NewThread, (void*)pNewPost) );
 
 			bResult = true;
 		}
@@ -162,7 +170,7 @@ ForumPost* Forum::AddForumPost(FCULONG id, FCULONG parentID, FCULONG category_id
 
 ///////////////////////////////////////////////////////////////////////
 
-size_t Forum::GetForumThreads(FCULONG category_id, vector<ForumPost>& target)
+size_t Forum::GetForumThreads(FCULONG category_id, vector<ForumPost*>& target)
 {
 	ForumCategory* pCat = GetCategoryByID(category_id);
 
