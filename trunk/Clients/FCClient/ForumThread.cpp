@@ -66,3 +66,17 @@ ForumThread* ForumThread::getPost(FCULONG threadID)
 
   return NULL;
 }
+
+///////////////////////////////////////////////////////////////////////
+
+void ForumThread::clearAllPosts()
+{
+  ThreadVector::iterator it = m_posts.begin();
+  ThreadVector::iterator limit = m_posts.end();
+
+  for ( ; it != limit; it++ )
+  {
+    delete (*it);
+  }
+  m_posts.erase( m_posts.begin(), limit );
+}

@@ -7,6 +7,7 @@
 #include "InGameAppWindow.h"
 #include "GUIForumCatBrowser.h"
 #include "GUIForumThreadBrowser.h"
+#include "GUIForumThreadReader.h"
 
 class ForumWindow : public InGameAppWindow
 									, public IForumCatBrowserSink
@@ -60,6 +61,7 @@ private:
   IrrlichtDevice*         m_pDevice;
   GUIForumCatBrowser*     m_pForumCatBrowser;
   GUIForumThreadBrowser*  m_pForumThreadBrowser;
+  GUIForumThreadReader*   m_pForumThreadReader;
 
 	ForumModel*							m_pModel;
 };

@@ -7,15 +7,16 @@
 
 class ForumThread
 {
+public:
   typedef std::vector<ForumThread*> ThreadVector;
 
-public:
-	ForumThread(void);
+  ForumThread(void);
 	ForumThread(FCULONG categoryID, FCULONG threadID, FCULONG parentID, FCULONG order, std::string title, FCULONG authorID, std::string authorName, std::string dateCreated, FCULONG missionID);
 	~ForumThread(void);
 
   ForumThread* addPost(FCULONG threadID, FCULONG parentID, FCULONG order, std::string title, FCULONG authorID, std::string authorName, std::string dateCreated, FCULONG missionID);
   ForumThread* getPost(FCULONG threadID);
+  void clearAllPosts();
   ThreadVector& getAllPosts()                     { return m_posts; }
 
   FCULONG getCategoryID()                         { return m_category_id; }
