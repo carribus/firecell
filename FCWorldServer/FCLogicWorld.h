@@ -77,7 +77,9 @@ private:
   void SendConsoleFileList(string currentDir, vector<FileSystem::File> files, RouterSocket* pRouter, FCSOCKET clientSocket);
   void SendConsoleCommandResult(Player* pPlayer, string result, RouterSocket* pRouter, FCSOCKET clientSocket);
 	void SendForumCategories(vector<ForumCategory*>& categories, RouterSocket* pRouter, FCSOCKET clientSocket);
-	void SendForumThreads(FCULONG category_id, vector<ForumPost>& threads, RouterSocket* pRouter, FCSOCKET clientSocket);
+	void SendForumThreads(FCULONG category_id, vector<ForumPost*>& threads, RouterSocket* pRouter, FCSOCKET clientSocket);
+  void SendForumThreadDetails(FCULONG category_id, ForumPost* pPost, RouterSocket* pRouter, FCSOCKET clientSocket);
+  void SendForumThreadContentBlob(FCULONG category_id, ForumPost* pPost, RouterSocket* pRouter, FCSOCKET clientSocket);
 
   //
   // Packet handling functions
@@ -95,6 +97,7 @@ private:
 		bool OnCommandForumGetCategories(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
     bool OnCommandForumGetThreads(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
 		bool OnCommandForumGetThreadDetails(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
+    bool OnCommandForumGetThreadContentBlob(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
     bool OnCommandForumCreateNewThread(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
 
     bool OnCommandClientDisconnect(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);

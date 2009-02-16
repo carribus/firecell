@@ -347,6 +347,18 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
 		}
 		break;
 
+  case  FCMSG_FORUM_GET_THREAD_DETAILS:
+    {
+      bHandled = OnResponseForumGetThreadDetails(pPkt, pSocket);
+    }
+    break;
+
+  case  FCMSG_FORUM_GET_THREAD_CONTENTBLOB:
+    {
+      bHandled = OnResponseForumGetThreadContentBlob(pPkt, pSocket);
+    }
+    break;
+
   default:
 
     if ( !bHandled )
@@ -755,7 +767,8 @@ bool FCModel::OnResponseForumGetThreads(PEPacket* pPkt, BaseSocket* pSocket)
 	{
 		for ( FCULONG i = 0; i < d->thread_count; i++ )
 		{
-			pCat->addThread(d->threads[i].thread_id,
+			pCat->addThread(d->category_id, 
+                      d->threads[i].thread_id,
 											d->threads[i].parent_id,
 											d->threads[i].order,
 											d->threads[i].title,
@@ -771,6 +784,88 @@ bool FCModel::OnResponseForumGetThreads(PEPacket* pPkt, BaseSocket* pSocket)
 	delete [] (FCBYTE*)d;
 
 	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseForumGetThreadDetails(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_FORUM_GET_THREAD_DETAILS_RESP* d = NULL;
+  size_t dataLen;
+  ForumModel* pForum = ForumModel::instance();
+  ForumCategory* pCat = NULL;
+  ForumThread* pThread = NULL;
+  
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  d = (__FCPKT_FORUM_GET_THREAD_DETAILS_RESP*) new FCBYTE[dataLen];
+  pPkt->GetField("data", d, dataLen);
+
+  if ( (pCat = pForum->getCategoryByID( d->category_id )) )
+  {
+    // get the main thread
+    if ( (pThread = pCat->getThread( d->ThreadData[0].thread_id )) )
+    {
+      ForumThread* pChildPost = NULL;
+      // get the content for the main thread
+      pThread->setContentParams( d->ThreadData[0].contentIndex, d->ThreadData[0].contentLen );
+
+      // add/update the child posts
+      for ( FCULONG i = 1; i < d->post_count; i++ )
+      {
+        pChildPost = pThread->addPost( d->ThreadData[i].thread_id, d->ThreadData[i].parent_id, i, "", d->ThreadData[i].author_id, d->ThreadData[i].author_name, d->ThreadData[i].date_created, 0 );
+        pChildPost->setContentParams( d->ThreadData[i].contentIndex, d->ThreadData[i].contentLen );
+      }
+    }
+
+    // now request the content blob for the thread
+    m_server.RequestForumThreadContentBlob(d->category_id, d->ThreadData[0].thread_id);
+  }
+
+  delete [] (FCBYTE*)d;
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseForumGetThreadContentBlob(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_FORUM_GET_THREAD_CONTENTBLOB_RESP* d = NULL;
+  size_t dataLen;
+  ForumModel* pForum = ForumModel::instance();
+  ForumCategory* pCat = NULL;
+  ForumThread* pThread = NULL;
+  std::string content;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  d = (__FCPKT_FORUM_GET_THREAD_CONTENTBLOB_RESP*) new FCBYTE[dataLen];
+  pPkt->GetField("data", d, dataLen);
+
+  if ( (pCat = pForum->getCategoryByID( d->category_id )) )
+  {
+    // get the main thread
+    if ( (pThread = pCat->getThread( d->thread_id )) )
+    {
+      content.assign( (const char*)&d->contentBlob[ pThread->getContentIndex() ], pThread->getContentLen() );
+      pThread->setContent(content);
+
+      std::vector<ForumThread*>& posts = pThread->getAllPosts();
+      std::vector<ForumThread*>::iterator it = posts.begin();
+      std::vector<ForumThread*>::iterator limit = posts.end();
+
+      for ( ; it != limit; it++ )
+      {
+        content.assign( (const char*)&d->contentBlob[ (*it)->getContentIndex() ], (*it)->getContentLen() );
+        (*it)->setContent(content);
+      }
+    }
+
+    FireEvent( FCME_Forum_ThreadContentReceived, (void*)pThread );
+  }
+
+  delete [] (FCBYTE*)d;
+
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -994,6 +1089,13 @@ void FCModel::ForumCreateNewThread(FCULONG category_id, std::wstring& subject, s
 
   delete [] pSubject;
   delete [] pMessage;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::ForumGetThreadDetails(FCULONG category_id, FCULONG thread_id)
+{
+  m_server.RequestForumThreadDetails(category_id, thread_id);
 }
 
 ///////////////////////////////////////////////////////////////////////

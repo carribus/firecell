@@ -9,7 +9,8 @@ enum e_FCEventType
 	FCME_Console_FileSystemInfo,
 	FCME_Console_Command,
   FCME_Forum_CategoriesReceived,
-	FCME_Forum_CategoryThreadsReceived
+	FCME_Forum_CategoryThreadsReceived,
+  FCME_Forum_ThreadContentReceived
 };
 
 class FCModelEvent

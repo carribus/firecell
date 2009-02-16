@@ -17,6 +17,8 @@
 #define STR_CONNECT_OK                         L"CONNECT_OK"
 #define STR_CONNECT_FAIL_RETRY                 L"CONNECT_FAIL_RETRY"
 #define STR_CONNECT_FINAL_FAIL                 L"CONNECT_FINAL_FAIL"
+#define STR_ABOUT_CAPTION                      L"ABOUT_CAPTION"
+#define STR_ABOUT_TEXT                         L"ABOUT_TEXT"
 #define STR_LOGINWND_CAPTION                   L"LOGINWND_CAPTION"
 #define STR_LOGINWND_USERNAME                  L"LOGINWND_USERNAME"
 #define STR_LOGINWND_PASSWORD                  L"LOGINWND_PASSWORD"

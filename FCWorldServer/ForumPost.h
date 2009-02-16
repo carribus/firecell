@@ -41,6 +41,8 @@ public:
 	FCULONG				GetMissionID()											{ return m_missionID; }
 	bool					IsLocked()													{ return m_locked; }
 
+  const vector<ForumPost*>& GetPosts()              { return m_posts; }
+
 	void					SetID(FCULONG id)										{ m_id = id; }
 	void					SetParentID(FCULONG id)							{ m_parentID = id; }
 	void					SetOrder(FCULONG order)							{ m_order = order; }

@@ -184,6 +184,7 @@ public:
   void ForumGetCategories();
 	void ForumGetThreads(FCULONG category_id);
   void ForumCreateNewThread(FCULONG category_id, std::wstring& subject, std::wstring& message);
+  void ForumGetThreadDetails(FCULONG category_id, FCULONG thread_id);
 
   vector<Character>& GetCharacters()               { return m_characters; }
   map<FCULONG, Country>& GetCountries()            { return m_countries; }
@@ -218,6 +219,8 @@ private:
 		bool OnResponseConsoleCommand(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseForumGetCategories(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseForumGetThreads(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnResponseForumGetThreadDetails(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnResponseForumGetThreadContentBlob(PEPacket* pPkt, BaseSocket* pSocket);
 
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
 

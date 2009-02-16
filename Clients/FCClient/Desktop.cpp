@@ -214,6 +214,8 @@ bool Desktop::OnEvent(const SEvent& event)
 
 					case	0xFFFFFFFE:					// About FireCell
 						{
+              Environment->addMessageBox( ResourceManager::instance().GetClientString(STR_ABOUT_CAPTION).c_str(),
+                                          ResourceManager::instance().GetClientString(STR_ABOUT_TEXT).c_str() );
 						}
 						break;
 
@@ -426,6 +428,10 @@ bool Desktop::OnForumEvent(FCModelEvent& event)
 
     case  FCME_Forum_CategoryThreadsReceived:
       bResult = pWnd->OnCategoryThreadsReceived((FCULONG)event.GetData());
+      break;
+
+    case  FCME_Forum_ThreadContentReceived:
+      bResult = pWnd->OnThreadContentReceived((ForumThread*)event.GetData());
       break;
 
 		default:

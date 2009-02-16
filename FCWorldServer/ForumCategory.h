@@ -76,6 +76,7 @@ public:
         m_mutexPosts.Unlock();
 				return (*it);
       }
+      it++;
 		}
 
     m_mutexPosts.Unlock();
@@ -85,7 +86,7 @@ public:
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	size_t GetForumPosts(vector<ForumPost>& target)
+	size_t GetForumPosts(vector<ForumPost*>& target)
 	{
     m_mutexPosts.Lock();
 		PostsVector::iterator it = m_posts.begin();
@@ -94,7 +95,7 @@ public:
 		while ( it != m_posts.end() )
 		{
 			pPost = (*it);
-			target.push_back(*pPost);
+			target.push_back(pPost);
 			it++;
 		}
 

@@ -158,5 +158,12 @@ void FCController::OnViewEvent(FCViewEvent& event)
       m_pModel->ForumCreateNewThread( pEv->getCategoryID(), pEv->getSubject(), pEv->getMessage() );
     }
     break;
+
+  case  VE_ForumThreadSelected:
+    {
+      FCViewEventThreadSelected* pEv = (FCViewEventThreadSelected*)&event;
+      m_pModel->ForumGetThreadDetails( pEv->getCategoryID(), pEv->getThreadID() );
+    }
+    break;
 	}
 }

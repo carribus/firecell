@@ -19,7 +19,7 @@ public:
 	bool addChild(ForumCategory* pCategory);
 	const ForumCategoryMap& getChildren()						{ return m_mapCategories; }
 
-	bool addThread(FCULONG thread_id, FCULONG parent_id, FCULONG order, std::string title, FCULONG author_id,	std::string author_name, std::string date_created, FCULONG mission_id);
+	bool addThread(FCULONG category_id, FCULONG thread_id, FCULONG parent_id, FCULONG order, std::string title, FCULONG author_id,	std::string author_name, std::string date_created, FCULONG mission_id);
 	ForumThread* getThread(FCULONG thread_id);
   const ForumThreadMap& getThreads()              { return m_mapThreads; }      
 

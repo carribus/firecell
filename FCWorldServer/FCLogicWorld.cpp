@@ -593,7 +593,7 @@ void FCLogicWorld::SendForumCategories(vector<ForumCategory*>& categories, Route
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCLogicWorld::SendForumThreads(FCULONG category_id, vector<ForumPost>& threads, RouterSocket* pRouter, FCSOCKET clientSocket)
+void FCLogicWorld::SendForumThreads(FCULONG category_id, vector<ForumPost*>& threads, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
 	PEPacket pkt;
 	__FCPKT_FORUM_GET_THREADS_RESP* d;
@@ -605,18 +605,18 @@ void FCLogicWorld::SendForumThreads(FCULONG category_id, vector<ForumPost>& thre
 	d->thread_count = (FCSHORT)threadCount;
 	d->category_id = category_id;
 
-	vector<ForumPost>::iterator it = threads.begin();
+	vector<ForumPost*>::iterator it = threads.begin();
 
 	while ( it != threads.end() )
 	{
-		d->threads[index].thread_id = it->GetID();
-		d->threads[index].parent_id = it->GetParentID();
-		d->threads[index].author_id = it->GetAuthorID();
-		strncpy( d->threads[index].author_name, it->GetAuthorName().c_str(), sizeof(d->threads[index].author_name) );
-		d->threads[index].mission_id = it->GetMissionID();
-		d->threads[index].order = it->GetOrder();
-		strncpy( d->threads[index].title, it->GetTitle().c_str(), sizeof(d->threads[index].title) );
-		strncpy( d->threads[index].date_created, it->GetDateCreated().c_str(), sizeof(d->threads[index].date_created) );
+		d->threads[index].thread_id = (*it)->GetID();
+		d->threads[index].parent_id = (*it)->GetParentID();
+		d->threads[index].author_id = (*it)->GetAuthorID();
+		strncpy( d->threads[index].author_name, (*it)->GetAuthorName().c_str(), sizeof(d->threads[index].author_name) );
+		d->threads[index].mission_id = (*it)->GetMissionID();
+		d->threads[index].order = (*it)->GetOrder();
+		strncpy( d->threads[index].title, (*it)->GetTitle().c_str(), sizeof(d->threads[index].title) );
+		strncpy( d->threads[index].date_created, (*it)->GetDateCreated().c_str(), sizeof(d->threads[index].date_created) );
 		it++;
 		index++;
 	}
@@ -633,6 +633,152 @@ void FCLogicWorld::SendForumThreads(FCULONG category_id, vector<ForumPost>& thre
 
   // clear the data portion
   delete [] (FCBYTE*)d;
+}
+
+/**
+ *  @class FCLogicWorld
+ *  @fn SendForumThreadDetails
+ *  @param category_id The category ID that owns the thread whose details we are sending
+ *  @param pPost A pointer to the thread object that we need to send
+ *
+ *  @brief This function sends the details of a specific forum thread to the client.
+ *
+ *  This function performs a 2 step send. The first packet it sends is the __FCPKT_FORUM_GET_THREAD_DETAILS_RESP packet which
+ *  provides details on all the posts in the thread. 
+ *  The second packet sent is the __FCPKT_FORUM_GET_THREAD_DETAILS_CONTENTBLOB_RESP packet which contains a serialised blob
+ *  of the content of the entire threads (and all reply posts). The individual ThreadData elements in the first message contain
+ *  contentIndex and contentLen members which are indexes and lengths of individual post contents, and form part of the second
+ *  message's content blob.
+ */
+void FCLogicWorld::SendForumThreadDetails(FCULONG category_id, ForumPost* pPost, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  if ( !pPost )
+  {
+    DYNLOG_ADDLOG("FCLogicWorld::SendForumThreadDetails() failed due to pPost == NULL");
+    return;
+  }
+
+  PEPacket pkt;
+  __FCPKT_FORUM_GET_THREAD_DETAILS_RESP* d = NULL;
+//  __FCPKT_FORUM_GET_THREAD_DETAILS_CONTENTBLOB_RESP* d2 = NULL;
+  size_t pktLen = sizeof(__FCPKT_FORUM_GET_THREAD_DETAILS_RESP); //, pktLen2 = sizeof(__FCPKT_FORUM_GET_THREAD_DETAILS_CONTENTBLOB_RESP);
+  const vector<ForumPost*>& posts = pPost->GetPosts();
+  vector<ForumPost*>::const_iterator it = posts.begin();
+  vector<ForumPost*>::const_iterator limit = posts.end();
+  FCULONG numPosts = (FCULONG)posts.size(), contentLen = (FCULONG)pPost->GetContent().size(), postIndex = 1, contentIndex = 0;
+
+  // calculate the length of the content blob
+  for ( ; it != limit; it++ )
+  {
+    contentLen += (FCULONG)(*it)->GetContent().size();
+  }
+  // update the size of the packet
+  pktLen += (numPosts*sizeof(__FCPKT_FORUM_GET_THREAD_DETAILS_RESP::_thread_data));
+
+  // allocate the packet
+  d = (__FCPKT_FORUM_GET_THREAD_DETAILS_RESP*) new FCBYTE[pktLen];
+//  d2 = (__FCPKT_FORUM_GET_THREAD_DETAILS_CONTENTBLOB_RESP*) new FCBYTE[pktLen2 + contentLen-1];
+  if ( d )
+  {
+    d->category_id = category_id;
+    d->post_count = numPosts+1;
+    d->contentSize = contentLen;
+    // setup the parent post
+    d->ThreadData[0].thread_id = pPost->GetID();
+    d->ThreadData[0].parent_id = 0;
+    d->ThreadData[0].author_id = pPost->GetAuthorID();
+    strncpy( d->ThreadData[0].author_name, pPost->GetAuthorName().c_str(), sizeof(d->ThreadData[0].author_name) );
+    strncpy( d->ThreadData[0].date_created, pPost->GetDateCreated().c_str(), sizeof(d->ThreadData[0].date_created) );
+    d->ThreadData[0].contentIndex = contentIndex;
+    d->ThreadData[0].contentLen = (FCULONG)pPost->GetContent().size();
+//    strncpy( (char*)&d2->contentBlob[contentIndex], pPost->GetContent().c_str(), d->ThreadData[0].contentLen );
+    contentIndex += d->ThreadData[0].contentLen;
+
+    // loop through any child posts/replies and add them to the ThreadData structure
+    for ( it = posts.begin(); it != limit; it++, postIndex++ )
+    {
+      d->ThreadData[postIndex].thread_id = (*it)->GetID();
+      d->ThreadData[postIndex].parent_id = (*it)->GetParentID();
+      d->ThreadData[postIndex].author_id = (*it)->GetAuthorID();
+      strncpy( d->ThreadData[postIndex].author_name, (*it)->GetAuthorName().c_str(), sizeof(d->ThreadData[postIndex].author_name) );
+      strncpy( d->ThreadData[postIndex].date_created, (*it)->GetDateCreated().c_str(), sizeof(d->ThreadData[postIndex].date_created) );
+      d->ThreadData[postIndex].contentIndex = contentIndex;
+      d->ThreadData[postIndex].contentLen = (FCULONG)(*it)->GetContent().size();
+//      strncpy( (char*)&d2->contentBlob[contentIndex], (*it)->GetContent().c_str(), d->ThreadData[postIndex].contentLen );
+      contentIndex += d->ThreadData[postIndex].contentLen;
+    }
+
+    // send the packet
+    PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_FORUM_GET_THREAD_DETAILS, ST_None);
+    PEPacketHelper::SetPacketData(pkt, 
+                                  (void*)d, 
+                                  pktLen);
+
+    // send response to Client
+    pkt.SetFieldValue("target", (void*)&clientSocket);
+    pRouter->Send(&pkt);
+
+    // clear the data portion
+    delete [] (FCBYTE*)d;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::SendForumThreadContentBlob(FCULONG category_id, ForumPost* pPost, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  if ( !pPost )
+  {
+    DYNLOG_ADDLOG("FCLogicWorld::SendForumThreadContentBlob() failed due to pPost == NULL");
+    return;
+  }
+
+  PEPacket pkt;
+  __FCPKT_FORUM_GET_THREAD_CONTENTBLOB_RESP* d = NULL;
+  size_t pktLen = sizeof(__FCPKT_FORUM_GET_THREAD_CONTENTBLOB_RESP);
+  const vector<ForumPost*>& posts = pPost->GetPosts();
+  vector<ForumPost*>::const_iterator it = posts.begin();
+  vector<ForumPost*>::const_iterator limit = posts.end();
+  FCULONG numPosts = (FCULONG)posts.size(), contentLen = (FCULONG)pPost->GetContent().size(), postIndex = 1, contentIndex = 0;
+
+  // calculate the length of the content blob
+  for ( ; it != limit; it++ )
+  {
+    contentLen += (FCULONG)(*it)->GetContent().size();
+  }
+  // update the size of the packet
+  pktLen += contentLen-1;
+
+  d = (__FCPKT_FORUM_GET_THREAD_CONTENTBLOB_RESP*) new FCBYTE[pktLen];
+  if ( d )
+  {
+    d->category_id = category_id;
+    d->thread_id = pPost->GetID();
+    d->contentSize = contentLen;
+
+    // copy the main thread's content into the blob
+    strncpy( (char*)&d->contentBlob[contentIndex], pPost->GetContent().c_str(), pPost->GetContent().size() );
+    contentIndex += (FCULONG)pPost->GetContent().size();
+
+    for ( it = posts.begin(); it != limit; it++ )
+    {
+      strncpy( (char*)&d->contentBlob[contentIndex], (*it)->GetContent().c_str(), (*it)->GetContent().size() );
+      contentIndex += (FCULONG)(*it)->GetContent().size();
+    }
+
+    // send the packet
+    PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_FORUM_GET_THREAD_CONTENTBLOB, ST_None);
+    PEPacketHelper::SetPacketData(pkt, 
+                                  (void*)d, 
+                                  pktLen);
+
+    // send response to Client
+    pkt.SetFieldValue("target", (void*)&clientSocket);
+    pRouter->Send(&pkt);
+
+    // clear the data portion
+    delete [] (FCBYTE*)d;
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -720,6 +866,12 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
 			bHandled = OnCommandForumGetThreadDetails(pPkt, pRouter, clientSock);
 		}
 		break;
+
+  case  FCMSG_FORUM_GET_THREAD_CONTENTBLOB:
+    {
+      bHandled = OnCommandForumGetThreadContentBlob(pPkt, pRouter, clientSock);
+    }
+    break;
 
   case  FCMSG_FORUM_CREATE_NEW_THREAD:
     {
@@ -1001,7 +1153,7 @@ bool FCLogicWorld::OnCommandForumGetThreads(PEPacket* pPkt, RouterSocket* pSocke
 
   if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
   {
-		vector<ForumPost> target;
+		vector<ForumPost*> target;
 		m_forum.GetForumThreads( d.category_id, target );
 
 		SendForumThreads(d.category_id, target, pSocket, clientSocket);
@@ -1023,7 +1175,46 @@ bool FCLogicWorld::OnCommandForumGetThreadDetails(PEPacket* pPkt, RouterSocket* 
 
 	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
 	{
-		// TODO: Finish this code off - should return all posts that are childed to the initial thread post
+    ForumCategory* pCat = m_forum.GetCategoryByID(d.category_id);
+
+    if ( pCat )
+    {
+      ForumPost* pPost = pCat->GetPostByID(d.thread_id);
+
+      if ( pPost )
+      {
+        SendForumThreadDetails(d.category_id, pPost, pSocket, clientSocket);
+      }
+    }
+	}
+
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandForumGetThreadContentBlob(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCPKT_FORUM_GET_THREAD_CONTENTBLOB d;
+	size_t dataLen = 0;
+	Player* pPlayer = NULL;
+
+	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+	pPkt->GetField("data", (void*)&d, dataLen);
+
+	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+	{
+    ForumCategory* pCat = m_forum.GetCategoryByID(d.category_id);
+
+    if ( pCat )
+    {
+      ForumPost* pPost = pCat->GetPostByID(d.thread_id);
+
+      if ( pPost )
+      {
+        SendForumThreadContentBlob(d.category_id, pPost, pSocket, clientSocket);
+      }
+    }
 	}
 
 	return true;

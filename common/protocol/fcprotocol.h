@@ -502,11 +502,41 @@ struct __FCPKT_FORUM_GET_THREAD_DETAILS
 
 struct __FCPKT_FORUM_GET_THREAD_DETAILS_RESP
 {
+  FCULONG category_id;              //!> category that this thread belongs to
+  FCULONG post_count;               //!> Number of posts in this thread
+  FCULONG contentSize;              //!> size of the content blob
 
+  struct _thread_data
+  {
+    FCULONG thread_id;
+    FCULONG parent_id;
+    FCULONG author_id;
+    char author_name[32];
+    char date_created[32];
+    FCULONG contentIndex;           // index into blob at the end of this packet for this posts's content
+    FCULONG contentLen;
+  } ThreadData[1];
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-const FCSHORT FCMSG_FORUM_CREATE_NEW_THREAD     = 203;
+const FCSHORT FCMSG_FORUM_GET_THREAD_CONTENTBLOB     = 203;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_FORUM_GET_THREAD_CONTENTBLOB
+{
+  FCULONG category_id;
+  FCULONG thread_id;
+};
+
+struct __FCPKT_FORUM_GET_THREAD_CONTENTBLOB_RESP
+{
+  FCULONG category_id;
+  FCULONG thread_id;
+  FCULONG contentSize;              //!> size of the content blob
+  FCBYTE contentBlob[1];
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_FORUM_CREATE_NEW_THREAD     = 204;
 ///////////////////////////////////////////////////////////////////////////////////////////
 struct __FCPKT_FORUM_CREATE_NEW_THREAD
 {
@@ -515,6 +545,8 @@ struct __FCPKT_FORUM_CREATE_NEW_THREAD
   FCULONG contentLength;
   char content[1];
 };
+
+
 
 #pragma pack(pop)
 
