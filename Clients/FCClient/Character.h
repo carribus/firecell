@@ -2,6 +2,8 @@
 #define _CHARACTER_H_
 
 #include "../../common/fctypes.h"
+#include "../../common/game_objects/ComputerBase.h"
+#include "../../common/game_objects/InGameIPAddress.h"
 #include <string>
 
 using namespace std;
@@ -17,7 +19,7 @@ public:
   void SetFameScale(FCUINT scale)                     { m_fame_scale = scale; }
   void SetCountryID(FCBYTE countryID)                 { m_country_id = countryID; }
   void SetCityID(FCBYTE cityID)                       { m_city_id = cityID; }
-
+  
   FCUINT GetID()                                      { return m_id; }
   wstring GetName()                                   { return m_name; }
   FCUINT GetXP()                                      { return m_xp; }
@@ -25,6 +27,8 @@ public:
   FCUINT GetFameScale()                               { return m_fame_scale; }
   FCBYTE GetCountrID()                                { return m_country_id; }
   FCBYTE GetCityID()                                  { return m_city_id; }
+  InGameIPAddress& GetIP()                            { return m_ip; }
+  ComputerBase& GetComputer()                         { return m_computer; }
 
 private:
 
@@ -35,6 +39,9 @@ private:
   FCUINT m_fame_scale;
   FCBYTE m_country_id;
   FCBYTE m_city_id;
+
+  InGameIPAddress m_ip;
+  ComputerBase m_computer;
 };
 
 #endif//_CHARACTER_H_

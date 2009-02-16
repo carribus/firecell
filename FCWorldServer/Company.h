@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 #include "../common/fctypes.h"
-#include "InGameIPAddress.h"
+#include "../common/game_objects/InGameIPAddress.h"
 #include "Computer.h"
 
 using namespace std;

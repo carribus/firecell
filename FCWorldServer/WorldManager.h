@@ -6,7 +6,7 @@
 #include "City.h"
 #include "Company.h"
 #include "Player.h"
-#include "InGameIPAddress.h"
+#include "../common/game_objects/InGameIPAddress.h"
 
 using namespace std;
 

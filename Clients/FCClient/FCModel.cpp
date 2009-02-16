@@ -582,24 +582,43 @@ bool FCModel::OnResponseCharacterCreationParams_Cities(PEPacket* pPkt, BaseSocke
 
 bool FCModel::OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* pSocket)
 {
+  if ( !m_pCharacter )
+    return false;
+
   __FCPKT_CHARACTER_ASSET_REQUEST_RESP d;
   size_t dataLen;
-
+  InGameIPAddress& ip = m_pCharacter->GetIP();
+  ComputerBase& comp = m_pCharacter->GetComputer();
 
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", &d, dataLen);
-/*
-  printf("\nIP Address: %ld.%ld.%ld.%ld\n", d.ip_address.a, d.ip_address.b, d.ip_address.c, d.ip_address.d);
-  printf("Computer Specifications:\n\n");
-  printf("\tName: %s\n\tHDD Size: %ld MB\n\tNetwork Speed: %ld MBits\n",
-         d.computer.name, d.computer.hddSize, d.computer.networkSpeed);
-  printf("\tProcessor:\n\t\tName: %s\n\t\tCore Count: %ld\n\t\tCore Speed: %ldMhz\n",
-         d.computer.processor.name, d.computer.processor.core_count, d.computer.processor.core_speed);
-  printf("\tOperating System:\n\t\tName: %s\n\t\tKernal: %s\n",
-         d.computer.os.name, d.computer.os.kernel_name);
-  printf("\tMemory Module:\n\t\tName: %s\n\t\tSize: %ldMB\n",
-         d.computer.memory.name, d.computer.memory.mem_size);
-*/
+
+  // set the player's IP address
+  ip.SetIP( d.ip_address.a, d.ip_address.b, d.ip_address.c, d.ip_address.d );
+  
+  // update the player's computer details
+  comp.SetID(d.computer.id);
+  comp.SetName(d.computer.name);
+  comp.SetHDDSize(d.computer.hddSize);
+  comp.SetNetworkSpeed(d.computer.networkSpeed);
+
+  // update the player's processor details
+  comp.GetProcessor().SetItemInfo( d.computer.processor.item_id, d.computer.processor.name, d.computer.processor.itemtype_id,
+                                   d.computer.processor.min_level, d.computer.processor.max_level, d.computer.processor.npc_value );
+  comp.GetProcessor().SetCoreCount( d.computer.processor.core_count );
+  comp.GetProcessor().SetCoreSpeed( d.computer.processor.core_speed );
+
+  // update the player's OS details
+  comp.GetOS().SetItemInfo( d.computer.os.item_id, d.computer.os.name, d.computer.os.itemtype_id,
+                            d.computer.os.min_level, d.computer.os.max_level, d.computer.os.npc_value );
+  comp.GetOS().SetKernelID( d.computer.os.kernel_id );
+  comp.GetOS().SetKernelName( d.computer.os.kernel_name );
+
+  // update the player's memory details
+  comp.GetMemory().SetItemInfo( d.computer.memory.item_id, d.computer.memory.name, d.computer.memory.itemtype_id,
+                                d.computer.memory.min_level, d.computer.memory.max_level, d.computer.memory.npc_value );
+  comp.GetMemory().SetMemorySize( d.computer.memory.mem_size );
+
   m_server.RequestDesktopOptions(m_pCharacter->GetID());
 
   return true;

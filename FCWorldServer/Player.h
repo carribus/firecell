@@ -24,7 +24,7 @@
 #include "../common/fctypes.h"
 #include "IEventSystem.h"
 #include "Computer.h"
-#include "InGameIPAddress.h"
+#include "../common/game_objects/InGameIPAddress.h"
 
 using namespace std;
 
