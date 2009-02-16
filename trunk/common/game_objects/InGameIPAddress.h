@@ -1,7 +1,7 @@
 #ifndef _INGAMEIPADDRESS_H_
 #define _INGAMEIPADDRESS_H_
 
-#include "../common/fctypes.h"
+#include "../fctypes.h"
 
 class InGameIPAddress
 {

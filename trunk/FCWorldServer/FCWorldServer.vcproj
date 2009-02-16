@@ -131,6 +131,9 @@
 				RelativePath=".\Computer.cpp">
 			</File>
 			<File
+				RelativePath="..\common\game_objects\ComputerBase.cpp">
+			</File>
+			<File
 				RelativePath=".\Event.cpp">
 			</File>
 			<File
@@ -152,7 +155,7 @@
 				RelativePath=".\Forum.cpp">
 			</File>
 			<File
-				RelativePath=".\InGameIPAddress.cpp">
+				RelativePath="..\common\game_objects\InGameIPAddress.cpp">
 			</File>
 			<File
 				RelativePath="..\common\inifile.cpp">
@@ -161,13 +164,13 @@
 				RelativePath=".\ItemManager.cpp">
 			</File>
 			<File
-				RelativePath=".\ItemMemory.cpp">
+				RelativePath="..\common\game_objects\ItemMemory.cpp">
 			</File>
 			<File
-				RelativePath=".\ItemOS.cpp">
+				RelativePath="..\common\game_objects\ItemOS.cpp">
 			</File>
 			<File
-				RelativePath=".\ItemProcessor.cpp">
+				RelativePath="..\common\game_objects\ItemProcessor.cpp">
 			</File>
 			<File
 				RelativePath=".\Mission.cpp">
@@ -232,6 +235,9 @@
 				RelativePath=".\Computer.h">
 			</File>
 			<File
+				RelativePath="..\common\game_objects\ComputerBase.h">
+			</File>
+			<File
 				RelativePath=".\Country.h">
 			</File>
 			<File
@@ -271,7 +277,7 @@
 				RelativePath=".\IEventSystem.h">
 			</File>
 			<File
-				RelativePath=".\InGameIPAddress.h">
+				RelativePath="..\common\game_objects\InGameIPAddress.h">
 			</File>
 			<File
 				RelativePath="..\common\inifile.h">
@@ -283,22 +289,22 @@
 				RelativePath="..\fcserver\interfaces\IServiceLogic.h">
 			</File>
 			<File
-				RelativePath=".\Item.h">
+				RelativePath="..\common\game_objects\Item.h">
 			</File>
 			<File
 				RelativePath=".\ItemManager.h">
 			</File>
 			<File
-				RelativePath=".\ItemMemory.h">
+				RelativePath="..\common\game_objects\ItemMemory.h">
 			</File>
 			<File
-				RelativePath=".\ItemOS.h">
+				RelativePath="..\common\game_objects\ItemOS.h">
 			</File>
 			<File
-				RelativePath=".\ItemProcessor.h">
+				RelativePath="..\common\game_objects\ItemProcessor.h">
 			</File>
 			<File
-				RelativePath=".\ItemType.h">
+				RelativePath="..\common\game_objects\ItemType.h">
 			</File>
 			<File
 				RelativePath=".\Mission.h">

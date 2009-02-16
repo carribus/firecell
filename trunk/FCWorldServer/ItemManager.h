@@ -21,11 +21,11 @@
 #define _ITEMMANAGER_H_
 
 #include <map>
-#include "ItemType.h"
-#include "Item.h"
-#include "ItemProcessor.h"
-#include "ItemOS.h"
-#include "ItemMemory.h"
+#include "../common/game_objects/ItemType.h"
+#include "../common/game_objects/Item.h"
+#include "../common/game_objects/ItemProcessor.h"
+#include "../common/game_objects/ItemOS.h"
+#include "../common/game_objects/ItemMemory.h"
 
 class ItemManager
 {

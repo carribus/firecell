@@ -1,6 +1,6 @@
 #include <sstream>
 #include "Computer.h"
-#include "ItemOS.h"
+#include "../common/game_objects/ItemOS.h"
 #include "FileSystemActionHandler.h"
 
 FileSystemActionHandler::FileSystemActionHandler(void)
