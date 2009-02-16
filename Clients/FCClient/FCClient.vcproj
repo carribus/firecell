@@ -197,6 +197,9 @@
 				RelativePath=".\GUIForumThreadBrowser.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIForumThreadReader.cpp">
+			</File>
+			<File
 				RelativePath=".\InGameAppWindow.cpp">
 			</File>
 			<File
@@ -344,6 +347,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIForumThreadBrowser.h">
+			</File>
+			<File
+				RelativePath=".\GUIForumThreadReader.h">
 			</File>
 			<File
 				RelativePath=".\IDesktop.h">

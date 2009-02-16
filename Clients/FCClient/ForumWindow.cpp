@@ -9,6 +9,7 @@ ForumWindow::ForumWindow(IDesktop* pDesktop, FCController* pController, Irrlicht
 , m_pDevice(pDevice)
 , m_pForumCatBrowser(NULL)
 , m_pForumThreadBrowser(NULL)
+, m_pForumThreadReader(NULL)
 , m_pModel(NULL)
 {
 }
@@ -17,6 +18,22 @@ ForumWindow::ForumWindow(IDesktop* pDesktop, FCController* pController, Irrlicht
 
 ForumWindow::~ForumWindow(void)
 {
+  ForumModel* pForum = ForumModel::instance();
+
+  if ( m_pForumThreadReader )
+  {
+    ForumCategory* pCat = pForum->getCategoryByID( m_pForumThreadReader->getCategoryID() );
+
+    if ( pCat )
+    {
+      ForumThread* pThread = pCat->getThread( m_pForumThreadReader->getThreadID() );
+
+      if ( pThread )
+      {
+        pThread->clearAllPosts();
+      }
+    }
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -51,6 +68,11 @@ bool ForumWindow::Create(s32 AppElemID, FCUINT optionID, std::wstring caption)
   m_pForumThreadBrowser->registerSink(this);
   m_pForumThreadBrowser->setVisible(false);
   m_pForumThreadBrowser->drop();
+
+  // create the thread reader component
+  m_pForumThreadReader = new GUIForumThreadReader(m_pEnv, clientRect, m_pWindow);
+  m_pForumThreadReader->setVisible(false);
+  m_pForumThreadReader->drop();
 
   m_pEnv->setFocus( m_pForumCatBrowser );
 
@@ -99,6 +121,8 @@ bool ForumWindow::OnThreadContentReceived(ForumThread* pThread)
     return false;
 
   // TODO: Update the forum thread reader
+  m_pForumThreadReader->setModel(m_pModel);
+  m_pForumThreadReader->updateThreadContent(pThread);
   SetWaitingForResponse(false);
 
   return true;
@@ -129,7 +153,10 @@ void ForumWindow::OnCategorySelected(FCULONG category_id)
 void ForumWindow::OnThreadSelected(FCULONG category_id, FCULONG thread_id)
 {
   // hide the thread browser and show the thread details view
-//  m_pForumThreadBrowser->setVisible(false);
+  m_pForumThreadBrowser->setVisible(false);
+  m_pForumThreadReader->setCategoryID(category_id);
+  m_pForumThreadReader->setThreadID(thread_id);
+  m_pForumThreadReader->setVisible(true);
 
   // request the selected thread's details
   SetWaitingForResponse(true);
