@@ -113,7 +113,14 @@ void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
   }
   else
   {
-    DYNLOG_ADDLOG( DYNLOG_FORMAT("Player::OnEvent(): Unknown event received [source:%s / event:%s]", sourceType.c_str(), pEvent->GetCode().c_str()) );
+    // its not a player event, so it may be related to a mission or something else that happened to us
+    bool bHandled = false;
+
+
+
+    // if we didn't handle the event, then log the incident
+    if ( bHandled )
+      DYNLOG_ADDLOG( DYNLOG_FORMAT("Player::OnEvent(): Unknown event received [source:%s / event:%s]", sourceType.c_str(), pEvent->GetCode().c_str()) );
   }
 }
 

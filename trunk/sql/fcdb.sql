@@ -1,5 +1,5 @@
 /*
-SQLyog Enterprise - MySQL GUI v7.13 
+SQLyog Enterprise - MySQL GUI v7.15 
 MySQL - 5.0.67-community-nt : Database - firecell
 *********************************************************************
 */
@@ -46,6 +46,19 @@ CREATE TABLE `fc_accounttypes` (
 /*Data for the table `fc_accounttypes` */
 
 insert  into `fc_accounttypes`(`accounttype_level`,`name`) values (0,'Guest'),(1,'Normal'),(2,'GM'),(3,'Administrator');
+
+/*Table structure for table `fc_charactermissions` */
+
+DROP TABLE IF EXISTS `fc_charactermissions`;
+
+CREATE TABLE `fc_charactermissions` (
+  `character_id` smallint(6) NOT NULL,
+  `mission_id` int(10) unsigned NOT NULL,
+  `complete` char(1) default '0' COMMENT 'completed flag',
+  PRIMARY KEY  (`character_id`,`mission_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_charactermissions` */
 
 /*Table structure for table `fc_characters` */
 
@@ -173,11 +186,11 @@ CREATE TABLE `fc_forumposts` (
   `date_created` datetime NOT NULL COMMENT 'Datetime of thread creation',
   `mission_id` bigint(20) unsigned default NULL COMMENT 'Set if this post is tied to a mission',
   PRIMARY KEY  (`forumpost_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_forumposts` */
 
-insert  into `fc_forumposts`(`forumpost_id`,`parentpost_id`,`forumcategory_id`,`order`,`title`,`author_id`,`content`,`date_created`,`mission_id`) values (1,NULL,2,1,'Your first mission',1,'This is your first mission','2008-12-11 11:44:41',1),(2,NULL,1,1,'Welcome to FireCell',1,'Hello and welcome to FireCell.\r\n\r\nThank you for taking the time to play this game that I have created in my spare time to enjoy with you, and all our friends on the internet. The Forums will serve as the primary point of communication, both with you and the community, but also with the various crews that are created in the game. You will also find missions to help you improve your character and hardware as well as earn as much money as possible!\r\n\r\nI hope you have a great time exploring this virtual cyberspace, and good luck in hacking your way to fame or notoriority. The choice is yours!\r\n\r\n-FCGM','2009-02-11 22:35:43',NULL),(3,NULL,1,2,'Rules for forum posting',1,'Although the cyberspace universe of FireCell can be as untamed and wild as the players make it, it would be appreciated if all players could control their language used in the publically available forums, as well as keeping their flaming to the flame section. Any players found callously ignoring this request will be banned after repeat offences.\r\n\r\nThank you for your understanding,\r\n- FCGM','2009-02-11 22:41:45',NULL);
+insert  into `fc_forumposts`(`forumpost_id`,`parentpost_id`,`forumcategory_id`,`order`,`title`,`author_id`,`content`,`date_created`,`mission_id`) values (1,NULL,2,1,'Your first mission',1,'This is your first mission','2008-12-11 11:44:41',1),(2,NULL,1,1,'Welcome to FireCell',1,'Hello and welcome to FireCell.\r\n\r\nThank you for taking the time to play this game that I have created in my spare time to enjoy with you, and all our friends on the internet. The Forums will serve as the primary point of communication, both with you and the community, but also with the various crews that are created in the game. You will also find missions to help you improve your character and hardware as well as earn as much money as possible!\r\n\r\nI hope you have a great time exploring this virtual cyberspace, and good luck in hacking your way to fame or notoriority. The choice is yours!\r\n\r\n-FCGM','2009-02-11 22:35:43',NULL),(3,NULL,1,2,'Rules for forum posting',1,'Although the cyberspace universe of FireCell can be as untamed and wild as the players make it, it would be appreciated if all players could control their language used in the publically available forums, as well as keeping their flaming to the flame section. Any players found callously ignoring this request will be banned after repeat offences.\r\n\r\nThank you for your understanding,\r\n- FCGM','2009-02-11 22:41:45',NULL),(4,3,1,1,'',2,'Good rules!\r\n\r\nI hope everything goes according to plan','2009-02-16 14:37:18',NULL);
 
 /*Table structure for table `fc_items` */
 

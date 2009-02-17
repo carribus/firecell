@@ -1120,7 +1120,7 @@ bool FCLogicWorld::OnCommandConsoleCommand(PEPacket* pPkt, RouterSocket* pSocket
       cmd.erase(cmd.find_first_of(" "), cmd.length());
     }
 
-    string result = fs.ExecuteCommand(cmd, args);
+    string result = fs.ExecuteCommand(pPlayer, cmd, args);
     SendConsoleCommandResult(pPlayer, result, pSocket, clientSocket);
   }
   else

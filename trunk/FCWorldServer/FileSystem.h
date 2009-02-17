@@ -24,17 +24,24 @@
 #include <list>
 #include <map>
 #include <vector>
+#include "IEventSystem.h"
 #include "../common/TinyXML/tinyxml.h"
 
 using namespace std;
 
 // forward declaration(s)
 class Computer;
+class Player;
 
-class FileSystem
+class FileSystem : public IEventSource
 {
 public:
   
+  DECLARE_EVENT_SOURCE();
+  DECLARE_EVENT(FileListing);
+  DECLARE_EVENT(ChangeDir);
+  DECLARE_EVENT(OSVersion);
+
   class Command
   {
   public:
@@ -80,13 +87,18 @@ public:
 
   bool LoadFromXML(const string& filename);
   size_t EnumerateFiles(string path, vector<FileSystem::File>& target);
-  string ExecuteCommand(const string& cmd, const string& arguments);
+  string ExecuteCommand(Player* pCaller, const string& cmd, const string& arguments);
 
   bool IsRootDir(const string& path);
   string GetCurrentPathName();
 //  string GetCurrentPathName()                               { return m_currentPath; }
   bool SetCurrentDir(string path);
   FileSystem::File GetCurrentDir()                          { return *m_pCurrentDir; }
+
+  /*
+   *  IEventSource implementation
+   */
+  const string& GetType()                                   { return FileSystem::EVTSYS_ObjectType; }
 
   FSStyle             GetFSStyle()                          { return m_style; }
   string              GetDirSeperator()                     { return m_dirSeperator; }
