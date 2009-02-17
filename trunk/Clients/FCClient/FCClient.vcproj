@@ -194,6 +194,9 @@
 				RelativePath=".\GUIForumCatBrowser.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIForumPostItem.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIForumThreadBrowser.cpp">
 			</File>
 			<File
@@ -271,10 +274,10 @@
 				RelativePath=".\clientstrings.h">
 			</File>
 			<File
-				RelativePath="..\common\Socket\clienttypes.h">
+				RelativePath="..\common\clienttypes.h">
 			</File>
 			<File
-				RelativePath="..\common\clienttypes.h">
+				RelativePath="..\common\Socket\clienttypes.h">
 			</File>
 			<File
 				RelativePath="..\..\common\game_objects\ComputerBase.h">
@@ -344,6 +347,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIForumCatBrowser.h">
+			</File>
+			<File
+				RelativePath=".\GUIForumPostItem.h">
 			</File>
 			<File
 				RelativePath=".\GUIForumThreadBrowser.h">

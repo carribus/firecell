@@ -155,7 +155,7 @@ void FCController::OnViewEvent(FCViewEvent& event)
   case  VE_ForumNewThread:
     {
       FCViewEventNewForumPost* pEv = (FCViewEventNewForumPost*)&event;
-      m_pModel->ForumCreateNewThread( pEv->getCategoryID(), pEv->getSubject(), pEv->getMessage() );
+      m_pModel->ForumCreateNewThread( pEv->getCategoryID(), pEv->getThreadID(), pEv->getSubject(), pEv->getMessage() );
     }
     break;
 

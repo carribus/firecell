@@ -40,11 +40,21 @@ ForumThread* ForumThread::addPost(FCULONG threadID, FCULONG parentID, FCULONG or
   if ( parentID != m_thread_id )
     return NULL;
 
-  ForumThread* pThread = new ForumThread(m_category_id, threadID, parentID, order, title, authorID, authorName, dateCreated, missionID);
-
-  if ( pThread )
-    m_posts.push_back(pThread);
-
+  ForumThread* pThread = NULL;
+	
+	// check if the thread already exist...
+	if ( !(pThread = getPost(threadID)) )
+	{
+		// the thread does not exist, so lets create it and add it
+		pThread = new ForumThread(m_category_id, threadID, parentID, order, title, authorID, authorName, dateCreated, missionID);
+		if ( pThread )
+			m_posts.push_back(pThread);
+	}
+	else
+	{
+		// the thread already exists, so lets just update its data
+		pThread->setTitle(title);
+	}
   return pThread;
 }
 

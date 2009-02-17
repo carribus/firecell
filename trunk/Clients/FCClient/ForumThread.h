@@ -30,6 +30,7 @@ public:
   std::string getContent()                        { return m_content; }
   FCULONG getMissionID()                          { return m_mission_id; }
 
+	void setTitle(const std::string& title)					{ m_title = title; }
   void setContentParams(FCULONG contentIndex, FCULONG contentLen)       { m_contentIndex = contentIndex; m_contentLen = contentLen; }
   void setContent(const std::string& content)     { m_content = content; }
   FCULONG getContentIndex()                       { return m_contentIndex; }
