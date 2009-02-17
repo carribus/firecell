@@ -421,7 +421,7 @@ void GUIForumThreadBrowser::drawThread(ForumThreadStruct& thread)
 	  ss.str(L"");
 
 	  // draw the author
-	  ss << L"Author: Blah blah";
+	  ss << L"Author: " << thread.pThread->getAuthorName().c_str();
 	  cRect.UpperLeftCorner.Y += 18;
 	  pFont->draw( ss.str().c_str(), cRect, SColor(128, 255, 255, 255), false, false, &AbsoluteClippingRect );
 	  ss.str(L"");

@@ -36,10 +36,11 @@ void GUIForumPostItem::setItemData(ForumThread* pThread)
 	itemRect.LowerRightCorner.Y = itemRect.UpperLeftCorner.Y + FPI_AUTHOR_HEIGHT;
 	if ( !m_pTxtAuthor )
 	{
-		m_pTxtAuthor = Environment->addStaticText(L"Author: ...", itemRect, false, false, this);
-//		m_pTxtAuthor->setBackgroundColor(m_colBkg);
+    ss << L"Author: " << pThread->getAuthorName().c_str();
+		m_pTxtAuthor = Environment->addStaticText(ss.str().c_str(), itemRect, false, false, this);
 		m_pTxtAuthor->setOverrideColor(m_colText);
 		m_pTxtAuthor->setTextAlignment( EGUIA_UPPERLEFT, EGUIA_CENTER );
+    ss.str(L"");
 	}
 
 	if ( pThread->getTitle().size() )
@@ -49,7 +50,6 @@ void GUIForumPostItem::setItemData(ForumThread* pThread)
 		{
 			ss << L"Subject: " << pThread->getTitle().c_str();
 			m_pTxtSubject = Environment->addStaticText(ss.str().c_str(), itemRect, false, false, this);
-	//		m_pTxtSubject->setBackgroundColor(m_colBkg);
 			m_pTxtSubject->setOverrideColor(m_colText);
 			m_pTxtSubject->setTextAlignment( EGUIA_UPPERLEFT, EGUIA_CENTER );
 			ss.str(L"");
