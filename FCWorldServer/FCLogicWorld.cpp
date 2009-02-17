@@ -1251,7 +1251,7 @@ bool FCLogicWorld::OnCommandForumCreateNewThread(PEPacket* pPkt, RouterSocket* p
   {
     std::string message;
     message.assign( d->content, d->contentLength );
-    if ( !(bSuccess = m_forum.CreateNewForumThread( d->category_id, d->thread_id, pPlayer->GetID(), d->title, message )) )
+    if ( !(bSuccess = m_forum.CreateNewForumThread( d->category_id, d->thread_id, pPlayer->GetID(), pPlayer->GetName(), d->title, message )) )
     {
       DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to add new forum thread to categoryID:%ld (Author:%s[%ld])", d->category_id, pPlayer->GetName().c_str(), pPlayer->GetID()) );
     }
@@ -1750,7 +1750,7 @@ void FCLogicWorld::OnDBJob_LoadForumPosts(DBIResultSet& resultSet, void*& pConte
 	size_t rowCount = resultSet.GetRowCount();
 	FCULONG post_id, parent_id, category_id, order, author_id, mission_id;
 	bool locked;
-	string title, content, date_created;
+	string title, author, content, date_created;
 
 	for ( size_t i = 0; i < rowCount; i++ )
 	{
@@ -1760,12 +1760,13 @@ void FCLogicWorld::OnDBJob_LoadForumPosts(DBIResultSet& resultSet, void*& pConte
 		order = resultSet.GetULongValue("order", i);
 		title = resultSet.GetStringValue("title", i);
 		author_id = resultSet.GetULongValue("author_id", i);
+    author = resultSet.GetStringValue("author_name", i);
 		content = resultSet.GetStringValue("content", i);
 		date_created = resultSet.GetStringValue("date_created", i);
 		mission_id = resultSet.GetULongValue("mission_id", i);
     locked = resultSet.GetByteValue("locked", i) ? true : false;
 
-		pThis->m_forum.AddForumPost(post_id, parent_id, category_id, order, title, content, author_id, date_created, mission_id);
+		pThis->m_forum.AddForumPost(post_id, parent_id, category_id, order, title, content, author_id, author, date_created, mission_id);
 	}
 
   DYNLOG_ADDLOG( DYNLOG_FORMAT("%ld forum posts loaded", rowCount) );

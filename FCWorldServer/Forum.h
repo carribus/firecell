@@ -28,8 +28,8 @@ public:
 	size_t GetCategoriesForPlayer(const Player* pPlayer, vector<ForumCategory*>& target);
 	ForumCategory* GetCategoryByID(FCULONG id);
 
-  bool CreateNewForumThread(FCULONG category_id, FCULONG thread_id, FCULONG author_id, std::string title, std::string content);
-	ForumPost* AddForumPost(FCULONG id, FCULONG parentID, FCULONG category_id, FCULONG order, string title, string content, FCULONG author_id, string date_created, FCULONG mission_id = 0);
+  bool CreateNewForumThread(FCULONG category_id, FCULONG thread_id, FCULONG author_id, std::string author_name, std::string title, std::string content);
+	ForumPost* AddForumPost(FCULONG id, FCULONG parentID, FCULONG category_id, FCULONG order, string title, string content, FCULONG author_id, string author_name, string date_created, FCULONG mission_id = 0);
 	size_t GetForumThreads(FCULONG category_id, vector<ForumPost*>& target);
 
   /*
