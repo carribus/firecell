@@ -12,6 +12,7 @@
 class ForumWindow : public InGameAppWindow
 									, public IForumCatBrowserSink
                   , public IForumThreadBrowserSink
+									, public IForumThreadReaderSink
 {
 public:
   ForumWindow(IDesktop* pDesktop, FCController* pController, IrrlichtDevice* pDevice);
@@ -45,6 +46,12 @@ public:
   void OnThreadSelected(FCULONG category_id, FCULONG thread_id);
   void OnThreadViewClosed();
   void OnNewThreadPost(FCULONG category_id, std::wstring& subject, std::wstring& message);
+
+  /*
+   *  IForumThreadReaderSink implementation
+   */
+  void OnThreadReaderViewClosed();
+  void OnThreadReply(FCULONG category_id, FCULONG thread_id, std::wstring& subject, std::wstring& message);
 
   const wchar_t* getAppName()                             { return L"Forum Browser"; }
 

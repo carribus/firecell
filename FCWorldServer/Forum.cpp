@@ -108,14 +108,26 @@ ForumCategory* Forum::GetCategoryByID(FCULONG id)
 
 ///////////////////////////////////////////////////////////////////////
 
-bool Forum::CreateNewForumThread(FCULONG category_id, FCULONG author_id, std::string title, std::string content)
+bool Forum::CreateNewForumThread(FCULONG category_id, FCULONG thread_id, FCULONG author_id, std::string title, std::string content)
 {
   bool bResult = false;
   std::string now;
   ForumCategory* pCat = GetCategoryByID(category_id);
+	ForumPost* pThread = NULL;
 
   if ( pCat )
   {
+		// verify that the thread that this post should be childed to actually exists...
+		if ( thread_id > 0 )
+		{
+			pThread = pCat->GetPostByID(thread_id);
+			if ( !pThread )
+			{
+				DYNLOG_ADDLOG( DYNLOG_FORMAT("Forum::CreateNewForumThread FAILED: ThreadID %ld could not be found as parent", thread_id) );
+				return false;
+			}
+		}
+
 		ForumPost* pNewPost = NULL;
     time_t t = time(NULL);
 		FCULONG postID = GetNewPostID();
@@ -123,7 +135,7 @@ bool Forum::CreateNewForumThread(FCULONG category_id, FCULONG author_id, std::st
     char now[256];
 
     sprintf(now, "%ld-%02ld-%02ld %02ld:%02ld:%02ld", pTime->tm_year+1900, pTime->tm_mon+1, pTime->tm_mday, pTime->tm_hour, pTime->tm_min, pTime->tm_sec);
-    if ( (pNewPost = AddForumPost( postID, 0, category_id, (FCULONG)-1, title, content, author_id, now )) )
+    if ( (pNewPost = AddForumPost( postID, thread_id, category_id, (FCULONG)-1, title, content, author_id, now )) )
 		{
       // emit an event for the new forum post
       EventSystem::GetInstance()->Emit( this, NULL, new Event(Forum::EVT_NewThread, (void*)pNewPost) );

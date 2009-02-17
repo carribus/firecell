@@ -71,6 +71,7 @@ bool ForumWindow::Create(s32 AppElemID, FCUINT optionID, std::wstring caption)
 
   // create the thread reader component
   m_pForumThreadReader = new GUIForumThreadReader(m_pEnv, clientRect, m_pWindow);
+	m_pForumThreadReader->registerSink(this);
   m_pForumThreadReader->setVisible(false);
   m_pForumThreadReader->drop();
 
@@ -178,7 +179,26 @@ void ForumWindow::OnThreadViewClosed()
 void ForumWindow::OnNewThreadPost(FCULONG category_id, std::wstring& subject, std::wstring& message)
 {
   SetWaitingForResponse(true);
-  FCViewEventNewForumPost e(category_id, subject, message);
+  FCViewEventNewForumPost e(category_id, 0, subject, message);
+  m_pController->OnViewEvent(e);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ForumWindow::OnThreadReaderViewClosed()
+{
+	m_pForumThreadReader->setVisible(false);
+	m_pForumThreadReader->clearPosts();
+	m_pForumThreadBrowser->setVisible(true);
+	m_pEnv->setFocus(m_pForumThreadBrowser);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ForumWindow::OnThreadReply(FCULONG category_id, FCULONG thread_id, std::wstring& subject, std::wstring& message)
+{
+  SetWaitingForResponse(true);
+  FCViewEventNewForumPost e(category_id, thread_id, subject, message);
   m_pController->OnViewEvent(e);
 }
 

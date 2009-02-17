@@ -52,14 +52,14 @@ GUIForumThreadBrowser::GUIForumThreadBrowser(IGUIEnvironment* environment, core:
 	m_optionBtns[0].bVisible = true;
   m_optionBtns[0].bPressed = false;
 	m_optionBtns[0].rectBtn = btnRect;
-	m_optionBtns[0].label = L"<< Back";
+	m_optionBtns[0].label = ResourceManager::instance().GetClientString(STR_APP_FORUM_OPTION_BACK).c_str();
 
   // the NEW TOPIC button
 	offsetRect(btnRect, btnRect.getWidth() + 10, 0);
 	m_optionBtns[1].bVisible = true;
   m_optionBtns[1].bPressed = false;
 	m_optionBtns[1].rectBtn = btnRect;
-	m_optionBtns[1].label = L"New Topic";
+	m_optionBtns[1].label = ResourceManager::instance().GetClientString(STR_APP_FORUM_OPTION_NEWTOPIC).c_str();
 
 	AbsoluteClippingRect.LowerRightCorner.X -= FORUM_SCROLLBAR_WIDTH;
 }

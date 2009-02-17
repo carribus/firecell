@@ -512,6 +512,7 @@ struct __FCPKT_FORUM_GET_THREAD_DETAILS_RESP
     FCULONG parent_id;
     FCULONG author_id;
     char author_name[32];
+		char title[255];
     char date_created[32];
     FCULONG contentIndex;           // index into blob at the end of this packet for this posts's content
     FCULONG contentLen;
@@ -541,11 +542,18 @@ const FCSHORT FCMSG_FORUM_CREATE_NEW_THREAD     = 204;
 struct __FCPKT_FORUM_CREATE_NEW_THREAD
 {
   FCULONG category_id;
+	FCULONG thread_id;
   char title[255];
   FCULONG contentLength;
   char content[1];
 };
 
+struct __FCPKT_FORUM_CREATE_NEW_THREAD_RESP
+{
+	FCULONG category_id;
+	FCULONG thread_id;
+	bool bSuccess;
+};
 
 
 #pragma pack(pop)

@@ -183,7 +183,7 @@ public:
   /* Forum methods */
   void ForumGetCategories();
 	void ForumGetThreads(FCULONG category_id);
-  void ForumCreateNewThread(FCULONG category_id, std::wstring& subject, std::wstring& message);
+  void ForumCreateNewThread(FCULONG category_id, FCULONG thread_id, std::wstring& subject, std::wstring& message);
   void ForumGetThreadDetails(FCULONG category_id, FCULONG thread_id);
 
   vector<Character>& GetCharacters()               { return m_characters; }
@@ -221,6 +221,7 @@ private:
 		bool OnResponseForumGetThreads(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseForumGetThreadDetails(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseForumGetThreadContentBlob(PEPacket* pPkt, BaseSocket* pSocket);
+		bool OnResponseForumCreateNewThread(PEPacket* pPkt, BaseSocket* pSocket);
 
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
 

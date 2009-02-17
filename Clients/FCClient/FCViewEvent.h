@@ -67,15 +67,17 @@ private:
 class FCViewEventNewForumPost : public FCViewEvent
 {
 public:
-  FCViewEventNewForumPost(FCULONG category_id, const wstring& subject, const wstring& message)
+  FCViewEventNewForumPost(FCULONG category_id, FCULONG thread_id, const wstring& subject, const wstring& message)
     : FCViewEvent( VE_ForumNewThread )
     , m_category_id(category_id)
+		, m_thread_id(thread_id)
     , m_subject(subject)
     , m_message(message)
   {
   }
 
   FCULONG getCategoryID()                    { return m_category_id; }
+	FCULONG getThreadID()											 { return m_thread_id; }
   wstring getSubject()                       { return m_subject; }
   wstring getMessage()                       { return m_message; }
 
@@ -84,6 +86,7 @@ private:
   wstring                 m_subject;
   wstring                 m_message;
   FCULONG                 m_category_id;
+	FCULONG									m_thread_id;
 };
 
 /////////////////////////////////////////////////////////////////

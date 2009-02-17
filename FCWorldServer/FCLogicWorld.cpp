@@ -642,13 +642,6 @@ void FCLogicWorld::SendForumThreads(FCULONG category_id, vector<ForumPost*>& thr
  *  @param pPost A pointer to the thread object that we need to send
  *
  *  @brief This function sends the details of a specific forum thread to the client.
- *
- *  This function performs a 2 step send. The first packet it sends is the __FCPKT_FORUM_GET_THREAD_DETAILS_RESP packet which
- *  provides details on all the posts in the thread. 
- *  The second packet sent is the __FCPKT_FORUM_GET_THREAD_DETAILS_CONTENTBLOB_RESP packet which contains a serialised blob
- *  of the content of the entire threads (and all reply posts). The individual ThreadData elements in the first message contain
- *  contentIndex and contentLen members which are indexes and lengths of individual post contents, and form part of the second
- *  message's content blob.
  */
 void FCLogicWorld::SendForumThreadDetails(FCULONG category_id, ForumPost* pPost, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
@@ -660,8 +653,7 @@ void FCLogicWorld::SendForumThreadDetails(FCULONG category_id, ForumPost* pPost,
 
   PEPacket pkt;
   __FCPKT_FORUM_GET_THREAD_DETAILS_RESP* d = NULL;
-//  __FCPKT_FORUM_GET_THREAD_DETAILS_CONTENTBLOB_RESP* d2 = NULL;
-  size_t pktLen = sizeof(__FCPKT_FORUM_GET_THREAD_DETAILS_RESP); //, pktLen2 = sizeof(__FCPKT_FORUM_GET_THREAD_DETAILS_CONTENTBLOB_RESP);
+  size_t pktLen = sizeof(__FCPKT_FORUM_GET_THREAD_DETAILS_RESP);
   const vector<ForumPost*>& posts = pPost->GetPosts();
   vector<ForumPost*>::const_iterator it = posts.begin();
   vector<ForumPost*>::const_iterator limit = posts.end();
@@ -677,7 +669,6 @@ void FCLogicWorld::SendForumThreadDetails(FCULONG category_id, ForumPost* pPost,
 
   // allocate the packet
   d = (__FCPKT_FORUM_GET_THREAD_DETAILS_RESP*) new FCBYTE[pktLen];
-//  d2 = (__FCPKT_FORUM_GET_THREAD_DETAILS_CONTENTBLOB_RESP*) new FCBYTE[pktLen2 + contentLen-1];
   if ( d )
   {
     d->category_id = category_id;
@@ -688,10 +679,10 @@ void FCLogicWorld::SendForumThreadDetails(FCULONG category_id, ForumPost* pPost,
     d->ThreadData[0].parent_id = 0;
     d->ThreadData[0].author_id = pPost->GetAuthorID();
     strncpy( d->ThreadData[0].author_name, pPost->GetAuthorName().c_str(), sizeof(d->ThreadData[0].author_name) );
+		strncpy( d->ThreadData[0].title, pPost->GetTitle().c_str(), sizeof(d->ThreadData[0].title) );
     strncpy( d->ThreadData[0].date_created, pPost->GetDateCreated().c_str(), sizeof(d->ThreadData[0].date_created) );
     d->ThreadData[0].contentIndex = contentIndex;
     d->ThreadData[0].contentLen = (FCULONG)pPost->GetContent().size();
-//    strncpy( (char*)&d2->contentBlob[contentIndex], pPost->GetContent().c_str(), d->ThreadData[0].contentLen );
     contentIndex += d->ThreadData[0].contentLen;
 
     // loop through any child posts/replies and add them to the ThreadData structure
@@ -701,10 +692,10 @@ void FCLogicWorld::SendForumThreadDetails(FCULONG category_id, ForumPost* pPost,
       d->ThreadData[postIndex].parent_id = (*it)->GetParentID();
       d->ThreadData[postIndex].author_id = (*it)->GetAuthorID();
       strncpy( d->ThreadData[postIndex].author_name, (*it)->GetAuthorName().c_str(), sizeof(d->ThreadData[postIndex].author_name) );
+			strncpy( d->ThreadData[postIndex].title, (*it)->GetTitle().c_str(), sizeof(d->ThreadData[postIndex].title) );
       strncpy( d->ThreadData[postIndex].date_created, (*it)->GetDateCreated().c_str(), sizeof(d->ThreadData[postIndex].date_created) );
       d->ThreadData[postIndex].contentIndex = contentIndex;
       d->ThreadData[postIndex].contentLen = (FCULONG)(*it)->GetContent().size();
-//      strncpy( (char*)&d2->contentBlob[contentIndex], (*it)->GetContent().c_str(), d->ThreadData[postIndex].contentLen );
       contentIndex += d->ThreadData[postIndex].contentLen;
     }
 
@@ -779,6 +770,29 @@ void FCLogicWorld::SendForumThreadContentBlob(FCULONG category_id, ForumPost* pP
     // clear the data portion
     delete [] (FCBYTE*)d;
   }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::SendForumCreateNewThreadResult(FCULONG category_id, FCULONG thread_id, bool bResult, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+	PEPacket pkt;
+	__FCPKT_FORUM_CREATE_NEW_THREAD_RESP d;
+	size_t pktLen = sizeof(__FCPKT_FORUM_CREATE_NEW_THREAD_RESP);
+
+	d.category_id = category_id;
+	d.thread_id = thread_id;
+	d.bSuccess = bResult;
+
+  // send the packet
+  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_FORUM_CREATE_NEW_THREAD, ST_None);
+  PEPacketHelper::SetPacketData(pkt, 
+                                (void*)&d, 
+                                pktLen);
+
+  // send response to Client
+  pkt.SetFieldValue("target", (void*)&clientSocket);
+  pRouter->Send(&pkt);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -1227,6 +1241,7 @@ bool FCLogicWorld::OnCommandForumCreateNewThread(PEPacket* pPkt, RouterSocket* p
   __FCPKT_FORUM_CREATE_NEW_THREAD* d = NULL;
   size_t dataLen = 0;
   Player* pPlayer = NULL;
+	bool bSuccess = true;
 
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   d = (__FCPKT_FORUM_CREATE_NEW_THREAD*) new FCBYTE[dataLen];
@@ -1236,10 +1251,11 @@ bool FCLogicWorld::OnCommandForumCreateNewThread(PEPacket* pPkt, RouterSocket* p
   {
     std::string message;
     message.assign( d->content, d->contentLength );
-    if ( !m_forum.CreateNewForumThread( d->category_id, pPlayer->GetID(), d->title, message ) )
+    if ( !(bSuccess = m_forum.CreateNewForumThread( d->category_id, d->thread_id, pPlayer->GetID(), d->title, message )) )
     {
       DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to add new forum thread to categoryID:%ld (Author:%s[%ld])", d->category_id, pPlayer->GetName().c_str(), pPlayer->GetID()) );
     }
+		SendForumCreateNewThreadResult(d->category_id, d->thread_id, bSuccess, pSocket, clientSocket);
   }
 
   delete [] (FCBYTE*)d;

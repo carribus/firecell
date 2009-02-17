@@ -96,7 +96,7 @@ void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
   string eventCode = pEvent->GetCode();
   string eventName = eventCode.substr(eventCode.find('.')+1, eventCode.length());
 
-  DYNLOG_ADDLOG( DYNLOG_FORMAT("Player::OnEvent(): Event [%s] received from source [%s]\n", eventCode.c_str(), sourceType.c_str()) );
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("Player::OnEvent(): Event [%s] received from source [%s]", eventCode.c_str(), sourceType.c_str()) );
 
   if ( !sourceType.compare( Player::EVTSYS_ObjectType ) )      // player events
   {
@@ -113,7 +113,7 @@ void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
   }
   else
   {
-    DYNLOG_ADDLOG( DYNLOG_FORMAT("Player::OnEvent(): Unknown event received [source:%s / event:%s]\n", sourceType.c_str(), pEvent->GetCode().c_str()) );
+    DYNLOG_ADDLOG( DYNLOG_FORMAT("Player::OnEvent(): Unknown event received [source:%s / event:%s]", sourceType.c_str(), pEvent->GetCode().c_str()) );
   }
 }
 

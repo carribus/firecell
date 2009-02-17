@@ -232,7 +232,7 @@ void FCServerObj::RequestForumThreadContentBlob(FCULONG category_id, FCULONG thr
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCServerObj::SendNewForumPost(FCULONG category_id, const char* pSubject, FCULONG msgLen, const char* pMessage)
+void FCServerObj::SendNewForumPost(FCULONG category_id, FCULONG thread_id, const char* pSubject, FCULONG msgLen, const char* pMessage)
 {
   PEPacket pkt;
   __FCPKT_FORUM_CREATE_NEW_THREAD* d;
@@ -242,6 +242,7 @@ void FCServerObj::SendNewForumPost(FCULONG category_id, const char* pSubject, FC
   if ( d )
   {
     d->category_id = category_id;
+		d->thread_id = thread_id;
     strncpy(d->title, pSubject, sizeof(d->title));
     d->contentLength = msgLen;
     strncpy(d->content, pMessage, d->contentLength);

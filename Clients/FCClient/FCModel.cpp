@@ -359,6 +359,12 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+	case	FCMSG_FORUM_CREATE_NEW_THREAD:
+		{
+			bHandled = OnResponseForumCreateNewThread(pPkt, pSocket);
+		}
+		break;
+
   default:
 
     if ( !bHandled )
@@ -812,7 +818,7 @@ bool FCModel::OnResponseForumGetThreadDetails(PEPacket* pPkt, BaseSocket* pSocke
       // add/update the child posts
       for ( FCULONG i = 1; i < d->post_count; i++ )
       {
-        pChildPost = pThread->addPost( d->ThreadData[i].thread_id, d->ThreadData[i].parent_id, i, "", d->ThreadData[i].author_id, d->ThreadData[i].author_name, d->ThreadData[i].date_created, 0 );
+        pChildPost = pThread->addPost( d->ThreadData[i].thread_id, d->ThreadData[i].parent_id, i, d->ThreadData[i].title, d->ThreadData[i].author_id, d->ThreadData[i].author_name, d->ThreadData[i].date_created, 0 );
         pChildPost->setContentParams( d->ThreadData[i].contentIndex, d->ThreadData[i].contentLen );
       }
     }
@@ -866,6 +872,22 @@ bool FCModel::OnResponseForumGetThreadContentBlob(PEPacket* pPkt, BaseSocket* pS
   delete [] (FCBYTE*)d;
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseForumCreateNewThread(PEPacket* pPkt, BaseSocket* pSocket)
+{
+	__FCPKT_FORUM_CREATE_NEW_THREAD_RESP d;
+	size_t dataLen = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+
+	if ( d.bSuccess )
+		m_server.RequestForumThreadDetails( d.category_id, d.thread_id );
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -1075,7 +1097,7 @@ void FCModel::ForumGetThreads(FCULONG category_id)
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCModel::ForumCreateNewThread(FCULONG category_id, std::wstring& subject, std::wstring& message)
+void FCModel::ForumCreateNewThread(FCULONG category_id, FCULONG thread_id, std::wstring& subject, std::wstring& message)
 {
   size_t subLen = subject.size(), msgLen = message.size();
   char* pSubject = new char[ subLen+1 ];
@@ -1085,7 +1107,7 @@ void FCModel::ForumCreateNewThread(FCULONG category_id, std::wstring& subject, s
   memset(pMessage, 0, msgLen+1);
 	sprintf(pSubject, "%S", subject.c_str());
 	sprintf(pMessage, "%S", message.c_str());
-  m_server.SendNewForumPost(category_id, pSubject, (FCULONG)message.size(), pMessage);
+  m_server.SendNewForumPost(category_id, thread_id, pSubject, (FCULONG)message.size(), pMessage);
 
   delete [] pSubject;
   delete [] pMessage;
