@@ -1124,13 +1124,6 @@ void FCModel::ForumGetThreadDetails(FCULONG category_id, FCULONG thread_id)
 
 bool FCModel::LoadResources()
 {
-  // Load the client settings
-	if ( !Settings::instance().LoadSettings("./clientdata/settings.xml") )
-	{
-		fprintf(stderr, "Failed to load client settins\n");
-		return false;
-	}
-
   // load the client strings
   // TODO: Make this a load based on language (currently EN is hardcoded)
 	if ( ResourceManager::instance().LoadClientStrings("./clientdata/strings_en.xml") == -1 )

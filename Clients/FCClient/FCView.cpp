@@ -20,6 +20,7 @@
 #include <sstream>
 #include "../../common/protocol/fcprotocol.h"
 #include "../common/irrlichtUtil/irrfontfx.h"
+#include "Settings.h"
 #include "irrSingleton.h"
 #include "FCController.h"
 #include "FCGUIElementFactory.h"
@@ -70,26 +71,35 @@ bool FCView::Initialise(E_DRIVER_TYPE driverType)
 	IrrlichtDevice* pDev = createDevice(EDT_NULL);
 	IVideoDriver* pDriver = NULL;
 	s32 vDepth = 16;
-	dimension2d<s32> vRes(800, 600);
+	dimension2d<s32> vRes(800, 600), uRes;
+  bool bFullScreen = true;
+
+  uRes.Width = atoi( Settings::instance().GetValue("FCClient/Settings/Resolution", "width").c_str() );
+  uRes.Height = atoi( Settings::instance().GetValue("FCClient/Settings/Resolution", "height").c_str() );
+  vDepth = atoi( Settings::instance().GetValue("FCClient/Settings/Resolution", "depth").c_str() );
+  bFullScreen = (atoi( Settings::instance().GetValue("FCClient/Settings/Fullscreen", "useFullScreen").c_str() ) != 0);
 
 	// get the current desktop resolution and bit depth from the NULL device
-	if ( pDev )
-	{
-		IVideoModeList* pModeList = pDev->getVideoModeList();
+  if ( uRes.Width == 0 || uRes.Height == 0 || vDepth == 0 )
+  {
+	  if ( pDev )
+	  {
+		  IVideoModeList* pModeList = pDev->getVideoModeList();
 
-		if ( pModeList )
-		{
-			vDepth = pModeList->getDesktopDepth();
-			vRes = pModeList->getDesktopResolution();
-		}
-	}
+		  if ( pModeList )
+		  {
+			  vDepth = pModeList->getDesktopDepth();
+			  vRes = pModeList->getDesktopResolution();
+		  }
+	  }
+  }
 
 	// release the NULL device since we no longer need it
 	pDev->closeDevice();
 	pDev->drop();
 
 	// now create the real device
-	m_pDevice = createDevice(driverType, vRes, vDepth, true);
+	m_pDevice = createDevice(driverType, vRes, vDepth, bFullScreen);
 	if ( !m_pDevice )
 		return false;
 
