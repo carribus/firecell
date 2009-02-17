@@ -39,14 +39,14 @@ public:
 	static Settings& instance();
 	static void destroy();
 
-	bool LoadSettings(string filename);
-	string GetValue(const string& key, const string& attrib);
+  bool LoadSettings(std::string filename);
+	std::string GetValue(const std::string& key, const std::string& attrib);
 
 private:
 
 	static Settings*					m_pThis;
 
-	std::map<string, string>				m_mapKeyToValue;
+	std::map<std::string, std::string>				m_mapKeyToValue;
 };
 
 #endif//_SETTINGS_H_
