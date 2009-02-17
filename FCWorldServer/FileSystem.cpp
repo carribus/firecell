@@ -19,10 +19,18 @@
 */
 #include <algorithm>
 #include <string>
+#include "EventSystem.h"
+#include "Event.h"
 #include "FileSystem.h"
 #include "FileSystemActionHandler.h"
+#include "Player.h"
 
 using namespace std;
+
+DEFINE_EVENT_SOURCE(FileSystem);
+DEFINE_EVENT(FileSystem, FileListing);
+DEFINE_EVENT(FileSystem, ChangeDir);
+DEFINE_EVENT(FileSystem, OSVersion);
 
 FileSystem::FileSystem(void)
 : m_pComputer(NULL)
@@ -115,7 +123,7 @@ size_t FileSystem::EnumerateFiles(std::string path, vector<FileSystem::File>& ta
 
 ////////////////////////////////////////////////////////////////////////
 
-string FileSystem::ExecuteCommand(const std::string& cmd, const std::string& arguments)
+string FileSystem::ExecuteCommand(Player* pCaller, const std::string& cmd, const std::string& arguments)
 {
   if ( cmd.length() == 0 )
     return "";
@@ -131,14 +139,20 @@ string FileSystem::ExecuteCommand(const std::string& cmd, const std::string& arg
     if ( action == "FileListing" )
     {
       ret = FileSystemActionHandler::Action_FileListing(this, arguments);
+      // emit an event to the caller object
+      EventSystem::GetInstance()->Emit( this, static_cast<IEventTarget*>(pCaller), new Event(FileSystem::EVT_FileListing, NULL) );
     }
     else if ( action == "ChangeDir" )
     {
       ret = FileSystemActionHandler::Action_ChangeDirectory(this, arguments);
+      // emit an event to the caller object
+      EventSystem::GetInstance()->Emit( this, static_cast<IEventTarget*>(pCaller), new Event(FileSystem::EVT_ChangeDir, NULL) );
     }
     else if ( action == "OSVersion" )
     {
       ret = FileSystemActionHandler::Action_OSVersion(this, arguments);
+      // emit an event to the caller object
+      EventSystem::GetInstance()->Emit( this, static_cast<IEventTarget*>(pCaller), new Event(FileSystem::EVT_OSVersion, NULL) );
     }
     else
     {
