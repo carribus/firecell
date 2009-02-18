@@ -22,6 +22,7 @@
 
 #include <string>
 #include "../common/fctypes.h"
+#include "../Clients/common/Socket/ClientSocket.h"
 #include "IEventSystem.h"
 #include "Computer.h"
 #include "Mission.h"
@@ -81,6 +82,7 @@ public:
   Computer& GetComputer()                 { return m_computer; }
   InGameIPAddress& GetIP()                { return m_ip; }
   FCSOCKET GetClientSocket() const        { return m_clientSocket; }
+	BaseSocket* GetRouterSocket()						{ return m_pRouterSocket; }
 
   void SetAccountID(FCULONG id)           { m_accountID = id; }
   void SetID(FCULONG id)                  { m_id = id; }
@@ -93,6 +95,7 @@ public:
   void SetCountryID(FCULONG id)           { m_countryID = id; }
   void SetIP(InGameIPAddress& ip)         { m_ip = ip; }
   void SetClientSocket(FCSOCKET sock)     { m_clientSocket = sock; }
+	void SetRouterSocket(BaseSocket* pSock)	{ m_pRouterSocket = pSock; }
 
 private:
 
@@ -108,6 +111,7 @@ private:
   Computer m_computer;
   InGameIPAddress m_ip;
   FCSOCKET m_clientSocket;
+	BaseSocket* m_pRouterSocket;
 
   IEventSystem* m_pEventSystem;
 

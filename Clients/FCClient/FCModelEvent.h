@@ -6,11 +6,15 @@ enum e_FCEventType
 	FCME_StateChange,
   FCME_NewCharacterParamsReady,
 	FCME_OpenApplication,
+	/* Console events */
 	FCME_Console_FileSystemInfo,
 	FCME_Console_Command,
+	/* Forum Events */
   FCME_Forum_CategoriesReceived,
 	FCME_Forum_CategoryThreadsReceived,
-  FCME_Forum_ThreadContentReceived
+  FCME_Forum_ThreadContentReceived,
+	/* Mission Events */
+	FCME_Mission_MissionAccepted
 };
 
 class FCModelEvent

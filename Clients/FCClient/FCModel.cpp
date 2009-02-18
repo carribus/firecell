@@ -934,6 +934,7 @@ bool FCModel::OnResponseMissionAccepted(PEPacket* pPkt, BaseSocket* pSocket)
     }
 
     // send an event to the view notifying it that we have accepted new missions
+		FireEvent(FCME_Mission_MissionAccepted, (void*)d->mission_id);
   }
 
   delete [] (FCBYTE*)d;

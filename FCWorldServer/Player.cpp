@@ -33,6 +33,7 @@ Player::Player(void)
 , m_cityID(0)
 , m_countryID(0)
 , m_clientSocket(0)
+, m_pRouterSocket(NULL)
 , m_pEventSystem(NULL)
 {
 }
@@ -50,6 +51,7 @@ Player::Player(FCULONG accountID, FCULONG id, string name, string email, FCULONG
 , m_cityID(cityID)
 , m_countryID(countryID)
 , m_clientSocket(0)
+, m_pRouterSocket(NULL)
 , m_pEventSystem(NULL)
 {
   if ( ip )
@@ -98,6 +100,7 @@ void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
 
   DYNLOG_ADDLOG( DYNLOG_FORMAT("Player::OnEvent(): Event [%s] received from source [%s]", eventCode.c_str(), sourceType.c_str()) );
 
+	// check for a Player event
   if ( !sourceType.compare( Player::EVTSYS_ObjectType ) )      // player events
   {
     Player* pPlayer = (Player*)pEvent->GetParam();
@@ -111,15 +114,35 @@ void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
       }
     }
   }
+	// check for a mission event
+	else if ( !sourceType.compare( Mission::EVTSYS_ObjectType ) )
+	{
+		if ( !eventCode.compare( Mission::EVT_Complete ) )
+		{
+			DYNLOG_ADDLOG( DYNLOG_FORMAT("Player %s completed mission id %ld", GetName().c_str(), (FCULONG)pEvent->GetParam()) );
+			// need to send a message to the client here
+		}
+	}
   else
   {
     // its not a player event, so it may be related to a mission or something else that happened to us
     bool bHandled = false;
 
+		// check if we have any missions
+		if ( m_mapMissions.size() )
+		{
+			// hand the event off to all the missions we have...
+			MissionMap::iterator it = m_mapMissions.begin();
+			MissionMap::iterator limit = m_mapMissions.end();
 
+			for ( ; it != limit; it++ )
+			{
+				it->second->OnEvent(pSource, pEvent);
+			}
+		}
 
     // if we didn't handle the event, then log the incident
-    if ( bHandled )
+    if ( !bHandled )
       DYNLOG_ADDLOG( DYNLOG_FORMAT("Player::OnEvent(): Unknown event received [source:%s / event:%s]", sourceType.c_str(), pEvent->GetCode().c_str()) );
   }
 }
@@ -136,6 +159,7 @@ Mission* Player::AcceptMission(Mission* pMission)
 	if ( pMyMission )
 	{
 		m_mapMissions[ pMyMission->GetID() ] = pMyMission;
+		pMyMission->SetComplete(false);
     if ( pMyMission->GetParentID() != 0 )
     {
       MissionMap::iterator it = m_mapMissions.find( pMyMission->GetParentID() );

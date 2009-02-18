@@ -21,6 +21,7 @@
 #define _EVENT_H_
 
 #include <string>
+#include "Player.h"
 #include "IEventSystem.h"
 
 using namespace std;
@@ -28,7 +29,7 @@ using namespace std;
 class Event : public IEvent
 {
 public:
-  Event(string code, void* param);
+  Event(string code, void* param, Player* pPlayer = NULL);
   ~Event(void);
 
   /*
@@ -36,6 +37,7 @@ public:
    */
   string GetCode()                    { return m_code; }
   void* GetParam()                    { return m_param; }
+	Player* GetPlayer()									{ return m_pPlayer; }
   void Release()                      { delete this; }
 
   /*
@@ -46,6 +48,7 @@ private:
 
   string m_code;
   void* m_param;
+	Player* m_pPlayer;
 };
 
 #endif//_EVENT_H_
