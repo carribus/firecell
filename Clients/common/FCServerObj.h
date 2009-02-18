@@ -30,6 +30,9 @@ public:
   void RequestForumThreadContentBlob(FCULONG category_id, FCULONG thread_id);
   void SendNewForumPost(FCULONG category_id, FCULONG thread_id, const char* pSubject, FCULONG msgLen, const char* pMessage);
 
+	// mission commands
+	void SendMissionAccept(FCULONG mission_id);
+
   void SetSocket(BaseSocket* pSock)                             { m_pSock = pSock; }
 
 private:

@@ -21,7 +21,9 @@ enum e_FCViewEventType
   VE_ForumRefreshCategories,
 	VE_ForumCategorySelected,
   VE_ForumNewThread,
-  VE_ForumThreadSelected
+  VE_ForumThreadSelected,
+	/* Mission Events */
+	VE_MissionAccepted
 };
 
 /////////////////////////////////////////////////////////////////

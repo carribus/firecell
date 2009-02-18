@@ -15,6 +15,7 @@ public:
   bool AddMission(FCULONG missionID, FCSHORT minLevel, FCSHORT maxLevel, FCSHORT difficulty, string success_event, string failure_event, FCULONG parent_id = 0, FCSHORT successCount = 1, FCSHORT failureCount = 1);
   Mission* GetMission(FCULONG missionID);
 	FCULONG GetAvailableMissionsForPlayer(Player* pPlayer, vector<Mission*>& target);
+	bool AssignMissionToPlayer(Player* pPlayer, FCULONG mission_id);
 
   void SetEventSystem(IEventSystem* pES)                { m_pEventSystem = pES; }
 

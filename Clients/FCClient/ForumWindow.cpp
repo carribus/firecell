@@ -204,6 +204,14 @@ void ForumWindow::OnThreadReply(FCULONG category_id, FCULONG thread_id, std::wst
 
 ///////////////////////////////////////////////////////////////////////
 
+void ForumWindow::OnThreadMissionAccept(FCULONG mission_id)
+{
+	FCViewEvent e(VE_MissionAccepted, mission_id);
+	m_pController->OnViewEvent(e);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void ForumWindow::RequestForumCategoryRefresh()
 {
   FCViewEvent e(VE_ForumRefreshCategories);

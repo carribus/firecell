@@ -18,15 +18,18 @@ public:
 	void setItemData(ForumThread* pThread);
 
 	void draw();
+	bool OnEvent(const SEvent& event);
 
 private:
 
 	SColor									m_colText;
 	SColor									m_colBkg;
+	ForumThread*						m_pThread;
 
 	IGUIStaticText*					m_pTxtAuthor;
 	IGUIStaticText*					m_pTxtSubject;
 	IGUIStaticText*					m_pTxtContent;
+	IGUIButton*							m_pBtnAccept;
 };
 
 #endif//_GUIFORUMPOSTITEM_H_

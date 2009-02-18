@@ -7,8 +7,10 @@
 
 using namespace std;
 
+class Player;
+
 class Mission : public IEventSource
-			  , public IEventTarget
+							, public IEventTarget
 {
 public:
 
@@ -16,7 +18,11 @@ public:
   DECLARE_EVENT(Complete);
 
   Mission(void);
+	Mission(const Mission& src);
   ~Mission(void);
+
+	bool CanPlayerAccept(Player* pPlayer);
+	Mission* Clone();
 
   FCULONG GetID()                                         { return m_id; }
   FCULONG GetParentID()                                   { return m_parentID; }
@@ -58,6 +64,9 @@ private:
   FCSHORT m_failureCount;
 
 	IEventSystem* m_pEventSystem;
+
+	Mission* m_pParentMission;
+	vector<Mission*> m_childMissions;
 };
 
 #endif//_MISSION_H_

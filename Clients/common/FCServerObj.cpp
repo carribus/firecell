@@ -254,7 +254,20 @@ void FCServerObj::SendNewForumPost(FCULONG category_id, FCULONG thread_id, const
 
     delete [] (FCBYTE*)d;
   }
+}
 
+///////////////////////////////////////////////////////////////////////
+
+void FCServerObj::SendMissionAccept(FCULONG mission_id)
+{
+	PEPacket pkt;
+	__FCPKT_MISSION_ACCEPT d;
+	
+	d.mission_id = mission_id;
+	PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_MISSION_ACCEPT, ST_World);
+	PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+	SendPacket(pkt);
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -24,6 +24,7 @@
 #include "../common/fctypes.h"
 #include "IEventSystem.h"
 #include "Computer.h"
+#include "Mission.h"
 #include "../common/game_objects/InGameIPAddress.h"
 
 using namespace std;
@@ -60,6 +61,8 @@ public:
 	/*
 	 *	Mission related
 	 */
+	pMission* AcceptMission(Mission* pMission);
+	bool HasMission(FCULONG missionID);
 	bool HasCompletedMission(FCULONG missionID);
 
 	/*
@@ -106,6 +109,12 @@ private:
   FCSOCKET m_clientSocket;
 
   IEventSystem* m_pEventSystem;
+
+	/*
+	 *	Missions
+	 */
+	typedef std::map<FCULONG, Mission*> MissionMap;
+	MissionMap m_mapMissions;
 };
 
 #endif//_PLAYER_H_

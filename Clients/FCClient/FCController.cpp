@@ -165,5 +165,11 @@ void FCController::OnViewEvent(FCViewEvent& event)
       m_pModel->ForumGetThreadDetails( pEv->getCategoryID(), pEv->getThreadID() );
     }
     break;
+
+	//
+	// Mission Events
+	case	VE_MissionAccepted:
+		m_pModel->MissionAccept( event.GetData() );
+		break;
 	}
 }
