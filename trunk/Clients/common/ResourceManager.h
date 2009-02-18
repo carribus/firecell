@@ -37,6 +37,13 @@ class ResourceManager
 
 public:
 
+	enum E_MISSIONSTRING_TYPE
+	{
+		MS_Name,
+		MS_Prelude,
+		MS_Desc
+	};
+
   static ResourceManager& instance();
   static void destroy();
 
@@ -44,6 +51,7 @@ public:
   int LoadMissionStrings(std::string mission_file);
 
   std::wstring GetClientString(const std::wstring& key);
+	std::string GetMissionString(FCULONG mission_id, E_MISSIONSTRING_TYPE type);
 
 private:
 

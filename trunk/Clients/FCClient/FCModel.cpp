@@ -764,6 +764,7 @@ bool FCModel::OnResponseForumGetThreads(PEPacket* pPkt, BaseSocket* pSocket)
   size_t dataLen;
   ForumModel* pForum = ForumModel::instance();
 	ForumCategory* pCat = NULL;
+	std::string title;
 
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   d = (__FCPKT_FORUM_GET_THREADS_RESP*) new FCBYTE[ dataLen ];
@@ -773,11 +774,21 @@ bool FCModel::OnResponseForumGetThreads(PEPacket* pPkt, BaseSocket* pSocket)
 	{
 		for ( FCULONG i = 0; i < d->thread_count; i++ )
 		{
+			// if this thread is actually a mission giving thread, then we need to parse it for mission marker references
+			// and substitute from the missions string file
+			if ( d->threads[i].mission_id != 0 )
+			{
+				// at this point, we can only parse the title
+				title = ParseMissionString(d->threads[i].title);
+			}
+			else
+				title = d->threads[i].title;
+
 			pCat->addThread(d->category_id, 
                       d->threads[i].thread_id,
 											d->threads[i].parent_id,
 											d->threads[i].order,
-											d->threads[i].title,
+											title,
 											d->threads[i].author_id,
 											d->threads[i].author_name,
 											d->threads[i].date_created,
@@ -853,6 +864,8 @@ bool FCModel::OnResponseForumGetThreadContentBlob(PEPacket* pPkt, BaseSocket* pS
     if ( (pThread = pCat->getThread( d->thread_id )) )
     {
       content.assign( (const char*)&d->contentBlob[ pThread->getContentIndex() ], pThread->getContentLen() );
+			if ( (pThread)->getMissionID() > 0 )
+				content = ParseMissionString(content);
       pThread->setContent(content);
 
       std::vector<ForumThread*>& posts = pThread->getAllPosts();
@@ -862,6 +875,8 @@ bool FCModel::OnResponseForumGetThreadContentBlob(PEPacket* pPkt, BaseSocket* pS
       for ( ; it != limit; it++ )
       {
         content.assign( (const char*)&d->contentBlob[ (*it)->getContentIndex() ], (*it)->getContentLen() );
+				if ( (*it)->getMissionID() > 0 )
+					content = ParseMissionString(content);
         (*it)->setContent(content);
       }
     }
@@ -903,6 +918,66 @@ bool FCModel::OnError(PEPacket* pPkt, BaseSocket* pSocket)
 
 
   return true;
+}
+
+/**
+ *	@class FCModel
+ *	@fn ParseMissionString
+ *	@param source The original string that will be parsed
+ *	@return Parsed string that has had all its mission tags substituted. If a tag could not be substituted, the original tag will remain
+ */
+std::string FCModel::ParseMissionString(std::string source)
+{
+	static char* pStartMarker = "[M";
+	static char* pSeperator = ":";
+	static char* pEndMarker = "]";
+	static char nameMarker = 'N';
+	static char descMarker = 'D';
+	static char preludeMarker = 'P';
+	std::string substitute;
+	FCULONG mission_id = 0;
+	char dataPortion;
+	ResourceManager& rm = ResourceManager::instance();
+	size_t offset = 0, endOffset = 0, sepOffset = 0;
+
+	if ( source.size() > 0 )
+	{
+		// get the position of the next start marker
+		while ( (offset = source.find( pStartMarker )) != std::string::npos )
+		{
+			// get the respective end marker
+			if ( (endOffset = source.find( pEndMarker )) != std::string::npos )
+			{
+				// get the position of the seperator
+				if ( (sepOffset = source.find( pSeperator )) != std::string::npos )
+				{
+					// get the substitute
+					mission_id = atoi( source.substr(offset+2, sepOffset-offset+2).c_str() );
+					dataPortion = source[sepOffset+1];
+					if ( dataPortion == nameMarker )
+					{
+						substitute = rm.GetMissionString(mission_id, ResourceManager::MS_Name);
+					}
+					else if ( dataPortion == descMarker )
+					{
+						substitute = rm.GetMissionString(mission_id, ResourceManager::MS_Desc);
+					}
+					else if ( dataPortion == preludeMarker )
+					{
+						substitute = rm.GetMissionString(mission_id, ResourceManager::MS_Prelude);
+					}
+
+					source.replace(offset, endOffset-offset+1, substitute);
+				}
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+
+	return source;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -1118,6 +1193,13 @@ void FCModel::ForumCreateNewThread(FCULONG category_id, FCULONG thread_id, std::
 void FCModel::ForumGetThreadDetails(FCULONG category_id, FCULONG thread_id)
 {
   m_server.RequestForumThreadDetails(category_id, thread_id);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::MissionAccept(FCULONG mission_id)
+{
+	m_server.SendMissionAccept(mission_id);
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -105,6 +105,37 @@ wstring ResourceManager::GetClientString(const wstring& key)
 
 ///////////////////////////////////////////////////////////////////////
 
+std::string ResourceManager::GetMissionString(FCULONG mission_id, E_MISSIONSTRING_TYPE type)
+{
+	MissionMap::iterator it = m_mapMissions.find(mission_id);
+	string val;
+
+	if ( it == m_mapMissions.end() )
+		return val;
+
+	switch ( type )
+	{
+	case	MS_Name:
+		val = it->second.name;
+		break;
+
+	case	MS_Prelude:
+		val = it->second.prelude;
+		break;
+
+	case	MS_Desc:
+		val = it->second.description;
+		break;
+
+	default:
+		break;
+	}
+
+	return val;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void ResourceManager::ParseClientStrings(IrrXMLReaderUTF16* pXML)
 {
 	if ( !pXML )

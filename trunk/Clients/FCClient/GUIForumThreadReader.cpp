@@ -181,6 +181,19 @@ bool GUIForumThreadReader::OnEvent(const SEvent& event)
       }
     }
     break;
+
+	case	EET_USER_EVENT:
+		{
+			if ( event.UserEvent.UserData1 == 1 )				// mission accepted
+			{
+				if ( event.UserEvent.UserData2 )
+				{
+					if ( m_pSink )
+						m_pSink->OnThreadMissionAccept( event.UserEvent.UserData2 );
+				}
+			}
+		}
+		break;
   }
 
   return bResult;

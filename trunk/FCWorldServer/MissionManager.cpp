@@ -77,3 +77,24 @@ FCULONG MissionManager::GetAvailableMissionsForPlayer(Player* pPlayer, vector<Mi
 
 	return (FCULONG)target.size();
 }
+
+///////////////////////////////////////////////////////////////////////
+
+bool MissionManager::AssignMissionToPlayer(Player* pPlayer, FCULONG mission_id)
+{
+	if ( !pPlayer || !mission_id )
+		return false;
+
+	MissionMap::iterator it = m_mapMissions.begin();
+	MissionMap::iterator limit = m_mapMissions.end();
+
+	for ( ; it != limit; it++ )
+	{
+		if ( it->second->GetID() == mission_id )
+			pPlayer->AcceptMission(it->second);
+		else if ( it->second->GetParentID() == mission_id )
+			AssignMissionToPlayer(pPlayer, it->second->GetParentID());
+	}
+
+	return true;
+}

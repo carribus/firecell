@@ -893,6 +893,15 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+	/*
+	 *	Mission Messages
+	 */
+	case	FCMSG_MISSION_ACCEPT:
+		{
+			bHandled = OnCommandMissionAccept(pPkt, pRouter, clientSock);
+		}
+		break;
+
   /*
    * Inter-service Messages
    */
@@ -1261,6 +1270,38 @@ bool FCLogicWorld::OnCommandForumCreateNewThread(PEPacket* pPkt, RouterSocket* p
   delete [] (FCBYTE*)d;
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandMissionAccept(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+	__FCPKT_MISSION_ACCEPT d;
+	size_t dataLen = 0;
+	Player* pPlayer = NULL;
+	Mission* pMission = NULL;
+
+	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+	pPkt->GetField("data", (void*)&d, dataLen);
+
+	if ( pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+	{
+		// find the mission that the player accepted
+		if ( (pMission = m_missionMgr.GetMission( d.mission_id )) )
+		{
+			if ( pMission->CanPlayerAccept(pPlayer) )
+			{
+				if ( !m_missionMgr.AssignMissionToPlayer(pPlayer, d.mission_id) )
+				{
+					DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to assign mission id %ld to player id %ld", d.mission_id, pPlayer->GetID());
+				}
+			}
+		}
+		else
+			DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to find mission id %ld in the mission manager", d.mission_id) );
+	}
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////

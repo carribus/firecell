@@ -556,6 +556,20 @@ struct __FCPKT_FORUM_CREATE_NEW_THREAD_RESP
 };
 
 
+/*
+ *  MISSION module specific commands
+ *
+ *  These messages are specifically for missions
+ */
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_MISSION_ACCEPT			        = 500;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_MISSION_ACCEPT
+{
+	FCULONG mission_id;
+};
+
 #pragma pack(pop)
 
 #endif//_FCPROTOCOL_H_

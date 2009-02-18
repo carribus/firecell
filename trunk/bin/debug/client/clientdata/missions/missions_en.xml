@@ -5,10 +5,10 @@
 		<Description>This mission will teach you the basics of using and managing your file system.</Description>
 	</Mission>
 	<Mission id="2">
-		<Name>In the console, get a file listing by type 'ls' or 'dir' depending on your OS</Name>
+		<Name>In the console, get a file listing by typing 'ls' or 'dir' depending on your OS</Name>
 	</Mission>
 	<Mission id="3">
-		<Name>In the console, go a different directory using the 'cd' command (eg. cd OtherDir)</Name>
+		<Name>In the console, go a different directory using the 'cd' command (eg. cd bin)</Name>
 	</Mission>
 	<Mission id="4">
 		<Name>In the console, request the OS version using the 'ver' command</Name>

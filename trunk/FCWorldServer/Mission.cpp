@@ -18,12 +18,47 @@ Mission::Mission(void)
 
 ///////////////////////////////////////////////////////////////////////
 
+Mission::Mission(const Mission& src)
+{
+	m_id = src.m_id;
+	m_parentID = src.m_parentID;
+	m_minLevel = src.m_minLevel;
+	m_maxLevel = src.m_maxLevel;
+	m_difficulty = src.m_difficulty;
+	m_successCount = src.m_successCount;
+	m_failureCount = src.m_failureCount;
+	m_pEventSystem = src.m_pEventSystem;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 Mission::~Mission(void)
 {
   if ( m_pEventSystem )
   {
     m_pEventSystem->UnregisterEventTarget(this, Mission::EVT_Complete);
   }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Mission::CanPlayerAccept(Player* pPlayer)
+{
+	// check level requirements
+	if ( m_minLevel <= pPlayer->GetLevel() && m_maxLevel >= pPlayer->GetLevel() )
+	{
+		if ( !pPlayer->HasMission(m_id) && !pPlayer->HasCompletedMission() )
+			return true;
+	}
+
+	return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+Mission* Mission::Clone()
+{
+	Mission* pMission = new Mission(*this);
 }
 
 ///////////////////////////////////////////////////////////////////////

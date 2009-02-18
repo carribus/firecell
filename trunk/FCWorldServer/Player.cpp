@@ -126,6 +126,31 @@ void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
 
 ///////////////////////////////////////////////////////////////////////
 
+Mission* Player::AcceptMission(Mission* pMission)
+{
+	if ( !pMission )
+		return NULL;
+
+	Mission* pMyMission = pMission->Clone();
+	
+	if ( pMyMission )
+	{
+		m_mapMissions[ pMyMission->GetID() ] = pMyMission;
+#error Check if the mission has a parent, and if so, attempt to parent it in the player's copy of the mission
+	}
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Player::HasMission(FCULONG missionID)
+{
+	// TODO: return whether the player has accepted the mission yet
+
+	return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool Player::HasCompletedMission(FCULONG missionID)
 {
 	// TODO: Put in check+data structures for missions completed

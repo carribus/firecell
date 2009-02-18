@@ -15,6 +15,7 @@ struct IForumThreadReaderSink
 {
   virtual void OnThreadReaderViewClosed() = 0;
   virtual void OnThreadReply(FCULONG category_id, FCULONG thread_id, std::wstring& subject, std::wstring& message) = 0;
+	virtual void OnThreadMissionAccept(FCULONG mission_id) = 0;
 };
 
 class GUIForumThreadReader : public IGUIElement
