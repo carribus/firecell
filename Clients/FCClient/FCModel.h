@@ -32,6 +32,7 @@
 #include "FCModelEvent.h"
 #include "Character.h"
 #include "Country.h"
+#include "MissionMgr.h"
 
 using namespace std;
 
@@ -216,7 +217,7 @@ private:
       bool OnResponseCharacterCreationParams_Cities(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket);
-		bool OnResponeActivateDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket);
+		bool OnResponseActivateDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseConsoleGetFileSystemInfo(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseConsoleCommand(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseForumGetCategories(PEPacket* pPkt, BaseSocket* pSocket);
@@ -224,6 +225,7 @@ private:
     bool OnResponseForumGetThreadDetails(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseForumGetThreadContentBlob(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseForumCreateNewThread(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnResponseMissionAccepted(PEPacket* pPkt, BaseSocket* pSocket);
 
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
 
@@ -267,8 +269,9 @@ private:
 	FileSystemInfo		m_fsInfo;
 
   /*
-   *  Forum stuff
+   *  Mission stuff
    */
+  MissionMgr m_missionMgr;
 };
 
 #endif//_FCMODEL_H_

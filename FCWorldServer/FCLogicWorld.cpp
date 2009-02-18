@@ -797,6 +797,52 @@ void FCLogicWorld::SendForumCreateNewThreadResult(FCULONG category_id, FCULONG t
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCLogicWorld::SendMissionAcceptedResponse(Player* pPlayer, FCULONG mission_id, bool bSuccessFlag, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  PEPacket pkt;
+  __FCPKT_MISSION_ACCEPT_RESP* d = NULL;
+  size_t pktLen = sizeof(__FCPKT_MISSION_ACCEPT_RESP);
+  Mission* pMission = NULL, *pChild = NULL;
+
+  if ( (pMission = pPlayer->GetMission(mission_id)) )
+  {
+    size_t numChildren = pMission->GetChildCount();
+
+    pktLen += (numChildren-1) * sizeof(__FCPKT_MISSION_ACCEPT_RESP::_child_missions);
+    if ( (d = (__FCPKT_MISSION_ACCEPT_RESP*) new FCBYTE[pktLen]) )
+    {
+      d->bSuccessFlag = bSuccessFlag;
+      d->mission_id = mission_id;
+      d->numChildMissions = (FCULONG)numChildren;
+      for ( size_t i = 0; i < numChildren; i++ )
+      {
+        if ( (pChild = pMission->GetChildMission(i)) )
+          d->child_missions[i].mission_id = pChild->GetID();
+      }
+
+      // send the packet
+      PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_MISSION_ACCEPT, ST_None);
+      PEPacketHelper::SetPacketData(pkt, 
+                                    (void*)d, 
+                                    pktLen);
+
+      // send response to Client
+      pkt.SetFieldValue("target", (void*)&clientSocket);
+      pRouter->Send(&pkt);
+    }
+    else
+    {
+      DYNLOG_ADDLOG( "FCLogicWorld::SendMissionAcceptedResponse(): Failed to allocate memory for the packet" );
+    }
+  }
+  else
+  {
+    DYNLOG_ADDLOG( "FCLogicWorld::SendMissionAcceptedResponse(): Failed to send response because accepted mission was not found in player's mission list" );
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
 {
   RouterSocket* pRouter = (RouterSocket*) pSocket;
@@ -1284,21 +1330,29 @@ bool FCLogicWorld::OnCommandMissionAccept(PEPacket* pPkt, RouterSocket* pSocket,
 	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
 	pPkt->GetField("data", (void*)&d, dataLen);
 
-	if ( pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
 	{
 		// find the mission that the player accepted
 		if ( (pMission = m_missionMgr.GetMission( d.mission_id )) )
 		{
 			if ( pMission->CanPlayerAccept(pPlayer) )
 			{
-				if ( !m_missionMgr.AssignMissionToPlayer(pPlayer, d.mission_id) )
+				if ( m_missionMgr.AssignMissionToPlayer(pPlayer, d.mission_id) )
+        {
+          // successfully assigned the mission (and any child missions) to the player...
+          // send back a response indicating which missions got added to the player's mission list
+          SendMissionAcceptedResponse(pPlayer, d.mission_id, true, pSocket, clientSocket);
+        }
+        else
 				{
-					DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to assign mission id %ld to player id %ld", d.mission_id, pPlayer->GetID());
+					DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to assign mission id %ld to player id %ld", d.mission_id, pPlayer->GetID()) );
 				}
 			}
 		}
 		else
+    {
 			DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to find mission id %ld in the mission manager", d.mission_id) );
+    }
 	}
 
 	return true;

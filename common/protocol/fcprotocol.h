@@ -570,6 +570,17 @@ struct __FCPKT_MISSION_ACCEPT
 	FCULONG mission_id;
 };
 
+struct __FCPKT_MISSION_ACCEPT_RESP
+{
+  bool bSuccessFlag;
+  FCULONG mission_id;
+  FCULONG numChildMissions;
+  struct _child_missions
+  {
+    FCULONG mission_id;
+  } child_missions[1];
+};
+
 #pragma pack(pop)
 
 #endif//_FCPROTOCOL_H_

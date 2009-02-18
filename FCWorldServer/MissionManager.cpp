@@ -93,7 +93,7 @@ bool MissionManager::AssignMissionToPlayer(Player* pPlayer, FCULONG mission_id)
 		if ( it->second->GetID() == mission_id )
 			pPlayer->AcceptMission(it->second);
 		else if ( it->second->GetParentID() == mission_id )
-			AssignMissionToPlayer(pPlayer, it->second->GetParentID());
+			AssignMissionToPlayer(pPlayer, it->second->GetID());
 	}
 
 	return true;
