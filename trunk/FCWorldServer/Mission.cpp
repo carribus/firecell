@@ -1,4 +1,5 @@
 #include "../common/Logging/DynLog.h"
+#include "Player.h"
 #include "Mission.h"
 
 DEFINE_EVENT_SOURCE(Mission);
@@ -13,6 +14,7 @@ Mission::Mission(void)
 , m_successCount(0)
 , m_failureCount(0)
 , m_pEventSystem(NULL)
+, m_pParentMission(NULL)
 {
 }
 
@@ -27,7 +29,10 @@ Mission::Mission(const Mission& src)
 	m_difficulty = src.m_difficulty;
 	m_successCount = src.m_successCount;
 	m_failureCount = src.m_failureCount;
+  m_eventSuccess = src.m_eventSuccess;
+  m_eventFailure = src.m_eventFailure;
 	m_pEventSystem = src.m_pEventSystem;
+  m_pParentMission = NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -45,9 +50,9 @@ Mission::~Mission(void)
 bool Mission::CanPlayerAccept(Player* pPlayer)
 {
 	// check level requirements
-	if ( m_minLevel <= pPlayer->GetLevel() && m_maxLevel >= pPlayer->GetLevel() )
+  if ( (FCULONG)m_minLevel <= pPlayer->GetLevel() && ( m_maxLevel > 0 ? (FCULONG)m_maxLevel >= pPlayer->GetLevel() : 1 ) )
 	{
-		if ( !pPlayer->HasMission(m_id) && !pPlayer->HasCompletedMission() )
+		if ( !pPlayer->HasMission(m_id) && !pPlayer->HasCompletedMission(m_id) )
 			return true;
 	}
 
@@ -59,6 +64,29 @@ bool Mission::CanPlayerAccept(Player* pPlayer)
 Mission* Mission::Clone()
 {
 	Mission* pMission = new Mission(*this);
+
+  return pMission;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Mission::AddChildMission(Mission* pMission)
+{
+  if ( pMission )
+  {
+    m_childMissions.push_back(pMission);
+    pMission->SetParentMission(this);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+Mission* Mission::GetChildMission(size_t index)
+{
+  if ( index >= m_childMissions.size() )
+    return NULL;
+
+  return m_childMissions[index];
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -71,7 +99,7 @@ void Mission::RegisterForEvents(IEventSystem* pEventSystem)
   m_pEventSystem = pEventSystem;
 
   // test listener
-	pEventSystem->RegisterEventTarget(this, Mission::EVT_Complete);
+//	pEventSystem->RegisterEventTarget(this, Mission::EVT_Complete);
 }
 
 ///////////////////////////////////////////////////////////////////////

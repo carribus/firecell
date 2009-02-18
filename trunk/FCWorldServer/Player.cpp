@@ -136,8 +136,34 @@ Mission* Player::AcceptMission(Mission* pMission)
 	if ( pMyMission )
 	{
 		m_mapMissions[ pMyMission->GetID() ] = pMyMission;
-#error Check if the mission has a parent, and if so, attempt to parent it in the player's copy of the mission
+    if ( pMyMission->GetParentID() != 0 )
+    {
+      MissionMap::iterator it = m_mapMissions.find( pMyMission->GetParentID() );
+
+      if ( it != m_mapMissions.end() )
+      {
+        it->second->AddChildMission(pMyMission);
+      }
+      else
+      {
+        DYNLOG_ADDLOG( DYNLOG_FORMAT("Player::AcceptMission(): Could not add mission id %ld as a child to mission %ld because parent does not exist in Player %ld object", pMyMission->GetID(), pMyMission->GetParentID(), m_id) );
+      }
+    }
 	}
+
+  return pMyMission;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+Mission* Player::GetMission(FCULONG missionID)
+{
+  MissionMap::iterator it = m_mapMissions.find(missionID);
+
+  if ( it != m_mapMissions.end() )
+    return it->second;
+
+  return NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////

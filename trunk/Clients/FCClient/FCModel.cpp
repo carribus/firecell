@@ -313,7 +313,7 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
 
 	case	FCMSG_ACTIVATE_DESKTOP_OPTION:
 		{
-			bHandled = OnResponeActivateDesktopOptions(pPkt, pSocket);
+			bHandled = OnResponseActivateDesktopOptions(pPkt, pSocket);
 		}
 		break;
 
@@ -364,6 +364,15 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
 			bHandled = OnResponseForumCreateNewThread(pPkt, pSocket);
 		}
 		break;
+
+  /*
+   *  Mission Responses
+   */
+  case  FCMSG_MISSION_ACCEPT:
+    {
+      bHandled = OnResponseMissionAccepted(pPkt, pSocket);
+    }
+    break;
 
   default:
 
@@ -670,7 +679,7 @@ bool FCModel::OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket)
 
 ///////////////////////////////////////////////////////////////////////
 
-bool FCModel::OnResponeActivateDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket)
+bool FCModel::OnResponseActivateDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket)
 {
 	__FCPKT_ACTIVATE_DESKTOP_OPTION_RESP d;
 	size_t dataLen;
@@ -903,6 +912,33 @@ bool FCModel::OnResponseForumCreateNewThread(PEPacket* pPkt, BaseSocket* pSocket
 		m_server.RequestForumThreadDetails( d.category_id, d.thread_id );
 
 	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseMissionAccepted(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_MISSION_ACCEPT_RESP* d = NULL;
+  size_t dataLen = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  d = (__FCPKT_MISSION_ACCEPT_RESP*) new FCBYTE[dataLen];
+  pPkt->GetField("data", d, dataLen);
+
+  if ( d->bSuccessFlag )
+  {
+    m_missionMgr.addMission(d->mission_id);
+    for ( FCULONG i = 0; i < d->numChildMissions; i++ )
+    {
+      m_missionMgr.addMission(d->child_missions[i].mission_id, false, d->mission_id);
+    }
+
+    // send an event to the view notifying it that we have accepted new missions
+  }
+
+  delete [] (FCBYTE*)d;
+
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////

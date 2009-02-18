@@ -1,6 +1,7 @@
 #ifndef _MISSION_H_
 #define _MISSION_H_
 
+#include <vector>
 #include "../common/fctypes.h"
 #include "IEventSystem.h"
 #include <string>
@@ -23,6 +24,9 @@ public:
 
 	bool CanPlayerAccept(Player* pPlayer);
 	Mission* Clone();
+  void AddChildMission(Mission* pMission);
+  size_t GetChildCount()                                  { return m_childMissions.size(); }
+  Mission* GetChildMission(size_t index);
 
   FCULONG GetID()                                         { return m_id; }
   FCULONG GetParentID()                                   { return m_parentID; }
@@ -33,6 +37,7 @@ public:
   string GetEventFailure()                                { return m_eventFailure; }
   FCSHORT GetSuccessCount()                               { return m_successCount; }
   FCSHORT GetFailureCount()                               { return m_failureCount; }
+  Mission* GetParentMission()                             { return m_pParentMission; }
 
   void SetID(FCULONG id)                                  { m_id = id; }
   void SetParentID(FCULONG id)                            { m_parentID = id; }
@@ -43,6 +48,7 @@ public:
   void SetEventFailure(string event)                      { m_eventFailure = event; }
   void SetSuccessCount(FCSHORT count)                     { m_successCount = count; }
   void SetFailureCount(FCSHORT count)                     { m_failureCount = count; }
+  void SetParentMission(Mission* pParent)                 { m_pParentMission = pParent; }
 
   /*
    *	IEventSource/IEventTarget implementation
@@ -66,7 +72,7 @@ private:
 	IEventSystem* m_pEventSystem;
 
 	Mission* m_pParentMission;
-	vector<Mission*> m_childMissions;
+  std::vector<Mission*> m_childMissions;
 };
 
 #endif//_MISSION_H_

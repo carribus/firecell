@@ -61,8 +61,9 @@ public:
 	/*
 	 *	Mission related
 	 */
-	pMission* AcceptMission(Mission* pMission);
+	Mission* AcceptMission(Mission* pMission);
 	bool HasMission(FCULONG missionID);
+  Mission* GetMission(FCULONG missionID);
 	bool HasCompletedMission(FCULONG missionID);
 
 	/*
