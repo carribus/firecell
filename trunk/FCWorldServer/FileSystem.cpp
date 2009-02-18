@@ -140,19 +140,19 @@ string FileSystem::ExecuteCommand(Player* pCaller, const std::string& cmd, const
     {
       ret = FileSystemActionHandler::Action_FileListing(this, arguments);
       // emit an event to the caller object
-      EventSystem::GetInstance()->Emit( this, static_cast<IEventTarget*>(pCaller), new Event(FileSystem::EVT_FileListing, NULL) );
+      EventSystem::GetInstance()->Emit( this, static_cast<IEventTarget*>(pCaller), new Event(FileSystem::EVT_FileListing, NULL, pCaller) );
     }
     else if ( action == "ChangeDir" )
     {
       ret = FileSystemActionHandler::Action_ChangeDirectory(this, arguments);
       // emit an event to the caller object
-      EventSystem::GetInstance()->Emit( this, static_cast<IEventTarget*>(pCaller), new Event(FileSystem::EVT_ChangeDir, NULL) );
+      EventSystem::GetInstance()->Emit( this, static_cast<IEventTarget*>(pCaller), new Event(FileSystem::EVT_ChangeDir, NULL, pCaller) );
     }
     else if ( action == "OSVersion" )
     {
       ret = FileSystemActionHandler::Action_OSVersion(this, arguments);
       // emit an event to the caller object
-      EventSystem::GetInstance()->Emit( this, static_cast<IEventTarget*>(pCaller), new Event(FileSystem::EVT_OSVersion, NULL) );
+      EventSystem::GetInstance()->Emit( this, static_cast<IEventTarget*>(pCaller), new Event(FileSystem::EVT_OSVersion, NULL, pCaller) );
     }
     else
     {

@@ -39,6 +39,7 @@
  *  Forward declarations
  */
 struct IEventSystem;
+class Player;
 
 /*
  *  IEvent represents an event object
@@ -47,6 +48,7 @@ struct IEvent
 {
   virtual std::string GetCode() = 0;
   virtual void* GetParam() = 0;
+	virtual Player* GetPlayer() = 0;
   virtual void Release() = 0;
 };
 

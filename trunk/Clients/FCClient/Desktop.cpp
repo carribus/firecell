@@ -444,6 +444,24 @@ bool Desktop::OnForumEvent(FCModelEvent& event)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool Desktop::OnMissionEvent(FCModelEvent& event)
+{
+	bool bResult = false;
+
+	switch ( event.GetType() )
+	{
+	case	FCME_Mission_MissionAccepted:
+		break;
+
+	default:
+		break;
+	}
+
+	return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void Desktop::OnDesktopIconSelected(DesktopIcon* pIcon)
 {
 	DesktopIconMap::iterator it = m_mapDesktopIcons.begin();
@@ -475,6 +493,7 @@ void Desktop::OnApplicationActivated(InGameAppWindow* pApp)
     return;
 
   m_pAppBar->setActiveApp(pApp);
+	bringToFront( pApp->GetGUIWindow() );
 }
 
 ///////////////////////////////////////////////////////////////////////

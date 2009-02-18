@@ -160,7 +160,6 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
       break;
 
     case  FCME_Console_FileSystemInfo:
-      // Add any other console specific events here
       {
         m_pDesktop->OnConsoleEvent(event);
       }
@@ -189,6 +188,12 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
         m_pDesktop->OnForumEvent(event);
       }
       break;
+
+		case	FCME_Mission_MissionAccepted:
+			{
+				m_pDesktop->OnMissionEvent(event);
+			}
+			break;
 
     default:
       break;

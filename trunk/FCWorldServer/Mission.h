@@ -27,6 +27,8 @@ public:
   void AddChildMission(Mission* pMission);
   size_t GetChildCount()                                  { return m_childMissions.size(); }
   Mission* GetChildMission(size_t index);
+	Mission* GetChildMissionByID(FCULONG mission_id);
+	bool IsMyChild(Mission* pMission);
 
   FCULONG GetID()                                         { return m_id; }
   FCULONG GetParentID()                                   { return m_parentID; }
@@ -37,6 +39,7 @@ public:
   string GetEventFailure()                                { return m_eventFailure; }
   FCSHORT GetSuccessCount()                               { return m_successCount; }
   FCSHORT GetFailureCount()                               { return m_failureCount; }
+	bool IsComplete()																				{ return m_bComplete; }
   Mission* GetParentMission()                             { return m_pParentMission; }
 
   void SetID(FCULONG id)                                  { m_id = id; }
@@ -46,8 +49,9 @@ public:
   void SetDifficulty(FCSHORT diff)                        { m_difficulty = diff; }
   void SetEventSuccess(string event)                      { m_eventSuccess = event; }
   void SetEventFailure(string event)                      { m_eventFailure = event; }
-  void SetSuccessCount(FCSHORT count)                     { m_successCount = count; }
-  void SetFailureCount(FCSHORT count)                     { m_failureCount = count; }
+  void SetSuccessCount(FCSHORT count)                     { m_successReqCount = count; }
+  void SetFailureCount(FCSHORT count)                     { m_failureReqCount = count; }
+	void SetComplete(bool bComplete = true)									{ m_bComplete = bComplete; }
   void SetParentMission(Mission* pParent)                 { m_pParentMission = pParent; }
 
   /*
@@ -66,8 +70,11 @@ private:
   FCSHORT m_difficulty;
   string m_eventSuccess;
   string m_eventFailure;
+  FCSHORT m_successReqCount;
+  FCSHORT m_failureReqCount;
   FCSHORT m_successCount;
   FCSHORT m_failureCount;
+	bool m_bComplete;
 
 	IEventSystem* m_pEventSystem;
 

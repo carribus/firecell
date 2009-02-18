@@ -19,9 +19,10 @@
 */
 #include "Event.h"
 
-Event::Event(string code, void* param)
+Event::Event(string code, void* param, Player* pPlayer)
 : m_code(code)
 , m_param(param)
+, m_pPlayer(pPlayer)
 {
 }
 
