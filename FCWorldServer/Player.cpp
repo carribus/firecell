@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "../common/Logging/DynLog.h"
+#include "world_comms.h"
 #include "Player.h"
 
 DEFINE_EVENT_SOURCE(Player);
@@ -116,11 +117,14 @@ void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
   }
 	// check for a mission event
 	else if ( !sourceType.compare( Mission::EVTSYS_ObjectType ) )
-	{
+  {
+#error This is wrong. The Player object is not available at this point. Need to relook at the construction and flow of events.
+    Player* pPlayer = (Player*)pEvent->GetPlayer();
 		if ( !eventCode.compare( Mission::EVT_Complete ) )
 		{
 			DYNLOG_ADDLOG( DYNLOG_FORMAT("Player %s completed mission id %ld", GetName().c_str(), (FCULONG)pEvent->GetParam()) );
 			// need to send a message to the client here
+      SendMissionComplete((FCULONG) pEvent->GetParam(), pPlayer->GetRouterSocket(), pPlayer->GetClientSocket());
 		}
 	}
   else

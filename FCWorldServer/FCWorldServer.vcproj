@@ -215,6 +215,9 @@
 				RelativePath="..\common\sockserver\win\W32SocketServer.cpp">
 			</File>
 			<File
+				RelativePath=".\world_comms.cpp">
+			</File>
+			<File
 				RelativePath=".\WorldManager.cpp">
 			</File>
 		</Filter>
@@ -353,6 +356,9 @@
 			</File>
 			<File
 				RelativePath="..\common\sockserver\win\W32SocketServer.h">
+			</File>
+			<File
+				RelativePath=".\world_comms.h">
 			</File>
 			<File
 				RelativePath=".\WorldManager.h">

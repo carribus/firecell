@@ -65,28 +65,6 @@ private:
   void ConfigureEventSystem();
 
   //
-  // Packet sending functions
-  void SendCharacterLoginStatus(FCULONG accountID, FCULONG characterID, e_SelectCharacterStatus status, RouterSocket* pRouter, FCSOCKET clientSocket);
-  void SendCharCreationParameters(std::vector<Country>& countries, std::vector<City>& cities, RouterSocket* pRouter, FCSOCKET clientSocket);
-    void SendCharCreationParameters_Countries(std::vector<Country>& countries, RouterSocket* pRouter, FCSOCKET clientSocket);
-    void SendCharCreationParameters_Cities(std::vector<City>& cities, RouterSocket* pRouter, FCSOCKET clientSocket);
-  void SendCharacterAssetResponse(Player* pPlayer, RouterSocket* pRouter, FCSOCKET clientSocket);
-  void SendCharacterDesktopOptions(Player* pPlayer, RouterSocket* pRouter, FCSOCKET clientSocket);
-	void SendActivateDesktopOptionResponse(FCULONG optionID, Player* pPlayer, RouterSocket* pRouter, FCSOCKET clientSocket);
-  /* Console send methods */
-  void SendConsoleFileSystemInfo(FileSystem& fs, RouterSocket* pRouter, FCSOCKET clientSocket);
-  void SendConsoleFileList(string currentDir, vector<FileSystem::File> files, RouterSocket* pRouter, FCSOCKET clientSocket);
-  void SendConsoleCommandResult(Player* pPlayer, string result, RouterSocket* pRouter, FCSOCKET clientSocket);
-  /* Forum send methods */
-	void SendForumCategories(vector<ForumCategory*>& categories, RouterSocket* pRouter, FCSOCKET clientSocket);
-	void SendForumThreads(FCULONG category_id, vector<ForumPost*>& threads, RouterSocket* pRouter, FCSOCKET clientSocket);
-  void SendForumThreadDetails(FCULONG category_id, ForumPost* pPost, RouterSocket* pRouter, FCSOCKET clientSocket);
-  void SendForumThreadContentBlob(FCULONG category_id, ForumPost* pPost, RouterSocket* pRouter, FCSOCKET clientSocket);
-	void SendForumCreateNewThreadResult(FCULONG category_id, FCULONG thread_id, bool bResult, RouterSocket* pRouter, FCSOCKET clientSocket);
-  /* Mission send methods */
-  void SendMissionAcceptedResponse(Player* pPlayer, FCULONG mission_id, bool bSuccessFlag, RouterSocket* pRouter, FCSOCKET clientSocket);
-
-  //
   // Packet handling functions
   bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
@@ -144,8 +122,6 @@ private:
 	Forum									m_forum;
 
   PThreadCond           m_condSync;
-//  pthread_cond_t        m_condSync;
-//  pthread_mutex_t       m_mutexSync;
 };
 
 #endif//_FCLOGICWORLD_H_
