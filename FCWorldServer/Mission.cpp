@@ -179,7 +179,7 @@ void Mission::OnEvent(IEventSource* pSource, IEvent* pEvent)
 							if ( pEvent->GetPlayer() )
 							{
 								// emite a mission completion event to the player object
-								EventSystem::GetInstance()->Emit(this, (IEventTarget*)pEvent->GetPlayer(), new Event( Mission::EVT_Complete, (void*)m_id ));
+								EventSystem::GetInstance()->Emit(this, (IEventTarget*)pEvent->GetPlayer(), new Event( Mission::EVT_Complete, (void*)m_id, pEvent->GetPlayer() ));
 							}
 						}
 					}
@@ -201,6 +201,7 @@ void Mission::OnEvent(IEventSource* pSource, IEvent* pEvent)
 				SetComplete(true);
 				if ( m_pParentMission )
 				{
+					SendMissionComplete( m_id, pEvent->GetPlayer()->GetRouterSocket(), pEvent->GetPlayer()->GetClientSocket() );
 					// create a 'child' complete event
 					EventSystem::GetInstance()->Emit(this, m_pParentMission, new Event( Mission::EVT_Complete, (void*)m_id, pEvent->GetPlayer() ));
 				}

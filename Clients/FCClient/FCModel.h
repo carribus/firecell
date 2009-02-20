@@ -207,6 +207,8 @@ private:
 	bool GetNextQueueItem(DataQueue& queue, DataQueueItem& dest);
 
 	bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
+		bool OnCommandMissionComplete(PEPacket* pPkt, BaseSocket* pSocket);
+
   bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseServiceInfo(PEPacket* pPkt, BaseSocket* pSocket);  
 		bool OnResponseLogin(PEPacket* pPkt, BaseSocket* pSocket);  

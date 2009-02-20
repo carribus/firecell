@@ -37,6 +37,39 @@ bool MissionMgr::addMission(FCULONG mission_id, bool bCompleted, FCULONG parent_
 
 ///////////////////////////////////////////////////////////////////////
 
+bool MissionMgr::completeMission(FCULONG mission_id)
+{
+	_Mission* pMission = getMission(mission_id);
+
+	if ( !pMission )
+		return false;
+
+	pMission->bCompleted = true;
+
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool MissionMgr::removeMission(FCULONG mission_id)
+{
+	std::list<_Mission>::iterator it = m_missions.begin();
+  std::list<_Mission>::iterator limit = m_missions.end();
+
+  for ( ; it != limit; it++ )
+  {
+    if ( it->mission_id == mission_id )
+		{
+			m_missions.erase(it);
+      return true;
+		}
+  }
+
+	return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 MissionMgr::_Mission* MissionMgr::getMission(FCULONG mission_id)
 {
   std::list<_Mission>::iterator it = m_missions.begin();

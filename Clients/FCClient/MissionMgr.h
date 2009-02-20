@@ -11,9 +11,10 @@ public:
   ~MissionMgr(void);
 
   bool addMission(FCULONG mission_id, bool bCompleted = false, FCULONG parent_mission_id = 0);
+	bool completeMission(FCULONG mission_id);
+	bool removeMission(FCULONG mission_id);
 
 private:
-
 
   struct _Mission
   {

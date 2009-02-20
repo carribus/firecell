@@ -118,7 +118,6 @@ void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
 	// check for a mission event
 	else if ( !sourceType.compare( Mission::EVTSYS_ObjectType ) )
   {
-#error This is wrong. The Player object is not available at this point. Need to relook at the construction and flow of events.
     Player* pPlayer = (Player*)pEvent->GetPlayer();
 		if ( !eventCode.compare( Mission::EVT_Complete ) )
 		{
