@@ -13,7 +13,7 @@ class PThreadMutex
 {
 public:
 	PThreadMutex(bool bRecursive = false);
-	~PThreadMutex(void);
+	virtual ~PThreadMutex(void);
 
 	void Lock();
 	void Unlock();
