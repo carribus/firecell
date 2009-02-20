@@ -249,8 +249,40 @@ bool FCModel::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
     return false;
 
   FCSHORT msgID;
+	bool bHandled = false;
 
   pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
+
+	switch ( msgID )
+	{
+	case	FCMSG_MISSION_COMPLETE:
+		bHandled = OnCommandMissionComplete(pPkt, pSocket);
+		break;
+
+	default:
+		break;
+	}
+
+  return bHandled;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnCommandMissionComplete(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_MISSION_COMPLETE d;
+  size_t dataLen;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+	m_missionMgr.completeMission(d.mission_id);
+
+	// notify the views
+	FireEvent(FCME_Mission_Completed, (void*)d.mission_id);
+
+	// remove the mission from the mission manager
+	m_missionMgr.removeMission(d.mission_id);
 
   return true;
 }

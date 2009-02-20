@@ -453,6 +453,15 @@ bool Desktop::OnMissionEvent(FCModelEvent& event)
 	case	FCME_Mission_MissionAccepted:
 		break;
 
+	case	FCME_Mission_Completed:
+		{
+			FCULONG missionID = (FCULONG)event.GetData();
+			std::wstringstream ss;
+			ss << L"Congratulations!\n\nYou have completed the mission: " << ResourceManager::instance().GetMissionString(missionID, ResourceManager::MS_Name).c_str();
+			Environment->addMessageBox( L"Mission complete!", ss.str().c_str() );
+		}
+		break;
+
 	default:
 		break;
 	}

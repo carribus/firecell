@@ -195,6 +195,12 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
 			}
 			break;
 
+		case	FCME_Mission_Completed:
+			{
+				m_pDesktop->OnMissionEvent(event);
+			}
+			break;
+
     default:
       break;
     }
