@@ -502,9 +502,12 @@ struct __FCPKT_FORUM_GET_THREAD_DETAILS
 
 struct __FCPKT_FORUM_GET_THREAD_DETAILS_RESP
 {
-  FCULONG category_id;              //!> category that this thread belongs to
-  FCULONG post_count;               //!> Number of posts in this thread
-  FCULONG contentSize;              //!> size of the content blob
+  //! category that this thread belongs to
+  FCULONG category_id;              
+  //! Number of posts in this thread
+  FCULONG post_count;               
+  //! size of the content blob
+  FCULONG contentSize;              
 
   struct _thread_data
   {
@@ -579,6 +582,14 @@ struct __FCPKT_MISSION_ACCEPT_RESP
   {
     FCULONG mission_id;
   } child_missions[1];
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_MISSION_COMPLETE		        = 501;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_MISSION_COMPLETE
+{
+  FCULONG mission_id;
 };
 
 #pragma pack(pop)
