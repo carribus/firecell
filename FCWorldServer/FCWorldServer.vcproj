@@ -179,6 +179,9 @@
 				RelativePath=".\MissionManager.cpp">
 			</File>
 			<File
+				RelativePath=".\PacketDispatcher.cpp">
+			</File>
+			<File
 				RelativePath="..\common\PacketExtractor.cpp">
 			</File>
 			<File
@@ -198,6 +201,9 @@
 			</File>
 			<File
 				RelativePath="..\common\PThreadMutex.cpp">
+			</File>
+			<File
+				RelativePath="..\common\PThreadRWLock.cpp">
 			</File>
 			<File
 				RelativePath="..\common\ServiceLogicBase.cpp">
@@ -313,6 +319,9 @@
 				RelativePath=".\MissionManager.h">
 			</File>
 			<File
+				RelativePath=".\PacketDispatcher.h">
+			</File>
+			<File
 				RelativePath="..\common\PacketExtractor.h">
 			</File>
 			<File
@@ -332,6 +341,9 @@
 			</File>
 			<File
 				RelativePath="..\common\PThreadMutex.h">
+			</File>
+			<File
+				RelativePath="..\common\PThreadRWLock.h">
 			</File>
 			<File
 				RelativePath="..\common\ServiceLogicBase.h">

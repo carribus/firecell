@@ -25,6 +25,7 @@
 #include "EventWithDisposableData.h"
 #include "Forum.h"
 #include "ForumCategory.h"
+#include "PacketDispatcher.h"
 #include "FCLogicWorld.h"
 
 #define DBQ_LOAD_OBJECT_DATA    "load_object_data"
@@ -74,6 +75,9 @@ int FCLogicWorld::Start()
 
   // initialise the packet extractor
   m_pktExtractor.Prepare( __FCPACKET_DEF );
+
+  // initialise the packet dispatcher
+  PacketDispatcher::instance().initialise(1);
 
   /*
    *  Initialise the Database object
@@ -180,7 +184,7 @@ void FCLogicWorld::LoadWorldData()
 
 void FCLogicWorld::SendCharacterLoginStatus(FCULONG accountID, FCULONG characterID, e_SelectCharacterStatus status, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
-  PEPacket pkt;
+  PEPacket* pkt = new PEPacket;
   __FCPKT_SELECT_CHARACTER_RESP d;
 
   // check if the action failed...
@@ -193,23 +197,23 @@ void FCLogicWorld::SendCharacterLoginStatus(FCULONG accountID, FCULONG character
     dError.character_id = characterID;
     dError.status = status;
 
-    PEPacketHelper::CreatePacket(pkt, FCPKT_ERROR, FCSMSG_CHARACTER_LOGGEDIN, ST_Auth);
-    PEPacketHelper::SetPacketData(pkt, (void*)&dError, sizeof(dError));
+    PEPacketHelper::CreatePacket(*pkt, FCPKT_ERROR, FCSMSG_CHARACTER_LOGGEDIN, ST_Auth);
+    PEPacketHelper::SetPacketData(*pkt, (void*)&dError, sizeof(dError));
 
-    pRouter->Send(&pkt);
+    QueuePacket(pkt, pRouter);
 
-    pkt.Empty();
+    pkt = new PEPacket;
   }
 
   d.character_id = characterID;
   d.status = status;
 
-  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_SELECT_CHARACTER, ST_None);
-  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(__FCPKT_SELECT_CHARACTER_RESP));
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_SELECT_CHARACTER, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, (void*)&d, sizeof(__FCPKT_SELECT_CHARACTER_RESP));
 
   // send notification to Client
-  pkt.SetFieldValue("target", (void*)&clientSocket);
-  pRouter->Send(&pkt);
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -239,7 +243,7 @@ void FCLogicWorld::SendCharCreationParameters(std::vector<Country>& countries, s
 
 void FCLogicWorld::SendCharCreationParameters_Countries(std::vector<Country>& countries, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
-  PEPacket pkt;
+  PEPacket* pkt = new PEPacket;
   __FCPKT_GET_CHAR_CREATION_PARAMS_COUNTRIES_RESP* d = NULL;
   FCUINT index = 0;
   size_t nPktLen = 0;
@@ -266,14 +270,14 @@ void FCLogicWorld::SendCharCreationParameters_Countries(std::vector<Country>& co
     }
 
     // send the packet
-    PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_GET_CHAR_CREATION_PARAMS, ST_None);
-    PEPacketHelper::SetPacketData(pkt, 
+    PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_GET_CHAR_CREATION_PARAMS, ST_None);
+    PEPacketHelper::SetPacketData(*pkt, 
                                   (void*)d, 
                                   nPktLen);
 
     // send notification to Client
-    pkt.SetFieldValue("target", (void*)&clientSocket);
-    pRouter->Send(&pkt);
+    pkt->SetFieldValue("target", (void*)&clientSocket);
+    QueuePacket(pkt, pRouter);
 
     // clear the data portion
     delete [] d;
@@ -288,7 +292,7 @@ void FCLogicWorld::SendCharCreationParameters_Countries(std::vector<Country>& co
 
 void FCLogicWorld::SendCharCreationParameters_Cities(std::vector<City>& cities, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
-  PEPacket pkt;
+  PEPacket* pkt = new PEPacket;
   __FCPKT_GET_CHAR_CREATION_PARAMS_CITIES_RESP* d = NULL;
   FCUINT index = 0;
   size_t nPktLen = 0;
@@ -316,14 +320,14 @@ void FCLogicWorld::SendCharCreationParameters_Cities(std::vector<City>& cities, 
     }
 
     // send the packet
-    PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_GET_CHAR_CREATION_PARAMS, ST_None);
-    PEPacketHelper::SetPacketData(pkt, 
+    PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_GET_CHAR_CREATION_PARAMS, ST_None);
+    PEPacketHelper::SetPacketData(*pkt, 
                                   (void*)d, 
                                   nPktLen);
 
     // send notification to Client
-    pkt.SetFieldValue("target", (void*)&clientSocket);
-    pRouter->Send(&pkt);
+    pkt->SetFieldValue("target", (void*)&clientSocket);
+    QueuePacket(pkt, pRouter);
 
     // clear the data portion
     delete [] d;
@@ -341,7 +345,7 @@ void FCLogicWorld::SendCharacterAssetResponse(Player* pPlayer, RouterSocket* pRo
   if ( !pPlayer )
     return;
 
-  PEPacket pkt;
+  PEPacket* pkt = new PEPacket;
   __FCPKT_CHARACTER_ASSET_REQUEST_RESP d;
   Computer& comp = pPlayer->GetComputer();
 
@@ -384,12 +388,12 @@ void FCLogicWorld::SendCharacterAssetResponse(Player* pPlayer, RouterSocket* pRo
   d.computer.memory.mem_size = comp.GetMemory().GetMemorySize();
 
   // send the packet
-  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_CHARACTER_ASSET_REQUEST, ST_None);
-  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(__FCPKT_CHARACTER_ASSET_REQUEST_RESP));
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_CHARACTER_ASSET_REQUEST, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, (void*)&d, sizeof(__FCPKT_CHARACTER_ASSET_REQUEST_RESP));
 
   // send notification to Client
-  pkt.SetFieldValue("target", (void*)&clientSocket);
-  pRouter->Send(&pkt);
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -399,7 +403,7 @@ void FCLogicWorld::SendCharacterDesktopOptions(Player* pPlayer, RouterSocket* pR
   if ( !pPlayer )
     return;
 
-  PEPacket pkt;
+  PEPacket* pkt = new PEPacket;
   __FCPKT_GET_DESKTOP_OPTIONS_RESP* d = NULL;
   int nPktLen = 0;
   int numOptions = 7;
@@ -427,14 +431,14 @@ void FCLogicWorld::SendCharacterDesktopOptions(Player* pPlayer, RouterSocket* pR
   }
 
   // send the packet
-  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_GET_DESKTOP_OPTIONS, ST_None);
-  PEPacketHelper::SetPacketData(pkt, 
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_GET_DESKTOP_OPTIONS, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, 
                                 (void*)d, 
                                 nPktLen);
 
   // send notification to Client
-  pkt.SetFieldValue("target", (void*)&clientSocket);
-  pRouter->Send(&pkt);
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
 
   // clear the data portion
   delete [] d;
@@ -444,7 +448,7 @@ void FCLogicWorld::SendCharacterDesktopOptions(Player* pPlayer, RouterSocket* pR
 
 void FCLogicWorld::SendActivateDesktopOptionResponse(FCULONG optionID, Player* pPlayer, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
-	PEPacket pkt;
+	PEPacket* pkt = new PEPacket;
 	Computer& comp = pPlayer->GetComputer();
 	__FCPKT_ACTIVATE_DESKTOP_OPTION_RESP d;
 	
@@ -455,19 +459,19 @@ void FCLogicWorld::SendActivateDesktopOptionResponse(FCULONG optionID, Player* p
 	d.mem_cost = 0;
 
   // send the packet
-  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_ACTIVATE_DESKTOP_OPTION, ST_None);
-  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(__FCPKT_ACTIVATE_DESKTOP_OPTION_RESP));
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_ACTIVATE_DESKTOP_OPTION, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, (void*)&d, sizeof(__FCPKT_ACTIVATE_DESKTOP_OPTION_RESP));
 
   // send notification to Client
-  pkt.SetFieldValue("target", (void*)&clientSocket);
-  pRouter->Send(&pkt);
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void FCLogicWorld::SendConsoleFileSystemInfo(FileSystem& fs, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
-  PEPacket pkt;
+  PEPacket* pkt = new PEPacket;
   __FCPKT_CON_GET_FS_INFO_RESP d;
 
   d.fsStyle = fs.GetFSStyle();
@@ -475,19 +479,19 @@ void FCLogicWorld::SendConsoleFileSystemInfo(FileSystem& fs, RouterSocket* pRout
   strncpy(d.currentDir, fs.GetCurrentPathName().c_str(), sizeof(d.currentDir));
 
   // send the packet
-  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_CON_GET_FS_INFO, ST_None);
-  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(__FCPKT_CON_GET_FS_INFO_RESP));
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_CON_GET_FS_INFO, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, (void*)&d, sizeof(__FCPKT_CON_GET_FS_INFO_RESP));
 
   // send notification to Client
-  pkt.SetFieldValue("target", (void*)&clientSocket);
-  pRouter->Send(&pkt);
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void FCLogicWorld::SendConsoleFileList(string currentDir, vector<FileSystem::File> files, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
-  PEPacket pkt;
+  PEPacket* pkt = new PEPacket;
   __FCPKT_CON_GET_FILE_LIST_RESP* d = NULL;
   size_t numFiles = files.size();
   size_t nPktLen = sizeof(__FCPKT_CON_GET_FILE_LIST_RESP) + ( (numFiles-1)*sizeof(__FCPKT_CON_GET_FILE_LIST_RESP::_files) );
@@ -506,14 +510,14 @@ void FCLogicWorld::SendConsoleFileList(string currentDir, vector<FileSystem::Fil
   }
 
   // send the packet
-  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_CON_GET_FILE_LIST, ST_None);
-  PEPacketHelper::SetPacketData(pkt, 
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_CON_GET_FILE_LIST, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, 
                                 (void*)d, 
                                 nPktLen);
 
   // send notification to Client
-  pkt.SetFieldValue("target", (void*)&clientSocket);
-  pRouter->Send(&pkt);
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
 
   // clear the data portion
   delete [] (FCBYTE*)d;
@@ -523,7 +527,7 @@ void FCLogicWorld::SendConsoleFileList(string currentDir, vector<FileSystem::Fil
 
 void FCLogicWorld::SendConsoleCommandResult(Player* pPlayer, string result, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
-  PEPacket pkt;
+  PEPacket* pkt = new PEPacket;
   __FCPKT_CON_COMMAND_RESP* d = NULL;
   size_t len = result.length();
   size_t pktLen = sizeof(__FCPKT_CON_COMMAND_RESP) + ( len );
@@ -537,14 +541,14 @@ void FCLogicWorld::SendConsoleCommandResult(Player* pPlayer, string result, Rout
   memcpy(d->result, result.c_str(), len);
 
   // send the packet
-  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_CON_COMMAND, ST_None);
-  PEPacketHelper::SetPacketData(pkt, 
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_CON_COMMAND, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, 
                                 (void*)d, 
                                 pktLen);
 
   // send notification to Client
-  pkt.SetFieldValue("target", (void*)&clientSocket);
-  pRouter->Send(&pkt);
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
 
   // clear the data portion
   delete [] (FCBYTE*)d;
@@ -554,7 +558,7 @@ void FCLogicWorld::SendConsoleCommandResult(Player* pPlayer, string result, Rout
 
 void FCLogicWorld::SendForumCategories(vector<ForumCategory*>& categories, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
-  PEPacket pkt;
+  PEPacket* pkt = new PEPacket;
   __FCPKT_FORUM_GET_CATEGORIES_RESP* d = NULL;
 	size_t catCount = categories.size(), index = 0;
 	size_t pktLen = sizeof(__FCPKT_FORUM_GET_CATEGORIES_RESP) + ( (catCount-1) * sizeof(__FCPKT_FORUM_GET_CATEGORIES_RESP::category_info));
@@ -578,14 +582,14 @@ void FCLogicWorld::SendForumCategories(vector<ForumCategory*>& categories, Route
 	}
 
   // send the packet
-  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_FORUM_GET_CATEGORIES, ST_None);
-  PEPacketHelper::SetPacketData(pkt, 
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_FORUM_GET_CATEGORIES, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, 
                                 (void*)d, 
                                 pktLen);
 
   // send notification to Client
-  pkt.SetFieldValue("target", (void*)&clientSocket);
-  pRouter->Send(&pkt);
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
 
   // clear the data portion
   delete [] (FCBYTE*)d;
@@ -595,7 +599,7 @@ void FCLogicWorld::SendForumCategories(vector<ForumCategory*>& categories, Route
 
 void FCLogicWorld::SendForumThreads(FCULONG category_id, vector<ForumPost*>& threads, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
-	PEPacket pkt;
+	PEPacket* pkt = new PEPacket;
 	__FCPKT_FORUM_GET_THREADS_RESP* d;
 	size_t threadCount = threads.size(), index = 0;
 	size_t pktLen = sizeof(__FCPKT_FORUM_GET_THREADS_RESP) + ( (threadCount-1) * sizeof(__FCPKT_FORUM_GET_THREADS_RESP::thread_data));
@@ -622,14 +626,14 @@ void FCLogicWorld::SendForumThreads(FCULONG category_id, vector<ForumPost*>& thr
 	}
 
   // send the packet
-  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_FORUM_GET_THREADS, ST_None);
-  PEPacketHelper::SetPacketData(pkt, 
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_FORUM_GET_THREADS, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, 
                                 (void*)d, 
                                 pktLen);
 
   // send notification to Client
-  pkt.SetFieldValue("target", (void*)&clientSocket);
-  pRouter->Send(&pkt);
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
 
   // clear the data portion
   delete [] (FCBYTE*)d;
@@ -651,7 +655,7 @@ void FCLogicWorld::SendForumThreadDetails(FCULONG category_id, ForumPost* pPost,
     return;
   }
 
-  PEPacket pkt;
+  PEPacket* pkt = new PEPacket;
   __FCPKT_FORUM_GET_THREAD_DETAILS_RESP* d = NULL;
   size_t pktLen = sizeof(__FCPKT_FORUM_GET_THREAD_DETAILS_RESP);
   const vector<ForumPost*>& posts = pPost->GetPosts();
@@ -700,14 +704,14 @@ void FCLogicWorld::SendForumThreadDetails(FCULONG category_id, ForumPost* pPost,
     }
 
     // send the packet
-    PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_FORUM_GET_THREAD_DETAILS, ST_None);
-    PEPacketHelper::SetPacketData(pkt, 
+    PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_FORUM_GET_THREAD_DETAILS, ST_None);
+    PEPacketHelper::SetPacketData(*pkt, 
                                   (void*)d, 
                                   pktLen);
 
     // send response to Client
-    pkt.SetFieldValue("target", (void*)&clientSocket);
-    pRouter->Send(&pkt);
+    pkt->SetFieldValue("target", (void*)&clientSocket);
+    QueuePacket(pkt, pRouter);
 
     // clear the data portion
     delete [] (FCBYTE*)d;
@@ -724,7 +728,7 @@ void FCLogicWorld::SendForumThreadContentBlob(FCULONG category_id, ForumPost* pP
     return;
   }
 
-  PEPacket pkt;
+  PEPacket* pkt = new PEPacket;
   __FCPKT_FORUM_GET_THREAD_CONTENTBLOB_RESP* d = NULL;
   size_t pktLen = sizeof(__FCPKT_FORUM_GET_THREAD_CONTENTBLOB_RESP);
   const vector<ForumPost*>& posts = pPost->GetPosts();
@@ -758,14 +762,14 @@ void FCLogicWorld::SendForumThreadContentBlob(FCULONG category_id, ForumPost* pP
     }
 
     // send the packet
-    PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_FORUM_GET_THREAD_CONTENTBLOB, ST_None);
-    PEPacketHelper::SetPacketData(pkt, 
+    PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_FORUM_GET_THREAD_CONTENTBLOB, ST_None);
+    PEPacketHelper::SetPacketData(*pkt, 
                                   (void*)d, 
                                   pktLen);
 
     // send response to Client
-    pkt.SetFieldValue("target", (void*)&clientSocket);
-    pRouter->Send(&pkt);
+    pkt->SetFieldValue("target", (void*)&clientSocket);
+    QueuePacket(pkt, pRouter);
 
     // clear the data portion
     delete [] (FCBYTE*)d;
@@ -776,7 +780,7 @@ void FCLogicWorld::SendForumThreadContentBlob(FCULONG category_id, ForumPost* pP
 
 void FCLogicWorld::SendForumCreateNewThreadResult(FCULONG category_id, FCULONG thread_id, bool bResult, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
-	PEPacket pkt;
+	PEPacket* pkt = new PEPacket;
 	__FCPKT_FORUM_CREATE_NEW_THREAD_RESP d;
 	size_t pktLen = sizeof(__FCPKT_FORUM_CREATE_NEW_THREAD_RESP);
 
@@ -785,21 +789,21 @@ void FCLogicWorld::SendForumCreateNewThreadResult(FCULONG category_id, FCULONG t
 	d.bSuccess = bResult;
 
   // send the packet
-  PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_FORUM_CREATE_NEW_THREAD, ST_None);
-  PEPacketHelper::SetPacketData(pkt, 
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_FORUM_CREATE_NEW_THREAD, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, 
                                 (void*)&d, 
                                 pktLen);
 
   // send response to Client
-  pkt.SetFieldValue("target", (void*)&clientSocket);
-  pRouter->Send(&pkt);
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void FCLogicWorld::SendMissionAcceptedResponse(Player* pPlayer, FCULONG mission_id, bool bSuccessFlag, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
-  PEPacket pkt;
+  PEPacket* pkt = new PEPacket;
   __FCPKT_MISSION_ACCEPT_RESP* d = NULL;
   size_t pktLen = sizeof(__FCPKT_MISSION_ACCEPT_RESP);
   Mission* pMission = NULL, *pChild = NULL;
@@ -821,14 +825,14 @@ void FCLogicWorld::SendMissionAcceptedResponse(Player* pPlayer, FCULONG mission_
       }
 
       // send the packet
-      PEPacketHelper::CreatePacket(pkt, FCPKT_RESPONSE, FCMSG_MISSION_ACCEPT, ST_None);
-      PEPacketHelper::SetPacketData(pkt, 
+      PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_MISSION_ACCEPT, ST_None);
+      PEPacketHelper::SetPacketData(*pkt, 
                                     (void*)d, 
                                     pktLen);
 
       // send response to Client
-      pkt.SetFieldValue("target", (void*)&clientSocket);
-      pRouter->Send(&pkt);
+      pkt->SetFieldValue("target", (void*)&clientSocket);
+      QueuePacket(pkt, pRouter);
     }
     else
     {
