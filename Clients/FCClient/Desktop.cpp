@@ -23,6 +23,7 @@ Desktop::Desktop(ViewLogicGame& owner, IrrlichtDevice* pDevice)
 , m_owner(owner)
 , m_pDevice(pDevice)
 , m_pAppBar(NULL)
+, m_pFontCourier(NULL)
 , m_mutexApps(true)
 {
 #ifdef _DEBUG
@@ -82,9 +83,6 @@ void Desktop::Draw()
   // draw the app bar
   if ( m_pAppBar )
     m_pAppBar->draw();
-
-  // draw the icons
-  DrawDesktopIcons();
 
   IGUIElement::draw();
 }
@@ -456,9 +454,6 @@ bool Desktop::OnMissionEvent(FCModelEvent& event)
 	case	FCME_Mission_Completed:
 		{
 			FCULONG missionID = (FCULONG)event.GetData();
-			std::wstringstream ss;
-			ss << L"Congratulations!\n\nYou have completed the mission: " << ResourceManager::instance().GetMissionString(missionID, ResourceManager::MS_Name).c_str();
-			Environment->addMessageBox( L"Mission complete!", ss.str().c_str() );
 		}
 		break;
 
@@ -610,66 +605,6 @@ void Desktop::updateIconPositions()
 		
 		pos += offset;
   }
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void Desktop::DrawDesktopIcons()
-{
-/*
-	DesktopOptionMap::iterator it = m_mapDesktopOptions.begin();
-	DesktopOptionMap::iterator limit = m_mapDesktopOptions.end();
-  IVideoDriver* pVideo = m_pDevice->getVideoDriver();
-
-	core::position2d<s32> pos(10, 10), iconPos, offset;;
-	core::dimension2d<s32> iconDim;
-
-  // offset the Y starting position based on the available desktop area
-  core::rect<s32> dRect;
-  GetDesktopRect(dRect);
-
-  pos.Y += dRect.UpperLeftCorner.Y;
-
-	for ( ; it != limit; it++ )
-	{
-		DesktopOption& d = it->second;
-
-		iconDim = d.pTexture->getSize();
-		iconPos.X = pos.X + (m_iconMax.Width/2 - iconDim.Width/2);
-		iconPos.Y = pos.Y;
-
-		d.rect.UpperLeftCorner = pos;
-		d.rect.LowerRightCorner.X = pos.X + m_iconMax.Width;
-		d.rect.LowerRightCorner.Y = pos.Y + m_iconMax.Height;
-
-		if ( d.isHighlighted )
-		{
-			pVideo->draw2DImage( d.pTexture, 
-													iconPos, 
-													rect<s32>(0, 0, iconDim.Width, iconDim.Height), 
-													0, 
-													SColor(255, 255, 255, 255), 
-													true );
-		}
-		else
-		{
-			pVideo->draw2DImage( d.pTexture, 
-													iconPos, 
-													rect<s32>(0, 0, iconDim.Width, iconDim.Height), 
-													0, 
-													SColor(128, 255, 255, 255), 
-													true );
-		}
-
-
-		m_pFontCourier->draw( d.name.c_str(), core::rect<s32>( pos.X, pos.Y + iconDim.Height + 4, d.rect.LowerRightCorner.X, d.rect.LowerRightCorner.Y ), SColor(255, 0, 0, 0), true, true );
-
-		offset.X = 0;
-		offset.Y = d.rect.getHeight() + ICON_PADDING_Y;
-		
-		pos += offset;
-	}
-*/
 }
 
 ///////////////////////////////////////////////////////////////////////

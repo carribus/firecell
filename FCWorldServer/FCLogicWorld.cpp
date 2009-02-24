@@ -430,7 +430,10 @@ bool FCLogicWorld::OnCommandActivateDesktopOption(PEPacket* pPkt, RouterSocket* 
 	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
 	{
 		// calculate whether the player can run the option
-		SendActivateDesktopOptionResponse( d.optionID, pPlayer, pRouter, clientSocket );
+    if ( 1 )
+    {
+		  SendActivateDesktopOptionResponse( d.optionID, pPlayer, pRouter, clientSocket );
+    }
 	}
 	else
 		return false;
@@ -1106,7 +1109,7 @@ void FCLogicWorld::OnDBJob_LoadMissions(DBIResultSet& resultSet, void*& pContext
 
   size_t rowCount = resultSet.GetRowCount();
   FCULONG id, parentID;
-  FCSHORT minLevel, maxLevel, difficulty, successCount, failureCount;
+  FCSHORT minLevel, maxLevel, difficulty, successCount, failureCount, xpSuccess, xpFailure;
   string eventSuccess, eventFailure;
 
   for ( size_t i = 0; i < rowCount; i++ )
@@ -1120,8 +1123,10 @@ void FCLogicWorld::OnDBJob_LoadMissions(DBIResultSet& resultSet, void*& pContext
     eventFailure = resultSet.GetStringValue("failure_event_id", i);
     successCount = resultSet.GetShortValue("success_count", i);
     failureCount = resultSet.GetShortValue("failure_count", i);
+    xpSuccess = resultSet.GetShortValue("xp_success", i);
+    xpFailure = resultSet.GetShortValue("xp_failure", i);
 
-    pThis->m_missionMgr.AddMission( id, minLevel, maxLevel, difficulty, eventSuccess, eventFailure, parentID, successCount, failureCount );
+    pThis->m_missionMgr.AddMission( id, minLevel, maxLevel, difficulty, eventSuccess, eventFailure, xpSuccess, xpFailure, parentID, successCount, failureCount );
   }
 
   delete pCtx;

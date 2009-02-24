@@ -15,7 +15,9 @@ enum e_FCEventType
   FCME_Forum_ThreadContentReceived,
 	/* Mission Events */
 	FCME_Mission_MissionAccepted,
-	FCME_Mission_Completed
+	FCME_Mission_Completed,
+	/* XP Event */
+	FCME_XP_Gained
 };
 
 class FCModelEvent

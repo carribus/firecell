@@ -163,4 +163,15 @@ void SendMissionAcceptedResponse(Player* pPlayer, FCULONG mission_id, bool bSucc
  */
 void SendMissionComplete(FCULONG mission_id, BaseSocket* pRouter, FCSOCKET clientSocket);
 
+/*************************************************************************************************************** 
+ *  MISCELLANEOUS SEND METHODS
+ ***************************************************************************************************************/
+
+/**
+ *	@ingroup worldcomms
+ *	@brief This function sends a notification of XP gain (or loss) to a player. The packet sent is: __FCPKT_XP_GAIN
+ *	@param xpGained Amount of xp gained by the player
+ */
+void SendXPGained(FCSHORT xpGained, FCULONG xpTotal, BaseSocket* pRouter, FCSOCKET clientSocket);
+
 #endif//_WORLD_COMMS_H_

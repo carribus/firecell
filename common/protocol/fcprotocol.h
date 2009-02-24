@@ -592,6 +592,18 @@ struct __FCPKT_MISSION_COMPLETE
   FCULONG mission_id;
 };
 
+/*
+ *  MISCELLANEOUS module specific commands
+ */
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_XP_GAINED						        = 600;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_XP_GAINED
+{
+  FCSHORT xpGained;								//!> The amount of xp gained
+	FCULONG xpTotal;								//!> The new total of XP the player has
+};
+
 #pragma pack(pop)
 
 #endif//_FCPROTOCOL_H_

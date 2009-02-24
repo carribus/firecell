@@ -687,3 +687,26 @@ void SendMissionComplete(FCULONG mission_id, BaseSocket* pRouter, FCSOCKET clien
   pkt->SetFieldValue("target", (void*)&clientSocket);
   QueuePacket(pkt, pRouter);
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* Miscellaneous send methods */
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void SendXPGained(FCSHORT xpGained, FCULONG xpTotal, BaseSocket* pRouter, FCSOCKET clientSocket)
+{
+	PEPacket* pkt = new PEPacket;
+	__FCPKT_XP_GAINED d;
+
+	d.xpGained = xpGained;
+	d.xpTotal = xpTotal;
+
+  // send the packet
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_COMMAND, FCMSG_XP_GAINED, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, 
+                                (void*)&d, 
+                                sizeof(d));
+
+  // send response to Client
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
+}

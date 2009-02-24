@@ -245,10 +245,16 @@
 				RelativePath="..\..\common\PThreadMutex.cpp">
 			</File>
 			<File
+				RelativePath="..\..\common\PThreadRWLock.cpp">
+			</File>
+			<File
 				RelativePath="..\common\ResourceManager.cpp">
 			</File>
 			<File
 				RelativePath=".\Settings.cpp">
+			</File>
+			<File
+				RelativePath=".\TextAnimator.cpp">
 			</File>
 			<File
 				RelativePath=".\ViewLogicCharacterSelection.cpp">
@@ -277,10 +283,10 @@
 				RelativePath=".\clientstrings.h">
 			</File>
 			<File
-				RelativePath="..\common\clienttypes.h">
+				RelativePath="..\common\Socket\clienttypes.h">
 			</File>
 			<File
-				RelativePath="..\common\Socket\clienttypes.h">
+				RelativePath="..\common\clienttypes.h">
 			</File>
 			<File
 				RelativePath="..\..\common\game_objects\ComputerBase.h">
@@ -418,6 +424,9 @@
 				RelativePath="..\..\common\PThreadMutex.h">
 			</File>
 			<File
+				RelativePath="..\..\common\PThreadRWLock.h">
+			</File>
+			<File
 				RelativePath=".\PThreadWrapper.h">
 			</File>
 			<File
@@ -428,6 +437,9 @@
 			</File>
 			<File
 				RelativePath=".\Settings.h">
+			</File>
+			<File
+				RelativePath=".\TextAnimator.h">
 			</File>
 			<File
 				RelativePath=".\ViewLogicCharacterSelection.h">

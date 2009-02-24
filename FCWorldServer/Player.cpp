@@ -118,12 +118,15 @@ void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
 	// check for a mission event
 	else if ( !sourceType.compare( Mission::EVTSYS_ObjectType ) )
   {
+		Mission* pMission = static_cast<Mission*>(pSource);
     Player* pPlayer = (Player*)pEvent->GetPlayer();
 		if ( !eventCode.compare( Mission::EVT_Complete ) )
 		{
-			DYNLOG_ADDLOG( DYNLOG_FORMAT("Player %s completed mission id %ld", GetName().c_str(), (FCULONG)pEvent->GetParam()) );
+			DYNLOG_ADDLOG( DYNLOG_FORMAT("Player %s completed mission id %ld (earned %ld XP)", GetName().c_str(), (FCULONG)pEvent->GetParam(), pMission->GetSuccessXP()) );
 			// need to send a message to the client here
       SendMissionComplete((FCULONG) pEvent->GetParam(), pPlayer->GetRouterSocket(), pPlayer->GetClientSocket());
+			// Add the xp to the player
+			pPlayer->AddXP( pMission->GetSuccessXP() );
 		}
 	}
   else
@@ -148,6 +151,14 @@ void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
     if ( !bHandled )
       DYNLOG_ADDLOG( DYNLOG_FORMAT("Player::OnEvent(): Unknown event received [source:%s / event:%s]", sourceType.c_str(), pEvent->GetCode().c_str()) );
   }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Player::AddXP(FCSHORT xpGain)
+{
+	m_xp += xpGain;
+	SendXPGained(xpGain, m_xp, GetRouterSocket(), GetClientSocket());
 }
 
 ///////////////////////////////////////////////////////////////////////

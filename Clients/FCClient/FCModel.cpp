@@ -259,6 +259,10 @@ bool FCModel::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
 		bHandled = OnCommandMissionComplete(pPkt, pSocket);
 		break;
 
+	case	FCMSG_XP_GAINED:
+		bHandled = OnCommandXPGained(pPkt, pSocket);
+		break;
+
 	default:
 		break;
 	}
@@ -285,6 +289,23 @@ bool FCModel::OnCommandMissionComplete(PEPacket* pPkt, BaseSocket* pSocket)
 	m_missionMgr.removeMission(d.mission_id);
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnCommandXPGained(PEPacket* pPkt, BaseSocket* pSocket)
+{
+	__FCPKT_XP_GAINED d;
+	size_t dataLen;
+
+	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+	pPkt->GetField("data", (void*)&d, dataLen);
+
+	m_pCharacter->SetXP( (FCUINT)d.xpTotal );
+
+	FireEvent(FCME_XP_Gained, (void*)(FCULONG)d.xpGained);
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////

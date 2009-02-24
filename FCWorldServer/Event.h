@@ -25,6 +25,19 @@
 #include "IEventSystem.h"
 
 using namespace std;
+/*
+	Possible change to events:
+
+	Change the Player* in the Event object into an IEventReceiver list
+	As the events bubble through the event system, the most recent 'event receiver' should be pushed to the front of the list...
+	example:
+
+	Player completes a submission.
+	The Mission.EVT_Complete event is created with the Player (as IEventReceiver) in the 'bubble list'
+	The mission has a parent, so the event is bubbled to the parent with the Mission object (as IEventReceived) pushed to the front of the bubble list
+	The parent mission received the complete event, pops the submission context off the bubble list checks if it is complete
+	In this case, the main mission completes, so it also pops the player object off the bubble list and fires a new event
+*/
 
 class Event : public IEvent
 {

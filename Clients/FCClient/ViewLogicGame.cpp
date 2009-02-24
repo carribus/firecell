@@ -17,7 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include <sstream>
 #include "../../common/protocol/fcprotocol.h"
+#include "../common/ResourceManager.h"
+#include "clientstrings.h"
 #include "FCModel.h"
 #include "FCController.h"
 #include "FCView.h"
@@ -34,6 +37,7 @@ ViewLogicGame::ViewLogicGame(void)
 , m_pScene(NULL)
 , m_pEnv(NULL)
 , m_pCamera(NULL)
+, m_pFontImpactLarge(NULL)
 , m_pDesktop(NULL)
 {
 	memset( &m_LButtonLastClick, 0, sizeof(LastClick) );
@@ -57,12 +61,14 @@ void ViewLogicGame::Create(FCView* pContainer, IrrlichtDevice* pDevice)
 	m_pScene = m_pDevice->getSceneManager();
 	m_pEnv = m_pDevice->getGUIEnvironment();
 
+	// create the font(s)
+	m_pFontImpactLarge = m_pDevice->getGUIEnvironment()->getFont("./clientdata/fonts/fontimpact_24px.xml");
+
+	m_textAnimator.setTimer(pDevice->getTimer());
+
   // instantiate the desktop
   if ( !m_pDesktop )
     m_pDesktop = new Desktop(*this, pDevice);
-
-	// setup the event receiver
-//	pDevice->setEventReceiver(this);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -135,10 +141,15 @@ void ViewLogicGame::SetActive()
 
 void ViewLogicGame::Refresh()
 {
+	m_textAnimator.refreshObjects();
+
 	// draw the desktop
   m_pDesktop->Draw();
   m_pScene->drawAll();
 	m_pEnv->drawAll();
+
+	// render any animated text
+	m_textAnimator.renderObjects();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -197,7 +208,19 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
 
 		case	FCME_Mission_Completed:
 			{
+				FCULONG missionID = (FCULONG)event.GetData();
 				m_pDesktop->OnMissionEvent(event);
+				// add an animated text notification..
+				std::wstringstream ss;
+				ss << L"Congratulations!\n\nYou have completed the mission: " << ResourceManager::instance().GetMissionString(missionID, ResourceManager::MS_Name).c_str();
+				AnimatedText* pText = new AnimatedText( m_pFontImpactLarge, ss.str().c_str(), SColor(255, 255, 0, 0), m_pDesktop->getAbsolutePosition());
+				m_textAnimator.addTextToAnimate(pText, TextAnimator::TAD_VERTICAL, -4, 25, TextAnimator::TAE_FADEOUT, 50, 75);
+			}
+			break;
+
+		case	FCME_XP_Gained:
+			{
+				// TODO: Need to implement this still
 			}
 			break;
 
