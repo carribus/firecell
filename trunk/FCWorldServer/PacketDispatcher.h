@@ -49,6 +49,7 @@ private:
    *  Private methods
    */
   PacketList* addSocketToDispatchMap(BaseSocket* pSocket);
+	void stopWorkerThreads();
   
   // worker thread method
   static void* thrdPacketDispatcher(void* pData);

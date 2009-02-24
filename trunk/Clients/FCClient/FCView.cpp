@@ -47,6 +47,8 @@ FCView::~FCView(void)
 
 	if ( m_pDevice )
 		m_pDevice->drop();
+
+	irrSingleton::destroy();
 }
 
 ///////////////////////////////////////////////////////////////////////

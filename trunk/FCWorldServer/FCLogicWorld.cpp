@@ -20,6 +20,7 @@
 #include <sstream>
 #include "../common/protocol/fcprotocol.h"
 #include "../common/PEPacketHelper.h"
+#include "../common/game_objects/FCObjectFactory.h"
 #include "EventSystem.h"
 #include "Event.h"
 #include "EventWithDisposableData.h"
@@ -138,7 +139,9 @@ int FCLogicWorld::Stop()
 {
   m_playerMgr.RemoveAllPlayers();
   EventSystem::Shutdown();
+	PacketDispatcher::destroy();
   DisconnectFromRouters();
+	FCObjectFactory::destroy();
   return 0;
 }
 

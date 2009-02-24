@@ -14,6 +14,7 @@ PacketDispatcher::PacketDispatcher(void)
 
 PacketDispatcher::~PacketDispatcher(void)
 {
+	stopWorkerThreads();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -103,6 +104,26 @@ PacketDispatcher::PacketList* PacketDispatcher::addSocketToDispatchMap(BaseSocke
   }
 
   return pList;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void PacketDispatcher::stopWorkerThreads()
+{
+	DispatchMap::iterator it = m_mapDispatch.begin();
+	DispatchMap::iterator limit = m_mapDispatch.end();
+
+	for ( ; it != limit; it++ )
+	{
+		it->second->bRunning = false;
+		while ( it->second->workerThreads.size() )
+		{
+			it->second->event.Signal();
+			pthread_join( it->second->workerThreads[0], 0 );
+			it->second->workerThreads.erase( it->second->workerThreads.begin() );
+		}
+		delete it->second;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////

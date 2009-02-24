@@ -19,6 +19,15 @@ Forum::Forum(void)
 
 Forum::~Forum()
 {
+	vector<ForumCategory*>::iterator it = m_categories.begin();
+	vector<ForumCategory*>::iterator limit = m_categories.end();
+
+	m_mutexCategories.Lock();
+	for ( ; it != limit; it++ )
+	{
+		delete *it;
+	}
+	m_mutexCategories.Unlock();
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -43,6 +43,8 @@ FCModel::~FCModel(void)
 {
 	if ( m_pCharacter )
 		delete m_pCharacter;
+
+	ResourceManager::destroy();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -219,6 +221,8 @@ void FCModel::ProcessIncomingData()
       break;
     }
 
+		if ( dqi.pPkt )
+			delete dqi.pPkt;
     m_mutexDataIn.Lock();
     bContinue = GetNextQueueItem(m_qDataIn, dqi);
     m_mutexDataIn.Unlock();

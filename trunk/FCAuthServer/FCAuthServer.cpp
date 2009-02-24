@@ -66,6 +66,8 @@ int main(int argc, FCSTR argv[])
   // and release the service/daemon object
   ReleaseServerObject(pService);
 
+	Logging::destroyLogger();
+
 	return 0;
 }
 
