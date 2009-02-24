@@ -24,6 +24,7 @@
 #include <list>
 #include <map>
 #include <vector>
+#include "../common/game_objects/FCObject.h"
 #include "IEventSystem.h"
 #include "../common/TinyXML/tinyxml.h"
 
@@ -33,7 +34,8 @@ using namespace std;
 class Computer;
 class Player;
 
-class FileSystem : public IEventSource
+class FileSystem : public FCObject
+                 , public IEventSource
 {
 public:
   
@@ -82,7 +84,7 @@ public:
     FSO_Company
   };
 
-  FileSystem(void);
+  FileSystem(FCObject* parent);
   ~FileSystem(void);
 
   bool LoadFromXML(const string& filename);

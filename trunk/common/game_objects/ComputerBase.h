@@ -2,6 +2,7 @@
 #define _COMPUTERBASE_H_
 
 #include <string>
+#include "FCObject.h"
 #include "ItemProcessor.h"
 #include "ItemOS.h"
 #include "ItemMemory.h"
@@ -9,10 +10,10 @@
 
 using namespace std;
 
-class ComputerBase
+class ComputerBase : public FCObject
 {
 public:
-  ComputerBase(void);
+  ComputerBase(FCObject* parent, const std::string& typeName = "ComputerBase");
   ~ComputerBase(void);
 
   FCULONG GetID()                         { return m_id; }

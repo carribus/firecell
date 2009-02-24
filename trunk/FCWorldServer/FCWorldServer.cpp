@@ -64,7 +64,7 @@ int main(int argc, FCSTR argv[])
   // and release the service/daemon object
   ReleaseServerObject(pService);
 
-	return 0;
+  return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////

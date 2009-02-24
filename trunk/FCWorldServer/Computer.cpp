@@ -1,8 +1,11 @@
+#include "../common/game_objects/FCObjectFactory.h"
 #include "Computer.h"
 
-Computer::Computer(void)
+Computer::Computer(FCObject* parent)
+: ComputerBase(parent, "Computer")
 {
-  m_fileSystem.SetComputer(this);
+  m_fileSystem = FCObjectFactory::instance().createObject<FileSystem>(this);
+  m_fileSystem->SetComputer(this);
 }
 
 ///////////////////////////////////////////////////////////////////////

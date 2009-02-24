@@ -713,7 +713,7 @@ bool FCLogicWorld::OnCommandClientDisconnect(PEPacket* pPkt, RouterSocket* pSock
   // try and retrieve the player object
   if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(d.clientSocket)) )
   {
-    Player* pEventData = new Player( *pPlayer );
+    Player* pEventData = pPlayer->CreateSafeHandle();
     EventSystem::GetInstance()->Emit( NULL, NULL, new EventWithDisposableData<Player>(Player::EVT_LoggedOut, pEventData) );
 
     m_playerMgr.RemovePlayer(pPlayer);

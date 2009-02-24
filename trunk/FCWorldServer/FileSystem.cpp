@@ -32,8 +32,9 @@ DEFINE_EVENT(FileSystem, FileListing);
 DEFINE_EVENT(FileSystem, ChangeDir);
 DEFINE_EVENT(FileSystem, OSVersion);
 
-FileSystem::FileSystem(void)
-: m_pComputer(NULL)
+FileSystem::FileSystem(FCObject* parent)
+: FCObject("FileSystem", parent)
+, m_pComputer(NULL)
 , m_pCurrentDir(NULL)
 , m_bCaseSensitive(false)
 {

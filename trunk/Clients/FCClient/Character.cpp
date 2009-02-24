@@ -9,12 +9,15 @@ Character::Character(FCUINT id, const wstring& name)
 , m_country_id(0)
 , m_city_id(0)
 {
+  m_computer = new ComputerBase(NULL);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 Character::~Character(void)
 {
+  if ( m_computer )
+    delete m_computer;
 }
 
 ///////////////////////////////////////////////////////////////////////

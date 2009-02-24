@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "../common/Logging/DynLog.h"
+#include "../common/game_objects/FCObjectFactory.h"
 #include "world_comms.h"
 #include "Player.h"
 
@@ -26,7 +27,8 @@ DEFINE_EVENT(Player, LoggedIn);
 DEFINE_EVENT(Player, LoggedOut);
 
 Player::Player(void)
-: m_accountID(0)
+: FCObject(Player::EVTSYS_ObjectType)
+, m_accountID(0)
 , m_id(0)
 , m_xp(0)
 , m_level(0)
@@ -37,12 +39,14 @@ Player::Player(void)
 , m_pRouterSocket(NULL)
 , m_pEventSystem(NULL)
 {
+  createComputer();
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 Player::Player(FCULONG accountID, FCULONG id, string name, string email, FCULONG xp, FCULONG level, FCINT fameScale, FCULONG cityID, FCULONG countryID, InGameIPAddress* ip)
-: m_accountID(accountID)
+: FCObject("Player")
+, m_accountID(accountID)
 , m_id(id)
 , m_name(name)
 , m_email(email)
@@ -55,15 +59,10 @@ Player::Player(FCULONG accountID, FCULONG id, string name, string email, FCULONG
 , m_pRouterSocket(NULL)
 , m_pEventSystem(NULL)
 {
+  createComputer();
+
   if ( ip )
     m_ip = *ip;
-}
-
-///////////////////////////////////////////////////////////////////////
-
-Player::Player(const Player& src)
-{
-  *this = src;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -155,6 +154,26 @@ void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
 
 ///////////////////////////////////////////////////////////////////////
 
+Player* Player::CreateSafeHandle()
+{
+  Player* p = new Player;
+  p->m_accountID = m_accountID;
+  p->m_cityID = m_cityID;
+  p->m_clientSocket = m_clientSocket;
+  p->m_countryID = m_countryID;
+  p->m_email = m_email;
+  p->m_fameScale = m_fameScale;
+  p->m_id = m_id;
+  p->m_ip = m_ip;
+  p->m_level = m_level;
+  p->m_name = m_name;
+  p->m_xp = m_xp;
+
+  return p;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void Player::AddXP(FCSHORT xpGain)
 {
 	m_xp += xpGain;
@@ -220,4 +239,11 @@ bool Player::HasCompletedMission(FCULONG missionID)
 	// TODO: Put in check+data structures for missions completed
 
 	return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Player::createComputer()
+{
+  m_computer = FCObjectFactory::instance().createObject<Computer>(this);
 }

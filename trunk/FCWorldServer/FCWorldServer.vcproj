@@ -143,6 +143,12 @@
 				RelativePath=".\FCLogicWorld.cpp">
 			</File>
 			<File
+				RelativePath="..\common\game_objects\FCObject.cpp">
+			</File>
+			<File
+				RelativePath="..\common\game_objects\FCObjectFactory.cpp">
+			</File>
+			<File
 				RelativePath=".\FCWorldServer.cpp">
 			</File>
 			<File
@@ -260,6 +266,12 @@
 			</File>
 			<File
 				RelativePath=".\FCLogicWorld.h">
+			</File>
+			<File
+				RelativePath="..\common\game_objects\FCObject.h">
+			</File>
+			<File
+				RelativePath="..\common\game_objects\FCObjectFactory.h">
 			</File>
 			<File
 				RelativePath="..\common\protocol\fcprotocol.h">
