@@ -169,7 +169,7 @@ void FCController::OnViewEvent(FCViewEvent& event)
 	//
 	// Mission Events
 	case	VE_MissionAccepted:
-		m_pModel->MissionAccept( event.GetData() );
+		m_pModel->MissionAccept( (FCULONG) (event.GetData() & 0xFFFFFFFF) );
 		break;
 	}
 }

@@ -1,4 +1,5 @@
 #include "../common/Logging/DynLog.h"
+#include "world_comms.h"
 #include "EventSystem.h"
 #include "Event.h"
 #include "Player.h"
@@ -17,6 +18,8 @@ Mission::Mission(void)
 , m_failureReqCount(0)
 , m_successCount(0)
 , m_failureCount(0)
+, m_successXP(0)
+, m_failureXP(0)
 , m_bComplete(false)
 , m_pEventSystem(NULL)
 , m_pParentMission(NULL)
@@ -38,6 +41,8 @@ Mission::Mission(const Mission& src)
 	m_failureCount = src.m_failureCount;
   m_eventSuccess = src.m_eventSuccess;
   m_eventFailure = src.m_eventFailure;
+  m_successXP = src.m_successXP;
+  m_failureXP = src.m_failureXP;
 	m_pEventSystem = src.m_pEventSystem;
 	m_bComplete = false;
   m_pParentMission = NULL;
@@ -140,9 +145,6 @@ void Mission::RegisterForEvents(IEventSystem* pEventSystem)
 		return;
 
   m_pEventSystem = pEventSystem;
-
-  // test listener
-//	pEventSystem->RegisterEventTarget(this, Mission::EVT_Complete);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -172,13 +174,14 @@ void Mission::OnEvent(IEventSource* pSource, IEvent* pEvent)
 					if ( !eventCode.compare( Mission::EVT_Complete ) )
 					{
 						m_successCount++;
+            // check if all child missions are complete
 						if ( m_successCount == m_successReqCount || (m_successReqCount == 0 && m_successCount == m_childMissions.size()) )
 						{
 							SetComplete(true);
 							// all our missions are complete.. therefore we are complete
 							if ( pEvent->GetPlayer() )
 							{
-								// emite a mission completion event to the player object
+								// emit a mission completion event to the player object
 								EventSystem::GetInstance()->Emit(this, (IEventTarget*)pEvent->GetPlayer(), new Event( Mission::EVT_Complete, (void*)m_id, pEvent->GetPlayer() ));
 							}
 						}
@@ -198,9 +201,19 @@ void Mission::OnEvent(IEventSource* pSource, IEvent* pEvent)
 			m_successCount++;
 			if ( m_successCount == m_successReqCount )
 			{
+				IEventTarget* pNextTarget = NULL;
 				SetComplete(true);
+
+				if ( m_pParentMission )
+					pNextTarget = (IEventTarget*)m_pParentMission;
+				else
+					pNextTarget = (IEventTarget*)pEvent->GetPlayer();
+				EventSystem::GetInstance()->Emit(this, pNextTarget, new Event( Mission::EVT_Complete, (void*)m_id, pEvent->GetPlayer() ));
+
+/*
 				if ( m_pParentMission )
 				{
+          // send a message to the player indicating that a sub-mission has been completed...
 					SendMissionComplete( m_id, pEvent->GetPlayer()->GetRouterSocket(), pEvent->GetPlayer()->GetClientSocket() );
 					// create a 'child' complete event
 					EventSystem::GetInstance()->Emit(this, m_pParentMission, new Event( Mission::EVT_Complete, (void*)m_id, pEvent->GetPlayer() ));
@@ -213,6 +226,7 @@ void Mission::OnEvent(IEventSource* pSource, IEvent* pEvent)
 						EventSystem::GetInstance()->Emit(this, (IEventTarget*)pEvent->GetPlayer(), new Event( Mission::EVT_Complete, (void*)m_id ));
 					}
 				}
+*/
 				bHandled = true;
 			}
 		}

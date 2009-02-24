@@ -13,7 +13,7 @@ MissionManager::~MissionManager(void)
 
 ///////////////////////////////////////////////////////////////////////
 
-bool MissionManager::AddMission(FCULONG missionID, FCSHORT minLevel, FCSHORT maxLevel, FCSHORT difficulty, string success_event, string failure_event, FCULONG parent_id, FCSHORT successCount, FCSHORT failureCount)
+bool MissionManager::AddMission(FCULONG missionID, FCSHORT minLevel, FCSHORT maxLevel, FCSHORT difficulty, string success_event, string failure_event, FCSHORT xpSuccess, FCSHORT xpFailure, FCULONG parent_id, FCSHORT successCount, FCSHORT failureCount)
 {
   Mission* pMission = GetMission(missionID);
 
@@ -29,6 +29,8 @@ bool MissionManager::AddMission(FCULONG missionID, FCSHORT minLevel, FCSHORT max
     pMission->SetEventFailure(failure_event);
     pMission->SetSuccessCount(successCount);
     pMission->SetFailureCount(failureCount);
+    pMission->SetSuccessXP(xpSuccess);
+    pMission->SetFailureXP(xpFailure);
 
     m_mapMissions[missionID] = pMission;
   }

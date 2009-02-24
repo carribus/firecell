@@ -1,5 +1,5 @@
 /*
-SQLyog Enterprise - MySQL GUI v7.13 
+SQLyog Enterprise - MySQL GUI v7.15 
 MySQL - 5.0.67-community-nt : Database - firecell
 *********************************************************************
 */
@@ -255,12 +255,14 @@ CREATE TABLE `fc_missions` (
   `failure_event_id` varchar(32) default NULL COMMENT '[optional] event that will cause mission to fail',
   `success_count` smallint(5) unsigned NOT NULL default '1' COMMENT 'Number of times the success event needs to fire to succeed in the mission',
   `failure_count` smallint(5) unsigned NOT NULL default '1' COMMENT 'number of times the failure event needs to fire to fail the mission',
+  `xp_success` smallint(6) NOT NULL default '0' COMMENT 'Amount of xp gained if completed successfully',
+  `xp_failure` smallint(6) NOT NULL default '0' COMMENT 'Amount of xp gained/lost if failed (use -ve value for loss)',
   PRIMARY KEY  (`mission_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_missions` */
 
-insert  into `fc_missions`(`mission_id`,`parentmission_id`,`min_level`,`max_level`,`difficulty`,`success_event_id`,`failure_event_id`,`success_count`,`failure_count`) values (1,NULL,1,NULL,1,'(child).Mission.Complete',NULL,0,0),(2,1,1,NULL,1,'FileSystem.FileListing',NULL,1,1),(3,1,1,NULL,1,'FileSystem.ChangeDir',NULL,1,1),(4,1,1,NULL,1,'FileSystem.OSVersion',NULL,1,1);
+insert  into `fc_missions`(`mission_id`,`parentmission_id`,`min_level`,`max_level`,`difficulty`,`success_event_id`,`failure_event_id`,`success_count`,`failure_count`,`xp_success`,`xp_failure`) values (1,NULL,1,NULL,1,'(child).Mission.Complete',NULL,0,0,100,0),(2,1,1,NULL,1,'FileSystem.FileListing',NULL,1,1,20,0),(3,1,1,NULL,1,'FileSystem.ChangeDir',NULL,1,1,20,0),(4,1,1,NULL,1,'FileSystem.OSVersion',NULL,1,1,20,0);
 
 /*Table structure for table `fc_npcs` */
 

@@ -208,6 +208,7 @@ private:
 
 	bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnCommandMissionComplete(PEPacket* pPkt, BaseSocket* pSocket);
+		bool OnCommandXPGained(PEPacket* pPkt, BaseSocket* pSocket);
 
   bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseServiceInfo(PEPacket* pPkt, BaseSocket* pSocket);  

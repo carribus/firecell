@@ -61,7 +61,6 @@ private:
    */
   void UpdateDesktopOptions();
   void updateIconPositions();
-  void DrawDesktopIcons();
 
 	InGameAppWindow* GetAppWindowByType(FCULONG type);
 

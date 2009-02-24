@@ -58,6 +58,7 @@ public:
   /*
    *  Public Methods
    */
+	void AddXP(FCSHORT xpGain);
 
 	/*
 	 *	Mission related

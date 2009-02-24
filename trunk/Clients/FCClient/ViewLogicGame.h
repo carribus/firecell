@@ -24,6 +24,7 @@
 #include "IViewLogic.h"
 #include "Desktop.h"
 #include "FCModelEvent.h"
+#include "TextAnimator.h"
 
 using namespace std;
 using namespace irr;
@@ -78,6 +79,9 @@ private:
 	IrrlichtDevice*							m_pDevice;
 	ISceneManager*							m_pScene;
 	IGUIEnvironment*						m_pEnv;
+	IGUIFont*									  m_pFontImpactLarge;
+
+	TextAnimator								m_textAnimator;
 
   Desktop*                    m_pDesktop;
 
