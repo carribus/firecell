@@ -14,6 +14,9 @@ public:
 	bool completeMission(FCULONG mission_id);
 	bool removeMission(FCULONG mission_id);
 
+	bool isMissionAccepted(FCULONG mission_id);
+	bool isMissionComplete(FCULONG mission_id);
+
 private:
 
   struct _Mission

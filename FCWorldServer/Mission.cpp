@@ -185,6 +185,10 @@ void Mission::OnEvent(IEventSource* pSource, IEvent* pEvent)
 								EventSystem::GetInstance()->Emit(this, (IEventTarget*)pEvent->GetPlayer(), new Event( Mission::EVT_Complete, (void*)m_id, pEvent->GetPlayer() ));
 							}
 						}
+						else
+						{
+							pEvent->GetPlayer()->AddXP( pMission->GetSuccessXP() );
+						}
 					}
 				}
 			}

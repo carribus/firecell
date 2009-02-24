@@ -4,6 +4,7 @@
 #include "../common/ResourceManager.h"
 #include "clientstrings.h"
 #include "DlgNewThread.h"
+#include "GUIForumPostItem.h"
 #include "GUIForumThreadReader.h"
 
 #define FORUM_HEADER_HEIGHT                 0
@@ -329,7 +330,7 @@ void GUIForumThreadReader::drawHeader(IVideoDriver* pVideo)
 }
 
 ///////////////////////////////////////////////////////////////////////
-#include "GUIForumPostItem.h"
+
 void GUIForumThreadReader::addThreadPost(ForumThread* pPost, core::rect<s32>& rect, SColor colBkg, SColor colText)
 {
   std::wstringstream ss;
@@ -341,19 +342,6 @@ void GUIForumThreadReader::addThreadPost(ForumThread* pPost, core::rect<s32>& re
 		rect = pItem->getRelativePosition();
 		m_posts.push_back(pItem);
 	}
-
-/*
-  _ThreadStruct ts;
-
-	ts.pThread = pPost;
-  ss << pPost->getContent().c_str();
-  ts.pTxtContent = Environment->addStaticText( ss.str().c_str(), rect, true, true, this );
-	ts.pTxtContent->setBackgroundColor( colBkg );
-  rect.LowerRightCorner.Y = rect.UpperLeftCorner.Y + ts.pTxtContent->getTextHeight();
-  ts.pTxtContent->setRelativePosition( rect );
-  ts.pTxtContent->setOverrideColor( colText );
-  m_posts.push_back(ts);
-*/
 }
 
 ///////////////////////////////////////////////////////////////////////
