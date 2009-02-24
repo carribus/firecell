@@ -1,5 +1,7 @@
 #include <sstream>
 #include "../common/irrlichtUtil/irrutils.h"
+#include "FCModel.h"
+#include "MissionMgr.h"
 #include "GUIForumPostItem.h"
 
 #define FPI_AUTHOR_HEIGHT				20
@@ -75,12 +77,20 @@ void GUIForumPostItem::setItemData(ForumThread* pThread)
 	// if this is a mission thread, then we need to create the button to accept the mission
 	if ( pThread->getMissionID() )
 	{
-		offsetRect(itemRect, 0, itemRect.getHeight() + 5);
-		itemRect.LowerRightCorner.Y = itemRect.UpperLeftCorner.Y + 20;
-		core::rect<s32> btnRect = itemRect;
-		ss << "Accept";
-		btnRect.LowerRightCorner.X = btnRect.UpperLeftCorner.X + pFont->getDimension(ss.str().c_str()).Width + 20;
-		m_pBtnAccept = Environment->addButton(btnRect, this, BTN_ACCEPT, ss.str().c_str());
+		// check which options should be shown
+		MissionMgr& missionMgr = FCModel::instance().GetMissionMgr();
+		bool bAccepted = missionMgr.isMissionAccepted(pThread->getMissionID());
+		bool bCompleted = missionMgr.isMissionComplete(pThread->getMissionID());
+
+		if ( !bAccepted && !bCompleted )
+		{
+			offsetRect(itemRect, 0, itemRect.getHeight() + 5);
+			itemRect.LowerRightCorner.Y = itemRect.UpperLeftCorner.Y + 20;
+			core::rect<s32> btnRect = itemRect;
+			ss << "Accept";
+			btnRect.LowerRightCorner.X = btnRect.UpperLeftCorner.X + pFont->getDimension(ss.str().c_str()).Width + 20;
+			m_pBtnAccept = Environment->addButton(btnRect, this, BTN_ACCEPT, ss.str().c_str());
+		}
 	}
 
 	core::rect<s32> myRect = getRelativePosition();
@@ -129,6 +139,8 @@ bool GUIForumPostItem::OnEvent(const SEvent& event)
 						e.UserEvent.UserData2 = (s32)m_pThread->getMissionID();
 						Parent->OnEvent(e);
 						bResult = true;
+
+						event.GUIEvent.Caller->setVisible(false);
 					}
 				}
 				break;

@@ -70,6 +70,42 @@ bool MissionMgr::removeMission(FCULONG mission_id)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool MissionMgr::isMissionAccepted(FCULONG mission_id)
+{
+	std::list<_Mission>::iterator it = m_missions.begin();
+  std::list<_Mission>::iterator limit = m_missions.end();
+
+  for ( ; it != limit; it++ )
+  {
+    if ( it->mission_id == mission_id )
+		{
+      return true;
+		}
+  }
+
+	return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool MissionMgr::isMissionComplete(FCULONG mission_id)
+{
+	std::list<_Mission>::iterator it = m_missions.begin();
+  std::list<_Mission>::iterator limit = m_missions.end();
+
+  for ( ; it != limit; it++ )
+  {
+    if ( it->mission_id == mission_id )
+		{
+      return it->bCompleted;
+		}
+  }
+
+	return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 MissionMgr::_Mission* MissionMgr::getMission(FCULONG mission_id)
 {
   std::list<_Mission>::iterator it = m_missions.begin();

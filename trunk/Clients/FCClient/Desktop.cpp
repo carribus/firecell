@@ -329,7 +329,17 @@ bool Desktop::OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost
 
       }
     }
+		else
+		{
+			// The application is already running, bring the window to the top
+			InGameAppWindow* pWnd = GetAppWindowByType( it->second->getType() );
 
+			if ( pWnd )
+			{
+				m_pAppBar->setActiveApp(pWnd);
+				bringToFront( pWnd->GetGUIWindow() );
+			}
+		}
   }
 
   return bResult;

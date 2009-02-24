@@ -192,6 +192,7 @@ public:
   vector<Character>& GetCharacters()               { return m_characters; }
   map<FCULONG, Country>& GetCountries()            { return m_countries; }
 	map<FCUINT, DesktopOption> GetDesktopOptions()	 { return m_desktopOptions; }
+	MissionMgr& GetMissionMgr()											 { return m_missionMgr; }
 
 private:
 

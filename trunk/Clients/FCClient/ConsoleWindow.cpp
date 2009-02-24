@@ -28,6 +28,11 @@ bool ConsoleWindow::Create(s32 AppElemID, FCUINT optionID, std::wstring caption)
 
 	if ( bResult )
 	{
+		// calculate the size of the console window
+		m_pDesktop->GetDesktopRect(wndRect);
+		wndRect.UpperLeftCorner.X += wndRect.getWidth()/2;
+		wndRect.UpperLeftCorner.Y += wndRect.getHeight()/2;
+
 		m_pWindow->setRelativePosition(wndRect);
     CenterWindow();
 		GetClientRect(clientRect);

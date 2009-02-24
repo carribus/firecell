@@ -202,7 +202,17 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
 
 		case	FCME_Mission_MissionAccepted:
 			{
+				FCULONG missionID = (FCULONG)event.GetData();
 				m_pDesktop->OnMissionEvent(event);
+				// add an animated text notification..
+				std::wstringstream ss;
+				core::rect<s32> r = m_pDesktop->getAbsolutePosition();
+				ss << ResourceManager::instance().GetMissionString(missionID, ResourceManager::MS_Name).c_str();
+				AnimatedText* pText = new AnimatedText( m_pFontImpactLarge, L"New Mission Accepted:", SColor(255, 0, 255, 0), r);
+				m_textAnimator.addTextToAnimate(pText, TextAnimator::TAD_VERTICAL, -4, 25, TextAnimator::TAE_FADEOUT, 50, 75);
+				r.UpperLeftCorner.Y += (s32)((double)m_pFontImpactLarge->getDimension(L"A").Height*2.0L);
+				pText = new AnimatedText( m_pFontImpactLarge, ss.str().c_str(), SColor(255, 255, 255, 255), r);
+				m_textAnimator.addTextToAnimate(pText, TextAnimator::TAD_VERTICAL, -4, 25, TextAnimator::TAE_FADEOUT, 50, 75);
 			}
 			break;
 
@@ -212,15 +222,30 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
 				m_pDesktop->OnMissionEvent(event);
 				// add an animated text notification..
 				std::wstringstream ss;
-				ss << L"Congratulations!\n\nYou have completed the mission: " << ResourceManager::instance().GetMissionString(missionID, ResourceManager::MS_Name).c_str();
-				AnimatedText* pText = new AnimatedText( m_pFontImpactLarge, ss.str().c_str(), SColor(255, 255, 0, 0), m_pDesktop->getAbsolutePosition());
+				core::rect<s32> r = m_pDesktop->getAbsolutePosition();
+
+				AnimatedText* pText = new AnimatedText( m_pFontImpactLarge, L"Congratulations!", SColor(255, 255, 255, 255), r);
+				m_textAnimator.addTextToAnimate(pText, TextAnimator::TAD_VERTICAL, -4, 25, TextAnimator::TAE_FADEOUT, 50, 75);
+				r.UpperLeftCorner.Y += (s32)((double)m_pFontImpactLarge->getDimension(L"A").Height*4.0L);
+
+				pText = new AnimatedText( m_pFontImpactLarge, L"You have completed the mission:", SColor(255, 255, 0, 0), r);
+				m_textAnimator.addTextToAnimate(pText, TextAnimator::TAD_VERTICAL, -4, 25, TextAnimator::TAE_FADEOUT, 50, 75);
+				r.UpperLeftCorner.Y += (s32)((double)m_pFontImpactLarge->getDimension(L"A").Height*2.0L);
+
+				ss << ResourceManager::instance().GetMissionString(missionID, ResourceManager::MS_Name).c_str();
+				pText = new AnimatedText( m_pFontImpactLarge, ss.str().c_str(), SColor(255, 255, 0, 0), r);
 				m_textAnimator.addTextToAnimate(pText, TextAnimator::TAD_VERTICAL, -4, 25, TextAnimator::TAE_FADEOUT, 50, 75);
 			}
 			break;
 
 		case	FCME_XP_Gained:
 			{
-				// TODO: Need to implement this still
+				std::wstringstream ss;
+				core::rect<s32> r = m_pDesktop->getAbsolutePosition();
+
+				ss << L"XP: +" << (FCULONG)event.GetData();
+				AnimatedText* pText = new AnimatedText( m_pFontImpactLarge, ss.str().c_str(), SColor(255, 0, 255, 0), r);
+				m_textAnimator.addTextToAnimate(pText, TextAnimator::TAD_VERTICAL, -4, 25, TextAnimator::TAE_FADEOUT, 50, 75);
 			}
 			break;
 
