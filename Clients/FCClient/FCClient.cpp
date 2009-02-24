@@ -63,5 +63,8 @@ int main(int argc, char** argv)
 
 	controller.Run();
 
+	FCModel::destroy();
+	Settings::destroy();
+
 	return 0;
 }

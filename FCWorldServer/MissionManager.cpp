@@ -9,6 +9,13 @@ MissionManager::MissionManager(IEventSystem* pEventSystem)
 
 MissionManager::~MissionManager(void)
 {
+	MissionMap::iterator it = m_mapMissions.begin();
+	MissionMap::iterator limit = m_mapMissions.end();
+
+	for ( ; it != limit; it++ )
+	{
+		delete it->second;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////

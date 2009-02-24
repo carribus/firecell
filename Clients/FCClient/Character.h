@@ -12,6 +12,7 @@ class Character
 {
 public:
   Character(FCUINT id, const wstring& name);
+	Character(const Character& src);
   ~Character(void);
 
   void SetXP(FCUINT xp)                               { m_xp = xp; }

@@ -92,6 +92,13 @@ INIFile::INIFile(void)
 
 INIFile::~INIFile(void)
 {
+	SectionList::iterator it = m_lstSections.begin();
+	SectionList::iterator limit = m_lstSections.end();
+
+	for ( ; it != limit; it++ )
+	{
+		delete *it;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////

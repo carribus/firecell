@@ -217,6 +217,7 @@ void FCDatabase::StopWorkerThreads()
   {
     (*it)->bRunning = false;
     pthread_join( (*it)->thread, NULL );
+		delete *it;
   }
 }
 

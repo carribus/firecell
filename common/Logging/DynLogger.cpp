@@ -102,6 +102,7 @@ size_t DynLogger::addLog(const std::string& data, const char* sourceFile, size_t
     if ( pItem )
     {
       (*it)->writeItem(pItem);
+			delete pItem;
     }
   }
 
