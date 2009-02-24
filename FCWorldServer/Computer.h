@@ -12,14 +12,14 @@ using namespace std;
 class Computer : public ComputerBase
 {
 public:
-  Computer(void);
+  Computer(FCObject* parent);
   ~Computer(void);
 
-  FileSystem& GetFileSystem()             { return m_fileSystem; }
+  FileSystem& GetFileSystem()             { return *m_fileSystem; }
 
 private:
 
-  FileSystem      m_fileSystem;
+  FileSystem*      m_fileSystem;
 };
 
 #endif//_COMPUTER_H_

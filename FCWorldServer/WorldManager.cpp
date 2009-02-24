@@ -160,7 +160,7 @@ Company* WorldManager::AddCompany(FCULONG id, const string& name, FCULONG cityID
 
   if ( !(pCompany = GetCompany(id)) )
   {
-    pCompany = new Company;
+    pCompany = new Company(NULL);
     pCompany->SetID(id);
     pCompany->SetName(name);
     pCompany->SetCityID(cityID);

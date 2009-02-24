@@ -164,6 +164,12 @@
 				RelativePath=".\FCModelEvent.cpp">
 			</File>
 			<File
+				RelativePath="..\..\common\game_objects\FCObject.cpp">
+			</File>
+			<File
+				RelativePath="..\..\common\game_objects\FCObjectFactory.cpp">
+			</File>
+			<File
 				RelativePath="..\common\FCServerObj.cpp">
 			</File>
 			<File
@@ -326,6 +332,12 @@
 			</File>
 			<File
 				RelativePath=".\FCModelEvent.h">
+			</File>
+			<File
+				RelativePath="..\..\common\game_objects\FCObject.h">
+			</File>
+			<File
+				RelativePath="..\..\common\game_objects\FCObjectFactory.h">
 			</File>
 			<File
 				RelativePath="..\common\FCServerObj.h">

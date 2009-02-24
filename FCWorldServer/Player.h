@@ -26,11 +26,13 @@
 #include "IEventSystem.h"
 #include "Computer.h"
 #include "Mission.h"
+#include "../common/game_objects/FCObject.h"
 #include "../common/game_objects/InGameIPAddress.h"
 
 using namespace std;
 
-class Player : public IEventSource
+class Player : public FCObject
+             , public IEventSource
              , public IEventTarget
 {
 public:
@@ -41,7 +43,6 @@ public:
 
   Player(void);
   Player(FCULONG accountID, FCULONG id, string name, string email, FCULONG xp, FCULONG level, FCINT fameScale, FCULONG cityID, FCULONG countryID, InGameIPAddress* ip);
-  Player(const Player& src);
   ~Player(void);
 
   /*
@@ -58,6 +59,7 @@ public:
   /*
    *  Public Methods
    */
+  Player* CreateSafeHandle();
 	void AddXP(FCSHORT xpGain);
 
 	/*
@@ -80,7 +82,7 @@ public:
   FCINT GetFameScale() const              { return m_fameScale; }
   FCULONG GetCityID() const               { return m_cityID; }
   FCULONG GetCountryID() const            { return m_countryID; }
-  Computer& GetComputer()                 { return m_computer; }
+  Computer& GetComputer()                 { return *m_computer; }
   InGameIPAddress& GetIP()                { return m_ip; }
   FCSOCKET GetClientSocket() const        { return m_clientSocket; }
 	BaseSocket* GetRouterSocket()						{ return m_pRouterSocket; }
@@ -100,6 +102,14 @@ public:
 
 private:
 
+  /*
+   *  Private Methods
+   */
+  void createComputer();
+
+  /*
+   *  Private Members
+   */
   FCULONG m_accountID;
   FCULONG m_id;
   string m_name;
@@ -109,7 +119,7 @@ private:
   FCINT m_fameScale;
   FCULONG m_cityID;
   FCULONG m_countryID;
-  Computer m_computer;
+  Computer* m_computer;
   InGameIPAddress m_ip;
   FCSOCKET m_clientSocket;
 	BaseSocket* m_pRouterSocket;

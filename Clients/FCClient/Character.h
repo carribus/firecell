@@ -28,7 +28,7 @@ public:
   FCBYTE GetCountrID()                                { return m_country_id; }
   FCBYTE GetCityID()                                  { return m_city_id; }
   InGameIPAddress& GetIP()                            { return m_ip; }
-  ComputerBase& GetComputer()                         { return m_computer; }
+  ComputerBase& GetComputer()                         { return *m_computer; }
 
 private:
 
@@ -41,7 +41,7 @@ private:
   FCBYTE m_city_id;
 
   InGameIPAddress m_ip;
-  ComputerBase m_computer;
+  ComputerBase* m_computer;
 };
 
 #endif//_CHARACTER_H_

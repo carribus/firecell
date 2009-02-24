@@ -4,15 +4,16 @@
 #include <map>
 #include <string>
 #include "../common/fctypes.h"
+#include "../common/game_objects/FCObject.h"
 #include "../common/game_objects/InGameIPAddress.h"
 #include "Computer.h"
 
 using namespace std;
 
-class Company
+class Company : public FCObject
 {
 public:
-  Company(void);
+  Company(FCObject* parent);
   ~Company(void);
 
   void SetID(FCULONG id)                    { m_id = id; }
@@ -23,7 +24,7 @@ public:
   string GetName()                          { return m_name; }
   FCULONG GetCityID()                       { return m_cityID; }
   InGameIPAddress& GetIP()                  { return m_ip; }
-  Computer& GetComputer()                   { return m_computer; }
+  Computer& GetComputer()                   { return *m_computer; }
 
 private:
 
@@ -35,7 +36,7 @@ private:
   /*
    *  Company computer
    */
-  Computer        m_computer;
+  Computer*        m_computer;
 };
 
 #endif//_COMPANY_H_
