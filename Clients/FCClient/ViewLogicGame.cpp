@@ -20,6 +20,7 @@
 #include <sstream>
 #include "../../common/protocol/fcprotocol.h"
 #include "../common/ResourceManager.h"
+#include "../common/irrlichtUtil/irrutils.h"
 #include "clientstrings.h"
 #include "FCModel.h"
 #include "FCController.h"
@@ -128,12 +129,6 @@ void ViewLogicGame::SetActive()
     m_pLightNode->getLightData().SpecularColor = video::SColorf(0.5, 0.5, 0.5);
     m_pLightNode->getLightData().Type = video::ELT_DIRECTIONAL;
 	}
-/*
-    //
-    irr::scene::ISceneNodeAnimator* pAnim = pSceneMgr->createRotationAnimator( core::vector3df(0, 1.3f, 0) );
-    m_pLightNode->addAnimator(pAnim);
-    pAnim->drop();
-	}
 */
 }
 
@@ -207,10 +202,15 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
 				// add an animated text notification..
 				std::wstringstream ss;
 				core::rect<s32> r = m_pDesktop->getAbsolutePosition();
+        core::dimension2d<s32> fontDim = m_pFontImpactLarge->getDimension(L"Wj");
 				ss << ResourceManager::instance().GetMissionString(missionID, ResourceManager::MS_Name).c_str();
+
+        r.UpperLeftCorner.Y = (r.getHeight()/2) - (fontDim.Height/2);
+        r.LowerRightCorner.Y = r.UpperLeftCorner.Y + fontDim.Height;
+
 				AnimatedText* pText = new AnimatedText( m_pFontImpactLarge, L"New Mission Accepted:", SColor(255, 0, 255, 0), r);
 				m_textAnimator.addTextToAnimate(pText, TextAnimator::TAD_VERTICAL, -4, 25, TextAnimator::TAE_FADEOUT, 50, 75);
-				r.UpperLeftCorner.Y += (s32)((double)m_pFontImpactLarge->getDimension(L"A").Height*2.0L);
+				offsetRect(r, 0, r.getHeight());
 				pText = new AnimatedText( m_pFontImpactLarge, ss.str().c_str(), SColor(255, 255, 255, 255), r);
 				m_textAnimator.addTextToAnimate(pText, TextAnimator::TAD_VERTICAL, -4, 25, TextAnimator::TAE_FADEOUT, 50, 75);
 			}
@@ -220,17 +220,24 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
 			{
 				FCULONG missionID = (FCULONG)event.GetData();
 				m_pDesktop->OnMissionEvent(event);
+
 				// add an animated text notification..
 				std::wstringstream ss;
+        core::dimension2d<s32> fontDim = m_pFontImpactLarge->getDimension(L"Wj");
 				core::rect<s32> r = m_pDesktop->getAbsolutePosition();
+
+        r.UpperLeftCorner.Y = (r.getHeight()/2) - (fontDim.Height/2);
+        r.LowerRightCorner.Y = r.UpperLeftCorner.Y + fontDim.Height;
 
 				AnimatedText* pText = new AnimatedText( m_pFontImpactLarge, L"Congratulations!", SColor(255, 255, 255, 255), r);
 				m_textAnimator.addTextToAnimate(pText, TextAnimator::TAD_VERTICAL, -4, 25, TextAnimator::TAE_FADEOUT, 50, 75);
-				r.UpperLeftCorner.Y += (s32)((double)m_pFontImpactLarge->getDimension(L"A").Height*4.0L);
+
+				offsetRect(r, 0, r.getHeight());
 
 				pText = new AnimatedText( m_pFontImpactLarge, L"You have completed the mission:", SColor(255, 255, 0, 0), r);
 				m_textAnimator.addTextToAnimate(pText, TextAnimator::TAD_VERTICAL, -4, 25, TextAnimator::TAE_FADEOUT, 50, 75);
-				r.UpperLeftCorner.Y += (s32)((double)m_pFontImpactLarge->getDimension(L"A").Height*2.0L);
+
+				offsetRect(r, 0, r.getHeight());
 
 				ss << ResourceManager::instance().GetMissionString(missionID, ResourceManager::MS_Name).c_str();
 				pText = new AnimatedText( m_pFontImpactLarge, ss.str().c_str(), SColor(255, 255, 0, 0), r);
@@ -242,6 +249,10 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
 			{
 				std::wstringstream ss;
 				core::rect<s32> r = m_pDesktop->getAbsolutePosition();
+        core::dimension2d<s32> fontDim = m_pFontImpactLarge->getDimension(L"Wj");
+
+        r.UpperLeftCorner.Y = (r.getHeight()/2) - (fontDim.Height/2);
+        r.LowerRightCorner.Y = r.UpperLeftCorner.Y + fontDim.Height;
 
 				ss << L"XP: +" << (FCULONG)event.GetData();
 				AnimatedText* pText = new AnimatedText( m_pFontImpactLarge, ss.str().c_str(), SColor(255, 0, 255, 0), r);
@@ -343,17 +354,7 @@ bool ViewLogicGame::OnLButtonUp(const SEvent::SMouseInput& event)
 bool ViewLogicGame::OnLButtonDblClick(const SEvent::SMouseInput& event)
 {
   bool bResult = false;
-/*
-  Desktop::DesktopOption d;
-  
-  if ( m_pDesktop->GetDesktopOptionFromPt( event.X, event.Y, &d ) )
-  {
-	  // fire an event to the controller
-	  FCViewEvent e(VE_DesktopOptionActivated, d.optionID);
-	  m_pContainer->GetController()->OnViewEvent(e);
-    bResult = true;
-  }
-*/
+
   return bResult;
 }
 
@@ -377,19 +378,7 @@ void ViewLogicGame::CreateStartBar()
 bool ViewLogicGame::OnConsoleFileSystemInfo(FCModelEvent& event)
 {
 	bool bResult = true;
-/*
-	FCModel::FileSystemInfo* pFSI = (FCModel::FileSystemInfo*)event.GetData();
-	ConsoleWindow* pWnd = (ConsoleWindow*)GetAppWindowByType(DOT_Console);
 
-	if ( pWnd )
-	{
-		pWnd->SetCurrentDir( pFSI->currentDir );
-		pWnd->SetDirSeperator( pFSI->dirSeperator );
-		pWnd->SetFileSystemStyle( pFSI->fsStyle );
-	}
-	else 
-		bResult = false;
-*/
-	return bResult;
+  return bResult;
 }
 
