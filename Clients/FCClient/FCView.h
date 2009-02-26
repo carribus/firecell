@@ -55,6 +55,14 @@ public:
 
 private:
 
+  /*
+   *  Private methods
+   */
+  void drawLatency();
+
+  /*
+   *  Private members
+   */
 	FCModel*					m_pModel;
 	FCController*			m_pController;
 

@@ -159,6 +159,7 @@ public:
 	void SetState(e_ModelState newState);
   void SetStateStep(FCSHORT stateStep);
 	StateInfo GetState()														{ return m_state; }
+  FCULONG GetLatency()                            { return m_latency; }
 
   Character* GetPlayer()                          { return m_pCharacter; }
 
@@ -250,6 +251,7 @@ private:
 	PacketExtractor		m_extractor;
 	bool							m_bConnected;
   FCSHORT           m_connectRetry;
+  FCULONG           m_latency;
 
 	DataQueue					m_qDataIn;
 	PThreadMutex			m_mutexDataIn;

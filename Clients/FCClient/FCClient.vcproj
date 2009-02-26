@@ -263,6 +263,9 @@
 				RelativePath=".\TextAnimator.cpp">
 			</File>
 			<File
+				RelativePath="..\..\common\time\timelib.cpp">
+			</File>
+			<File
 				RelativePath=".\ViewLogicCharacterSelection.cpp">
 			</File>
 			<File
@@ -289,10 +292,10 @@
 				RelativePath=".\clientstrings.h">
 			</File>
 			<File
-				RelativePath="..\common\Socket\clienttypes.h">
+				RelativePath="..\common\clienttypes.h">
 			</File>
 			<File
-				RelativePath="..\common\clienttypes.h">
+				RelativePath="..\common\Socket\clienttypes.h">
 			</File>
 			<File
 				RelativePath="..\..\common\game_objects\ComputerBase.h">
@@ -452,6 +455,9 @@
 			</File>
 			<File
 				RelativePath=".\TextAnimator.h">
+			</File>
+			<File
+				RelativePath="..\..\common\time\timelib.h">
 			</File>
 			<File
 				RelativePath=".\ViewLogicCharacterSelection.h">
