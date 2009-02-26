@@ -32,6 +32,7 @@ FCModel* FCModel::m_pThis = NULL;
 FCModel::FCModel(void)
 : m_connectRetry(1)
 , m_pCharacter(NULL)
+, m_latency(0)
 {
 	m_state.state = FCModel::None;
 	m_state.stateStep = 0;
@@ -323,6 +324,8 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
   bool bHandled = false;
 
   pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
+
+  m_latency = m_server.GetLatency( FCPKT_RESPONSE, msgID );
 
   switch ( msgID )
   {

@@ -145,6 +145,9 @@
 			<File
 				RelativePath="..\common\ResourceManager.cpp">
 			</File>
+			<File
+				RelativePath="..\..\common\time\timelib.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -182,6 +185,9 @@
 			</File>
 			<File
 				RelativePath="..\common\ResourceManager.h">
+			</File>
+			<File
+				RelativePath="..\..\common\time\timelib.h">
 			</File>
 		</Filter>
 		<Filter

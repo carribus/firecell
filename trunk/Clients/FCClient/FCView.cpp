@@ -160,6 +160,8 @@ bool FCView::Update()
 
 #endif//_DEBUG
 
+    drawLatency();
+
 		m_pDriver->endScene();
 	}
 	else
@@ -270,4 +272,30 @@ bool FCView::OnModelStateChange(FCModelEvent& event)
 	}
 
 	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCView::drawLatency()
+{
+  FCULONG latency = FCModel::instance().GetLatency();
+
+  if ( m_pEnv )
+  {
+    IGUIFont* pFont = m_pEnv->getSkin()->getFont();
+
+    if ( pFont )
+    {
+		  std::wstringstream ss;
+		  dimension2d<s32> screenSize = m_pDriver->getScreenSize();
+		  ss << L"Latency: " << latency << L"ms";
+		  drawStrokedFont( pFont,
+										  ss.str().c_str(), 
+										  SColor(255, 0, 0, 0),
+										  SColor(255, 0, 255, 0),
+										  rect<s32>(screenSize.Width-pFont->getDimension(ss.str().c_str()).Width-10, screenSize.Height-16, screenSize.Width, screenSize.Height), 
+										  true, 
+										  true);
+    }
+  }
 }

@@ -1,4 +1,5 @@
 #include "../../common/protocol/fcprotocol.h"
+#include "../../common/time/timelib.h"
 #include "../../common/PEPacket.h"
 #include "../../common/PEPacketHelper.h"
 #include "FCServerObj.h"
@@ -6,12 +7,26 @@
 FCServerObj::FCServerObj(void)
 : m_pSock(NULL)
 {
+  memset(&m_latencyAnchor, 0, sizeof(LatencyAnchor));
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 FCServerObj::~FCServerObj(void)
 {
+}
+
+///////////////////////////////////////////////////////////////////////
+
+FCULONG FCServerObj::GetLatency(FCBYTE pktType, FCSHORT msgID)
+{
+  if ( msgID == m_latencyAnchor.msgID &&
+       pktType != m_latencyAnchor.pktType )
+  {
+    return (tl_getTime() - m_latencyAnchor.timestamp);
+  }
+
+  return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -274,12 +289,27 @@ void FCServerObj::SendMissionAccept(FCULONG mission_id)
 
 bool FCServerObj::SendPacket(PEPacket& pkt)
 {
+  FCSHORT msgID = 0;
+  FCBYTE pktType = 0;
   char* pData = NULL;
   size_t blockLen = 0;
   int nRet = 0;
 
+  pkt.GetField("msg", &msgID, sizeof(FCSHORT));  
+  pkt.GetField("type", &pktType, sizeof(FCBYTE));
   pkt.GetDataBlock(pData, blockLen);
   nRet = m_pSock->Send((FCBYTE*)pData, (int)blockLen);
 
+  SetLatencyAnchor(pktType, msgID );
+
   return (nRet == blockLen);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCServerObj::SetLatencyAnchor(FCBYTE pktType, FCSHORT msgID)
+{
+  m_latencyAnchor.pktType = pktType;
+  m_latencyAnchor.msgID = msgID;
+  m_latencyAnchor.timestamp = tl_getTime();
 }

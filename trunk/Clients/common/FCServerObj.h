@@ -9,6 +9,10 @@ public:
   FCServerObj(void);
   ~FCServerObj(void);
 
+  // Latency function
+  FCULONG GetLatency(FCBYTE pktType, FCSHORT msgID);
+
+  // packet functions
   void RequestServerInfo();
   void Login(const char* username, const char* password);
   void RequestCharacterInfo();
@@ -38,8 +42,16 @@ public:
 private:
 
   bool SendPacket(PEPacket& pkt);
+  void SetLatencyAnchor(FCBYTE pktType, FCSHORT msgID);
 
   BaseSocket*             m_pSock;
+
+  struct LatencyAnchor
+  {
+    FCBYTE pktType;
+    FCSHORT msgID;
+    FCULONG timestamp;
+  }                       m_latencyAnchor;
 };
 
 #endif//_FCSERVEROBJ_H_
