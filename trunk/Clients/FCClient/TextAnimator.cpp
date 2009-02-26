@@ -38,6 +38,9 @@ void TextAnimator::addTextToAnimate(AnimatedText* pText, E_TEXTANIM_DIR dir, s32
 		break;
 	}
 
+  // make sure that the text isn't overlapping any other animated text at this point
+  fitTextIntoStream(obj);
+
 	m_lockElems.LockForWrite();
 	m_objects.push_back(obj);
 	m_lockElems.Unlock();
@@ -143,4 +146,27 @@ void TextAnimator::updateObject(TextAnimObj& obj)
 
 	obj.numTicksAnimated++;
 
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void TextAnimator::fitTextIntoStream(TextAnimObj& obj)
+{
+  if ( m_objects.size() )
+  {
+    m_lockElems.LockForRead();
+
+    core::rect<s32> objRect;
+    TextAnimObj& lastObj = m_objects[m_objects.size()-1];
+
+    objRect = lastObj.pTextObj->getRect();
+    if ( objRect.LowerRightCorner.Y > obj.pTextObj->getRect().UpperLeftCorner.Y )
+    {
+      objRect.UpperLeftCorner.Y = objRect.LowerRightCorner.Y;
+      objRect.LowerRightCorner.Y = objRect.UpperLeftCorner.Y + obj.pTextObj->getRect().getHeight();
+      obj.pTextObj->setRect(objRect);
+    }
+
+    m_lockElems.Unlock();
+  }
 }

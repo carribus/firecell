@@ -124,6 +124,7 @@ private:
 	 *	Private methods
 	 */
 	void updateObject(TextAnimObj& obj);
+  void fitTextIntoStream(TextAnimObj& obj);
 
 	/*
 	 *	Private members
