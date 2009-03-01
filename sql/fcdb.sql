@@ -1,5 +1,5 @@
 /*
-SQLyog Enterprise - MySQL GUI v7.15 
+SQLyog Enterprise - MySQL GUI v7.13 
 MySQL - 5.0.67-community-nt : Database - firecell
 *********************************************************************
 */
@@ -335,6 +335,45 @@ CREATE TABLE `fc_processors` (
 /*Data for the table `fc_processors` */
 
 insert  into `fc_processors`(`processor_id`,`core_count`,`core_speed`) values (1,1,1200),(2,1,1500),(3,1,2000),(4,1,2400),(5,1,2800),(6,1,3200),(7,2,1800),(8,2,2000),(9,2,2200),(10,2,2500),(11,2,2800);
+
+/*Table structure for table `fc_scripts` */
+
+DROP TABLE IF EXISTS `fc_scripts`;
+
+CREATE TABLE `fc_scripts` (
+  `script_id` int(10) unsigned NOT NULL auto_increment,
+  `character_id` int(10) unsigned NOT NULL COMMENT 'Character that created this script',
+  `script_content` text NOT NULL COMMENT 'the content of the script',
+  PRIMARY KEY  (`script_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_scripts` */
+
+/*Table structure for table `fc_software` */
+
+DROP TABLE IF EXISTS `fc_software`;
+
+CREATE TABLE `fc_software` (
+  `software_id` int(10) unsigned NOT NULL auto_increment,
+  `software_type_id` smallint(5) unsigned NOT NULL COMMENT 'The type of software',
+  `is_service` tinyint(1) NOT NULL default '1' COMMENT 'Flag indicating if its a service or a tool',
+  `script_id` int(11) default NULL COMMENT 'ID of the script associated with this software (only for user created software)',
+  PRIMARY KEY  (`software_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_software` */
+
+/*Table structure for table `fc_softwaretypes` */
+
+DROP TABLE IF EXISTS `fc_softwaretypes`;
+
+CREATE TABLE `fc_softwaretypes` (
+  `software_type_id` smallint(5) unsigned NOT NULL,
+  `name` varchar(128) NOT NULL COMMENT 'Name of the software type',
+  PRIMARY KEY  (`software_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_softwaretypes` */
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
