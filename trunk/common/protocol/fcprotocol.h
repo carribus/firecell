@@ -558,7 +558,6 @@ struct __FCPKT_FORUM_CREATE_NEW_THREAD_RESP
 	bool bSuccess;
 };
 
-
 /*
  *  MISSION module specific commands
  *

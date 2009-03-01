@@ -185,6 +185,9 @@
 				RelativePath=".\MissionManager.cpp">
 			</File>
 			<File
+				RelativePath="..\common\game_objects\NetworkPorts.cpp">
+			</File>
+			<File
 				RelativePath=".\PacketDispatcher.cpp">
 			</File>
 			<File
@@ -332,6 +335,9 @@
 			</File>
 			<File
 				RelativePath=".\MissionManager.h">
+			</File>
+			<File
+				RelativePath="..\common\game_objects\NetworkPorts.h">
 			</File>
 			<File
 				RelativePath=".\PacketDispatcher.h">

@@ -6,6 +6,7 @@
 #include "ItemProcessor.h"
 #include "ItemOS.h"
 #include "ItemMemory.h"
+#include "NetworkPorts.h"
 #include "../fctypes.h"
 
 using namespace std;
@@ -23,6 +24,7 @@ public:
   ItemProcessor& GetProcessor()           { return m_processor; }
   ItemOS& GetOS()                         { return m_os; }
   ItemMemory& GetMemory()                 { return m_memory; }
+	NetworkPorts& GetNetworkPorts()					{ return m_ports; }
   void SetID(FCULONG id)                  { m_id = id; }
   void SetName(const std::string& name)   { m_name = name; }
   void SetHDDSize(FCUINT sizeMB)          { m_hddSizeMB = sizeMB; }
@@ -37,6 +39,7 @@ private:
   ItemProcessor   m_processor;
   ItemOS          m_os;
   ItemMemory      m_memory;
+	NetworkPorts		m_ports;
 };
 
 #endif//_COMPUTERBASE_H_
