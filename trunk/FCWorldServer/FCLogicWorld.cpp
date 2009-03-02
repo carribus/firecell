@@ -21,6 +21,7 @@
 #include "../common/protocol/fcprotocol.h"
 #include "../common/PEPacketHelper.h"
 #include "../common/game_objects/FCObjectFactory.h"
+#include "../common/game_objects/swtypes.h"
 #include "EventSystem.h"
 #include "Event.h"
 #include "EventWithDisposableData.h"
@@ -860,6 +861,11 @@ void FCLogicWorld::OnDBJob_LoadItemDefs(DBIResultSet& resultSet, void*& pContext
 
       case  ItemType::Memory:
         sprintf(buffer, db.GetQueryByName(DBQ_LOAD_MEMORY_ITEM).c_str(), id, typeID, objID);
+        break;
+
+      case  ItemType::Software:
+        sprintf(buffer, db.GetQueryByName(DBQ_LOAD_SOFTWARE_ITEM).c_str(), id, typeID, objID);
+        break;
 
       default:
         break;
@@ -937,6 +943,37 @@ void FCLogicWorld::OnDBJob_LoadObjectData(DBIResultSet& resultSet, void*& pConte
         pItem->SetMemorySize( resultSet.GetULongValue("memory_size", 0) );
       }
     }
+    break;
+
+  case  ItemType::Software:
+    {
+      ItemSoftware* pItem = (ItemSoftware*)pThis->m_itemMgr.GetItem(itemID);
+
+      if ( pItem )
+      {
+        pItem->SetSoftwareType( resultSet.GetULongValue("software_type_id", 0) );
+        pItem->IsService( resultSet.GetByteValue("is_service", 0) ? true : false );
+
+        switch ( pItem->GetSoftwareType() )
+        {
+        case  SWT_HTTPSERVER:
+          break;
+
+        case  SWT_FTPSERVER:
+          break;
+
+        case  SWT_SSHSERVER:
+          break;
+
+        case  SWT_FIREWALL:
+          break;
+
+        default:
+          break;
+        }
+      }
+    }
+    break;
   }
 
   if ( resultSet.IsLastResultSet() )

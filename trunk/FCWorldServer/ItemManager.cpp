@@ -84,6 +84,11 @@ bool ItemManager::AddItem(FCULONG id, const string& name, FCULONG typeID, FCULON
 
     case  ItemType::Memory:
       pItem = new ItemMemory;
+      break;
+
+    case  ItemType::Software:
+      pItem = new ItemSoftware;
+      break;
     }
   
     if ( pItem )

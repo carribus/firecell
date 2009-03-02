@@ -179,6 +179,9 @@
 				RelativePath="..\common\game_objects\ItemProcessor.cpp">
 			</File>
 			<File
+				RelativePath="..\common\game_objects\ItemSoftware.cpp">
+			</File>
+			<File
 				RelativePath=".\Mission.cpp">
 			</File>
 			<File
@@ -328,6 +331,9 @@
 				RelativePath="..\common\game_objects\ItemProcessor.h">
 			</File>
 			<File
+				RelativePath="..\common\game_objects\ItemSoftware.h">
+			</File>
+			<File
 				RelativePath="..\common\game_objects\ItemType.h">
 			</File>
 			<File
@@ -368,6 +374,9 @@
 			</File>
 			<File
 				RelativePath="..\common\ServiceLogicBase.h">
+			</File>
+			<File
+				RelativePath="..\common\game_objects\swtypes.h">
 			</File>
 			<File
 				RelativePath="..\common\daemon\win\W32Service.h">
