@@ -26,6 +26,7 @@
 #include "../common/game_objects/ItemProcessor.h"
 #include "../common/game_objects/ItemOS.h"
 #include "../common/game_objects/ItemMemory.h"
+#include "../common/game_objects/ItemSoftware.h"
 
 class ItemManager
 {

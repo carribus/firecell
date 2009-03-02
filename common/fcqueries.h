@@ -20,7 +20,9 @@
 #ifndef _FCQUERIES_H_
 #define _FCQUERIES_H_
 
-/*
+/**
+ *  @file fcqueries.h
+ *
  *  This file contains the string definitions of query names that are used
  *  by the FireCell data services. 
  *  FCDatabase passes these defines into its respectively loaded interface
@@ -41,6 +43,7 @@
 #define DBQ_LOAD_PROCESSOR_ITEM           "load_item_processor"
 #define DBQ_LOAD_OS_ITEM                  "load_item_os"
 #define DBQ_LOAD_MEMORY_ITEM              "load_item_memory"
+#define DBQ_LOAD_SOFTWARE_ITEM            "load_item_software"
 
 ////////////////////////////////////////
 // WORLD DATA QUERIES
