@@ -32,8 +32,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="pthreadVSE2.lib"
 				OutputFile="$(OutDir)/FCServer.exe"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;..\common\pthreads-win32\lib\&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/FCServer.pdb"
 				SubSystem="1"

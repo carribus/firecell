@@ -359,21 +359,26 @@ CREATE TABLE `fc_software` (
   `is_service` tinyint(1) NOT NULL default '1' COMMENT 'Flag indicating if its a service or a tool',
   `script_id` int(11) default NULL COMMENT 'ID of the script associated with this software (only for user created software)',
   PRIMARY KEY  (`software_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_software` */
+
+insert  into `fc_software`(`software_id`,`software_type_id`,`is_service`,`script_id`) values (1,1,1,NULL),(2,2,1,NULL),(3,3,1,NULL),(4,4,1,NULL);
 
 /*Table structure for table `fc_softwaretypes` */
 
 DROP TABLE IF EXISTS `fc_softwaretypes`;
 
 CREATE TABLE `fc_softwaretypes` (
-  `software_type_id` smallint(5) unsigned NOT NULL,
+  `software_type_id` smallint(5) unsigned NOT NULL auto_increment,
   `name` varchar(128) NOT NULL COMMENT 'Name of the software type',
+  `identifier` varchar(32) NOT NULL COMMENT 'Identifier used in source code',
   PRIMARY KEY  (`software_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_softwaretypes` */
+
+insert  into `fc_softwaretypes`(`software_type_id`,`name`,`identifier`) values (1,'Web Server','SWT_HTTPSERVER'),(2,'FTP Server','SWT_FTPSERVER'),(3,'Secure Shell','SWT_SSHSERVER'),(4,'Firewall','SWT_FIREWALL');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

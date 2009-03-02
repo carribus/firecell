@@ -32,10 +32,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libmysql.lib"
+				AdditionalDependencies="libmysql.lib pthreadVSE2.lib"
 				OutputFile="$(OutDir)/FCWorldServer.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\common\mysql\lib\debug\"
+				AdditionalLibraryDirectories="&quot;..\common\pthreads-win32\lib\&quot;;..\common\mysql\lib\debug\"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/FCWorldServer.pdb"
 				SubSystem="1"

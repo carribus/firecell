@@ -239,6 +239,9 @@
 				RelativePath=".\MissionMgr.cpp">
 			</File>
 			<File
+				RelativePath="..\..\common\game_objects\NetworkPorts.cpp">
+			</File>
+			<File
 				RelativePath="..\..\common\PacketExtractor.cpp">
 			</File>
 			<File
@@ -292,10 +295,10 @@
 				RelativePath=".\clientstrings.h">
 			</File>
 			<File
-				RelativePath="..\common\clienttypes.h">
+				RelativePath="..\common\Socket\clienttypes.h">
 			</File>
 			<File
-				RelativePath="..\common\Socket\clienttypes.h">
+				RelativePath="..\common\clienttypes.h">
 			</File>
 			<File
 				RelativePath="..\..\common\game_objects\ComputerBase.h">
@@ -425,6 +428,9 @@
 			</File>
 			<File
 				RelativePath=".\MissionMgr.h">
+			</File>
+			<File
+				RelativePath="..\..\common\game_objects\NetworkPorts.h">
 			</File>
 			<File
 				RelativePath="..\..\common\PacketExtractor.h">
