@@ -1,5 +1,5 @@
 /*
-SQLyog Enterprise - MySQL GUI v7.13 
+SQLyog Enterprise - MySQL GUI v7.15 
 MySQL - 5.0.67-community-nt : Database - firecell
 *********************************************************************
 */
@@ -206,11 +206,11 @@ CREATE TABLE `fc_items` (
   `max_level` int(10) unsigned default NULL COMMENT 'maximum level that this item can be created for',
   `npc_value` bigint(20) unsigned NOT NULL COMMENT 'Items NPC value',
   PRIMARY KEY  (`item_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_items` */
 
-insert  into `fc_items`(`item_id`,`item_name`,`itemtype_id`,`object_id`,`description`,`min_level`,`max_level`,`npc_value`) values (1,'PowerCore SC12',1,1,'This is the entry level processor for computers. It will do what you want, when you want it, but not much else.',1,NULL,150),(2,'PowerCore SC15',1,2,NULL,3,NULL,500),(3,'PowerCore SC20',1,3,NULL,7,NULL,1000),(4,'PowerCore SC24',1,4,NULL,10,NULL,3000),(5,'PowerCore SC28',1,5,NULL,15,NULL,8500),(6,'PowerCore SC32',1,6,NULL,20,NULL,15000),(7,'PowerCore DC18',1,7,NULL,20,NULL,30000),(8,'PowerCore DC20',1,8,NULL,25,NULL,60000),(9,'PowerCore DC22',1,9,NULL,30,NULL,100000),(10,'PowerCore DC25',1,10,NULL,35,NULL,500000),(11,'PowerCore DC28',1,11,NULL,40,NULL,1000000),(12,'RageOS',2,1,NULL,1,NULL,50),(13,'CritOS',2,2,NULL,1,NULL,50),(14,'ClarityOS',2,3,NULL,1,NULL,50),(15,'MegaRam 1GB',3,1,NULL,1,NULL,500),(16,'MegaRam 2GB',3,2,NULL,15,NULL,1000),(17,'MegaRam 4GB',3,3,NULL,25,NULL,5000),(18,'MegaRam 8GB',3,4,NULL,35,NULL,15000),(19,'MegaRam 16GB',3,5,NULL,50,NULL,35000);
+insert  into `fc_items`(`item_id`,`item_name`,`itemtype_id`,`object_id`,`description`,`min_level`,`max_level`,`npc_value`) values (1,'PowerCore SC12',1,1,'This is the entry level processor for computers. It will do what you want, when you want it, but not much else.',1,NULL,150),(2,'PowerCore SC15',1,2,NULL,3,NULL,500),(3,'PowerCore SC20',1,3,NULL,7,NULL,1000),(4,'PowerCore SC24',1,4,NULL,10,NULL,3000),(5,'PowerCore SC28',1,5,NULL,15,NULL,8500),(6,'PowerCore SC32',1,6,NULL,20,NULL,15000),(7,'PowerCore DC18',1,7,NULL,20,NULL,30000),(8,'PowerCore DC20',1,8,NULL,25,NULL,60000),(9,'PowerCore DC22',1,9,NULL,30,NULL,100000),(10,'PowerCore DC25',1,10,NULL,35,NULL,500000),(11,'PowerCore DC28',1,11,NULL,40,NULL,1000000),(12,'RageOS',2,1,NULL,1,NULL,50),(13,'CritOS',2,2,NULL,1,NULL,50),(14,'ClarityOS',2,3,NULL,1,NULL,50),(15,'MegaRam 1GB',3,1,NULL,1,NULL,500),(16,'MegaRam 2GB',3,2,NULL,15,NULL,1000),(17,'MegaRam 4GB',3,3,NULL,25,NULL,5000),(18,'MegaRam 8GB',3,4,NULL,35,NULL,15000),(19,'MegaRam 16GB',3,5,NULL,50,NULL,35000),(20,'Web Server',6,1,'A web server that will allow you to serve your own custom content to visitors',1,0,200),(21,'FTP Server',6,2,'A file sharing server that will allow you to share files to other players',1,0,200),(22,'SSH Server',6,3,'A remote console server that will allow other players to connect to your computer with the correct credentials',1,0,200),(23,'Basic Firewall',6,4,'A firewall service that will protect you against basic attacks',1,0,150);
 
 /*Table structure for table `fc_itemtypes` */
 
