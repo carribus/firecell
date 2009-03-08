@@ -233,7 +233,7 @@ void SendCharacterDesktopOptions(Player* pPlayer, BaseSocket* pRouter, FCSOCKET 
   char* OptionNames[] =
   {
     "Hacking Forum",
-    "News Site",
+    "Web Browser",
     "Email",
     "Console",
     "Bank",

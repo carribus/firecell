@@ -93,16 +93,24 @@ void ConsoleWindow::OnConsoleCommandResponse(std::string currentDir, std::string
   SetCurrentDir(currentDir);
   size_t pos = result.find_first_of("\n");
 
-  while ( pos != std::string::npos )
-  {
-    temp = result.substr(0, pos);
-    s << temp.c_str();
-    line = s.str();
-    m_pLogWnd->addTextLine(line);
-    result.erase(0, pos+1);
-    pos = result.find_first_of("\n");
-    s.str(L"");
-  }
+	if ( pos == std::string::npos && result.size() )
+	{
+		s << result.c_str();
+		m_pLogWnd->addTextLine( s.str() );
+	}
+	else
+	{
+		while ( pos != std::string::npos )
+		{
+			temp = result.substr(0, pos);
+			s << temp.c_str();
+			line = s.str();
+			m_pLogWnd->addTextLine(line);
+			result.erase(0, pos+1);
+			pos = result.find_first_of("\n");
+			s.str(L"");
+		}
+	}
 
   SetWaitingForResponse(false);
 }

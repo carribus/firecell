@@ -1,5 +1,5 @@
 /*
-SQLyog Enterprise - MySQL GUI v7.15 
+SQLyog Enterprise - MySQL GUI v7.13 
 MySQL - 5.0.67-community-nt : Database - firecell
 *********************************************************************
 */
@@ -206,11 +206,11 @@ CREATE TABLE `fc_items` (
   `max_level` int(10) unsigned default NULL COMMENT 'maximum level that this item can be created for',
   `npc_value` bigint(20) unsigned NOT NULL COMMENT 'Items NPC value',
   PRIMARY KEY  (`item_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_items` */
 
-insert  into `fc_items`(`item_id`,`item_name`,`itemtype_id`,`object_id`,`description`,`min_level`,`max_level`,`npc_value`) values (1,'PowerCore SC12',1,1,'This is the entry level processor for computers. It will do what you want, when you want it, but not much else.',1,NULL,150),(2,'PowerCore SC15',1,2,NULL,3,NULL,500),(3,'PowerCore SC20',1,3,NULL,7,NULL,1000),(4,'PowerCore SC24',1,4,NULL,10,NULL,3000),(5,'PowerCore SC28',1,5,NULL,15,NULL,8500),(6,'PowerCore SC32',1,6,NULL,20,NULL,15000),(7,'PowerCore DC18',1,7,NULL,20,NULL,30000),(8,'PowerCore DC20',1,8,NULL,25,NULL,60000),(9,'PowerCore DC22',1,9,NULL,30,NULL,100000),(10,'PowerCore DC25',1,10,NULL,35,NULL,500000),(11,'PowerCore DC28',1,11,NULL,40,NULL,1000000),(12,'RageOS',2,1,NULL,1,NULL,50),(13,'CritOS',2,2,NULL,1,NULL,50),(14,'ClarityOS',2,3,NULL,1,NULL,50),(15,'MegaRam 1GB',3,1,NULL,1,NULL,500),(16,'MegaRam 2GB',3,2,NULL,15,NULL,1000),(17,'MegaRam 4GB',3,3,NULL,25,NULL,5000),(18,'MegaRam 8GB',3,4,NULL,35,NULL,15000),(19,'MegaRam 16GB',3,5,NULL,50,NULL,35000),(20,'Web Server',6,1,'A web server that will allow you to serve your own custom content to visitors',1,0,200),(21,'FTP Server',6,2,'A file sharing server that will allow you to share files to other players',1,0,200),(22,'SSH Server',6,3,'A remote console server that will allow other players to connect to your computer with the correct credentials',1,0,200),(23,'Basic Firewall',6,4,'A firewall service that will protect you against basic attacks',1,0,150);
+insert  into `fc_items`(`item_id`,`item_name`,`itemtype_id`,`object_id`,`description`,`min_level`,`max_level`,`npc_value`) values (1,'PowerCore SC12',1,1,'This is the entry level processor for computers. It will do what you want, when you want it, but not much else.',1,NULL,150),(2,'PowerCore SC15',1,2,NULL,3,NULL,500),(3,'PowerCore SC20',1,3,NULL,7,NULL,1000),(4,'PowerCore SC24',1,4,NULL,10,NULL,3000),(5,'PowerCore SC28',1,5,NULL,15,NULL,8500),(6,'PowerCore SC32',1,6,NULL,20,NULL,15000),(7,'PowerCore DC18',1,7,NULL,20,NULL,30000),(8,'PowerCore DC20',1,8,NULL,25,NULL,60000),(9,'PowerCore DC22',1,9,NULL,30,NULL,100000),(10,'PowerCore DC25',1,10,NULL,35,NULL,500000),(11,'PowerCore DC28',1,11,NULL,40,NULL,1000000),(12,'RageOS',2,1,NULL,1,NULL,50),(13,'CritOS',2,2,NULL,1,NULL,50),(14,'ClarityOS',2,3,NULL,1,NULL,50),(15,'MegaRam 1GB',3,1,NULL,1,NULL,500),(16,'MegaRam 2GB',3,2,NULL,15,NULL,1000),(17,'MegaRam 4GB',3,3,NULL,25,NULL,5000),(18,'MegaRam 8GB',3,4,NULL,35,NULL,15000),(19,'MegaRam 16GB',3,5,NULL,50,NULL,35000),(20,'Web Service',6,1,'The Web Server needs to be active in order for a player to provide a shop front to other players to purchase data or applications from the player. This service serves as the frontend to the FTP server in the case of selling items. This service can be attacked.',1,0,200),(21,'FTP Service',6,2,'The FTP service needs to be running in order for people to be able to purchase to be able to purchase applications. If the FTP service is hacked, the attacker will have the option of stealing an application (or more based on level) from the FTP server.',1,0,200),(22,'Secure Shell Service',6,3,'The secure shell needs to be active in order to connect to remote computer shells. To be able to hack, a player needs to have this service running. In order for players to be able to gain complete access to another player\'s machine, they need to attack the Secure Shell port. If successful in the hack, the attacker will be able to create/delete account information, manage services, ports etc. This is the most difficult port to attack, but will yield the most rewards if successful in the attack',1,0,200),(23,'Banking Service',6,4,'The Banking Service needs to be running in order to use the online bank. It provides an encrypted channel to the bank for any transactions that take place between the player and the bank. The banking service also needs to be active in order to transfer funds from player to player, to purchase items from stores etc. The banking service needs to running for any financial transactions to occur.',1,0,150),(24,'Database Service',6,5,'The Database Service needs to be running in order to accept missions, quests etc. This service can be switched off, but it is the only service that can NOT be attacked (for now). If the service is not running, new missions can not be accepted, new email contacts can not be stored etc...',1,0,0),(25,'Mail Service',6,6,'The mail service needs to be running in order to be able to send and receive emails. This service can be attacked.',1,0,0);
 
 /*Table structure for table `fc_itemtypes` */
 
@@ -359,11 +359,11 @@ CREATE TABLE `fc_software` (
   `is_service` tinyint(1) NOT NULL default '1' COMMENT 'Flag indicating if its a service or a tool',
   `script_id` int(11) default NULL COMMENT 'ID of the script associated with this software (only for user created software)',
   PRIMARY KEY  (`software_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_software` */
 
-insert  into `fc_software`(`software_id`,`software_type_id`,`is_service`,`script_id`) values (1,1,1,NULL),(2,2,1,NULL),(3,3,1,NULL),(4,4,1,NULL);
+insert  into `fc_software`(`software_id`,`software_type_id`,`is_service`,`script_id`) values (1,1,1,NULL),(2,2,1,NULL),(3,3,1,NULL),(4,4,1,NULL),(5,5,1,NULL),(6,6,1,NULL);
 
 /*Table structure for table `fc_softwaretypes` */
 
@@ -374,11 +374,11 @@ CREATE TABLE `fc_softwaretypes` (
   `name` varchar(128) NOT NULL COMMENT 'Name of the software type',
   `identifier` varchar(32) NOT NULL COMMENT 'Identifier used in source code',
   PRIMARY KEY  (`software_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_softwaretypes` */
 
-insert  into `fc_softwaretypes`(`software_type_id`,`name`,`identifier`) values (1,'Web Server','SWT_HTTPSERVER'),(2,'FTP Server','SWT_FTPSERVER'),(3,'Secure Shell','SWT_SSHSERVER'),(4,'Firewall','SWT_FIREWALL');
+insert  into `fc_softwaretypes`(`software_type_id`,`name`,`identifier`) values (1,'Web Service','SWT_HTTPSERVER'),(2,'FTP Service','SWT_FTPSERVER'),(3,'Secure Shell Service','SWT_SSHSERVER'),(4,'Banking Service','SWT_BANKSERVER'),(5,'Database Service','SWT_DBSERVER'),(6,'Mail Service','SWT_MAILSERVER');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
