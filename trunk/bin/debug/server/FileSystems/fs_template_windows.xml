@@ -2,28 +2,26 @@
 	<Command name="ver" action="OSVersion" />
 	<Command name="cd" action="ChangeDir" />
 	<Command name="dir" action="FileListing" />
-	<File type="dir" name="Windows">
+	<File type="dir" name="Windows" dirtype="applications">
 		<File type="file" name="ver" mutable="0" />
 		<File type="file" name="ping" mutable="0" action="ConnectionCheck" />
-		<File type="file" name="telnet" mutable="0" action="RemoteConnection" />
-		<File type="file" name="ls" mutable="0" />
+		<File type="file" name="ssh" mutable="0" action="RemoteConnection" />
+		<File type="file" name="dir" mutable="0" />
 		<File type="file" name="ftp" mutable="0" action="RemoteFile" />
-		<File type="dir" name="config">
+		<File type="dir" name="config" dirtype="data">
 			<File type="file" name="passwd" mutable="0" />
-		</File>
-		<File type="dir" name="netconfig">
 			<File type="file" name="hosts" mutable="0" />
 		</File>
-		<File type="dir" name="Logs" />
+		<File type="dir" name="Logs" dirtype="logs" />
 	</File>
 	<File type="dir" name="Settings">
-		<File type="dir" name="Users">
+		<File type="dir" name="Users" dirtype="userroot">
 			<File type="dir" name={CharacterName}>
-				<File type="dir" name="Downloads">
+				<File type="dir" name="Downloads" dirtype="downloads">
 				</File>
-				<File type="dir" name="Docs">
+				<File type="dir" name="Docs" dirtype="data">
 				</File>
-				<File type="dir" name="Scripts">
+				<File type="dir" name="Scripts" dirtype="scripts">
 				</File>
 			</File>
 		</File>

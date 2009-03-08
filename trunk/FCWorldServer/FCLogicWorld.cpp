@@ -953,24 +953,6 @@ void FCLogicWorld::OnDBJob_LoadObjectData(DBIResultSet& resultSet, void*& pConte
       {
         pItem->SetSoftwareType( resultSet.GetULongValue("software_type_id", 0) );
         pItem->IsService( resultSet.GetByteValue("is_service", 0) ? true : false );
-
-        switch ( pItem->GetSoftwareType() )
-        {
-        case  SWT_HTTPSERVER:
-          break;
-
-        case  SWT_FTPSERVER:
-          break;
-
-        case  SWT_SSHSERVER:
-          break;
-
-        case  SWT_FIREWALL:
-          break;
-
-        default:
-          break;
-        }
       }
     }
     break;

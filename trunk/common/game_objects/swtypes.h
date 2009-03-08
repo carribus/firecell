@@ -10,4 +10,6 @@
 #define SWT_HTTPSERVER                     1
 #define SWT_FTPSERVER                      2
 #define SWT_SSHSERVER                      3
-#define SWT_FIREWALL                       4
+#define SWT_BANKSERVER                     4
+#define SWT_DBSERVER                       5
+#define SWT_MAILSERVER                     6
