@@ -62,6 +62,10 @@ Player* PlayerManager::CreatePlayer(FCULONG accountID, FCULONG id, string name, 
                          city_id,                 // character's city
                          NULL);                   // character's in game IP address
 
+    // configure the player's network ports (8 ports by default)
+    for ( int i = 0; i < 8; i++ )
+      pPlayer->GetComputer().GetNetworkPorts().AddPort();
+
     pPlayer->SetClientSocket(clientSocket);
 
     // add it to the maps

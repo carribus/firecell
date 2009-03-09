@@ -113,6 +113,10 @@ int main(int argc, char** argv)
 		{
 			write_h_header(fs_target);
 			rowCount = pSet->GetRowCount();
+
+      // write the SWT_NONE definition
+      write_h_swtypedef(fs_target, string("SWT_NONE"), 0);
+
 			for ( size_t i = 0; i < rowCount; i++ )
 			{
 				id = pSet->GetULongValue("software_type_id", i);
