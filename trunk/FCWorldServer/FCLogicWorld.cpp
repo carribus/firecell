@@ -217,6 +217,12 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+	case	FCMSG_CHARACTER_ITEMS_REQUEST:
+		{
+			bHandled = OnCommandCharacterItemsRequest(pPkt, pRouter, clientSock);
+		}
+		break;
+
   case  FCMSG_GET_DESKTOP_OPTIONS:
     {
       bHandled = OnCommandGetDesktopOptions(pPkt, pRouter, clientSock);
@@ -396,6 +402,25 @@ bool FCLogicWorld::OnCommandCharacterAssetRequest(PEPacket* pPkt, RouterSocket* 
     return false;
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandCharacterItemsRequest(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+	__FCPKT_CHARACTER_ITEMS_REQUEST d;
+	size_t dataLen = 0;
+	Player* pPlayer = NULL;
+
+	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+	pPkt->GetField("data", (void*)&d, dataLen);
+
+	if ( (pPlayer = m_playerMgr.GetPlayerByID( d.character_id )) )
+	{
+		SendCharacterItemsResponse( pPlayer, pRouter, clientSocket );
+	}
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
