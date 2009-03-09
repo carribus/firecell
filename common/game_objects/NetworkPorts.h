@@ -18,13 +18,14 @@ public:
 	NetworkPorts(void);
 	~NetworkPorts(void);
 
-  FCSHORT AddPort();
-  bool IsPortEnabled(FCSHORT portNum);
-  FCSHORT EnablePort(FCSHORT portNum);
-  FCSHORT InstallPort(FCSHORT portNum, FCULONG softwareType, FCULONG itemID);
-  FCSHORT UninstallPort(FCSHORT portNum);
-  FCSHORT GetPortHealth(FCSHORT portNum);
-  FCSHORT SetPortHealth(FCSHORT portNum, FCSHORT health);
+  FCSHORT addPort();
+	FCSHORT getPortCount();
+  bool isPortEnabled(FCSHORT portNum);
+  FCSHORT enablePort(FCSHORT portNum);
+  FCSHORT installPort(FCSHORT portNum, FCULONG softwareType, FCULONG itemID);
+  FCSHORT uninstallPort(FCSHORT portNum);
+  FCSHORT getPortHealth(FCSHORT portNum);
+  FCSHORT setPortHealth(FCSHORT portNum, FCSHORT health);
   // TODO: Need to add firewalls here as well
 
 private:

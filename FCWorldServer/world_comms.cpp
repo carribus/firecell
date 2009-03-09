@@ -180,6 +180,7 @@ void SendCharacterAssetResponse(Player* pPlayer, BaseSocket* pRouter, FCSOCKET c
   strncpy( d.computer.name, comp.GetName().c_str(), sizeof(d.computer.name)-1 );
   d.computer.hddSize = comp.GetTotalHDD();
   d.computer.networkSpeed = comp.GetNetworkSpeed();
+	d.computer.availablePorts = comp.GetNetworkPorts().getPortCount();
 
   // processor data
   strncpy( d.computer.processor.name, comp.GetProcessor().GetName().c_str(), sizeof(d.computer.processor.name)-1 );
@@ -217,6 +218,18 @@ void SendCharacterAssetResponse(Player* pPlayer, BaseSocket* pRouter, FCSOCKET c
   // send notification to Client
   pkt->SetFieldValue("target", (void*)&clientSocket);
   QueuePacket(pkt, pRouter);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void SendCharacterItemsResponse(Player* pPlayer, BaseSocket* pRouter, FCSOCKET clientSocket)
+{
+	if ( !pPlayer )
+		return;
+
+	PEPacket* pkt = new PEPacket;
+	__FCPKT_CHARACTER_ITEMS_REQUEST_RESP* d = NULL;
+	int nPktLen = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

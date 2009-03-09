@@ -13,7 +13,7 @@ NetworkPorts::~NetworkPorts(void)
 
 ////////////////////////////////////////////////////////////////////////
 
-FCSHORT NetworkPorts::AddPort()
+FCSHORT NetworkPorts::addPort()
 {
   NetworkPort np = { false, m_maxPort+1, 0, 0, 0 };
 
@@ -25,7 +25,14 @@ FCSHORT NetworkPorts::AddPort()
 
 ////////////////////////////////////////////////////////////////////////
 
-bool NetworkPorts::IsPortEnabled(FCSHORT portNum)
+FCSHORT NetworkPorts::getPortCount()
+{
+	return m_maxPort;
+}
+
+////////////////////////////////////////////////////////////////////////
+
+bool NetworkPorts::isPortEnabled(FCSHORT portNum)
 {
   if ( portNum < 0 || portNum > m_maxPort )
     return false;
@@ -37,7 +44,7 @@ bool NetworkPorts::IsPortEnabled(FCSHORT portNum)
 
 ////////////////////////////////////////////////////////////////////////
 
-FCSHORT NetworkPorts::EnablePort(FCSHORT portNum)
+FCSHORT NetworkPorts::enablePort(FCSHORT portNum)
 {
   if ( portNum < 0 || portNum > m_maxPort )
     return NPE_PORT_DOESNT_EXIST;
@@ -67,7 +74,7 @@ FCSHORT NetworkPorts::EnablePort(FCSHORT portNum)
 
 ////////////////////////////////////////////////////////////////////////
 
-FCSHORT NetworkPorts::InstallPort(FCSHORT portNum, FCULONG softwareType, FCULONG itemID)
+FCSHORT NetworkPorts::installPort(FCSHORT portNum, FCULONG softwareType, FCULONG itemID)
 {
   if ( portNum < 0 || portNum > m_maxPort )
     return NPE_PORT_DOESNT_EXIST;
@@ -97,7 +104,7 @@ FCSHORT NetworkPorts::InstallPort(FCSHORT portNum, FCULONG softwareType, FCULONG
 
 ////////////////////////////////////////////////////////////////////////
 
-FCSHORT NetworkPorts::UninstallPort(FCSHORT portNum)
+FCSHORT NetworkPorts::uninstallPort(FCSHORT portNum)
 {
   if ( portNum < 0 || portNum > m_maxPort )
     return NPE_PORT_DOESNT_EXIST;
@@ -114,7 +121,7 @@ FCSHORT NetworkPorts::UninstallPort(FCSHORT portNum)
 
 ////////////////////////////////////////////////////////////////////////
 
-FCSHORT NetworkPorts::GetPortHealth(FCSHORT portNum)
+FCSHORT NetworkPorts::getPortHealth(FCSHORT portNum)
 {
   if ( portNum < 0 || portNum > m_maxPort )
     return NPE_PORT_DOESNT_EXIST;
@@ -126,7 +133,7 @@ FCSHORT NetworkPorts::GetPortHealth(FCSHORT portNum)
 
 ////////////////////////////////////////////////////////////////////////
 
-FCSHORT NetworkPorts::SetPortHealth(FCSHORT portNum, FCSHORT health)
+FCSHORT NetworkPorts::setPortHealth(FCSHORT portNum, FCSHORT health)
 {
   if ( portNum < 0 || portNum > m_maxPort )
     return NPE_PORT_DOESNT_EXIST;

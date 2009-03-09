@@ -117,6 +117,20 @@ void FCServerObj::SendCharacterAssetRequest(size_t character_id)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCServerObj::SendCharacterItemsRequest(size_t character_id)
+{
+	PEPacket pkt;
+	__FCPKT_CHARACTER_ITEMS_REQUEST d;
+
+	d.character_id = character_id;
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_CHARACTER_ITEMS_REQUEST, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void FCServerObj::RequestDesktopOptions(size_t character_id)
 {
   PEPacket pkt;

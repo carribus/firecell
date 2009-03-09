@@ -275,6 +275,7 @@ struct __FCPKT_CHARACTER_ASSET_REQUEST_RESP
     char name[33];
     FCUINT hddSize;
     FCUINT networkSpeed;
+		FCSHORT availablePorts;
 
     struct _processor : public _game_item
     {
@@ -292,7 +293,43 @@ struct __FCPKT_CHARACTER_ASSET_REQUEST_RESP
     {
       FCULONG mem_size;
     } memory;
+
+		struct _networkports
+		{
+			bool enabled;
+			FCSHORT portNum;
+			FCULONG softwareType;
+			FCULONG itemID;
+			FCSHORT portHealth;
+		} network_ports[1];
   } computer;
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_CHARACTER_ITEMS_REQUEST     = 24;
+///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  @brief Packet sent from client to server requesting a character's items
+ *  @ingroup fcprotocol
+ */
+struct __FCPKT_CHARACTER_ITEMS_REQUEST
+{
+  FCUINT character_id;
+};
+
+/**
+ *  @brief Response packet sent from server to client containing a characters items
+ *  @ingroup fcprotocol
+ */
+struct __FCPKT_CHARACTER_ITEMS_REQUEST_RESP
+{
+	FCULONG itemCount;
+	struct _software : public _game_item
+	{
+		FCSHORT softwareTypeID;
+		bool is_service;
+		FCULONG scriptID;
+	} software[1];
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////

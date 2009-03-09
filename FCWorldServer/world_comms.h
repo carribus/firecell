@@ -61,6 +61,13 @@ void SendCharacterAssetResponse(Player* pPlayer, BaseSocket* pRouter, FCSOCKET c
 
 /**
  *  @ingroup worldcomms
+ *  @brief This function sends a character's items to them. The packet sent is: __FCPKT_CHARACTER_ITEMS_REQUEST_RESP
+ *  @param pPlayer The player object that requested the assets list
+ */
+void SendCharacterItemsResponse(Player* pPlayer, BaseSocket* pRouter, FCSOCKET clientSocket);
+
+/**
+ *  @ingroup worldcomms
  *  @brief This function sends the available desktop options that a character has. The packet sent is: __FCPKT_GET_DESKTOP_OPTIONS_RESP
  *  @param pPlayer The character that this response pertains to
  */

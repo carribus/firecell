@@ -20,7 +20,9 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 
+#include <map>
 #include <string>
+#include <vector>
 #include "../common/fctypes.h"
 #include "../Clients/common/Socket/ClientSocket.h"
 #include "IEventSystem.h"
@@ -69,6 +71,13 @@ public:
 	bool HasMission(FCULONG missionID);
   Mission* GetMission(FCULONG missionID);
 	bool HasCompletedMission(FCULONG missionID);
+
+	/*
+	 *	Item related
+	 */
+	void AddItem(FCULONG itemID);
+	bool HasItem(FCULONG itemID);
+	void RemoveItem(FCULONG itemID);
 
 	/*
 	 *	Accessor/Mutators
@@ -131,6 +140,17 @@ private:
 	 */
 	typedef std::map<FCULONG, Mission*> MissionMap;
 	MissionMap m_mapMissions;
+
+	/*
+	 *	Items
+	 */
+	struct GameItem
+	{
+		FCULONG itemID;
+		FCSHORT count;
+	};
+	typedef std::map<FCULONG, GameItem>		ItemMap;
+	ItemMap	m_mapItems;
 };
 
 #endif//_PLAYER_H_

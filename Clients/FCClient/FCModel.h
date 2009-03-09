@@ -221,6 +221,7 @@ private:
       bool OnResponseCharacterCreationParams_Countries(PEPacket* pPkt, BaseSocket* pSocket);
       bool OnResponseCharacterCreationParams_Cities(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* pSocket);
+		bool OnResponseCharacterItemsRequest(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseActivateDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseConsoleGetFileSystemInfo(PEPacket* pPkt, BaseSocket* pSocket);

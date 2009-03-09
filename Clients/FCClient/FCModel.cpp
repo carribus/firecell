@@ -365,6 +365,12 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+	case	FCMSG_CHARACTER_ITEMS_REQUEST:
+		{
+			bHandled = OnResponseCharacterItemsRequest(pPkt, pSocket);
+		}
+		break;
+
   case  FCMSG_GET_DESKTOP_OPTIONS:
     {
       bHandled = OnResponseGetDesktopOptions(pPkt, pSocket);
@@ -706,9 +712,29 @@ bool FCModel::OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* pSocke
                                 d.computer.memory.min_level, d.computer.memory.max_level, d.computer.memory.npc_value );
   comp.GetMemory().SetMemorySize( d.computer.memory.mem_size );
 
-  m_server.RequestDesktopOptions(m_pCharacter->GetID());
+  m_server.SendCharacterItemsRequest(m_pCharacter->GetID());
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseCharacterItemsRequest(PEPacket* pPkt, BaseSocket* pSocket)
+{
+	__FCPKT_CHARACTER_ITEMS_REQUEST_RESP* d;
+	size_t dataLen;
+
+	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+	d = (__FCPKT_CHARACTER_ITEMS_REQUEST_RESP*) new FCBYTE[ dataLen ];
+	pPkt->GetField("data", d, dataLen);
+
+	for (FCULONG i = 0; i < d->itemCount; i++ )
+	{
+	}
+
+  m_server.RequestDesktopOptions(m_pCharacter->GetID());
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////

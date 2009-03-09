@@ -243,6 +243,43 @@ bool Player::HasCompletedMission(FCULONG missionID)
 
 ///////////////////////////////////////////////////////////////////////
 
+void Player::AddItem(FCULONG itemID)
+{
+	ItemMap::iterator it = m_mapItems.find(itemID);
+
+	if ( it == m_mapItems.end() )
+	{
+		// add a new item to the map
+		GameItem gi = {itemID, 1};
+		m_mapItems[itemID] = gi;
+	}
+	else
+	{
+		it->second.count++;
+	}
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Player::HasItem(FCULONG itemID)
+{
+	ItemMap::iterator it = m_mapItems.find(itemID);
+
+	return ( it != m_mapItems.end() );
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Player::RemoveItem(FCULONG itemID)
+{
+	ItemMap::iterator it = m_mapItems.find(itemID);
+
+	if ( it != m_mapItems.end() )
+		it->second.count--;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void Player::createComputer()
 {
   m_computer = FCObjectFactory::instance().createObject<Computer>(this);
