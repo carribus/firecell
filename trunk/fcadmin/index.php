@@ -32,7 +32,7 @@ echo <<<HTML
 	<div id="head">
     FireCell Administration System
   	<ul class="utility">
-  		<li>Version 0.1.03
+  		<li>Version 0.1.04
   	</ul>
 	</div>
 
