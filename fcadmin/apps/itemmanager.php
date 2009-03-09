@@ -28,6 +28,32 @@ class Processor
   public $core_count;
 }
 
+class OS
+{
+  public $id;
+}
+
+class Memory
+{
+  public $id;
+  public $memSize;
+}
+
+class Software
+{
+  const SWT_WEBSERVICE = 1;
+  const SWT_FTPSERVICE = 2;
+  const SWT_SSHSERVICE = 3;
+  const SWT_BANKINGSERVICE = 4;
+  const SWT_DBSERVICE = 5;
+  const SWT_MAILSERVICE = 6;
+  
+  public $id;
+  public $software_type;
+  public $is_service;
+  public $script_id;
+}
+
 class ItemsManagerApp implements IFCAdminApp
 {
   const ITEMTYPE_PROCESSOR = 1;
@@ -261,6 +287,7 @@ FILTERS;
         break;
         
       case  constant("ItemsManagerapp::ITEMTYPE_MEMORY"):
+        $this->render_memory_form($itemID);
         break;
         
       case  constant("ItemsManagerapp::ITEMTYPE_NETWORK"):
@@ -270,6 +297,7 @@ FILTERS;
         break;
         
       case  constant("ItemsManagerapp::ITEMTYPE_SOFTWARE"):
+        $this->render_software_form($itemID);
         break;
         
       case  constant("ItemsManagerapp::ITEMTYPE_DATA"):
@@ -376,6 +404,8 @@ FORMDEF;
     $minLevel = 1;
     $maxLevel = NULL;
     $npcValue = 0;
+    $description = NULL;
+    $objectID = -1;
     
     if ( $itemID != -1 )
     {
@@ -383,6 +413,8 @@ FORMDEF;
       $minLevel = $this->itemData->min_level;
       $maxLevel = ($this->itemData->max_level == "Max" ? NULL : $this->itemData->max_level);
       $npcValue = $this->itemData->npc_value;
+      $description = $this->itemData->description;
+      $objectID = $this->objectData->id;
     }
     
     echo "<h2>".($itemID == -1 ? "Adding " : "Editing ")." processor</h2><br/>";
@@ -412,13 +444,235 @@ echo <<<FORMDEF
         </tr>
         <tr>
           <td>Description:</td>
-          <td><textarea name="description" cols="50" rows="5"></textarea></td>
+          <td><textarea name="description" cols="50" rows="5">$description</textarea></td>
         </tr>
         <tr>
           <td></td>
           <td><input type="submit" value="Submit" /></td>
         </tr>
       </table>
+FORMDEF;
+    if ( $itemID != -1 )
+    {
+      echo "<input type=\"hidden\" name=\"item_id\" value=\"$itemID\" />";          // the item ID
+      echo "<input type=\"hidden\" name=\"object_id\" value=\"$objectID\" />";
+    }
+echo <<<FORMDEF
+    </form>
+FORMDEF;
+  
+  }
+  
+  /////////////////////////////////////////////////////////////////////////////////
+
+  private function render_memory_form($itemID)
+  {
+    $userAction = ($itemID == -1 ? "addmemory" : "editmemory");
+    $readOnly = ($itemID == -1 ? "" : "readonly=\"yes\"");
+    
+    $itemName = NULL;
+    $minLevel = 1;
+    $maxLevel = NULL;
+    $npcValue = 0;
+    $description = NULL;
+    $memSize = 0;
+    $objectID = -1;
+
+    if ( $itemID != -1 )
+    {
+      $itemName = $this->itemData->name;
+      $minLevel = $this->itemData->min_level;
+      $maxLevel = ($this->itemData->max_level == "Max" ? NULL : $this->itemData->max_level);
+      $npcValue = $this->itemData->npc_value;
+      $description = $this->itemData->description;
+      $memSize = $this->objectData->memSize;
+      $objectID = $this->objectData->id;
+    }
+    
+    echo "<h2>".($itemID == -1 ? "Adding " : "Editing ")." memory</h2><br/>";
+    
+echo <<<FORMDEF
+    <form name="$userAction" method="post" action="actions/$userAction.php">
+      <table>
+        <tr>
+          <td>Name:</td>
+          <td><input type="text" name="item_name" value="$itemName" /></td>
+        </tr>
+        <tr>
+          <td>Minimum Level:</td>
+          <td><input type="text" name="min_level" value="$minLevel" /></td>
+        </tr>
+        <tr>
+          <td>Maximum Level:</td>
+          <td><input type="text" name="max_level" value="$maxLevel" /> (leave empty for max)</td>
+        </tr>
+        <tr>
+          <td>NPC Value:</td>
+          <td><input type="text" name="npc_value" value="$npcValue" /></td>
+        </tr>
+        <tr>
+          <td>Size (in GB):</td>
+          <td><input type="text" name="memsize" value="$memSize" /></td>
+        </tr>
+        <tr>
+          <td>Description:</td>
+          <td><textarea name="description" cols="50" rows="5">$description</textarea></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><input type="submit" value="Submit" /></td>
+        </tr>
+      </table>
+FORMDEF;
+    if ( $itemID != -1 )
+    {
+      echo "<input type=\"hidden\" name=\"item_id\" value=\"$itemID\" />";          // the item ID
+      echo "<input type=\"hidden\" name=\"object_id\" value=\"$objectID\" />";
+    }
+
+echo <<<FORMDEF
+    </form>
+FORMDEF;
+
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////
+
+  private function render_software_form($itemID)
+  {
+    $userAction = ($itemID == -1 ? "additem" : "edititem");
+    $readOnly = ($itemID == -1 ? "" : "readonly=\"yes\"");
+    
+    $itemName = NULL;
+    $minLevel = 1;
+    $maxLevel = NULL;
+    $npcValue = 0;
+    $description = NULL;
+    $objectID = -1;
+    $softwareTypeID = 0;
+    $is_service = 0;
+    $script_id = 0;
+    
+    if ( $itemID != -1 )
+    {
+      $itemName = $this->itemData->name;
+      $minLevel = $this->itemData->min_level;
+      $maxLevel = ($this->itemData->max_level == "Max" ? NULL : $this->itemData->max_level);
+      $npcValue = $this->itemData->npc_value;
+      $description = $this->itemData->description;
+      $softwareTypeID = $this->objectData->software_type;
+      $is_service = $this->objectData->is_service;
+      $script_id = $this->objectData->script_id;
+      $objectID = $this->objectData->id;
+    }
+    
+    echo "<h2>".($itemID == -1 ? "Adding " : "Editing ")." processor</h2><br/>";
+    
+echo <<<FORMDEF
+    <form name="$userAction" method="post" action="actions/$userAction.php">
+      <input type="hidden" name="item_type" value="1" />
+      <table>
+        <tr>
+          <td>Name:</td>
+          <td><input type="text" name="item_name" value="$itemName" /></td>
+        </tr>
+        <tr>
+          <td>Minimum Level:</td>
+          <td><input type="text" name="min_level" value="$minLevel" /></td>
+        </tr>
+        <tr>
+          <td>Maximum Level:</td>
+          <td><input type="text" name="max_level" value="$maxLevel" /> (leave empty for max)</td>
+        </tr>
+        <tr>
+          <td>NPC Value:</td>
+          <td><input type="text" name="npc_value" value="$npcValue" /></td>
+        </tr>
+        <tr>
+          <td>Software Type:</td>
+          <td>
+            <select>
+FORMDEF;
+            for ( $i = 1; $i < 7; $i++ )
+            {
+              echo "<option id=\"$i\"";
+              if ( $i == $softwareTypeID )
+                echo "selected=\"true\"";
+              echo ">";
+              switch ( $i )
+              {
+              case  constant("Software::SWT_WEBSERVICE"):
+                echo "Web Service";
+                break;
+                
+              case  constant("Software::SWT_FTPSERVICE"):
+                echo "FTP Service";
+                break;
+                
+              case  constant("Software::SWT_SSHSERVICE"):
+                echo "SSH Service";
+                break;
+                
+              case  constant("Software::SWT_BANKINGSERVICE"):
+                echo "Banking Service";
+                break;
+                
+              case  constant("Software::SWT_DBSERVICE"):
+                echo "Database Service";
+                break;
+                
+              case  constant("Software::SWT_MAILSERVICE"):
+                echo "Mail Service";
+                break;
+              }
+              echo "</option>";
+            }
+echo <<<FORMDEF
+            </select>
+          <!--
+            <input type="text" name="software_type" value="$softwareTypeID" />
+          -->
+          </td>
+        </tr>
+        <tr>
+          <td>Is Service:</td>
+          <td><input type="checkbox" name="is_service" 
+FORMDEF;
+        if ( $is_service ) 
+          echo "checked=\"yes\" ";
+          
+echo <<<FORMDEF
+             /></td>
+        </tr>
+        <tr>
+FORMDEF;
+        if ( $script_id > 0 )
+        {
+echo <<<FORMDEF
+          <td>Script:</td>
+          <td><input type="text" name="script_id" value="$script_id" /></td>
+FORMDEF;
+        }
+echo <<<FORMDEF
+        </tr>
+        <tr>
+          <td>Description:</td>
+          <td><textarea name="description" cols="50" rows="5">$description</textarea></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><input type="submit" value="Submit" /></td>
+        </tr>
+      </table>
+FORMDEF;
+
+    if ( $itemID != -1 )
+    {
+      echo "<input type=\"hidden\" name=\"item_id\" value=\"$itemID\" />";          // the item ID
+      echo "<input type=\"hidden\" name=\"object_id\" value=\"$objectID\" />";
+    }
+
+echo <<<FORMDEF
     </form>
 FORMDEF;
   
@@ -509,7 +763,7 @@ FORMDEF;
   {
     if ( !$this->db )
       return false;
-      
+
     $query = "SELECT      * ".
              "FROM        fc_items items ".
              "INNER JOIN  fc_itemtypes types ".
@@ -525,9 +779,43 @@ FORMDEF;
     // now that we have the item shell, we need to load the underlying object
     if ( $this->itemData != NULL )
     {
+      $id_fieldname = "";
+      switch ( $this->itemData->type_id )
+      {
+      case  constant("ItemsManagerApp::ITEMTYPE_PROCESSOR"):
+        $id_fieldname = "processor_id"; 
+        break;
+        
+      case  constant("ItemsManagerApp::ITEMTYPE_OPERATINGSYSTEM"):
+        $id_fieldname = "operatingsystem_id";
+        break;
+        
+      case  constant("ItemsManagerApp::ITEMTYPE_MEMORY"):
+        $id_fieldname = "memory_id";
+        break;
+        
+      case  constant("ItemsManagerApp::ITEMTYPE_NETWORK"):
+        break;
+        
+      case  constant("ItemsManagerApp::ITEMTYPE_STORAGE"):
+        break;
+        
+      case  constant("ItemsManagerApp::ITEMTYPE_SOFTWARE"):
+        $id_fieldname = "software_id";
+        break;
+         
+      case  constant("ItemsManagerApp::ITEMTYPE_DATA"):
+        break;
+        
+      case  constant("ItemsManagerApp::ITEMTYPE_MISC"):
+        break;
+               
+      default:
+        break;
+      }
       // get the table for the object type
       $objType = $this->itemTypes[ $this->itemData->type_id ];
-      $query = "SELECT * FROM ".$objType->dbTable." WHERE processor_id = ".$this->itemData->object_id;
+      $query = "SELECT * FROM ".$objType->dbTable." WHERE $id_fieldname = ".$this->itemData->object_id;
       $result = $this->db->Execute($query);
       if ( $result != NULL )
       {
@@ -565,7 +853,7 @@ FORMDEF;
   {
     if ( $record == NULL )
       return false;
-      
+
     switch ( $objType )
     {
       case  constant("ItemsManagerApp::ITEMTYPE_PROCESSOR"):
@@ -577,6 +865,7 @@ FORMDEF;
         break;
         
       case  constant("ItemsManagerapp::ITEMTYPE_MEMORY"):
+        $this->CreateMemoryFromRecord($record);
         break;
         
       case  constant("ItemsManagerapp::ITEMTYPE_NETWORK"):
@@ -586,6 +875,7 @@ FORMDEF;
         break;
         
       case  constant("ItemsManagerapp::ITEMTYPE_SOFTWARE"):
+        $this->CreateSoftwareFromRecord($record);
         break;
         
       case  constant("ItemsManagerapp::ITEMTYPE_DATA"):
@@ -616,9 +906,40 @@ FORMDEF;
   
   /////////////////////////////////////////////////////////////////////////////////
 
-  /////////////////////////////////////////////////////////////////////////////////
+  private function CreateOSFromRecord($record)
+  {
+    if ( $record == NULL )
+     return false;
+     
+    $this->objectData = new OS;
+    $this->objectData->id = $record["operatingsystem_id"];
+  }
 
   /////////////////////////////////////////////////////////////////////////////////
+  
+  private function CreateMemoryFromRecord($record)
+  {
+    if ( $record == NULL )
+      return false;
+      
+    $this->objectData = new Memory;
+    $this->objectData->id = $record["memory_id"];
+    $this->objectData->memSize = $record["memory_size"];
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////
+  
+  private function CreateSoftwareFromRecord($record)
+  {
+    if ( $record == NULL )
+      return false;
+      
+    $this->objectData = new Software;
+    $this->objectData->id = $record["software_id"];
+    $this->objectData->software_type = $record["software_type_id"];
+    $this->objectData->is_service = $record["is_service"];
+    $this->objectData->script_id = $record["script_id"];
+  }
 
   /////////////////////////////////////////////////////////////////////////////////
 
