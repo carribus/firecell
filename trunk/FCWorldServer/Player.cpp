@@ -121,7 +121,7 @@ void Player::OnEvent(IEventSource* pSource, IEvent* pEvent)
     Player* pPlayer = (Player*)pEvent->GetPlayer();
 		if ( !eventCode.compare( Mission::EVT_Complete ) )
 		{
-			DYNLOG_ADDLOG( DYNLOG_FORMAT("Player %s completed mission id %ld (earned %ld XP)", GetName().c_str(), (FCULONG)pEvent->GetParam(), pMission->GetSuccessXP()) );
+			DYNLOG_ADDLOG( DYNLOG_FORMAT("Player %s completed mission id %ld (earned %ld XP)", GetName().c_str(), (FCULONG)(pEvent->GetParam()), pMission->GetSuccessXP()) );
 			// need to send a message to the client here
       SendMissionComplete((FCULONG) pEvent->GetParam(), pPlayer->GetRouterSocket(), pPlayer->GetClientSocket());
 			// Add the xp to the player
@@ -191,6 +191,7 @@ Mission* Player::AcceptMission(Mission* pMission)
 	
 	if ( pMyMission )
 	{
+    m_missionLock.LockForWrite();
 		m_mapMissions[ pMyMission->GetID() ] = pMyMission;
 		pMyMission->SetComplete(false);
     if ( pMyMission->GetParentID() != 0 )
@@ -206,6 +207,7 @@ Mission* Player::AcceptMission(Mission* pMission)
         DYNLOG_ADDLOG( DYNLOG_FORMAT("Player::AcceptMission(): Could not add mission id %ld as a child to mission %ld because parent does not exist in Player %ld object", pMyMission->GetID(), pMyMission->GetParentID(), m_id) );
       }
     }
+    m_missionLock.Unlock();
 	}
 
   return pMyMission;
@@ -215,12 +217,18 @@ Mission* Player::AcceptMission(Mission* pMission)
 
 Mission* Player::GetMission(FCULONG missionID)
 {
+  m_missionLock.LockForRead();
   MissionMap::iterator it = m_mapMissions.find(missionID);
+  Mission* pMission = NULL;
 
   if ( it != m_mapMissions.end() )
-    return it->second;
+  {
+    pMission = it->second;
+  }
 
-  return NULL;
+  m_missionLock.Unlock();
+
+  return pMission;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -245,25 +253,31 @@ bool Player::HasCompletedMission(FCULONG missionID)
 
 void Player::AddItem(FCULONG itemID)
 {
+  m_itemLock.LockForWrite();
+
 	ItemMap::iterator it = m_mapItems.find(itemID);
 
 	if ( it == m_mapItems.end() )
 	{
 		// add a new item to the map
-		GameItem gi = {itemID, 1};
+		PlayerItem gi = {itemID, 1};
 		m_mapItems[itemID] = gi;
 	}
 	else
 	{
 		it->second.count++;
 	}
+
+  m_itemLock.Unlock();
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 bool Player::HasItem(FCULONG itemID)
 {
+  m_itemLock.LockForRead();
 	ItemMap::iterator it = m_mapItems.find(itemID);
+  m_itemLock.Unlock();
 
 	return ( it != m_mapItems.end() );
 }
@@ -272,10 +286,45 @@ bool Player::HasItem(FCULONG itemID)
 
 void Player::RemoveItem(FCULONG itemID)
 {
+  m_itemLock.LockForWrite();
 	ItemMap::iterator it = m_mapItems.find(itemID);
 
 	if ( it != m_mapItems.end() )
 		it->second.count--;
+  m_itemLock.Unlock();
+}
+
+///////////////////////////////////////////////////////////////////////
+/*
+bool Player::GetItemByIndex(FCULONG index, Player::PlayerItem& item)
+{
+  memset(&item, 0, sizeof(PlayerItem));
+  if ( index >= m_mapItems.size() )
+    return false;
+
+  bool bResult = false;
+  ItemMap::iterator it = m_mapItems.begin() + index;
+
+  if ( it != m_mapItems.end() )
+  {
+    item = it->second;
+    bResult = true;
+  }
+
+  return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Player::GetItemByID(FCULONG itemID, PlayerItem& item)
+{
+}
+*/
+///////////////////////////////////////////////////////////////////////
+
+size_t Player::GetUniqueItemCount()
+{
+  return m_mapItems.size();
 }
 
 ///////////////////////////////////////////////////////////////////////

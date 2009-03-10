@@ -68,6 +68,7 @@
 // CHARACTER LOADING QUERIES
 ////////////////////////////////////////
 #define DBQ_LOAD_CHARACTER_COMPUTER       "load_character_computer"
+#define DBQ_LOAD_CHARACTER_ITEMS          "load_character_items"
 
 
 #endif//_FCQUERIES_H_

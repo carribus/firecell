@@ -222,7 +222,7 @@ void SendCharacterAssetResponse(Player* pPlayer, BaseSocket* pRouter, FCSOCKET c
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SendCharacterItemsResponse(Player* pPlayer, BaseSocket* pRouter, FCSOCKET clientSocket)
+void SendCharacterItemsResponse(Player* pPlayer, ItemManager& itemMgr,  BaseSocket* pRouter, FCSOCKET clientSocket)
 {
 	if ( !pPlayer )
 		return;
@@ -230,6 +230,60 @@ void SendCharacterItemsResponse(Player* pPlayer, BaseSocket* pRouter, FCSOCKET c
 	PEPacket* pkt = new PEPacket;
 	__FCPKT_CHARACTER_ITEMS_REQUEST_RESP* d = NULL;
 	int nPktLen = 0;
+
+  pPlayer->LockItemsForRead();
+
+  const std::map<FCULONG, Player::PlayerItem>& items = pPlayer->GetItems();         // get a const reference to the player's items
+  std::map<FCULONG, Player::PlayerItem>::const_iterator it = items.begin();
+  std::map<FCULONG, Player::PlayerItem>::const_iterator limit = items.end();
+  size_t itemCount = items.size(), index = 0;
+  ItemSoftware* pItem = NULL;
+
+  // calc the size of the packet
+  nPktLen = sizeof(__FCPKT_CHARACTER_ITEMS_REQUEST_RESP) + ( ((int)itemCount-1) * sizeof(__FCPKT_CHARACTER_ITEMS_REQUEST_RESP::_software) );
+  d = (__FCPKT_CHARACTER_ITEMS_REQUEST_RESP*) new FCBYTE[nPktLen];
+  memset(d, 0, nPktLen);
+  d->itemCount = (FCULONG)itemCount;
+
+  // loop through the items and populate the packet
+  for ( ; it != limit; it++ )
+  {
+    // get the item
+    if ( (pItem = (ItemSoftware*)itemMgr.GetItem( it->first )) )
+    {
+      d->software[index].item_id = pItem->GetID();
+      strncpy( d->software[index].name, pItem->GetName().c_str(), sizeof(d->software[index].name)-1 );
+      d->software[index].itemtype_id = pItem->GetTypeID();
+      d->software[index].min_level = pItem->GetMinLevel();
+      d->software[index].max_level = pItem->GetMaxLevel();
+      d->software[index].npc_value = pItem->GetNPCValue();
+
+      d->software[index].softwareTypeID = pItem->GetSoftwareType();
+      d->software[index].is_service = pItem->IsService();
+      d->software[index].scriptID = 0;
+      d->software[index].itemCount = it->second.count;
+    }
+    else
+    {
+      DYNLOG_ADDLOG( DYNLOG_FORMAT("SendCharacterItemsResponse(): Failed to find item ID %ld", it->first) );
+    }
+    index++;
+  }
+
+  pPlayer->UnlockItems();
+
+  // send the packet
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_CHARACTER_ITEMS_REQUEST, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, 
+                                (void*)d, 
+                                nPktLen);
+
+  // send notification to Client
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
+
+  // clear the data portion
+  delete [] d;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -99,6 +99,7 @@ int FCLogicWorld::Start()
     RegisterDBHandler(DBQ_LOAD_ITEM_DEFS, OnDBJob_LoadItemDefs);
     RegisterDBHandler(DBQ_LOAD_OBJECT_DATA, OnDBJob_LoadObjectData);
     RegisterDBHandler(DBQ_LOAD_CHARACTER_COMPUTER, OnDBJob_LoadCharacterComputer);
+    RegisterDBHandler(DBQ_LOAD_CHARACTER_ITEMS, OnDBJob_LoadCharacterItems);
     RegisterDBHandler(DBQ_LOAD_WORLD_GEOGRAPHY, OnDBJob_LoadWorldGeography);
     RegisterDBHandler(DBQ_LOAD_COMPANIES, OnDBJob_LoadCompanies);
     RegisterDBHandler(DBQ_LOAD_COMPANY_COMPUTERS, OnDBJob_LoadCompanyComputers);
@@ -417,7 +418,7 @@ bool FCLogicWorld::OnCommandCharacterItemsRequest(PEPacket* pPkt, RouterSocket* 
 
 	if ( (pPlayer = m_playerMgr.GetPlayerByID( d.character_id )) )
 	{
-		SendCharacterItemsResponse( pPlayer, pRouter, clientSocket );
+		SendCharacterItemsResponse( pPlayer, m_itemMgr, pRouter, clientSocket );
 	}
 
 	return true;
@@ -1003,6 +1004,7 @@ void FCLogicWorld::OnDBJob_LoadCharacterComputer(DBIResultSet& resultSet, void*&
   RouterSocket* pSock = pCtx->pRouter;
   FCLogicWorld* pThis = pCtx->pThis;
   Player* pPlayer = (Player*)pCtx->pData;
+  FCSOCKET clientSocket = pCtx->clientSocket;
 
   if ( !pThis || !pPlayer )
     return;
@@ -1011,8 +1013,42 @@ void FCLogicWorld::OnDBJob_LoadCharacterComputer(DBIResultSet& resultSet, void*&
   Computer& comp = pPlayer->GetComputer();
   pThis->UpdateComputerFromResultSet(comp, resultSet);
 
+  delete pCtx;
+  pContext = NULL;
+
+  // now that we have the player object, we need to load the player's facilities, items etc
+  pCtx = new DBJobContext;
+  pCtx->pThis = pThis;
+  pCtx->clientSocket = clientSocket;
+  pCtx->pRouter = pSock;
+  pCtx->pData = (void*)pPlayer;
+  pThis->GetDatabase().ExecuteJob(DBQ_LOAD_CHARACTER_ITEMS, (void*)pCtx);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::OnDBJob_LoadCharacterItems(DBIResultSet& resultSet, void*& pContext)
+{
+  DBJobContext* pCtx = (DBJobContext*) pContext;
+  FCLogicWorld* pThis = pCtx->pThis;
+  Player* pPlayer = (Player*)pCtx->pData;
+
+  if ( !pThis || !pPlayer || !pCtx->clientSocket || !pCtx->pRouter )
+    return;
+
+  size_t rowCount = resultSet.GetRowCount();
+  FCULONG item_id, count;
+
+  for ( size_t i = 0; i < rowCount; i++ )
+  {
+    item_id = resultSet.GetULongValue("item_id", i);
+    count = resultSet.GetULongValue("count", i);
+
+    pPlayer->AddItem(item_id);
+  }
+
   // we are done loading the player... notify the client that the character has been created...
-  SendCharacterLoginStatus(pPlayer->GetAccountID(), pPlayer->GetID(), CharacterSelectSucceeded, pSock, pCtx->clientSocket);
+  SendCharacterLoginStatus(pPlayer->GetAccountID(), pPlayer->GetID(), CharacterSelectSucceeded, pCtx->pRouter, pCtx->clientSocket);
 
   // emit an event for the player logging in
   EventSystem::GetInstance()->Emit( pPlayer, NULL, new Event(Player::EVT_LoggedIn, (void*)pPlayer) );
