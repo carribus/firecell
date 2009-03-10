@@ -14,6 +14,7 @@
 #include "FileSystem.h"
 #include "ForumCategory.h"
 #include "ForumPost.h"
+#include "ItemManager.h"
 #include "Player.h"
 
 
@@ -64,7 +65,7 @@ void SendCharacterAssetResponse(Player* pPlayer, BaseSocket* pRouter, FCSOCKET c
  *  @brief This function sends a character's items to them. The packet sent is: __FCPKT_CHARACTER_ITEMS_REQUEST_RESP
  *  @param pPlayer The player object that requested the assets list
  */
-void SendCharacterItemsResponse(Player* pPlayer, BaseSocket* pRouter, FCSOCKET clientSocket);
+void SendCharacterItemsResponse(Player* pPlayer, ItemManager& itemMgr, BaseSocket* pRouter, FCSOCKET clientSocket);
 
 /**
  *  @ingroup worldcomms

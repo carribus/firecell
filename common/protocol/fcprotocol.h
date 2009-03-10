@@ -329,6 +329,7 @@ struct __FCPKT_CHARACTER_ITEMS_REQUEST_RESP
 		FCSHORT softwareTypeID;
 		bool is_service;
 		FCULONG scriptID;
+    FCULONG itemCount;
 	} software[1];
 };
 

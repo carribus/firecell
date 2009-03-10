@@ -24,6 +24,7 @@
 #include <string>
 #include <vector>
 #include "../common/fctypes.h"
+#include "../common/PThreadRWLock.h"
 #include "../Clients/common/Socket/ClientSocket.h"
 #include "IEventSystem.h"
 #include "Computer.h"
@@ -42,6 +43,15 @@ public:
   DECLARE_EVENT_SOURCE();
   DECLARE_EVENT(LoggedIn);
   DECLARE_EVENT(LoggedOut);
+
+  /*
+   * Structure(s)
+   */
+	struct PlayerItem
+	{
+		FCULONG itemID;
+		FCSHORT count;
+	};
 
   Player(void);
   Player(FCULONG accountID, FCULONG id, string name, string email, FCULONG xp, FCULONG level, FCINT fameScale, FCULONG cityID, FCULONG countryID, InGameIPAddress* ip);
@@ -78,8 +88,13 @@ public:
 	void AddItem(FCULONG itemID);
 	bool HasItem(FCULONG itemID);
 	void RemoveItem(FCULONG itemID);
+  size_t GetUniqueItemCount();
+  const std::map<FCULONG, PlayerItem>& GetItems()                   { return m_mapItems; }
+  void LockItemsForRead()                                           { m_itemLock.LockForRead(); }
+  void LockItemsForWrite()                                          { m_itemLock.LockForWrite(); }
+  void UnlockItems()                                                { m_itemLock.Unlock(); }
 
-	/*
+  /*
 	 *	Accessor/Mutators
 	 */
   FCULONG GetAccountID() const            { return m_accountID; }
@@ -140,17 +155,14 @@ private:
 	 */
 	typedef std::map<FCULONG, Mission*> MissionMap;
 	MissionMap m_mapMissions;
+  PThreadRWLock m_missionLock;
 
 	/*
 	 *	Items
 	 */
-	struct GameItem
-	{
-		FCULONG itemID;
-		FCSHORT count;
-	};
-	typedef std::map<FCULONG, GameItem>		ItemMap;
+	typedef std::map<FCULONG, PlayerItem>		ItemMap;
 	ItemMap	m_mapItems;
+  PThreadRWLock m_itemLock;
 };
 
 #endif//_PLAYER_H_

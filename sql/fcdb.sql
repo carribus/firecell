@@ -1,5 +1,5 @@
 /*
-SQLyog Enterprise - MySQL GUI v7.13 
+SQLyog Enterprise - MySQL GUI v7.15 
 MySQL - 5.0.67-community-nt : Database - firecell
 *********************************************************************
 */
@@ -47,12 +47,27 @@ CREATE TABLE `fc_accounttypes` (
 
 insert  into `fc_accounttypes`(`accounttype_level`,`name`) values (0,'Guest'),(1,'Normal'),(2,'GM'),(3,'Administrator');
 
+/*Table structure for table `fc_characteritems` */
+
+DROP TABLE IF EXISTS `fc_characteritems`;
+
+CREATE TABLE `fc_characteritems` (
+  `character_id` bigint(20) unsigned NOT NULL COMMENT 'the character that owns this item',
+  `item_id` bigint(20) unsigned NOT NULL COMMENT 'the item',
+  `count` smallint(5) unsigned NOT NULL COMMENT 'the number of items of this type the character owns',
+  PRIMARY KEY  (`character_id`,`item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_characteritems` */
+
+insert  into `fc_characteritems`(`character_id`,`item_id`,`count`) values (1,20,1),(1,21,1),(1,22,1),(1,23,1),(1,24,1),(1,25,1);
+
 /*Table structure for table `fc_charactermissions` */
 
 DROP TABLE IF EXISTS `fc_charactermissions`;
 
 CREATE TABLE `fc_charactermissions` (
-  `character_id` smallint(6) NOT NULL,
+  `character_id` bigint(20) NOT NULL,
   `mission_id` int(10) unsigned NOT NULL,
   `complete` char(1) default '0' COMMENT 'completed flag',
   PRIMARY KEY  (`character_id`,`mission_id`)
@@ -65,7 +80,7 @@ CREATE TABLE `fc_charactermissions` (
 DROP TABLE IF EXISTS `fc_characters`;
 
 CREATE TABLE `fc_characters` (
-  `character_id` smallint(5) unsigned NOT NULL auto_increment,
+  `character_id` bigint(20) unsigned NOT NULL auto_increment,
   `account_id` bigint(20) unsigned NOT NULL COMMENT 'account id that this character belongs to',
   `name` char(32) NOT NULL COMMENT 'character''s name',
   `xp` bigint(20) unsigned NOT NULL default '0' COMMENT 'character''s experience points',
