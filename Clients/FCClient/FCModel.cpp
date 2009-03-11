@@ -20,6 +20,8 @@
 #include <sstream>
 #include <vector>
 #include "../../common/protocol/fcprotocol.h"
+#include "../../common/game_objects/ItemSoftware.h"
+#include "../../common/game_objects/ItemType.h"
 #include "../common/ResourceManager.h"
 #include "Settings.h"
 #include "ForumModel.h"
@@ -723,6 +725,8 @@ bool FCModel::OnResponseCharacterItemsRequest(PEPacket* pPkt, BaseSocket* pSocke
 {
 	__FCPKT_CHARACTER_ITEMS_REQUEST_RESP* d;
 	size_t dataLen;
+	Item* pItem = NULL;
+	ItemSoftware* pSoftware = NULL;
 
 	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
 	d = (__FCPKT_CHARACTER_ITEMS_REQUEST_RESP*) new FCBYTE[ dataLen ];
@@ -730,6 +734,19 @@ bool FCModel::OnResponseCharacterItemsRequest(PEPacket* pPkt, BaseSocket* pSocke
 
 	for (FCULONG i = 0; i < d->itemCount; i++ )
 	{
+		pItem = m_itemMgr.addItem( d->software[i].item_id,
+															 d->software[i].name,
+															 d->software[i].itemtype_id,
+															 d->software[i].min_level,
+															 d->software[i].max_level,
+															 d->software[i].npc_value );
+		if ( pItem && pItem->GetTypeID() == ItemType::Software )
+		{
+			pSoftware = (ItemSoftware*)pItem;
+			pSoftware->SetSoftwareType( d->software[i].softwareTypeID );
+			pSoftware->IsService( d->software[i].is_service );
+			m_itemMgr.setItemCount( pItem->GetID(), d->software[i].itemCount );
+		}
 	}
 
   m_server.RequestDesktopOptions(m_pCharacter->GetID());

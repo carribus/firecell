@@ -33,6 +33,7 @@
 #include "Character.h"
 #include "Country.h"
 #include "MissionMgr.h"
+#include "ItemMgr.h"
 
 using namespace std;
 
@@ -279,6 +280,11 @@ private:
    *  Mission stuff
    */
   MissionMgr m_missionMgr;
+
+	/*
+	 *	Items
+	 */
+	ItemMgr m_itemMgr;
 };
 
 #endif//_FCMODEL_H_
