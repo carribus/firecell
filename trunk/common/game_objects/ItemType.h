@@ -2,7 +2,7 @@
 #define _ITEMTYPE_H_
 
 #include <string>
-#include "../common/fctypes.h"
+#include "../fctypes.h"
 
 using namespace std;
 

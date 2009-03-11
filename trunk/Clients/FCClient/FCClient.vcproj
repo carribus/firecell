@@ -230,10 +230,16 @@
 				RelativePath="..\..\common\game_objects\ItemMemory.cpp">
 			</File>
 			<File
+				RelativePath=".\ItemMgr.cpp">
+			</File>
+			<File
 				RelativePath="..\..\common\game_objects\ItemOS.cpp">
 			</File>
 			<File
 				RelativePath="..\..\common\game_objects\ItemProcessor.cpp">
+			</File>
+			<File
+				RelativePath="..\..\common\game_objects\ItemSoftware.cpp">
 			</File>
 			<File
 				RelativePath=".\MissionMgr.cpp">
@@ -295,10 +301,10 @@
 				RelativePath=".\clientstrings.h">
 			</File>
 			<File
-				RelativePath="..\common\Socket\clienttypes.h">
+				RelativePath="..\common\clienttypes.h">
 			</File>
 			<File
-				RelativePath="..\common\clienttypes.h">
+				RelativePath="..\common\Socket\clienttypes.h">
 			</File>
 			<File
 				RelativePath="..\..\common\game_objects\ComputerBase.h">
@@ -415,10 +421,16 @@
 				RelativePath="..\..\common\game_objects\ItemMemory.h">
 			</File>
 			<File
+				RelativePath=".\ItemMgr.h">
+			</File>
+			<File
 				RelativePath="..\..\common\game_objects\ItemOS.h">
 			</File>
 			<File
 				RelativePath="..\..\common\game_objects\ItemProcessor.h">
+			</File>
+			<File
+				RelativePath="..\..\common\game_objects\ItemSoftware.h">
 			</File>
 			<File
 				RelativePath="..\..\common\game_objects\ItemType.h">
