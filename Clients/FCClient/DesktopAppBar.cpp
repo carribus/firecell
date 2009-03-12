@@ -328,6 +328,9 @@ void DesktopAppBar::showSystemMenu()
 	r.LowerRightCorner.Y = r.UpperLeftCorner.Y + 300;
 	pMenu = Environment->addContextMenu(r, Parent);
 
+	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_SOFTWAREMGR).c_str(), 0xFFFFFFFA);
+	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_ITEMMGR).c_str(), 0xFFFFFFFB);
+	pMenu->addSeparator();
 	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_CHARINFO).c_str(), 0xFFFFFFFC);
 	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_SYSTEMINFO).c_str(), 0xFFFFFFFD);
 	pMenu->addSeparator();

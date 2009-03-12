@@ -601,7 +601,7 @@ bool FCModel::OnResponseCharacterCreationParams(PEPacket* pPkt, BaseSocket* pSoc
     default:          // unknown
       break;
     }
-    delete [] pData;
+    delete [] (FCBYTE*)pData;
   }
 
   return bResult;
@@ -751,6 +751,8 @@ bool FCModel::OnResponseCharacterItemsRequest(PEPacket* pPkt, BaseSocket* pSocke
 
   m_server.RequestDesktopOptions(m_pCharacter->GetID());
 
+  delete [] (FCBYTE*)d;
+
 	return true;
 }
 
@@ -776,6 +778,8 @@ bool FCModel::OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket)
   }
 
 	SetState( FCModel::Playing );
+
+  delete [] (FCBYTE*)d;
 	
 	return true;
 }

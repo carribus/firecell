@@ -1022,7 +1022,7 @@ void FCLogicWorld::OnDBJob_LoadCharacterComputer(DBIResultSet& resultSet, void*&
   pCtx->clientSocket = clientSocket;
   pCtx->pRouter = pSock;
   pCtx->pData = (void*)pPlayer;
-  pThis->GetDatabase().ExecuteJob(DBQ_LOAD_CHARACTER_ITEMS, (void*)pCtx);
+  pThis->GetDatabase().ExecuteJob(DBQ_LOAD_CHARACTER_ITEMS, (void*)pCtx, pPlayer->GetID());
 }
 
 ///////////////////////////////////////////////////////////////////////
