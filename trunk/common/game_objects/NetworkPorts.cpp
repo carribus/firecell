@@ -20,7 +20,7 @@ FCSHORT NetworkPorts::addPort()
   m_maxPort++;
   m_ports.push_back(np);
 
-  return m_maxPort;
+  return m_maxPort-1;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -141,6 +141,21 @@ FCSHORT NetworkPorts::setPortHealth(FCSHORT portNum, FCSHORT health)
   NetworkPort& port = m_ports.at(portNum);
 
   port.portHealth = health;
+
+  return NPE_OK;
+}
+
+////////////////////////////////////////////////////////////////////////
+
+FCSHORT NetworkPorts::getSoftwareInfo(FCSHORT portNum, FCULONG& itemID, FCULONG& softwareType)
+{
+  if ( portNum < 0 || portNum > m_maxPort )
+    return NPE_PORT_DOESNT_EXIST;
+
+  NetworkPort& port = m_ports.at(portNum);
+
+  itemID = port.itemID;
+  softwareType = port.softwareType;
 
   return NPE_OK;
 }

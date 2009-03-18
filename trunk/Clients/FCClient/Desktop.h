@@ -8,6 +8,7 @@
 #include "DesktopAppBar.h"
 #include "DesktopIcon.h"
 #include "InGameAppWindow.h"
+#include "SoftwareMgrWindow.h"
 
 using namespace irr;
 using namespace video;
@@ -63,6 +64,10 @@ private:
   void updateIconPositions();
 
 	InGameAppWindow* GetAppWindowByType(FCULONG type);
+  FCDialog* GetUtilityWindow(IGUIElement* pWnd);
+  void CloseUtilityWindow(IGUIElement* pWnd);
+
+  void OpenSoftwareManagerWindow();
 
   /*
    *  Private Data Members
@@ -91,6 +96,11 @@ private:
   typedef std::vector<InGameAppWindow*> AppWindowVector;
   AppWindowVector         		m_arrApps;
 	PThreadMutex								m_mutexApps;							// Might want to change this to a read/write lock
+
+  /*
+   *  Arbitrary utility windows
+   */
+  SoftwareMgrWindow*          m_pSoftwareMgr;
 };
 
 #endif//_DESKTOP_H_

@@ -26,6 +26,7 @@ public:
   FCSHORT uninstallPort(FCSHORT portNum);
   FCSHORT getPortHealth(FCSHORT portNum);
   FCSHORT setPortHealth(FCSHORT portNum, FCSHORT health);
+  FCSHORT getSoftwareInfo(FCSHORT portNum, FCULONG& itemID, FCULONG& softwareType);
   // TODO: Need to add firewalls here as well
 
 private:

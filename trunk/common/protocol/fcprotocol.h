@@ -301,7 +301,7 @@ struct __FCPKT_CHARACTER_ASSET_REQUEST_RESP
 			FCULONG softwareType;
 			FCULONG itemID;
 			FCSHORT portHealth;
-		} network_ports[1];
+		} network_ports[8];
   } computer;
 };
 
