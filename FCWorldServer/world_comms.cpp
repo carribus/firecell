@@ -211,6 +211,17 @@ void SendCharacterAssetResponse(Player* pPlayer, BaseSocket* pRouter, FCSOCKET c
   d.computer.memory.npc_value = comp.GetMemory().GetNPCValue();
   d.computer.memory.mem_size = comp.GetMemory().GetMemorySize();
 
+  // network ports
+  NetworkPorts& ports = comp.GetNetworkPorts();
+
+  for ( FCSHORT i = 0; i < d.computer.availablePorts; i++ )
+  {
+    d.computer.network_ports[i].portNum = i;
+    d.computer.network_ports[i].enabled = ports.isPortEnabled(i);
+    d.computer.network_ports[i].portHealth = ports.getPortHealth(i);
+    ports.getSoftwareInfo(i, d.computer.network_ports[i].itemID, d.computer.network_ports[i].softwareType );
+  }
+
   // send the packet
   PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_CHARACTER_ASSET_REQUEST, ST_None);
   PEPacketHelper::SetPacketData(*pkt, (void*)&d, sizeof(__FCPKT_CHARACTER_ASSET_REQUEST_RESP));

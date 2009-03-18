@@ -302,13 +302,19 @@ void FCDialog::OnCancel()
 
 void FCDialog::closeDialog()
 {
-/*
-	SEvent event;
-	event.EventType = EET_GUI_EVENT;
-	event.GUIEvent.Caller = this;
-	event.GUIEvent.Element = 0;
-	event.GUIEvent.EventType = EGET_FILE_CHOOSE_DIALOG_CANCELLED;
-	Parent->OnEvent(event);
-*/
-	remove();
+  if ( Parent )
+  {
+		// send close event to parent
+		SEvent e;
+		e.EventType = EET_GUI_EVENT;
+		e.GUIEvent.Caller = this;
+		e.GUIEvent.Element = 0;
+		e.GUIEvent.EventType = EGET_ELEMENT_CLOSED;
+
+		// if the event was not absorbed
+		if (!Parent->OnEvent(e))
+			remove();  
+  }
+  else
+	  remove();
 }

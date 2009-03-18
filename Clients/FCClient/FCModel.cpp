@@ -714,6 +714,18 @@ bool FCModel::OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* pSocke
                                 d.computer.memory.min_level, d.computer.memory.max_level, d.computer.memory.npc_value );
   comp.GetMemory().SetMemorySize( d.computer.memory.mem_size );
 
+  // update the player's network port details
+  NetworkPorts& ports = comp.GetNetworkPorts();
+  FCSHORT portnum;
+  for ( int i = 0; i < d.computer.availablePorts; i++ )
+  {
+    portnum = ports.addPort();
+    ports.installPort(portnum, d.computer.network_ports[i].softwareType, d.computer.network_ports[i].itemID);
+    if ( d.computer.network_ports[i].enabled )
+      ports.enablePort(portnum);
+    ports.setPortHealth(portnum, d.computer.network_ports[i].portHealth);
+  }
+
   m_server.SendCharacterItemsRequest(m_pCharacter->GetID());
 
   return true;

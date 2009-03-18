@@ -1,12 +1,12 @@
 #include "DlgNewThread.h"
 
 DECLARE_FORM_ELEMENTS(DlgNewThread)
-FORM_ELEMENT("staticText"			, 1							, 10			, 40			, 90			, 25			, L"Subject : ")
-FORM_ELEMENT("editBox"				, 2							, 105			, 40			, 250			, 25			, NULL)
-FORM_ELEMENT("staticText"		  , 3							, 10			, 80			, 90			, 25			, L"Message : ")
-FORM_ELEMENT("editBox"			  , 4							, 10			, 100			, 400			, 300			, NULL)
-FORM_ELEMENT("button"					, FCBTN_CANCEL	, 10			, 410			, 200			, 25			, L"Cancel")
-FORM_ELEMENT("button"					, FCBTN_OK			, 210			, 410			, 200			, 25			, L"Post Message")
+  FORM_ELEMENT("staticText"			, 1							, 10			, 40			, 90			, 25			, L"Subject : ")
+  FORM_ELEMENT("editBox"				, 2							, 105			, 40			, 250			, 25			, NULL)
+  FORM_ELEMENT("staticText"		  , 3							, 10			, 80			, 90			, 25			, L"Message : ")
+  FORM_ELEMENT("editBox"			  , 4							, 10			, 100			, 400			, 300			, NULL)
+  FORM_ELEMENT("button"					, FCBTN_CANCEL	, 10			, 410			, 200			, 25			, L"Cancel")
+  FORM_ELEMENT("button"					, FCBTN_OK			, 210			, 410			, 200			, 25			, L"Post Message")
 END_FORM_ELEMENTS();
 
 IMPLEMENT_IRRLICHT_FORM(DlgNewThread);

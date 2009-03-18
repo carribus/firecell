@@ -269,6 +269,9 @@
 				RelativePath=".\Settings.cpp">
 			</File>
 			<File
+				RelativePath=".\SoftwareMgrWindow.cpp">
+			</File>
+			<File
 				RelativePath=".\TextAnimator.cpp">
 			</File>
 			<File
@@ -298,13 +301,13 @@
 				RelativePath=".\City.h">
 			</File>
 			<File
+				RelativePath=".\clientdefs.h">
+			</File>
+			<File
 				RelativePath=".\clientstrings.h">
 			</File>
 			<File
 				RelativePath="..\common\clienttypes.h">
-			</File>
-			<File
-				RelativePath="..\common\Socket\clienttypes.h">
 			</File>
 			<File
 				RelativePath="..\..\common\game_objects\ComputerBase.h">
@@ -470,6 +473,9 @@
 			</File>
 			<File
 				RelativePath=".\Settings.h">
+			</File>
+			<File
+				RelativePath=".\SoftwareMgrWindow.h">
 			</File>
 			<File
 				RelativePath=".\TextAnimator.h">

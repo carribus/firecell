@@ -2,6 +2,7 @@
 #include <sstream>
 #include "../common/ResourceManager.h"
 #include "../common/irrlichtUtil/irrfontfx.h"
+#include "clientdefs.h"
 #include "clientstrings.h"
 #include "DesktopAppBar.h"
 
@@ -328,14 +329,14 @@ void DesktopAppBar::showSystemMenu()
 	r.LowerRightCorner.Y = r.UpperLeftCorner.Y + 300;
 	pMenu = Environment->addContextMenu(r, Parent);
 
-	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_SOFTWAREMGR).c_str(), 0xFFFFFFFA);
-	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_ITEMMGR).c_str(), 0xFFFFFFFB);
+	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_SOFTWAREMGR).c_str(), MENUITEM_SOFTWAREMGR);
+	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_ITEMMGR).c_str(), MENUITEM_ITEMMGR);
 	pMenu->addSeparator();
-	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_CHARINFO).c_str(), 0xFFFFFFFC);
-	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_SYSTEMINFO).c_str(), 0xFFFFFFFD);
+	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_CHARINFO).c_str(), MENUITEM_CHARINFO);
+	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_SYSTEMINFO).c_str(), MENUITEM_SYSTEMINFO);
 	pMenu->addSeparator();
-	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_ABOUT).c_str(), 0xFFFFFFFE);
-	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_EXIT).c_str(), 0xFFFFFFFF);
+	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_ABOUT).c_str(), MENUITEM_ABOUT);
+	pMenu->addItem(ResourceManager::instance().GetClientString(STR_APP_APPBAR_SYSTEM_MENU_EXIT).c_str(), MENUITEM_EXIT);
 	r.LowerRightCorner.X += 200;
 	pMenu->setRelativePosition(r);
 	Environment->setFocus(pMenu);

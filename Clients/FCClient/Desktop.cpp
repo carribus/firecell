@@ -1,4 +1,5 @@
 #include <sstream>
+#include "clientdefs.h"
 #include "clientstrings.h"
 #include "FCController.h"
 #include "FCModel.h"
@@ -25,6 +26,7 @@ Desktop::Desktop(ViewLogicGame& owner, IrrlichtDevice* pDevice)
 , m_pAppBar(NULL)
 , m_pFontCourier(NULL)
 , m_mutexApps(true)
+, m_pSoftwareMgr(NULL)
 {
 #ifdef _DEBUG
   setDebugName("Desktop");
@@ -58,6 +60,8 @@ Desktop::Desktop(ViewLogicGame& owner, IrrlichtDevice* pDevice)
 
 Desktop::~Desktop(void)
 {
+  if ( m_pSoftwareMgr )
+    delete m_pSoftwareMgr;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -165,7 +169,7 @@ bool Desktop::OnEvent(const SEvent& event)
 				    {
 					    InGameAppWindow* pWnd = NULL;
 
-					    m_mutexApps.Lock();
+              m_mutexApps.Lock();
 					    AppWindowVector::iterator it = m_arrApps.begin();
 					    while ( it != m_arrApps.end() )
 					    {
@@ -189,6 +193,17 @@ bool Desktop::OnEvent(const SEvent& event)
 					    m_mutexApps.Unlock();
 				    }
 				    break;
+
+          case  EGUIET_ELEMENT:
+            {
+              FCDialog* pDlg = NULL;
+
+              if ( (pElem == (IGUIElement*)GetUtilityWindow(pElem)) )
+              {
+                CloseUtilityWindow(pElem);
+              }
+            }
+            break;
           }
         }
         break;
@@ -200,24 +215,33 @@ bool Desktop::OnEvent(const SEvent& event)
 
 					switch ( pMenu->getItemCommandId(selItem) )
 					{
-					case	0xFFFFFFFC:					// Character Info
+          case  MENUITEM_SOFTWAREMGR:   // Software Manager
+            {
+              OpenSoftwareManagerWindow();
+            }
+            break;
+
+          case  MENUITEM_ITEMMGR:       // Item Manager
+            break;
+
+					case	MENUITEM_CHARINFO:			// Character Info
 						{
 						}
 						break;
 
-					case	0xFFFFFFFD:					// System Info
+					case	MENUITEM_SYSTEMINFO:	  // System Info
 						{
 						}
 						break;
 
-					case	0xFFFFFFFE:					// About FireCell
+					case	MENUITEM_ABOUT:					// About FireCell
 						{
               Environment->addMessageBox( ResourceManager::instance().GetClientString(STR_ABOUT_CAPTION).c_str(),
                                           ResourceManager::instance().GetClientString(STR_ABOUT_TEXT).c_str() );
 						}
 						break;
 
-					case	0xFFFFFFFF:					// Quit FireCell
+					case	MENUITEM_EXIT:					// Quit FireCell
 						{
 							FCViewEvent e(VE_ClientExit);
 							m_owner.GetContainer()->GetController()->OnViewEvent(e);
@@ -638,4 +662,60 @@ InGameAppWindow* Desktop::GetAppWindowByType(FCULONG type)
 	m_mutexApps.Unlock();
 
 	return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+FCDialog* Desktop::GetUtilityWindow(IGUIElement* pWnd)
+{
+  if ( !pWnd )
+    return NULL;
+
+  FCDialog* windows[] = { m_pSoftwareMgr };
+  int limit = sizeof(windows) / sizeof(FCDialog*);
+
+  for ( int i = 0; i < limit; i++ )
+  {
+    if ( windows[i] )
+    {
+      if ( windows[i] == pWnd )
+        return windows[i];
+    }
+  }
+
+  return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Desktop::CloseUtilityWindow(IGUIElement* pWnd)
+{
+  // this is a trick that allows me to set the class pointer of the utility to window using a generic for loop on the window[] array
+  FCDialog** windows[] = { (FCDialog**)&m_pSoftwareMgr };
+  int limit = sizeof(windows) / sizeof(FCDialog*);
+
+  for ( int i = 0; i < limit; i++ )
+  {
+    if ( *windows[i] && *windows[i] == pWnd )
+    {
+      *windows[i] = NULL;
+    }
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Desktop::OpenSoftwareManagerWindow()
+{
+  if ( !m_pSoftwareMgr )
+  {
+    if ( (m_pSoftwareMgr = new SoftwareMgrWindow( this, m_pDevice->getGUIEnvironment(), (wchar_t*)ResourceManager::instance().GetClientString( STR_APP_APPBAR_SYSTEM_MENU_SOFTWAREMGR ).c_str(), this, MENUITEM_SOFTWAREMGR)) )
+    {
+      addChild( m_pSoftwareMgr );
+    }
+  }
+  else
+  {
+		bringToFront( m_pSoftwareMgr );
+ }
 }
