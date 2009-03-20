@@ -124,6 +124,9 @@
 			<File
 				RelativePath="..\..\common\inifile.cpp">
 			</File>
+			<File
+				RelativePath="..\..\common\PThreadCond.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -134,6 +137,9 @@
 			</File>
 			<File
 				RelativePath="..\..\common\inifile.h">
+			</File>
+			<File
+				RelativePath="..\..\common\PThreadCond.h">
 			</File>
 		</Filter>
 		<Filter

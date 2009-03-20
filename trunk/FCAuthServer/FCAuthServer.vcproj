@@ -147,6 +147,9 @@
 				RelativePath="..\common\PEPacketHelper.cpp">
 			</File>
 			<File
+				RelativePath="..\common\PThreadCond.cpp">
+			</File>
+			<File
 				RelativePath="..\common\ServiceLogicBase.cpp">
 			</File>
 			<File
@@ -183,6 +186,9 @@
 			</File>
 			<File
 				RelativePath="..\common\PEPacketHelper.h">
+			</File>
+			<File
+				RelativePath="..\common\PThreadCond.h">
 			</File>
 			<File
 				RelativePath="..\common\ServiceLogicBase.h">

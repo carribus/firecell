@@ -104,6 +104,7 @@ void FCLogicRouter::StartSocketMonitor()
 void FCLogicRouter::StopSocketMonitor()
 {
   m_bStopSockMon = true;
+  m_condQueuedData.Signal();
   pthread_join( m_thrdSockMon, NULL );
 }
 
@@ -189,6 +190,7 @@ void FCLogicRouter::OnDataReceived(FCSOCKET s, FCBYTE* pData, FCINT nLen)
 
       pthread_mutex_lock(&m_mutexQueuedData);
       m_arrQueuedData.push(*pSocket);
+      m_condQueuedData.Signal();
       pthread_mutex_unlock(&m_mutexQueuedData);
     }
   }
@@ -593,11 +595,14 @@ void* FCLogicRouter::thrdSocketMonitor(void* pData)
     }
     else
     {
+      pThis->m_condQueuedData.WaitForSignal();
+/*
 #ifdef _WIN32
       Sleep(50);
 #else
       usleep(50000);
 #endif
+*/
     }
   }
 

@@ -27,6 +27,7 @@
 #include "../fcqueries.h"
 #include "../INIFile.h"
 #include "../threading.h"
+#include "../PThreadCond.h"
 #include "FCDBJob.h"
 #include "IDBInterface.h"
 
@@ -98,6 +99,7 @@ private:
 
   // outstanding db jobs that have been queued
   pthread_mutex_t m_mutexJobs;
+  PThreadCond m_condJobs;
   queue<FCDBJob> m_jobs;
   pthread_mutex_t m_mutexCompletedJobs;
   queue<FCDBJob> m_completedJobs;
