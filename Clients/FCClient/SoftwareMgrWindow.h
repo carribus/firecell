@@ -15,8 +15,8 @@ public:
   ~SoftwareMgrWindow(void);
 
 protected:
-	void OnOK();
-	void OnCancel();
+	static void OnOK(void* pCtx);
+	static void OnCancel(void* pCtx);
 
 private:
 
