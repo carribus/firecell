@@ -23,6 +23,7 @@
 #include <map>
 #include <queue>
 #include "../common/threading.h"
+#include "../common/PThreadCond.h"
 #include "../common/inifile.h"
 #include "../common/PEPacket.h"
 #include "../common/interfaces/IServiceLogic.h"
@@ -96,6 +97,7 @@ private:
   pthread_mutex_t     m_mutexSockets;
   CSocketMap          m_mapSockets;
   pthread_mutex_t     m_mutexQueuedData;
+  PThreadCond         m_condQueuedData;
   CQueuedSocketArray  m_arrQueuedData;
 
   pthread_mutex_t     m_mutexServices;

@@ -216,6 +216,7 @@ void FCDatabase::StopWorkerThreads()
   for ( it = m_threads.begin(); it != m_threads.end(); it++ )
   {
     (*it)->bRunning = false;
+    m_condJobs.Signal();
     pthread_join( (*it)->thread, NULL );
 		delete *it;
   }
@@ -231,6 +232,7 @@ void FCDatabase::QueueJob(const string query, const string ref, void* pData)
 
   pthread_mutex_lock(&m_mutexJobs);
   m_jobs.push(job);
+  m_condJobs.Signal();
   pthread_mutex_unlock(&m_mutexJobs);
 }
 
@@ -328,12 +330,14 @@ void* FCDatabase::thrdDBWorker(void* pData)
       }
     }
 
-
+    pThis->m_condJobs.WaitForSignal();
+/*
 #ifdef _WIN32
     Sleep(250);
 #else
     usleep(250000);
 #endif
+*/
   }
 
   // close the db connection
