@@ -209,6 +209,9 @@
 				RelativePath=".\GUIForumThreadReader.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIVUMeter.cpp">
+			</File>
+			<File
 				RelativePath=".\InGameAppWindow.cpp">
 			</File>
 			<File
@@ -392,6 +395,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIForumThreadReader.h">
+			</File>
+			<File
+				RelativePath=".\GUIVUMeter.h">
 			</File>
 			<File
 				RelativePath=".\IDesktop.h">

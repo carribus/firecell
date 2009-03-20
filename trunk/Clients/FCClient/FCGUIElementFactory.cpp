@@ -1,4 +1,5 @@
 #include "GUIConsoleCtrl.h"
+#include "GUIVUMeter.h"
 #include "FCGUIElementFactory.h"
 
 #ifdef _IRR_COMPILE_WITH_GUI_
@@ -8,6 +9,7 @@
 FCGUIElementFactory::TypeToName FCGUIElementFactory::m_arrTypeToName[] = 
 {
   { FCGUIElementFactory::EGUIET_CONSOLE, "console" },
+  { FCGUIElementFactory::EGUIET_VUMETER, "vumeter" },
   { (FCGUIElementFactory::e_FCGUI_ElementType)0, NULL }
 };
 
@@ -45,6 +47,9 @@ IGUIElement* FCGUIElementFactory::addGUIElement(EGUI_ELEMENT_TYPE type, IGUIElem
   case  EGUIET_CONSOLE:
     pRet = new GUIConsoleCtrl(m_pEnv, core::rect<s32>(0, 0, 100, 100),  parent);
     break;
+
+  case  EGUIET_VUMETER:
+    pRet = new GUIVUMeter(m_pEnv, core::rect<s32>(0, 0, 100, 10), parent);
 
   default:
     break;
