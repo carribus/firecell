@@ -709,7 +709,7 @@ void Desktop::OpenSoftwareManagerWindow()
 {
   if ( !m_pSoftwareMgr )
   {
-    if ( (m_pSoftwareMgr = new SoftwareMgrWindow( this, m_pDevice->getGUIEnvironment(), (wchar_t*)ResourceManager::instance().GetClientString( STR_APP_APPBAR_SYSTEM_MENU_SOFTWAREMGR ).c_str(), this, MENUITEM_SOFTWAREMGR)) )
+    if ( (m_pSoftwareMgr = new SoftwareMgrWindow( this, FCModel::instance(), m_pDevice->getGUIEnvironment(), (wchar_t*)ResourceManager::instance().GetClientString( STR_APP_APPBAR_SYSTEM_MENU_SOFTWAREMGR ).c_str(), this, MENUITEM_SOFTWAREMGR)) )
     {
       addChild( m_pSoftwareMgr );
     }

@@ -563,7 +563,7 @@ bool FCModel::OnResponseSelectCharacter(PEPacket* pPkt, BaseSocket* pSocket)
 
   if ( d.status == CharacterSelectSucceeded && bFound )
   {
-    m_server.SendCharacterAssetRequest(m_pCharacter->GetID());
+    m_server.SendCharacterItemsRequest(m_pCharacter->GetID());
   }
   else
   {
@@ -726,7 +726,7 @@ bool FCModel::OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* pSocke
     ports.setPortHealth(portnum, d.computer.network_ports[i].portHealth);
   }
 
-  m_server.SendCharacterItemsRequest(m_pCharacter->GetID());
+  m_server.RequestDesktopOptions(m_pCharacter->GetID());
 
   return true;
 }
@@ -761,7 +761,7 @@ bool FCModel::OnResponseCharacterItemsRequest(PEPacket* pPkt, BaseSocket* pSocke
 		}
 	}
 
-  m_server.RequestDesktopOptions(m_pCharacter->GetID());
+  m_server.SendCharacterAssetRequest(m_pCharacter->GetID());
 
   delete [] (FCBYTE*)d;
 

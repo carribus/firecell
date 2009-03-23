@@ -216,7 +216,7 @@ void FCDatabase::StopWorkerThreads()
   for ( it = m_threads.begin(); it != m_threads.end(); it++ )
   {
     (*it)->bRunning = false;
-    m_condJobs.Signal();
+    m_condJobs.BroadcastSignal();
     pthread_join( (*it)->thread, NULL );
 		delete *it;
   }

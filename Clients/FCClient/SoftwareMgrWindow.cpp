@@ -60,25 +60,31 @@ IMPLEMENT_IRRLICHT_FORM(SoftwareMgrWindow);
 
 ///////////////////////////////////////////////////////////////////////
 
-SoftwareMgrWindow::SoftwareMgrWindow(IDesktop* pDesktop, IGUIEnvironment* pEnv, wchar_t* caption, IGUIElement* pParent, s32 id)
+SoftwareMgrWindow::SoftwareMgrWindow(IDesktop* pDesktop, FCModel& model, IGUIEnvironment* pEnv, wchar_t* caption, IGUIElement* pParent, s32 id)
 : FCDialog(pEnv, pParent, caption, true, id, rect<s32>(0, 0, 530, 340))
+, m_model(model)
 , m_pDesktop(pDesktop)
 {
+  NetworkPorts& ports = model.GetPlayer()->GetComputer().GetNetworkPorts();
+  FCSHORT portNum = 0, portCount = ports.getPortCount();
+
   createFormElements();
   setLabels();
 
   FCDialog::setSuccessCallback(OnOK, this);
 
-  for ( u32 i = 51; i <= 72; i+=3 )
+  UpdateUIFromModel();
+
+  for ( u32 i = 51; i <= 72; portNum++, i+=3 )
   {
     ((GUIVUMeter*)getElementFromId(i))->setBarColor(SColor(255, 128, 255, 128));
     ((GUIVUMeter*)getElementFromId(i))->setRange(100);
-    ((GUIVUMeter*)getElementFromId(i))->setValue(75);
+//    ((GUIVUMeter*)getElementFromId(i))->setValue( ports.getPortHealth(portNum) );
 
-    wstringstream ss;
+//    wstringstream ss;
 
-    ss << 75 << L" / " << 100;
-    ((IGUIStaticText*)getElementFromId(i+1))->setText(ss.str().c_str());
+//    ss << 75 << L" / " << 100;
+//    ((IGUIStaticText*)getElementFromId(i+1))->setText(ss.str().c_str());
     ((IGUIStaticText*)getElementFromId(i+1))->setTextAlignment( EGUIA_CENTER, EGUIA_CENTER );
   }
 
@@ -89,6 +95,40 @@ SoftwareMgrWindow::SoftwareMgrWindow(IDesktop* pDesktop, IGUIEnvironment* pEnv, 
 
 SoftwareMgrWindow::~SoftwareMgrWindow(void)
 {
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool SoftwareMgrWindow::OnButtonClicked(s32 id, IGUIButton* pBtn)
+{
+  NetworkPorts& ports = m_model.GetPlayer()->GetComputer().GetNetworkPorts();
+  FCSHORT portNum = (FCSHORT)(id-50)/3;
+  FCSHORT res;
+  bool bEnabled = ports.isPortEnabled(portNum);
+
+  bEnabled ^= true;
+  res = ports.enablePort(bEnabled);
+  switch ( res )
+  {
+  case  NPE_NO_SERVICE_ASSIGNED:
+  case  NPE_NO_SOFTWARETYPE:
+/*
+    m_pEnv->addMessageBox( L"No service assigned!", 
+                           L"You must assign a service to run on this port before you can enable it",
+                           true,
+                           EMBF_OK);
+*/
+    break;
+
+
+  case  NPE_OK:
+    ((IGUIButton*)getElementFromId(id))->setPressed( bEnabled );
+    break;
+  }
+
+
+
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -120,4 +160,59 @@ void SoftwareMgrWindow::setLabels()
       ss.str(L"");
     }
   }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void SoftwareMgrWindow::UpdateUIFromModel()
+{
+  NetworkPorts& ports = m_model.GetPlayer()->GetComputer().GetNetworkPorts();
+  FCSHORT portCount = ports.getPortCount();
+  FCULONG itemID = 0, softwareType = 0;
+
+  for ( FCSHORT i = 0; i < 8; i++ )
+  {
+    // check if we need to disable any controls
+    if ( i+1 > portCount )
+    {
+      enablePort(i, false);
+    }
+    else
+    {
+      // if its not disabled, lets update the port information
+      ports.getSoftwareInfo(i, itemID, softwareType);
+      setPortInfo( i, itemID, softwareType, ports.isPortEnabled(i), ports.getPortMaxHealth(i), ports.getPortHealth(i) );
+    }
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void SoftwareMgrWindow::enablePort(FCSHORT port, bool bEnable)
+{
+  // Label
+  getElementFromId(port*2+1)->setVisible(bEnable);
+  // Combo Box
+  getElementFromId(port*2+2)->setVisible(bEnable);
+  // Enabler Button
+  getElementFromId(port*3+50)->setVisible(bEnable);
+  // VU Meter
+  getElementFromId(port*3+51)->setVisible(bEnable);
+  // VU Meter Text
+  getElementFromId(port*3+52)->setVisible(bEnable);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void SoftwareMgrWindow::setPortInfo(FCSHORT port, FCULONG itemID, FCULONG softwareType, bool bEnabled, u32 maxHealth, u32 health)
+{
+  wstringstream ss;
+
+  // enabled button
+  ((IGUIButton*)getElementFromId(port*3+50))->setPressed(bEnabled);
+  // VU Meter: Port Health 
+  ((GUIVUMeter*)getElementFromId(port*3+51))->setRange( maxHealth );
+  ((GUIVUMeter*)getElementFromId(port*3+51))->setValue( health );
+  ss << health << L" / " << maxHealth;
+  ((IGUIStaticText*)getElementFromId(port*3+52))->setText(ss.str().c_str());
 }

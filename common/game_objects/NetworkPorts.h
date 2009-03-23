@@ -21,10 +21,12 @@ public:
   FCSHORT addPort();
 	FCSHORT getPortCount();
   bool isPortEnabled(FCSHORT portNum);
-  FCSHORT enablePort(FCSHORT portNum);
+  FCSHORT enablePort(FCSHORT portNum, bool bEnable = true);
   FCSHORT installPort(FCSHORT portNum, FCULONG softwareType, FCULONG itemID);
   FCSHORT uninstallPort(FCSHORT portNum);
+  FCSHORT getPortMaxHealth(FCSHORT portNum);
   FCSHORT getPortHealth(FCSHORT portNum);
+  FCSHORT setPortMaxHealth(FCSHORT portNum, FCSHORT health);
   FCSHORT setPortHealth(FCSHORT portNum, FCSHORT health);
   FCSHORT getSoftwareInfo(FCSHORT portNum, FCULONG& itemID, FCULONG& softwareType);
   // TODO: Need to add firewalls here as well
@@ -37,6 +39,7 @@ private:
     FCSHORT portNum;
     FCULONG softwareType;
     FCULONG itemID;
+    FCSHORT portMaxHealth;
     FCSHORT portHealth;
   };
 

@@ -125,11 +125,10 @@ protected:
   void OnOK();
   void OnCancel();
 
-private:
-
 	//! sends the event that the file choose process has been canceld
 	void closeDialog();
 
+  IGUIEnvironment*      m_pEnv;
   bool									m_bModal;
 	core::position2d<s32> DragStart;
 	bool									Dragging;
