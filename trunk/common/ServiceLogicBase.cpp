@@ -12,6 +12,8 @@ ServiceLogicBase::ServiceLogicBase(const string& serviceName, bool bHasConsole)
 
 ServiceLogicBase::~ServiceLogicBase(void)
 {
+  m_bDBMonRunning = false;
+  pthread_join( m_thrdDBMon, NULL );
 }
 
 ///////////////////////////////////////////////////////////////////////

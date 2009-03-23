@@ -2,6 +2,7 @@
 
 FCDialog::FCDialog(IGUIEnvironment* env, IGUIElement* pParent, wchar_t* caption, bool bModal, s32 id, core::rect<s32> rect)
 : IGUIElement(EGUIET_ELEMENT, env, pParent ? pParent : env->getRootGUIElement(), id, rect)
+, m_pEnv(env)
 , m_bModal(bModal)
 , Dragging(false)
 , m_fpSuccessCallback(NULL)
@@ -195,11 +196,16 @@ bool FCDialog::OnEvent(const SEvent& event)
 						// check if the window close button was clicked
 						if ( isMyChild(event.GUIEvent.Caller) ) 
 						{
-							if (event.GUIEvent.Caller == m_CloseButton )
+							if (event.GUIEvent.Caller == m_CloseButton || event.GUIEvent.Caller->getID() == FCBTN_CANCEL )
 							{
                 OnCancel();
 								return true;
 							}
+              else if ( event.GUIEvent.Caller->getID() == FCBTN_OK )
+              {
+                OnOK();
+                return true;
+              }
 
 							// if not... lets pass the event on if its one of our children
 							IGUIButton* pBtn = (IGUIButton*) event.GUIEvent.Caller;

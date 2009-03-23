@@ -98,6 +98,7 @@ DWORD CW32Service::Initialise(void* pParam)
     {
       printf(".");
     }
+    printf("Terminating...\n");
     pThis->m_pLogic->Stop();
   }
 

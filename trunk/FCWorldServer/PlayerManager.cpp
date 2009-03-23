@@ -64,7 +64,11 @@ Player* PlayerManager::CreatePlayer(FCULONG accountID, FCULONG id, string name, 
 
     // configure the player's network ports (8 ports by default)
     for ( int i = 0; i < 8; i++ )
+    {
       pPlayer->GetComputer().GetNetworkPorts().addPort();
+      pPlayer->GetComputer().GetNetworkPorts().setPortMaxHealth(i, 100);
+      pPlayer->GetComputer().GetNetworkPorts().setPortHealth(i, (rand() % 100) + 1);
+    }
 
     pPlayer->SetClientSocket(clientSocket);
 

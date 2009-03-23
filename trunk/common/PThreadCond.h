@@ -17,6 +17,7 @@ public:
 
   void WaitForSignal();
   void Signal();
+  void BroadcastSignal();
 
 protected:
 

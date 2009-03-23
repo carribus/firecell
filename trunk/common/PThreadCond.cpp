@@ -29,3 +29,10 @@ void PThreadCond::Signal()
 {
   pthread_cond_signal(&m_cond);
 }
+
+/////////////////////////////////////////////////////////////////////////////////
+
+void PThreadCond::BroadcastSignal()
+{
+  pthread_cond_broadcast(&m_cond);
+}

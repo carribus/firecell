@@ -25,6 +25,9 @@ GUIVUMeter::~GUIVUMeter(void)
 
 void GUIVUMeter::draw()
 {
+  if ( !IsVisible )
+    return;
+
   core::rect<s32> barRect = AbsoluteRect;
   
   // draw the background

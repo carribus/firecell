@@ -44,7 +44,7 @@ bool NetworkPorts::isPortEnabled(FCSHORT portNum)
 
 ////////////////////////////////////////////////////////////////////////
 
-FCSHORT NetworkPorts::enablePort(FCSHORT portNum)
+FCSHORT NetworkPorts::enablePort(FCSHORT portNum, bool bEnable)
 {
   if ( portNum < 0 || portNum > m_maxPort )
     return NPE_PORT_DOESNT_EXIST;
@@ -53,21 +53,26 @@ FCSHORT NetworkPorts::enablePort(FCSHORT portNum)
   FCSHORT result = NPE_OK;
 
   // check if the port has a service associated with it
-  if ( port.softwareType )
+  if ( bEnable )
   {
-    if ( port.itemID )
+    if ( port.softwareType )
     {
-      port.enabled = true;
+      if ( port.itemID )
+      {
+        port.enabled = true;
+      }
+      else
+      {
+        result = NPE_NO_SERVICE_ASSIGNED;
+      }
     }
     else
     {
-      result = NPE_NO_SERVICE_ASSIGNED;
+      result = NPE_NO_SOFTWARETYPE;
     }
   }
   else
-  {
-    result = NPE_NO_SOFTWARETYPE;
-  }
+    port.enabled = bEnable;
 
   return result;
 }
@@ -121,6 +126,18 @@ FCSHORT NetworkPorts::uninstallPort(FCSHORT portNum)
 
 ////////////////////////////////////////////////////////////////////////
 
+FCSHORT NetworkPorts::getPortMaxHealth(FCSHORT portNum)
+{
+  if ( portNum < 0 || portNum > m_maxPort )
+    return NPE_PORT_DOESNT_EXIST;
+
+  NetworkPort& port = m_ports.at(portNum);
+
+  return port.portMaxHealth;
+}
+
+////////////////////////////////////////////////////////////////////////
+
 FCSHORT NetworkPorts::getPortHealth(FCSHORT portNum)
 {
   if ( portNum < 0 || portNum > m_maxPort )
@@ -130,6 +147,21 @@ FCSHORT NetworkPorts::getPortHealth(FCSHORT portNum)
 
   return port.portHealth;
 }
+
+////////////////////////////////////////////////////////////////////////
+
+FCSHORT NetworkPorts::setPortMaxHealth(FCSHORT portNum, FCSHORT health)
+{
+  if ( portNum < 0 || portNum > m_maxPort )
+    return NPE_PORT_DOESNT_EXIST;
+
+  NetworkPort& port = m_ports.at(portNum);
+
+  port.portMaxHealth = health;
+
+  return NPE_OK;
+}
+
 
 ////////////////////////////////////////////////////////////////////////
 

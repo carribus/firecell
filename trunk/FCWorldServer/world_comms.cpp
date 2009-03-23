@@ -218,6 +218,7 @@ void SendCharacterAssetResponse(Player* pPlayer, BaseSocket* pRouter, FCSOCKET c
   {
     d.computer.network_ports[i].portNum = i;
     d.computer.network_ports[i].enabled = ports.isPortEnabled(i);
+    d.computer.network_ports[i].portMaxHealth = ports.getPortMaxHealth(i);
     d.computer.network_ports[i].portHealth = ports.getPortHealth(i);
     ports.getSoftwareInfo(i, d.computer.network_ports[i].itemID, d.computer.network_ports[i].softwareType );
   }
