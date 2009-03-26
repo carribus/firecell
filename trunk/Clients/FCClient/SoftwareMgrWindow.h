@@ -28,6 +28,7 @@ private:
    */
   void setLabels();
   void UpdateUIFromModel();
+  void PopulateComboBoxes();
   void enablePort(FCSHORT port, bool bEnable);
   void setPortInfo(FCSHORT port, FCULONG itemID, FCULONG softwareType, bool bEnabled, u32 maxHealth, u32 health);
 

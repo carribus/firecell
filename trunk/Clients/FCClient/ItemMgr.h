@@ -2,7 +2,9 @@
 #define _ITEMMGR_H_
 
 #include <map>
+#include <vector>
 #include "../../common/game_objects/Item.h"
+#include "../../common/PThreadMutex.h"
 
 class ItemMgr
 {
@@ -15,15 +17,13 @@ public:
 	{
 	public:
 		GameItem(Item* pItem = NULL, FCULONG count = 0)
-			: m_pItem(NULL)
-			, m_count(0)
+			: m_pItem(pItem)
+			, m_count(count)
 		{
 		}
 
 		~GameItem()
 		{
-			if ( m_pItem )
-				delete m_pItem;
 		}
 
 		void setItem(Item* item)									{ m_pItem = item; }
@@ -44,6 +44,8 @@ public:
 
 	Item* addItem(FCULONG id, const std::string& name, FCULONG typeID, FCSHORT minLevel, FCSHORT maxLevel, FCULONG npcValue);
   bool getItem(FCULONG id, GameItem& item);
+  FCULONG getItemCount()                                        { return (FCULONG)m_mapItems.size(); }
+  FCULONG getServices(std::vector<GameItem>& items);
 	void setItemCount(FCULONG id, FCULONG count);
 	void clear();
 
@@ -54,6 +56,7 @@ private:
 	 */
 	typedef std::map<FCULONG, GameItem>		ItemMap;
 	ItemMap m_mapItems;
+  PThreadMutex m_lock;
 };
 
 #endif//_ITEMMGR_H_

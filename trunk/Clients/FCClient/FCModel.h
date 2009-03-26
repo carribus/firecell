@@ -195,6 +195,7 @@ public:
   map<FCULONG, Country>& GetCountries()            { return m_countries; }
 	map<FCUINT, DesktopOption> GetDesktopOptions()	 { return m_desktopOptions; }
 	MissionMgr& GetMissionMgr()											 { return m_missionMgr; }
+  ItemMgr& GetItemMgr()                            { return m_itemMgr; }
 
 private:
 
