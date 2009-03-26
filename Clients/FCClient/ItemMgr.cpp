@@ -6,6 +6,7 @@
 #include "ItemMgr.h"
 
 ItemMgr::ItemMgr(void)
+: m_lock(true)
 {
 }
 
@@ -23,6 +24,7 @@ Item* ItemMgr::addItem(FCULONG id, const std::string& name, FCULONG typeID, FCSH
 	GameItem item;
   Item* pItem = NULL;
 
+  m_lock.Lock();
 	if ( !getItem(id, item) )
 	{
 		switch ( typeID )
@@ -54,6 +56,7 @@ Item* ItemMgr::addItem(FCULONG id, const std::string& name, FCULONG typeID, FCSH
 			m_mapItems[id] = GameItem(pItem, 0);
 		}
 	}
+  m_lock.Unlock();
 
 	return pItem;
 }
@@ -62,6 +65,7 @@ Item* ItemMgr::addItem(FCULONG id, const std::string& name, FCULONG typeID, FCSH
 
 bool ItemMgr::getItem(FCULONG id, ItemMgr::GameItem& item)
 {
+  m_lock.Lock();
 	ItemMap::iterator it = m_mapItems.find(id);
 	bool bResult = false;
 
@@ -70,25 +74,60 @@ bool ItemMgr::getItem(FCULONG id, ItemMgr::GameItem& item)
 		item = it->second;
 		bResult = true;
 	}
+  m_lock.Unlock();
 
-	return bResult;
+  return bResult;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+FCULONG ItemMgr::getServices(std::vector<GameItem>& items)
+{
+  m_lock.Lock();
+  ItemMap::iterator it = m_mapItems.begin();
+  ItemMap::iterator limit = m_mapItems.end();
+  Item* pItem = NULL;
+  GameItem gameItem;
+
+  for ( ; it != limit; it++ )
+  {
+    if ( (pItem = it->second.getItem()) )
+    {
+      if ( pItem->GetTypeID() == ItemType::Software )
+      {
+        if ( ((ItemSoftware*)pItem)->IsService() )
+        {
+          gameItem = it->second;
+          items.push_back(gameItem);
+        }
+      }
+    }
+  }
+
+  m_lock.Unlock();
+
+  return (FCULONG)items.size();
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 void ItemMgr::setItemCount(FCULONG id, FCULONG count)
 {
+  m_lock.Lock();
 	ItemMap::iterator it = m_mapItems.find(id);
 
 	if ( it != m_mapItems.end() )
 	{
 		it->second.setCount(count);
 	}
+  m_lock.Unlock();
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 void ItemMgr::clear()
 {
+  m_lock.Lock();
 	m_mapItems.erase( m_mapItems.begin(), m_mapItems.end() );
+  m_lock.Unlock();
 }

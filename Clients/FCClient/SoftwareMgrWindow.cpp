@@ -2,6 +2,7 @@
 #include "../common/ResourceManager.h"
 #include "clientstrings.h"
 #include "GUIVUMeter.h"
+#include "ItemMgr.h"
 #include "SoftwareMgrWindow.h"
 
 DECLARE_FORM_ELEMENTS(SoftwareMgrWindow)
@@ -79,12 +80,6 @@ SoftwareMgrWindow::SoftwareMgrWindow(IDesktop* pDesktop, FCModel& model, IGUIEnv
   {
     ((GUIVUMeter*)getElementFromId(i))->setBarColor(SColor(255, 128, 255, 128));
     ((GUIVUMeter*)getElementFromId(i))->setRange(100);
-//    ((GUIVUMeter*)getElementFromId(i))->setValue( ports.getPortHealth(portNum) );
-
-//    wstringstream ss;
-
-//    ss << 75 << L" / " << 100;
-//    ((IGUIStaticText*)getElementFromId(i+1))->setText(ss.str().c_str());
     ((IGUIStaticText*)getElementFromId(i+1))->setTextAlignment( EGUIA_CENTER, EGUIA_CENTER );
   }
 
@@ -170,6 +165,8 @@ void SoftwareMgrWindow::UpdateUIFromModel()
   FCSHORT portCount = ports.getPortCount();
   FCULONG itemID = 0, softwareType = 0;
 
+  PopulateComboBoxes();
+
   for ( FCSHORT i = 0; i < 8; i++ )
   {
     // check if we need to disable any controls
@@ -182,6 +179,37 @@ void SoftwareMgrWindow::UpdateUIFromModel()
       // if its not disabled, lets update the port information
       ports.getSoftwareInfo(i, itemID, softwareType);
       setPortInfo( i, itemID, softwareType, ports.isPortEnabled(i), ports.getPortMaxHealth(i), ports.getPortHealth(i) );
+    }
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void SoftwareMgrWindow::PopulateComboBoxes()
+{
+  wstringstream ss;
+  ItemMgr& itemMgr = m_model.GetItemMgr();
+  vector<ItemMgr::GameItem> vServices;
+  FCULONG itemCount = itemMgr.getServices(vServices);
+  ItemMgr::GameItem gameItem;
+
+  for ( s32 eID = 2; eID <= 16; eID+=2 )
+  {
+    IGUIElement* pCB = getElementFromId(eID);
+
+    if ( pCB->getType() == EGUIET_COMBO_BOX )
+    {
+      ((IGUIComboBox*)pCB)->addItem(L"");
+      for ( FCULONG i = 0; i < itemCount; i++ )
+      {
+        gameItem = vServices.at(i);
+        if ( gameItem.getItem() && gameItem.getCount() > 0 )
+        {
+          ss << gameItem.getItem()->GetName().c_str();
+          ((IGUIComboBox*)pCB)->addItem(ss.str().c_str());
+          ss.str(L"");
+        }
+      }
     }
   }
 }
