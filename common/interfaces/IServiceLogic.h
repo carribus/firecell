@@ -38,6 +38,11 @@ struct IServiceLogic
   virtual const char* GetName() = 0;
 
   /**
+   *  \brief Retrieves the description of the logic object as a string
+   */
+  virtual const char* GetDesc() = 0;
+
+  /**
    *  \brief Release the logic object (frees up memory)
    *
    *  Use this function to release the logic object. The object will be deleted, so make sure your pointers

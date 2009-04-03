@@ -34,7 +34,7 @@
 #define DBQ_LOAD_OBJECT_DATA    "load_object_data"
 
 FCLogicWorld::FCLogicWorld()
-: ServiceLogicBase("FireCell World Service", false)
+: ServiceLogicBase("FC_World", "FireCell World Service", false)
 {
 }
 

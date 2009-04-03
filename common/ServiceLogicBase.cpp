@@ -2,8 +2,9 @@
 #include "PEPacketHelper.h"
 #include "ServiceLogicBase.h"
 
-ServiceLogicBase::ServiceLogicBase(const string& serviceName, bool bHasConsole)
+ServiceLogicBase::ServiceLogicBase(const string& serviceName, const string serviceDesc, bool bHasConsole)
 : m_ServiceName(serviceName)
+, m_ServiceDesc(serviceDesc)
 , m_bHasConsole(bHasConsole)
 {
 }
@@ -21,6 +22,13 @@ ServiceLogicBase::~ServiceLogicBase(void)
 const char* ServiceLogicBase::GetName()
 {
   return m_ServiceName.c_str();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+const char* ServiceLogicBase::GetDesc()
+{
+  return m_ServiceDesc.c_str();
 }
 
 ///////////////////////////////////////////////////////////////////////

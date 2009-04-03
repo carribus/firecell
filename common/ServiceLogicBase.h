@@ -49,13 +49,14 @@ public:
   // the void* param is the optional context data that each derived class will pass in on the FCDatabase::ExecuteJob() call
   typedef void (*DBHANDLERPROC)(DBIResultSet&, void*&);
 
-  ServiceLogicBase(const string& serviceName, bool bHasConsole);
+  ServiceLogicBase(const string& serviceName, const string serviceDesc, bool bHasConsole);
   virtual ~ServiceLogicBase(void);
 
   /*
    *  IServiceLogic implementation
    */
   const char* GetName();
+  const char* GetDesc();
   void HasConsole(bool bHasConsole)               { m_bHasConsole = bHasConsole; }
 
   //
@@ -103,6 +104,7 @@ private:
   void HandleCompletedDBJob(FCDBJob& job);
 
   string m_ServiceName;
+  string m_ServiceDesc;
   bool m_bHasConsole;
 
   // Database related members
