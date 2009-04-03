@@ -24,7 +24,7 @@
 #include "FCLogicAuth.h"
 
 FCLogicAuth::FCLogicAuth(void)
-: ServiceLogicBase("FireCell Authentication Service", false)
+: ServiceLogicBase("FC_AUTH", "FireCell Authentication Service", false)
 {
   pthread_mutex_init(&m_mutexLoggedInAccounts, NULL);
   pthread_mutex_init(&m_mutexSocketToAccount, NULL);

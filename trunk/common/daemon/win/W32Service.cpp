@@ -94,7 +94,7 @@ DWORD CW32Service::Initialise(void* pParam)
 
     pThis->m_pLogic->Start();
     printf("Press 'q' to stop...\n");
-    while ( getch() != 'q' )
+    while ( _getch() != 'q' )
     {
       printf(".");
     }
@@ -274,6 +274,7 @@ bool CW32Service::ISRV_AttachLogic(IServiceLogic* pLogic)
     return false;
 
   SetServiceName( pLogic->GetName() );
+  SetServiceDescription( pLogic->GetDesc() );
   m_pLogic = pLogic;
 
   return true;

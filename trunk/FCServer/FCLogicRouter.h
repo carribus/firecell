@@ -50,7 +50,8 @@ public:
 
   //
   // IServiceLogic implementation
-  const char* GetName()                           { return "FireCell Router Service"; }
+  const char* GetName()                           { return "FC_Router"; }
+  const char* GetDesc()                           { return "FireCell Router Service"; }
   void Free();
   int Start();
   int Stop();

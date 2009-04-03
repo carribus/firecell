@@ -40,9 +40,6 @@ bool DynLogTextfileWriter::startWriter()
   m_file.open( m_filename.c_str(), std::ios_base::app | std::ios_base::out );
   if ( (bResult = m_file.is_open()) )
   {
-    // output a header to the start of the log
-    m_file << "\r\n*** Start of log file!\r\n";
-    m_file.flush();
   }
 
   return bResult;
