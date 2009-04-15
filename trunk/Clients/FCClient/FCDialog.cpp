@@ -219,6 +219,12 @@ bool FCDialog::OnEvent(const SEvent& event)
 					return IGUIElement::OnEvent(event);
 
 				default:
+          {
+            if ( isMyChild(event.GUIEvent.Caller) )
+            {
+              OnUnknownGUIEvent(event.GUIEvent.EventType, event.GUIEvent.Caller->getID(), event.GUIEvent.Element);
+            }
+          }
 					break;
 				}
 			}
