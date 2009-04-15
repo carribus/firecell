@@ -16,6 +16,7 @@ public:
   ~SoftwareMgrWindow(void);
 
   bool OnButtonClicked(s32 id, IGUIButton* pBtn);
+  bool OnUnknownGUIEvent(u32 eventType, s32 id, IGUIElement* pElem);
 
 protected:
 	static void OnOK(void* pCtx);

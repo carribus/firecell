@@ -26,7 +26,8 @@ namespace gui
     enum e_FCGUI_ElementType
     {
       EGUIET_CONSOLE = (EGUIET_ELEMENT+1),        /**<A terminal-like console control */
-      EGUIET_VUMETER                              /**<A VU Meter control */
+      EGUIET_VUMETER,                             /**<A VU Meter control */
+      EGUIET_HYPERLINK                            /**<A Hyperlink control */
     };
 
     FCGUIElementFactory(IGUIEnvironment* env);

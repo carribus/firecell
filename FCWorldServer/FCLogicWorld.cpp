@@ -568,7 +568,6 @@ bool FCLogicWorld::OnCommandForumGetCategories(PEPacket* pPkt, RouterSocket* pSo
 
 	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
 	{
-		// TODO: Create a forum object that can handle these requests, and return required results for this and other forum messages
 		vector<ForumCategory*> arrCategories;
 
 		m_forum.GetCategoriesForPlayer(pPlayer, arrCategories);

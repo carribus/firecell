@@ -209,6 +209,9 @@
 				RelativePath=".\GUIForumThreadReader.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIHyperlink.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIVUMeter.cpp">
 			</File>
 			<File
@@ -395,6 +398,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIForumThreadReader.h">
+			</File>
+			<File
+				RelativePath=".\GUIHyperlink.h">
 			</File>
 			<File
 				RelativePath=".\GUIVUMeter.h">

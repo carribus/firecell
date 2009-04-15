@@ -1,4 +1,5 @@
 #include "GUIConsoleCtrl.h"
+#include "GUIHyperlink.h"
 #include "GUIVUMeter.h"
 #include "FCGUIElementFactory.h"
 
@@ -8,8 +9,9 @@
 
 FCGUIElementFactory::TypeToName FCGUIElementFactory::m_arrTypeToName[] = 
 {
-  { FCGUIElementFactory::EGUIET_CONSOLE, "console" },
-  { FCGUIElementFactory::EGUIET_VUMETER, "vumeter" },
+  { FCGUIElementFactory::EGUIET_CONSOLE,    "console" },
+  { FCGUIElementFactory::EGUIET_VUMETER,    "vumeter" },
+  { FCGUIElementFactory::EGUIET_HYPERLINK,  "hyperlink" },
   { (FCGUIElementFactory::e_FCGUI_ElementType)0, NULL }
 };
 
@@ -50,6 +52,11 @@ IGUIElement* FCGUIElementFactory::addGUIElement(EGUI_ELEMENT_TYPE type, IGUIElem
 
   case  EGUIET_VUMETER:
     pRet = new GUIVUMeter(m_pEnv, core::rect<s32>(0, 0, 100, 10), parent);
+    break;
+
+  case  EGUIET_HYPERLINK:
+    pRet = new GUIHyperlink(m_pEnv, core::rect<s32>(0, 0, 100, 10), parent);
+    break;
 
   default:
     break;
