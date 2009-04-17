@@ -121,6 +121,7 @@ protected:
 	virtual bool OnListBoxSelectedAgain(s32 id, IGUIListBox* pLB) { return false; }
 	virtual bool OnScrollBarChanged(s32 id, IGUIScrollBar* pSB) { return false; }
 	virtual bool OnSpinBoxChanged(s32 id, IGUISpinBox* pSB) { return false; }
+  virtual bool OnMenuItemSelected(s32 selectedItem, IGUIContextMenu* pMenu) { return false; }
   virtual bool OnUnknownGUIEvent(u32 eventType, s32 id, IGUIElement* pElem) { return false; }
 
   void OnOK();
