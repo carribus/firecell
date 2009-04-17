@@ -6,59 +6,72 @@
 #include "ItemMgr.h"
 #include "SoftwareMgrWindow.h"
 
+#define CTRLID_PORT_1   2
+#define CTRLID_PORT_2   4
+#define CTRLID_PORT_3   6
+#define CTRLID_PORT_4   8
+#define CTRLID_PORT_5   10
+#define CTRLID_PORT_6   12
+#define CTRLID_PORT_7   14
+#define CTRLID_PORT_8   16
+
+// menu item definitions
+#define MENUITEM_INSTALL_SOFTWARE         1001
+#define MENUITEM_UNINSTALL_SOFTWARE       1002
+
 DECLARE_FORM_ELEMENTS(SoftwareMgrWindow)
   FORM_ELEMENT("staticText"			, 1							, 10			, 40			, 70			, 25			, L"")
 //  FORM_ELEMENT("comboBox"				, 2							, 85			, 40			, 250			, 25			, NULL)
-  FORM_ELEMENT("hyperlink"			, 2							, 85			, 44			, 250			, 25			, L"Configure Port")
+  FORM_ELEMENT("hyperlink"			, CTRLID_PORT_1 , 85			, 44			, 250			, 20			, L"Configure Port")
   FORM_ELEMENT("button"         , 50            , 340     , 40      , 25      , 25      , L"")
   FORM_ELEMENT("vumeter"        , 51            , 380     , 40      , 125     , 10      , L"")
   FORM_ELEMENT("staticText"     , 52            , 380     , 53      , 125     , 12      , L"")
 
   FORM_ELEMENT("staticText"		  , 3							, 10			, 70			, 70			, 25			, L"")
 //  FORM_ELEMENT("comboBox"			  , 4							, 85			, 70			, 250     , 25			, NULL)
-  FORM_ELEMENT("hyperlink"			, 4							, 85			, 74			, 250     , 25			, L"Configure Port")
+  FORM_ELEMENT("hyperlink"			, CTRLID_PORT_2 , 85			, 74			, 250     , 20			, L"Configure Port")
   FORM_ELEMENT("button"         , 53            , 340     , 70      , 25      , 25      , L"")
   FORM_ELEMENT("vumeter"        , 54            , 380     , 70      , 125     , 10      , L"")
   FORM_ELEMENT("staticText"     , 55            , 380     , 83      , 125     , 12      , L"")
 
   FORM_ELEMENT("staticText"		  , 5							, 10			, 100			, 70			, 25			, L"")
 //  FORM_ELEMENT("comboBox"			  , 6							, 85			, 100			, 250     , 25			, NULL)
-  FORM_ELEMENT("hyperlink"  	  , 6							, 85			, 104			, 250     , 25			, L"Configure Port")
+  FORM_ELEMENT("hyperlink"  	  , CTRLID_PORT_3 , 85			, 104			, 250     , 20			, L"Configure Port")
   FORM_ELEMENT("button"         , 56            , 340     , 100     , 25      , 25      , L"")
   FORM_ELEMENT("vumeter"        , 57            , 380     , 100     , 125     , 10      , L"")
   FORM_ELEMENT("staticText"     , 58            , 380     , 113     , 125     , 12      , L"")
 
   FORM_ELEMENT("staticText"		  , 7							, 10			, 130			, 70			, 25			, L"")
 //  FORM_ELEMENT("comboBox"			  , 8							, 85			, 130			, 250     , 25			, NULL)
-  FORM_ELEMENT("hyperlink"		  , 8							, 85			, 134			, 250     , 25			, L"Configure Port")
+  FORM_ELEMENT("hyperlink"		  , CTRLID_PORT_4 , 85			, 134			, 250     , 20			, L"Configure Port")
   FORM_ELEMENT("button"         , 59            , 340     , 130     , 25      , 25      , L"")
   FORM_ELEMENT("vumeter"        , 60            , 380     , 130     , 125     , 10      , L"")
   FORM_ELEMENT("staticText"     , 61            , 380     , 143     , 125     , 12      , L"")
 
   FORM_ELEMENT("staticText"		  , 9							, 10			, 160			, 70			, 25			, L"")
 //  FORM_ELEMENT("comboBox"			  , 10						, 85			, 160			, 250     , 25			, NULL)
-  FORM_ELEMENT("hyperlink"		  , 10						, 85			, 164			, 250     , 25			, L"Configure Port")
+  FORM_ELEMENT("hyperlink"		  , CTRLID_PORT_5 , 85			, 164			, 250     , 20			, L"Configure Port")
   FORM_ELEMENT("button"         , 62            , 340     , 160     , 25      , 25      , L"")
   FORM_ELEMENT("vumeter"        , 63            , 380     , 160     , 125     , 10      , L"")
   FORM_ELEMENT("staticText"     , 64            , 380     , 173     , 125     , 12      , L"")
 
   FORM_ELEMENT("staticText"		  , 11						, 10			, 190			, 70			, 25			, L"")
 //  FORM_ELEMENT("comboBox"			  , 12						, 85			, 190			, 250     , 25			, NULL)
-  FORM_ELEMENT("hyperlink"		  , 12						, 85			, 194			, 250     , 25			, L"Configure Port")
+  FORM_ELEMENT("hyperlink"		  , CTRLID_PORT_6 , 85			, 194			, 250     , 20			, L"Configure Port")
   FORM_ELEMENT("button"         , 65            , 340     , 190     , 25      , 25      , L"")
   FORM_ELEMENT("vumeter"        , 66            , 380     , 190     , 125     , 10      , L"")
   FORM_ELEMENT("staticText"     , 67            , 380     , 203     , 125     , 12      , L"")
 
   FORM_ELEMENT("staticText"		  , 13						, 10			, 220			, 70			, 25			, L"")
 //  FORM_ELEMENT("comboBox"			  , 14						, 85			, 220			, 250     , 25			, NULL)
-  FORM_ELEMENT("hyperlink"		  , 14						, 85			, 224			, 250     , 25			, L"Configure Port")
+  FORM_ELEMENT("hyperlink"		  , CTRLID_PORT_7 , 85			, 224			, 250     , 20			, L"Configure Port")
   FORM_ELEMENT("button"         , 68            , 340     , 220     , 25      , 25      , L"")
   FORM_ELEMENT("vumeter"        , 69            , 380     , 220     , 125     , 10      , L"")
   FORM_ELEMENT("staticText"     , 70            , 380     , 233     , 125     , 12      , L"")
 
   FORM_ELEMENT("staticText"		  , 15						, 10			, 250			, 70			, 25			, L"")
 //  FORM_ELEMENT("comboBox"			  , 16						, 85			, 250			, 250     , 25			, NULL)
-  FORM_ELEMENT("hyperlink"		  , 16						, 85			, 254			, 250     , 25			, L"Configure Port")
+  FORM_ELEMENT("hyperlink"		  , CTRLID_PORT_8 , 85			, 254			, 250     , 20			, L"Configure Port")
   FORM_ELEMENT("button"         , 71            , 340     , 250     , 25      , 25      , L"")
   FORM_ELEMENT("vumeter"        , 72            , 380     , 250     , 125     , 10      , L"")
   FORM_ELEMENT("staticText"     , 73            , 380     , 263     , 125     , 12      , L"")
@@ -138,12 +151,57 @@ bool SoftwareMgrWindow::OnButtonClicked(s32 id, IGUIButton* pBtn)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool SoftwareMgrWindow::OnMenuItemSelected(s32 selectedItem, IGUIContextMenu* pMenu)
+{
+  if ( !pMenu )
+    return false;
+
+  s32 cmdID = pMenu->getItemCommandId(selectedItem);
+
+  switch ( cmdID )
+  {
+  case  MENUITEM_INSTALL_SOFTWARE:
+    break;
+
+  case  MENUITEM_UNINSTALL_SOFTWARE:
+    break;
+
+  default:
+    break;
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool SoftwareMgrWindow::OnUnknownGUIEvent(u32 eventType, s32 id, IGUIElement* pElem)
 {
   switch ( eventType )
   {
   case  EGET_HYPERLINK_CLICKED:
     {
+      s32 id = pElem->getID();
+      FCSHORT portNum = (FCSHORT)id/2 - 1;
+
+      switch ( id )
+      {
+      case  CTRLID_PORT_1:
+      case  CTRLID_PORT_2:
+      case  CTRLID_PORT_3:
+      case  CTRLID_PORT_4:
+      case  CTRLID_PORT_5:
+      case  CTRLID_PORT_6:
+      case  CTRLID_PORT_7:
+      case  CTRLID_PORT_8:
+        {
+          popupPortMenu(portNum);
+        }
+        break;
+
+      default:
+        break;
+      }
     }
     break;
 
@@ -212,7 +270,7 @@ void SoftwareMgrWindow::UpdateUIFromModel()
 }
 
 ///////////////////////////////////////////////////////////////////////
-
+/*
 void SoftwareMgrWindow::PopulateComboBoxes()
 {
   wstringstream ss;
@@ -241,14 +299,14 @@ void SoftwareMgrWindow::PopulateComboBoxes()
     }
   }
 }
-
+*/
 ///////////////////////////////////////////////////////////////////////
 
 void SoftwareMgrWindow::enablePort(FCSHORT port, bool bEnable)
 {
   // Label
   getElementFromId(port*2+1)->setVisible(bEnable);
-  // Combo Box
+  // hyperlink
   getElementFromId(port*2+2)->setVisible(bEnable);
   // Enabler Button
   getElementFromId(port*3+50)->setVisible(bEnable);
@@ -271,4 +329,31 @@ void SoftwareMgrWindow::setPortInfo(FCSHORT port, FCULONG itemID, FCULONG softwa
   ((GUIVUMeter*)getElementFromId(port*3+51))->setValue( health );
   ss << health << L" / " << maxHealth;
   ((IGUIStaticText*)getElementFromId(port*3+52))->setText(ss.str().c_str());
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void SoftwareMgrWindow::popupPortMenu(FCSHORT portNum)
+{
+  NetworkPorts& ports = m_model.GetPlayer()->GetComputer().GetNetworkPorts();
+  FCULONG itemID, softwareType;
+  IGUIContextMenu* pMenu = NULL;
+  core::rect<s32> r = getElementFromId(portNum*2+2)->getRelativePosition();
+
+  // get information on the port
+  ports.getSoftwareInfo(portNum, itemID, softwareType);
+
+	r.UpperLeftCorner.Y = r.LowerRightCorner.Y;
+	r.LowerRightCorner.X = r.UpperLeftCorner.X + 200;
+	r.LowerRightCorner.Y = r.UpperLeftCorner.Y + 300;
+ 
+  pMenu = m_pEnv->addContextMenu(r, this);
+  pMenu->addItem(L"Install Software", MENUITEM_INSTALL_SOFTWARE);
+  pMenu->addItem(L"Uninstall Software", MENUITEM_UNINSTALL_SOFTWARE, itemID > 0);
+
+	r.LowerRightCorner.X += 10;
+  r.UpperLeftCorner.X += 10;
+  pMenu->setRelativePosition(r);
+
+  m_pEnv->setFocus(pMenu);
 }

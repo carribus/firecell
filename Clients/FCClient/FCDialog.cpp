@@ -218,6 +218,14 @@ bool FCDialog::OnEvent(const SEvent& event)
 					// do not interfere with children being removed
 					return IGUIElement::OnEvent(event);
 
+        case EGET_MENU_ITEM_SELECTED:
+          {
+            IGUIContextMenu* pMenu = (IGUIContextMenu*)event.GUIEvent.Caller;
+            s32 selItem = pMenu->getSelectedItem();
+            return OnMenuItemSelected(selItem, pMenu);
+          }
+          break;
+
 				default:
           {
             if ( isMyChild(event.GUIEvent.Caller) )
