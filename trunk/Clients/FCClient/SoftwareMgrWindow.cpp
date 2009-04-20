@@ -1,5 +1,7 @@
 #include <sstream>
 #include "../common/ResourceManager.h"
+#include "FCController.h"
+#include "FCViewEvent.h"
 #include "clientstrings.h"
 #include "GUIHyperlink.h"
 #include "GUIVUMeter.h"
@@ -16,8 +18,8 @@
 #define CTRLID_PORT_8   16
 
 // menu item definitions
-#define MENUITEM_INSTALL_SOFTWARE         1001
-#define MENUITEM_UNINSTALL_SOFTWARE       1002
+#define MENUITEM_INSTALL_SOFTWARE         1000
+#define MENUITEM_UNINSTALL_SOFTWARE       1001
 
 DECLARE_FORM_ELEMENTS(SoftwareMgrWindow)
   FORM_ELEMENT("staticText"			, 1							, 10			, 40			, 70			, 25			, L"")
@@ -88,6 +90,7 @@ SoftwareMgrWindow::SoftwareMgrWindow(IDesktop* pDesktop, FCModel& model, IGUIEnv
 : FCDialog(pEnv, pParent, caption, true, id, rect<s32>(0, 0, 530, 340))
 , m_model(model)
 , m_pDesktop(pDesktop)
+, m_pController(NULL)
 {
   NetworkPorts& ports = model.GetPlayer()->GetComputer().GetNetworkPorts();
   FCSHORT portNum = 0, portCount = ports.getPortCount();
@@ -156,18 +159,33 @@ bool SoftwareMgrWindow::OnMenuItemSelected(s32 selectedItem, IGUIContextMenu* pM
   if ( !pMenu )
     return false;
 
-  s32 cmdID = pMenu->getItemCommandId(selectedItem);
-
-  switch ( cmdID )
+  if ( m_pController )
   {
-  case  MENUITEM_INSTALL_SOFTWARE:
-    break;
+    s32 cmdID = pMenu->getItemCommandId(selectedItem);
 
-  case  MENUITEM_UNINSTALL_SOFTWARE:
-    break;
+    switch ( cmdID )
+    {
+    case  MENUITEM_INSTALL_SOFTWARE:
+      {
+        stMenuItem menuItem = m_menuItems[selectedItem];
+        ItemMgr::GameItem item;
+        FCViewEventInstallSoftware e(menuItem.itemID, menuItem.targetPort);
+        m_pController->OnViewEvent(e);
+      }
+      break;
 
-  default:
-    break;
+    case  MENUITEM_UNINSTALL_SOFTWARE:
+      {
+        // uninstall a port here
+        stMenuItem menuItem = m_menuItems[m_menuItems.size()-1];
+        FCViewEvent e(VE_UninstallSoftware, menuItem.targetPort);
+        m_pController->OnViewEvent(e);
+      }
+      break;
+
+    default:
+      break;
+    }
   }
 
   return true;
@@ -335,10 +353,21 @@ void SoftwareMgrWindow::setPortInfo(FCSHORT port, FCULONG itemID, FCULONG softwa
 
 void SoftwareMgrWindow::popupPortMenu(FCSHORT portNum)
 {
+  ItemMgr& itemMgr = FCModel::instance().GetItemMgr();
   NetworkPorts& ports = m_model.GetPlayer()->GetComputer().GetNetworkPorts();
+  std::vector<ItemMgr::GameItem> services;
+  std::wstringstream ss;
   FCULONG itemID, softwareType;
-  IGUIContextMenu* pMenu = NULL;
+  IGUIContextMenu* pMenu = NULL, *pSubMenu = NULL;
+  u32 menuIdx = 0;
+  stMenuItem menuItem;
   core::rect<s32> r = getElementFromId(portNum*2+2)->getRelativePosition();
+
+  // clear the menu item vector
+  m_menuItems.clear();
+
+  // get all service items available to the player
+  itemMgr.getServices(services);
 
   // get information on the port
   ports.getSoftwareInfo(portNum, itemID, softwareType);
@@ -348,8 +377,32 @@ void SoftwareMgrWindow::popupPortMenu(FCSHORT portNum)
 	r.LowerRightCorner.Y = r.UpperLeftCorner.Y + 300;
  
   pMenu = m_pEnv->addContextMenu(r, this);
-  pMenu->addItem(L"Install Software", MENUITEM_INSTALL_SOFTWARE);
+  menuIdx = pMenu->addItem(L"Install Software", -1, true, true);
+  if ( (pSubMenu = pMenu->getSubMenu(menuIdx)) )
+  {
+    std::vector<ItemMgr::GameItem>::iterator it = services.begin();
+    std::vector<ItemMgr::GameItem>::iterator limit = services.end();
+
+    for ( ; it != limit; ++it )
+    {
+      Item* pItem = it->getItem();
+      // create the menu item's text
+      ss << pItem->GetName().c_str();
+      // create the menuitem data object
+      menuItem.targetPort = portNum;
+      menuItem.itemID = pItem->GetID();
+      menuItem.menuIndex = pSubMenu->addItem( ss.str().c_str(), 
+                                              MENUITEM_INSTALL_SOFTWARE );
+      // add the menuitem data object to our vector
+      m_menuItems.push_back(menuItem);
+
+      ss.str(L"");
+    }
+  }
   pMenu->addItem(L"Uninstall Software", MENUITEM_UNINSTALL_SOFTWARE, itemID > 0);
+  memset(&menuItem, 0, sizeof(menuItem));
+  menuItem.targetPort = portNum;
+  m_menuItems.push_back(menuItem);
 
 	r.LowerRightCorner.X += 10;
   r.UpperLeftCorner.X += 10;

@@ -7,6 +7,8 @@
 #include "FCDialog.h"
 #include "IDesktop.h"
 
+class FCController;
+
 class SoftwareMgrWindow : public FCDialog
 {
   DEFINE_IRRLICHT_FORM();
@@ -18,6 +20,8 @@ public:
   bool OnButtonClicked(s32 id, IGUIButton* pBtn);
   bool OnMenuItemSelected(s32 selectedItem, IGUIContextMenu* pMenu);
   bool OnUnknownGUIEvent(u32 eventType, s32 id, IGUIElement* pElem);
+
+  void setController(FCController* pController)                         { m_pController = pController; }
 
 protected:
 	static void OnOK(void* pCtx);
@@ -41,6 +45,16 @@ private:
   FCModel&                m_model;
   IrrlichtDevice*         m_pDevice;
   IDesktop*               m_pDesktop;
+  FCController*           m_pController;
+
+  struct stMenuItem
+  {
+    u32 menuIndex;
+    FCSHORT targetPort;
+    FCULONG itemID;
+  };
+  typedef std::vector<stMenuItem> MenuItemVector;
+  MenuItemVector          m_menuItems;
 
 };
 

@@ -1360,6 +1360,30 @@ void FCModel::MissionAccept(FCULONG mission_id)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCModel::InstallSoftware(FCSHORT portNum, FCULONG itemID)
+{
+  if ( !m_pCharacter )
+    return;
+
+  NetworkPorts& ports = m_pCharacter->GetComputer().GetNetworkPorts();
+
+  // TODO: Finish the installation of software logic
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::UninstallSoftware(FCSHORT portNum)
+{
+  if ( !m_pCharacter )
+    return;
+
+  NetworkPorts& ports = m_pCharacter->GetComputer().GetNetworkPorts();
+
+  // TODO: Finish the uninstallation of software logic
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCModel::LoadResources()
 {
   // load the client strings

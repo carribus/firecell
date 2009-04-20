@@ -171,5 +171,21 @@ void FCController::OnViewEvent(FCViewEvent& event)
 	case	VE_MissionAccepted:
 		m_pModel->MissionAccept( (FCULONG) (event.GetData() & 0xFFFFFFFF) );
 		break;
+
+  //
+  // Software Events
+  case  VE_InstallSoftware:
+    {
+      FCViewEventInstallSoftware* pEv = (FCViewEventInstallSoftware*)&event;
+      m_pModel->InstallSoftware( pEv->getPortNum, pEv->getItemID() );
+    }
+    break;
+
+  case  VE_UninstallSoftware:
+    m_pModel->UninstallSoftware( (FCSHORT)(event.GetData() & 0xFFFF));
+    break;
+
+  case  VE_EnablePort:
+    break;
 	}
 }
