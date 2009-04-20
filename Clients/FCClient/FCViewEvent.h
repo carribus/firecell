@@ -23,7 +23,11 @@ enum e_FCViewEventType
   VE_ForumNewThread,
   VE_ForumThreadSelected,
 	/* Mission Events */
-	VE_MissionAccepted
+	VE_MissionAccepted,
+  /* Software Events */
+  VE_InstallSoftware,
+  VE_UninstallSoftware,
+  VE_EnablePort
 };
 
 /////////////////////////////////////////////////////////////////
@@ -112,4 +116,24 @@ private:
   FCULONG                 m_thread_id;
 };
 
+/////////////////////////////////////////////////////////////////
+
+class FCViewEventInstallSoftware : public FCViewEvent
+{
+public:
+  FCViewEventInstallSoftware(FCULONG itemID, FCSHORT portNum)
+    : FCViewEvent(VE_InstallSoftware)
+    , m_itemID(itemID)
+    , m_portNum(portNum)
+  {
+  }
+
+  FCULONG getItemID()                       { return m_itemID; }
+  FCSHORT getPortNum()                      { return m_portNum; }
+
+private:
+
+  FCULONG m_itemID;
+  FCSHORT m_portNum;
+};
 #endif//_FCVIEWEVENT_H_

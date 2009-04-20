@@ -190,6 +190,9 @@ public:
   void ForumGetThreadDetails(FCULONG category_id, FCULONG thread_id);
 	/* Mission methods */
 	void MissionAccept(FCULONG mission_id);
+  /* Software methods */
+  void InstallSoftware(FCSHORT portNum, FCULONG itemID);
+  void UninstallSoftware(FCSHORT portNum);
 
   vector<Character>& GetCharacters()               { return m_characters; }
   map<FCULONG, Country>& GetCountries()            { return m_countries; }
