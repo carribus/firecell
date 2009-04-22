@@ -177,7 +177,7 @@ void FCController::OnViewEvent(FCViewEvent& event)
   case  VE_InstallSoftware:
     {
       FCViewEventInstallSoftware* pEv = (FCViewEventInstallSoftware*)&event;
-      m_pModel->InstallSoftware( pEv->getPortNum, pEv->getItemID() );
+      m_pModel->InstallSoftware( pEv->getPortNum(), pEv->getItemID() );
     }
     break;
 

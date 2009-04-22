@@ -301,6 +301,37 @@ void FCServerObj::SendMissionAccept(FCULONG mission_id)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCServerObj::SendInstallSoftwareRequest(FCSHORT portNum, FCULONG itemID)
+{
+  PEPacket pkt;
+  __FCPKT_SOFTWARE_INSTALL d;
+
+  d.itemID = itemID;
+  d.portNum = portNum;
+
+	PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_SOFTWARE_INSTALL, ST_World);
+	PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+	SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCServerObj::SendUninstallSoftwareRequest(FCSHORT portNum)
+{
+  PEPacket pkt;
+  __FCPKT_SOFTWARE_UNINSTALL d;
+
+  d.portNum = portNum;
+
+	PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_SOFTWARE_UNINSTALL, ST_World);
+	PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+	SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCServerObj::SendPacket(PEPacket& pkt)
 {
   FCSHORT msgID = 0;

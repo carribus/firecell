@@ -340,6 +340,9 @@
 				RelativePath=".\DlgNewThread.h">
 			</File>
 			<File
+				RelativePath="..\..\common\fcconstants.h">
+			</File>
+			<File
 				RelativePath=".\FCController.h">
 			</File>
 			<File

@@ -1365,9 +1365,7 @@ void FCModel::InstallSoftware(FCSHORT portNum, FCULONG itemID)
   if ( !m_pCharacter )
     return;
 
-  NetworkPorts& ports = m_pCharacter->GetComputer().GetNetworkPorts();
-
-  // TODO: Finish the installation of software logic
+  m_server.SendInstallSoftwareRequest(portNum, itemID);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -1377,9 +1375,7 @@ void FCModel::UninstallSoftware(FCSHORT portNum)
   if ( !m_pCharacter )
     return;
 
-  NetworkPorts& ports = m_pCharacter->GetComputer().GetNetworkPorts();
-
-  // TODO: Finish the uninstallation of software logic
+  m_server.SendUninstallSoftwareRequest(portNum);
 }
 
 ///////////////////////////////////////////////////////////////////////
