@@ -38,6 +38,10 @@ public:
 	// mission commands
 	void SendMissionAccept(FCULONG mission_id);
 
+  // software commands
+  void SendInstallSoftwareRequest(FCSHORT portNum, FCULONG itemID);
+  void SendUninstallSoftwareRequest(FCSHORT portNum);
+
   void SetSocket(BaseSocket* pSock)                             { m_pSock = pSock; }
 
 private:

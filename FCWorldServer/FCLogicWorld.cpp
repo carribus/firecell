@@ -300,6 +300,21 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
 		break;
 
   /*
+   *  Software Messages
+   */
+  case  FCMSG_SOFTWARE_INSTALL:
+    {
+      bHandled = OnCommandSoftwareInstall(pPkt, pRouter, clientSock);
+    }
+    break;
+
+  case  FCMSG_SOFTWARE_UNINSTALL:
+    {
+      bHandled = OnCommandSoftwareUninstall(pPkt, pRouter, clientSock);
+    }
+    break;
+
+  /*
    * Inter-service Messages
    */
   case  FCSMSG_CLIENT_DISCONNECT:
@@ -726,6 +741,44 @@ bool FCLogicWorld::OnCommandMissionAccept(PEPacket* pPkt, RouterSocket* pSocket,
 	}
 
 	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandSoftwareInstall(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCPKT_SOFTWARE_INSTALL d;
+  size_t dataLen = 0;
+  Player* pPlayer = NULL;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+  {
+    Computer&
+    NetworkPorts& ports = pPlayer->GetComputer().GetNetworkPorts();
+    std::map<FCULONG, PlayerItem>& items = pPlayer->GetItems();
+    std::map<FCULONG, PlayerItem>::iterator it;
+
+    // find the item and verify that it can be installed on the port
+    
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandSoftwareUninstall(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCPKT_SOFTWARE_UNINSTALL d;
+  size_t dataLen = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////

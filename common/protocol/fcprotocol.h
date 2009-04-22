@@ -26,22 +26,13 @@
 #define _FCPROTOCOL_H_
 
 #include "../fctypes.h"
+#include "../fcconstants.h"
 // ensure 1 byte packing
 #pragma pack(push, 1)
 
 const FCBYTE      FCPKT_COMMAND = 1;
 const FCBYTE      FCPKT_RESPONSE = 2;
 const FCBYTE      FCPKT_ERROR = 3;
-
-enum ServiceType
-{
-  ST_None,
-  ST_Router,
-  ST_Auth,
-  ST_World,
-  ST_Community,
-  ST_Client       // this should always be the last in the enum
-};
 
 #include "fcserverprotocol.h"
 
@@ -132,13 +123,6 @@ struct __FCPKT_LOGIN
 {
   char username[65];
   char password[65];
-};
-
-enum e_LoginStatus
-{
-  LoginFailed = 0,
-  LoginSuccess = 1,
-  LoginAccountLoggedInAlready = 2
 };
 
 /**
@@ -344,17 +328,6 @@ const FCSHORT FCMSG_GET_DESKTOP_OPTIONS         = 40;
 struct __FCPKT_GET_DESKTOP_OPTIONS
 {
   FCUINT character_id;
-};
-
-enum DesktopOptionType
-{
-  DOT_Forum = 1,
-  DOT_News,
-  DOT_Email,
-  DOT_Console,
-  DOT_Bank,
-  DOT_Chat,
-  DOT_HackingTools
 };
 
 /**
@@ -628,6 +601,42 @@ const FCSHORT FCMSG_MISSION_COMPLETE		        = 501;
 struct __FCPKT_MISSION_COMPLETE
 {
   FCULONG mission_id;
+};
+
+/*
+ *  SOFTWARE module specific commands
+ *
+ *  These messages are specifically for software (un)installation
+ */
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_SOFTWARE_INSTALL		        = 550;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_SOFTWARE_INSTALL
+{
+  FCSHORT portNum;
+  FCULONG itemID;
+};
+
+struct __FCPKT_SOFTWARE_INSTALL_RESP
+{
+  FCSHORT portNum;
+  FCULONG itemID;
+  e_SoftwareInstallResult result;
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_SOFTWARE_UNINSTALL		      = 551;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_SOFTWARE_UNINSTALL
+{
+  FCSHORT portNum;
+};
+
+struct __FCPKT_SOFTWARE_UNINSTALL_RESP
+{
+  FCSHORT portNum;
+  bool bSuccess;
 };
 
 /*
