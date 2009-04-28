@@ -75,6 +75,20 @@ CREATE TABLE `fc_charactermissions` (
 
 /*Data for the table `fc_charactermissions` */
 
+/*Table structure for table `fc_characterports` */
+
+DROP TABLE IF EXISTS `fc_characterports`;
+
+CREATE TABLE `fc_characterports` (
+  `character_id` bigint(20) unsigned NOT NULL COMMENT 'the character''s id',
+  `port_number` int(11) NOT NULL COMMENT 'a character''s specific port ',
+  `item_id` bigint(20) default NULL COMMENT 'the service attached to the port (if none, then null)',
+  `enabled` smallint(6) NOT NULL default '0' COMMENT 'enabled port flag',
+  PRIMARY KEY  (`character_id`,`port_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_characterports` */
+
 /*Table structure for table `fc_characters` */
 
 DROP TABLE IF EXISTS `fc_characters`;

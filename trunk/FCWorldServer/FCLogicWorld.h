@@ -97,6 +97,7 @@ private:
   /*
    *  DB Job Handlers
    */
+  void RegisterDBHandlers();
   static void OnDBJob_LoadItemTypes(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadItemDefs(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadObjectData(DBIResultSet& resultSet, void*& pContext);
@@ -108,6 +109,11 @@ private:
   static void OnDBJob_LoadMissions(DBIResultSet& resultSet, void*& pContext);
 	static void OnDBJob_LoadForumCategories(DBIResultSet& resultSet, void*& pContext);
 	static void OnDBJob_LoadForumPosts(DBIResultSet& resultSet, void*& pContext);
+
+  /*
+   *  Data Persistence
+   */
+  void PersistPlayerState(Player* pPlayer);
 
   /*
    *  Helper functions
