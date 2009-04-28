@@ -17,6 +17,8 @@ public:
   SoftwareMgrWindow(IDesktop* pDesktop, FCModel& model, IGUIEnvironment* pEnv, wchar_t* caption, IGUIElement* pParent, s32 id);
   ~SoftwareMgrWindow(void);
 
+  void Update();
+
   bool OnButtonClicked(s32 id, IGUIButton* pBtn);
   bool OnMenuItemSelected(s32 selectedItem, IGUIContextMenu* pMenu);
   bool OnUnknownGUIEvent(u32 eventType, s32 id, IGUIElement* pElem);

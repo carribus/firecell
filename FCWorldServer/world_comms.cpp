@@ -768,6 +768,50 @@ void SendMissionComplete(FCULONG mission_id, BaseSocket* pRouter, FCSOCKET clien
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* Software Installation send methods */
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void SendSoftwareInstallResponse(FCULONG itemID, FCSHORT portNum, bool bSuccess, BaseSocket* pRouter, FCSOCKET clientSocket)
+{
+  PEPacket* pkt = new PEPacket;
+  __FCPKT_SOFTWARE_INSTALL_RESP d;
+
+  d.itemID = itemID;
+  d.portNum = portNum;
+  d.bResult = bSuccess;
+
+  // send the packet
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_SOFTWARE_INSTALL, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, 
+                                (void*)&d, 
+                                sizeof(d));
+
+  // send response to Client
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void SendSoftwareUninstallResponse(FCSHORT portNum, bool bSuccess, BaseSocket* pRouter, FCSOCKET clientSocket)
+{
+  PEPacket* pkt = new PEPacket;
+  __FCPKT_SOFTWARE_UNINSTALL_RESP d;
+
+  d.portNum = portNum;
+  d.bResult = bSuccess;
+
+  // send the packet
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_SOFTWARE_UNINSTALL, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, 
+                                (void*)&d, 
+                                sizeof(d));
+
+  // send response to Client
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* Miscellaneous send methods */
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

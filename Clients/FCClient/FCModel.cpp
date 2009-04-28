@@ -442,6 +442,21 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  /*
+   *  Software Installation Responses
+   */
+  case  FCMSG_SOFTWARE_INSTALL:
+    {
+      bHandled = OnResponseSoftwareInstall(pPkt, pSocket);
+    }
+    break;
+
+  case  FCMSG_SOFTWARE_UNINSTALL:
+    {
+      bHandled = OnResponseSoftwareUninstall(pPkt, pSocket);
+    }
+    break;
+
   default:
 
     if ( !bHandled )
@@ -724,6 +739,7 @@ bool FCModel::OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* pSocke
     if ( d.computer.network_ports[i].enabled )
       ports.enablePort(portnum);
     ports.setPortHealth(portnum, d.computer.network_ports[i].portHealth);
+    ports.setPortMaxHealth(portnum, d.computer.network_ports[i].portMaxHealth);
   }
 
   m_server.RequestDesktopOptions(m_pCharacter->GetID());
@@ -1057,6 +1073,79 @@ bool FCModel::OnResponseMissionAccepted(PEPacket* pPkt, BaseSocket* pSocket)
   }
 
   delete [] (FCBYTE*)d;
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseSoftwareInstall(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_SOFTWARE_INSTALL_RESP d;
+  size_t dataLen = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+
+  if ( d.bResult )
+  {
+    ItemMgr::GameItem item;
+    if ( m_itemMgr.getItem(d.itemID, item) )
+    {
+      ItemSoftware* pItem = (ItemSoftware*)item.getItem();
+
+      if ( pItem )
+      {
+        NetworkPorts& ports = m_pCharacter->GetComputer().GetNetworkPorts();
+
+        item.setCount( item.getCount()-1 );
+        ports.installPort(d.portNum, pItem->GetSoftwareType(), d.itemID);
+
+        FireEvent(FCME_Software_SoftwareInstallSuccess, (void*)d.portNum);
+      }
+    }
+  }
+  else
+  {
+    FireEvent(FCME_Software_SoftwareInstallFail, (void*)d.itemID);
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseSoftwareUninstall(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_SOFTWARE_UNINSTALL_RESP d;
+  size_t dataLen = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+
+  if ( d.bResult )
+  {
+    ItemMgr::GameItem item;
+    FCULONG itemID, softwareType;
+    NetworkPorts& ports = m_pCharacter->GetComputer().GetNetworkPorts();
+
+    ports.getSoftwareInfo(d.portNum, itemID, softwareType);
+    ports.uninstallPort(d.portNum);
+    if ( m_itemMgr.getItem(itemID, item) )
+    {
+      item.setCount( item.getCount() + 1 );
+    }
+    else
+    {
+      // the item doesn't exist in the item manager
+    }
+
+    FireEvent(FCME_Software_SoftwareUninstallSuccess, (void*)d.portNum);
+  }
+  else
+  {
+    FireEvent(FCME_Software_SoftwareUninstallFail, (void*)d.portNum);
+  }
 
   return true;
 }

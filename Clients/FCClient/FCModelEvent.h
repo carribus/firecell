@@ -16,6 +16,11 @@ enum e_FCEventType
 	/* Mission Events */
 	FCME_Mission_MissionAccepted,
 	FCME_Mission_Completed,
+  /* Software Events */
+  FCME_Software_SoftwareInstallSuccess,
+  FCME_Software_SoftwareInstallFail,
+  FCME_Software_SoftwareUninstallSuccess,
+  FCME_Software_SoftwareUninstallFail,
 	/* XP Event */
 	FCME_XP_Gained
 };

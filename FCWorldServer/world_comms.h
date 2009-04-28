@@ -172,6 +172,26 @@ void SendMissionAcceptedResponse(Player* pPlayer, FCULONG mission_id, bool bSucc
 void SendMissionComplete(FCULONG mission_id, BaseSocket* pRouter, FCSOCKET clientSocket);
 
 /*************************************************************************************************************** 
+ *  SOFTWARE INSTALLATION SEND METHODS
+ ***************************************************************************************************************/
+
+/**
+ *  @ingroup worldcomms
+ *  @brief This function sends the result of a player attempting to install software to a specific port. The packet sent is: __FCPKT_SOFTWARE_INSTALL_RESP
+ *  @param itemID The ID of the item that was attempted to be installed
+ *  @param portNum The port number that the installation was attempted on
+ *  @param bSuccess The success flag (true == success, false == failure)
+ */
+void SendSoftwareInstallResponse(FCULONG itemID, FCSHORT portNum, bool bSuccess, BaseSocket* pRouter, FCSOCKET clientSocket);
+
+/**
+ *  @ingroup worldcomms
+ *  @brief This function sends the result of a player attempting to uninstall software from a specific port. The packet sent is: __FCPKT_SOFTWARE_UNINSTALL_RESP
+ *  @param portNum The port number that the uninstall was attempted on
+ */
+void SendSoftwareUninstallResponse(FCSHORT portNum, bool bSuccess, BaseSocket* pRouter, FCSOCKET clientSocket);
+
+/*************************************************************************************************************** 
  *  MISCELLANEOUS SEND METHODS
  ***************************************************************************************************************/
 

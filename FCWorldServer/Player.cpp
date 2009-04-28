@@ -275,11 +275,16 @@ void Player::AddItem(FCULONG itemID)
 
 bool Player::HasItem(FCULONG itemID)
 {
+  bool bResult = false;
+
   m_itemLock.LockForRead();
 	ItemMap::iterator it = m_mapItems.find(itemID);
   m_itemLock.Unlock();
 
-	return ( it != m_mapItems.end() );
+  if ( it != m_mapItems.end() )
+    bResult = (it->second.count > 0);
+
+	return bResult;
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -622,7 +622,8 @@ struct __FCPKT_SOFTWARE_INSTALL_RESP
 {
   FCSHORT portNum;
   FCULONG itemID;
-  e_SoftwareInstallResult result;
+  bool bResult;             // flag indicating success/failure
+//  e_SoftwareInstallResult result;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -636,7 +637,7 @@ struct __FCPKT_SOFTWARE_UNINSTALL
 struct __FCPKT_SOFTWARE_UNINSTALL_RESP
 {
   FCSHORT portNum;
-  bool bSuccess;
+  bool bResult;
 };
 
 /*

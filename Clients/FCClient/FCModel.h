@@ -237,6 +237,8 @@ private:
     bool OnResponseForumGetThreadContentBlob(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseForumCreateNewThread(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseMissionAccepted(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnResponseSoftwareInstall(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnResponseSoftwareUninstall(PEPacket* pPkt, BaseSocket* pSocket);
 
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
 

@@ -245,6 +245,13 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
 			}
 			break;
 
+    case  FCME_Software_SoftwareInstallSuccess:
+    case  FCME_Software_SoftwareInstallFail:
+    case  FCME_Software_SoftwareUninstallSuccess:
+    case  FCME_Software_SoftwareUninstallFail:
+      m_pDesktop->OnSoftwareEvent(event);
+      break;
+
 		case	FCME_XP_Gained:
 			{
 				std::wstringstream ss;
