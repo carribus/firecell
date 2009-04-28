@@ -102,6 +102,7 @@ private:
   static void OnDBJob_LoadItemDefs(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadObjectData(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadCharacterComputer(DBIResultSet& resultSet, void*& pContext);
+  static void OnDBJob_LoadCharacterPorts(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadCharacterItems(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadWorldGeography(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadCompanies(DBIResultSet& resultSet, void*& pContext);
@@ -113,7 +114,7 @@ private:
   /*
    *  Data Persistence
    */
-  void PersistPlayerState(Player* pPlayer);
+  void PersistCharacterPorts(Player* pPlayer);
 
   /*
    *  Helper functions

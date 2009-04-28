@@ -426,6 +426,7 @@ bool FCLogicWorld::OnCommandCharacterItemsRequest(PEPacket* pPkt, RouterSocket* 
 		SendCharacterItemsResponse( pPlayer, m_itemMgr, pRouter, clientSocket );
 	}
 
+
 	return true;
 }
 
@@ -768,7 +769,7 @@ bool FCLogicWorld::OnCommandSoftwareInstall(PEPacket* pPkt, RouterSocket* pSocke
       }
 
       SendSoftwareInstallResponse(d.itemID, d.portNum, installResult == NPE_OK, pSocket, clientSocket);
-      PersistPlayerState(pPlayer);
+      PersistCharacterPorts(pPlayer);
     }
 
   }
@@ -814,7 +815,7 @@ bool FCLogicWorld::OnCommandSoftwareUninstall(PEPacket* pPkt, RouterSocket* pSoc
 
         SendSoftwareUninstallResponse(d.portNum, uninstallResult == NPE_OK, pSocket, clientSocket);
         
-        PersistPlayerState(pPlayer);
+        PersistCharacterPorts(pPlayer);
       }
     }
     else
@@ -908,6 +909,7 @@ void FCLogicWorld::RegisterDBHandlers()
   RegisterDBHandler(DBQ_LOAD_ITEM_DEFS, OnDBJob_LoadItemDefs);
   RegisterDBHandler(DBQ_LOAD_OBJECT_DATA, OnDBJob_LoadObjectData);
   RegisterDBHandler(DBQ_LOAD_CHARACTER_COMPUTER, OnDBJob_LoadCharacterComputer);
+  RegisterDBHandler(DBQ_LOAD_CHARACTER_PORTS, OnDBJob_LoadCharacterPorts);
   RegisterDBHandler(DBQ_LOAD_CHARACTER_ITEMS, OnDBJob_LoadCharacterItems);
   RegisterDBHandler(DBQ_LOAD_WORLD_GEOGRAPHY, OnDBJob_LoadWorldGeography);
   RegisterDBHandler(DBQ_LOAD_COMPANIES, OnDBJob_LoadCompanies);
@@ -1091,7 +1093,7 @@ void FCLogicWorld::OnDBJob_LoadObjectData(DBIResultSet& resultSet, void*& pConte
 
       if ( pItem )
       {
-        pItem->SetSoftwareType( resultSet.GetULongValue("software_type_id", 0) );
+        pItem->SetSoftwareType( resultSet.GetShortValue("software_type_id", 0) );
         pItem->IsService( resultSet.GetByteValue("is_service", 0) ? true : false );
       }
     }
@@ -1141,11 +1143,58 @@ void FCLogicWorld::OnDBJob_LoadCharacterComputer(DBIResultSet& resultSet, void*&
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCLogicWorld::OnDBJob_LoadCharacterPorts(DBIResultSet& resultSet, void*& pContext)
+{
+  DBJobContext* pCtx = (DBJobContext*)pContext;
+  RouterSocket* pSock = pCtx->pRouter;
+  FCLogicWorld* pThis = pCtx->pThis;
+  Player* pPlayer = (Player*)pCtx->pData;
+  FCSOCKET clientSocket = pCtx->clientSocket;
+
+  if ( !pThis || !pPlayer )
+    return;
+
+  Computer& comp = pPlayer->GetComputer();
+  NetworkPorts& ports = comp.GetNetworkPorts();
+
+  size_t rowCount = resultSet.GetRowCount();
+  FCULONG item_id;
+  FCSHORT portNum, enabled;
+  ItemSoftware* pItem = NULL;
+
+  for ( size_t i = 0; i < rowCount; i++ )
+  {
+    portNum = resultSet.GetShortValue("port_number", i);
+    item_id = resultSet.GetULongValue("item_id", i);
+    enabled = resultSet.GetShortValue("enabled", i);
+
+    pItem = (ItemSoftware*)pThis->m_itemMgr.GetItem(item_id);
+    if ( pItem )
+    {
+      ports.installPort( portNum, pItem->GetSoftwareType(), item_id );
+      ports.enablePort( portNum, enabled?true:false );
+    }
+  }
+
+  // we are done loading the player... notify the client that the character has been created...
+  SendCharacterLoginStatus(pPlayer->GetAccountID(), pPlayer->GetID(), CharacterSelectSucceeded, pCtx->pRouter, pCtx->clientSocket);
+
+  // emit an event for the player logging in
+  EventSystem::GetInstance()->Emit( pPlayer, NULL, new Event(Player::EVT_LoggedIn, (void*)pPlayer) );
+
+  delete pCtx;
+  pContext = NULL;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void FCLogicWorld::OnDBJob_LoadCharacterItems(DBIResultSet& resultSet, void*& pContext)
 {
   DBJobContext* pCtx = (DBJobContext*) pContext;
   FCLogicWorld* pThis = pCtx->pThis;
+  RouterSocket* pSock = pCtx->pRouter;
   Player* pPlayer = (Player*)pCtx->pData;
+  FCSOCKET clientSocket = pCtx->clientSocket;
 
   if ( !pThis || !pPlayer || !pCtx->clientSocket || !pCtx->pRouter )
     return;
@@ -1161,14 +1210,16 @@ void FCLogicWorld::OnDBJob_LoadCharacterItems(DBIResultSet& resultSet, void*& pC
     pPlayer->AddItem(item_id);
   }
 
-  // we are done loading the player... notify the client that the character has been created...
-  SendCharacterLoginStatus(pPlayer->GetAccountID(), pPlayer->GetID(), CharacterSelectSucceeded, pCtx->pRouter, pCtx->clientSocket);
-
-  // emit an event for the player logging in
-  EventSystem::GetInstance()->Emit( pPlayer, NULL, new Event(Player::EVT_LoggedIn, (void*)pPlayer) );
-
   delete pCtx;
   pContext = NULL;
+
+  // now that we have the player object, we need to load the player's facilities, items etc
+  pCtx = new DBJobContext;
+  pCtx->pThis = pThis;
+  pCtx->clientSocket = clientSocket;
+  pCtx->pRouter = pSock;
+  pCtx->pData = (void*)pPlayer;
+  pThis->GetDatabase().ExecuteJob(DBQ_LOAD_CHARACTER_PORTS, (void*)pCtx, pPlayer->GetID());
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -1414,9 +1465,33 @@ void FCLogicWorld::OnDBJob_LoadForumPosts(DBIResultSet& resultSet, void*& pConte
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCLogicWorld::PersistPlayerState(Player* pPlayer)
+void FCLogicWorld::PersistCharacterPorts(Player* pPlayer)
 {
-  // this function is responsible for persisting the player's state to the database
+  if ( !pPlayer )
+    return;
+
+  FCDatabase& db = GetDatabase();
+  NetworkPorts& ports = pPlayer->GetComputer().GetNetworkPorts();
+  FCSHORT portCount = ports.getPortCount();
+  FCULONG itemID, softwareType;
+  std::string query, subQuery, queryTemplate;
+  char buffer[1024];
+
+  query = "START TRANSACTION;";
+  queryTemplate = db.GetQueryByName(DBQ_SAVE_CHARACTER_PORTS);
+  for ( FCSHORT i = 0; i < portCount; i++ )
+  {
+    ports.getSoftwareInfo(i, itemID, softwareType);
+    sprintf(buffer, queryTemplate.c_str(), itemID, 
+                                           ports.isPortEnabled(i) ? 1 : 0, 
+                                           pPlayer->GetID(),
+                                           i);
+    query += buffer;
+    query += ";";
+  }
+  query += "COMMIT;";
+
+  db.ExecuteDirectQuery(query, DBQ_SAVE_CHARACTER_PORTS, NULL);
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -68,7 +68,12 @@
 // CHARACTER LOADING QUERIES
 ////////////////////////////////////////
 #define DBQ_LOAD_CHARACTER_COMPUTER       "load_character_computer"
+#define DBQ_LOAD_CHARACTER_PORTS          "load_character_ports"
 #define DBQ_LOAD_CHARACTER_ITEMS          "load_character_items"
 
+////////////////////////////////////////
+// CHARACTER PERSISTANCE QUERIES
+////////////////////////////////////////
+#define DBQ_SAVE_CHARACTER_PORTS          "save_character_port"
 
 #endif//_FCQUERIES_H_
