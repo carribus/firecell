@@ -500,6 +500,35 @@ bool Desktop::OnMissionEvent(FCModelEvent& event)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool Desktop::OnSoftwareEvent(FCModelEvent& event)
+{
+  bool bResult = false;
+
+  if ( m_pSoftwareMgr && m_pSoftwareMgr->isVisible() )
+  {
+    switch ( event.GetType() )
+    {
+    case  FCME_Software_SoftwareInstallSuccess:
+      m_pSoftwareMgr->Update();
+      break;
+
+    case  FCME_Software_SoftwareInstallFail:
+      break;
+      
+    case  FCME_Software_SoftwareUninstallSuccess:
+      m_pSoftwareMgr->Update();
+      break;
+
+    case  FCME_Software_SoftwareUninstallFail:
+      break;
+    }
+  }
+
+  return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void Desktop::OnDesktopIconSelected(DesktopIcon* pIcon)
 {
 	DesktopIconMap::iterator it = m_mapDesktopIcons.begin();

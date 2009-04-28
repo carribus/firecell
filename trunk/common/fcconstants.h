@@ -41,12 +41,14 @@ enum DesktopOptionType
 /**
  *  \brief  Status of software installation attempt
  */
+/*
 enum e_SoftwareInstallResult
 {
   SIR_Success = 0,
+  SIR_Failed_SoftwareAlreadyAssignToPort,
   SIR_Failed_Memory,
   SIR_Failed_CPU,
   SIR_Failed_PortHealth
 };
-
+*/
 #endif//_FCCONSTANTS_H_

@@ -756,13 +756,30 @@ bool FCLogicWorld::OnCommandSoftwareInstall(PEPacket* pPkt, RouterSocket* pSocke
 
   if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
   {
-    Computer&
-    NetworkPorts& ports = pPlayer->GetComputer().GetNetworkPorts();
-    std::map<FCULONG, PlayerItem>& items = pPlayer->GetItems();
-    std::map<FCULONG, PlayerItem>::iterator it;
+    Computer& comp = pPlayer->GetComputer();
+    NetworkPorts& ports = comp.GetNetworkPorts();
+    ItemSoftware* pItem = NULL;
 
-    // find the item and verify that it can be installed on the port
-    
+    if ( pPlayer->HasItem( d.itemID ) )
+    {
+      FCSHORT installResult = NPE_OK;
+      // get the actual item
+      pPlayer->WriteLock();
+      pItem = (ItemSoftware*)m_itemMgr.GetItem(d.itemID);      
+      // take the item out of the player's inventory
+      pPlayer->RemoveItem( d.itemID );
+      pPlayer->Unlock();
+      // attempt to install it on the port
+      installResult = ports.installPort( d.portNum, pItem->GetSoftwareType(), d.itemID );
+      if ( installResult != NPE_OK )
+      {
+        // handle the installation error
+        DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to install software item %ld to port %ld. Error %ld (Player %ld)", d.itemID, d.portNum, installResult, pPlayer->GetID()) );
+      }
+
+      SendSoftwareInstallResponse(d.itemID, d.portNum, installResult == NPE_OK, pSocket, clientSocket);
+    }
+
   }
 
   return true;
@@ -774,9 +791,44 @@ bool FCLogicWorld::OnCommandSoftwareUninstall(PEPacket* pPkt, RouterSocket* pSoc
 {
   __FCPKT_SOFTWARE_UNINSTALL d;
   size_t dataLen = 0;
+  Player* pPlayer = NULL;
 
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
+
+  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+  {
+    Computer& comp = pPlayer->GetComputer();
+    NetworkPorts& ports = comp.GetNetworkPorts();
+    FCULONG itemID, softwareType;
+
+    if ( ports.getSoftwareInfo( d.portNum, itemID, softwareType ) == NPE_OK )
+    {
+      if ( itemID != 0 && softwareType != 0 )
+      {
+        // uninstall the software
+        FCULONG itemID, softwareType;
+        FCSHORT uninstallResult = NPE_OK;
+        
+        ports.getSoftwareInfo( d.portNum, itemID, softwareType );
+        uninstallResult = ports.uninstallPort(d.portNum);
+        if ( uninstallResult == NPE_OK )
+        {
+          pPlayer->AddItem(itemID);
+        }
+        else
+        {
+          DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to uninstall port %ld. Error %ld (Player %ld)", d.portNum, uninstallResult, pPlayer->GetID()) );
+        }
+
+        SendSoftwareUninstallResponse(d.portNum, uninstallResult == NPE_OK, pSocket, clientSocket);
+      }
+    }
+    else
+    {
+      // handle the error here
+    }
+  }
 
   return true;
 }

@@ -1,5 +1,6 @@
 #include <sstream>
 #include "../common/ResourceManager.h"
+#include "../../common/game_objects/ItemSoftware.h"
 #include "FCController.h"
 #include "FCViewEvent.h"
 #include "clientstrings.h"
@@ -116,6 +117,13 @@ SoftwareMgrWindow::SoftwareMgrWindow(IDesktop* pDesktop, FCModel& model, IGUIEnv
 
 SoftwareMgrWindow::~SoftwareMgrWindow(void)
 {
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void SoftwareMgrWindow::Update()
+{
+  UpdateUIFromModel();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -339,7 +347,23 @@ void SoftwareMgrWindow::enablePort(FCSHORT port, bool bEnable)
 void SoftwareMgrWindow::setPortInfo(FCSHORT port, FCULONG itemID, FCULONG softwareType, bool bEnabled, u32 maxHealth, u32 health)
 {
   wstringstream ss;
+  ItemMgr& itemMgr = FCModel::instance().GetItemMgr();
+  ItemMgr::GameItem item; 
+  ItemSoftware* pItem = NULL;
 
+  // software details
+  itemMgr.getItem(itemID, item);
+  pItem = (ItemSoftware*)item.getItem();
+  if ( pItem )
+  {
+    ss << pItem->GetName().c_str();
+  }
+  else
+  {
+    ss << "Configure Port";
+  }
+  ((GUIHyperlink*)getElementFromId((port+1)*2))->setText( ss.str().c_str() );
+  ss.str(L"");
   // enabled button
   ((IGUIButton*)getElementFromId(port*3+50))->setPressed(bEnabled);
   // VU Meter: Port Health 
