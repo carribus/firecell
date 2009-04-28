@@ -95,17 +95,7 @@ int FCLogicWorld::Start()
     }
 
     // register the db handlers
-    RegisterDBHandler(DBQ_LOAD_ITEM_TYPES, OnDBJob_LoadItemTypes);
-    RegisterDBHandler(DBQ_LOAD_ITEM_DEFS, OnDBJob_LoadItemDefs);
-    RegisterDBHandler(DBQ_LOAD_OBJECT_DATA, OnDBJob_LoadObjectData);
-    RegisterDBHandler(DBQ_LOAD_CHARACTER_COMPUTER, OnDBJob_LoadCharacterComputer);
-    RegisterDBHandler(DBQ_LOAD_CHARACTER_ITEMS, OnDBJob_LoadCharacterItems);
-    RegisterDBHandler(DBQ_LOAD_WORLD_GEOGRAPHY, OnDBJob_LoadWorldGeography);
-    RegisterDBHandler(DBQ_LOAD_COMPANIES, OnDBJob_LoadCompanies);
-    RegisterDBHandler(DBQ_LOAD_COMPANY_COMPUTERS, OnDBJob_LoadCompanyComputers);
-    RegisterDBHandler(DBQ_LOAD_MISSIONS, OnDBJob_LoadMissions);
-		RegisterDBHandler(DBQ_LOAD_FORUM_CATEGORIES, OnDBJob_LoadForumCategories);
-		RegisterDBHandler(DBQ_LOAD_FORUM_POSTS, OnDBJob_LoadForumPosts);
+    RegisterDBHandlers();
 
     // Start the Item loading...
     DYNLOG_ADDLOG("Loading Item Types...");
@@ -778,6 +768,7 @@ bool FCLogicWorld::OnCommandSoftwareInstall(PEPacket* pPkt, RouterSocket* pSocke
       }
 
       SendSoftwareInstallResponse(d.itemID, d.portNum, installResult == NPE_OK, pSocket, clientSocket);
+      PersistPlayerState(pPlayer);
     }
 
   }
@@ -822,6 +813,8 @@ bool FCLogicWorld::OnCommandSoftwareUninstall(PEPacket* pPkt, RouterSocket* pSoc
         }
 
         SendSoftwareUninstallResponse(d.portNum, uninstallResult == NPE_OK, pSocket, clientSocket);
+        
+        PersistPlayerState(pPlayer);
       }
     }
     else
@@ -905,6 +898,23 @@ bool FCLogicWorld::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
 bool FCLogicWorld::OnError(PEPacket* pPkt, BaseSocket* pSocket)
 {
   return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::RegisterDBHandlers()
+{
+  RegisterDBHandler(DBQ_LOAD_ITEM_TYPES, OnDBJob_LoadItemTypes);
+  RegisterDBHandler(DBQ_LOAD_ITEM_DEFS, OnDBJob_LoadItemDefs);
+  RegisterDBHandler(DBQ_LOAD_OBJECT_DATA, OnDBJob_LoadObjectData);
+  RegisterDBHandler(DBQ_LOAD_CHARACTER_COMPUTER, OnDBJob_LoadCharacterComputer);
+  RegisterDBHandler(DBQ_LOAD_CHARACTER_ITEMS, OnDBJob_LoadCharacterItems);
+  RegisterDBHandler(DBQ_LOAD_WORLD_GEOGRAPHY, OnDBJob_LoadWorldGeography);
+  RegisterDBHandler(DBQ_LOAD_COMPANIES, OnDBJob_LoadCompanies);
+  RegisterDBHandler(DBQ_LOAD_COMPANY_COMPUTERS, OnDBJob_LoadCompanyComputers);
+  RegisterDBHandler(DBQ_LOAD_MISSIONS, OnDBJob_LoadMissions);
+	RegisterDBHandler(DBQ_LOAD_FORUM_CATEGORIES, OnDBJob_LoadForumCategories);
+	RegisterDBHandler(DBQ_LOAD_FORUM_POSTS, OnDBJob_LoadForumPosts);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -1400,6 +1410,13 @@ void FCLogicWorld::OnDBJob_LoadForumPosts(DBIResultSet& resultSet, void*& pConte
 	pContext = NULL;
 
   pThis->m_condSync.Signal();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::PersistPlayerState(Player* pPlayer)
+{
+  // this function is responsible for persisting the player's state to the database
 }
 
 ///////////////////////////////////////////////////////////////////////
