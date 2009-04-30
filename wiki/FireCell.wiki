@@ -10,12 +10,16 @@ The game will be presented in an 3D rendered environment, although it should not
 
 =Components=
 
-FireCell will be developed into the following high level components:
+FireCell consists of the following high level components:
 
-- A server component that will manage the core game logic, and provide a 'real time' environment for players to play in, communicate and compete
-- A client component that will form the frontend gateway for players to log in to the game
-    - An initial text-based client will be developed
-    - A second phase graphical client will be developed later
-- The tools component
-    - This component is more of a package for a number of game management, development and design toolsets
-- A Database component that will store state of the world, its players and other persistable entities. It will also act as the storage repository for game configuration data.
+- A server component
+The Server component is based on a distributed architecture model and has core functions seperated into connectable service processes. Currently the model is comprised of a public facing traffic distribution gateway, an authentication gateway, and the actual game world.
+
+- A client component
+The client is the means for players to interact with the FireCell world.
+
+- A tools component
+The tools component comprises of many tools that aid either developers or content designers in enhancing, growing and modifying the FireCell world.
+
+- A database component 
+The database component offers the required persistance to the FireCell world. Currently the engine supports only mySql, but has been written in such a way that it is fairly simple to create connectors and query objects for different database engines.
