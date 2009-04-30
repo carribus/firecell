@@ -70,10 +70,12 @@
 #define DBQ_LOAD_CHARACTER_COMPUTER       "load_character_computer"
 #define DBQ_LOAD_CHARACTER_PORTS          "load_character_ports"
 #define DBQ_LOAD_CHARACTER_ITEMS          "load_character_items"
+#define DBQ_LOAD_CHARACTER_MISSIONS       "load_character_missions"
 
 ////////////////////////////////////////
 // CHARACTER PERSISTANCE QUERIES
 ////////////////////////////////////////
+#define DBQ_SAVE_CHARACTER_MISSION_NEW    "save_character_mission_new"
 #define DBQ_SAVE_CHARACTER_PORTS          "save_character_port"
 
 #endif//_FCQUERIES_H_

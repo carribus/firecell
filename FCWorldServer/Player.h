@@ -81,6 +81,8 @@ public:
 	bool HasMission(FCULONG missionID);
   Mission* GetMission(FCULONG missionID);
 	bool HasCompletedMission(FCULONG missionID);
+  FCULONG GetMissionCount(bool bActiveOnly = false);
+  std::map<FCULONG, Mission*>& GetMissions()                        { return m_mapMissions; }
 
 	/*
 	 *	Item related
@@ -93,6 +95,9 @@ public:
   void LockItemsForRead()                                           { m_itemLock.LockForRead(); }
   void LockItemsForWrite()                                          { m_itemLock.LockForWrite(); }
   void UnlockItems()                                                { m_itemLock.Unlock(); }
+  void LockMissionsForRead()                                        { m_missionLock.LockForRead(); }
+  void LockMissionsForWrite()                                       { m_missionLock.LockForWrite(); }
+  void UnlockMissions()                                             { m_missionLock.Unlock(); }
 
   /*
 	 *	Accessor/Mutators

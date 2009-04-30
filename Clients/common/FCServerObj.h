@@ -20,6 +20,7 @@ public:
   void RequestCharacterCreationParameters();
   void SendCharacterAssetRequest(size_t character_id);
 	void SendCharacterItemsRequest(size_t character_id);
+  void SendCharacterMissionsRequest(size_t character_id);
   void RequestDesktopOptions(size_t character_id);
 	void RequestDesktopOptionActivate(FCULONG option_id);
 

@@ -300,6 +300,50 @@ void SendCharacterItemsResponse(Player* pPlayer, ItemManager& itemMgr,  BaseSock
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void SendCharacterMissionsResponse(Player* pPlayer, BaseSocket* pRouter, FCSOCKET clientSocket)
+{
+  if ( !pPlayer )
+    return;
+
+  PEPacket* pkt = new PEPacket;
+  __FCPKT_CHARACTER_MISSIONS_REQUEST_RESP* d = NULL;
+  int nPktLen = 0;
+  int numMissions = pPlayer->GetMissionCount();
+
+  nPktLen = sizeof(__FCPKT_CHARACTER_MISSIONS_REQUEST_RESP) + ( (numMissions-1)*sizeof(__FCPKT_CHARACTER_MISSIONS_REQUEST_RESP::_missions) );
+  d = (__FCPKT_CHARACTER_MISSIONS_REQUEST_RESP*) new FCBYTE[ nPktLen ];
+  memset(d, 0, nPktLen);
+  d->numMissions = numMissions;
+
+  pPlayer->LockMissionsForRead();
+  const std::map<FCULONG, Mission*>& missions = pPlayer->GetMissions();
+  std::map<FCULONG, Mission*>::const_iterator it = missions.begin();
+  std::map<FCULONG, Mission*>::const_iterator limit = missions.end();
+
+  for ( int i = 0; i < numMissions; i++, ++it )
+  {
+    d->missions[i].mission_id = it->second->GetID();
+    d->missions[i].parent_id = it->second->GetParentID();
+    d->missions[i].completed = it->second->IsComplete();
+  }
+  pPlayer->UnlockMissions();
+
+  // send the packet
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_CHARACTER_MISSIONS_REQUEST, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, 
+                                (void*)d, 
+                                nPktLen);
+
+  // send notification to Client
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
+
+  // clear the data portion
+  delete [] d;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void SendCharacterDesktopOptions(Player* pPlayer, BaseSocket* pRouter, FCSOCKET clientSocket)
 {
   if ( !pPlayer )

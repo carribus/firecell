@@ -214,6 +214,12 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
 		}
 		break;
 
+  case  FCMSG_CHARACTER_MISSIONS_REQUEST:
+    {
+      bHandled = OnCommandCharacterMissionsRequest(pPkt, pRouter, clientSock);
+    }
+    break;
+
   case  FCMSG_GET_DESKTOP_OPTIONS:
     {
       bHandled = OnCommandGetDesktopOptions(pPkt, pRouter, clientSock);
@@ -426,6 +432,24 @@ bool FCLogicWorld::OnCommandCharacterItemsRequest(PEPacket* pPkt, RouterSocket* 
 		SendCharacterItemsResponse( pPlayer, m_itemMgr, pRouter, clientSocket );
 	}
 
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandCharacterMissionsRequest(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  __FCPKT_CHARACTER_MISSIONS_REQUEST d;
+	size_t dataLen = 0;
+	Player* pPlayer = NULL;
+
+	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+	pPkt->GetField("data", (void*)&d, dataLen);
+
+	if ( (pPlayer = m_playerMgr.GetPlayerByID( d.character_id )) )
+	{
+		SendCharacterMissionsResponse( pPlayer, pRouter, clientSocket );
+	}
 
 	return true;
 }
@@ -716,6 +740,7 @@ bool FCLogicWorld::OnCommandMissionAccept(PEPacket* pPkt, RouterSocket* pSocket,
 				if ( m_missionMgr.AssignMissionToPlayer(pPlayer, d.mission_id) )
         {
           // successfully assigned the mission (and any child missions) to the player...
+          PersistNewCharacterMission(pPlayer, d.mission_id);
           // send back a response indicating which missions got added to the player's mission list
           SendMissionAcceptedResponse(pPlayer, d.mission_id, true, pSocket, clientSocket);
         }
@@ -911,6 +936,7 @@ void FCLogicWorld::RegisterDBHandlers()
   RegisterDBHandler(DBQ_LOAD_CHARACTER_COMPUTER, OnDBJob_LoadCharacterComputer);
   RegisterDBHandler(DBQ_LOAD_CHARACTER_PORTS, OnDBJob_LoadCharacterPorts);
   RegisterDBHandler(DBQ_LOAD_CHARACTER_ITEMS, OnDBJob_LoadCharacterItems);
+  RegisterDBHandler(DBQ_LOAD_CHARACTER_MISSIONS, OnDBJob_LoadCharacterMissions);
   RegisterDBHandler(DBQ_LOAD_WORLD_GEOGRAPHY, OnDBJob_LoadWorldGeography);
   RegisterDBHandler(DBQ_LOAD_COMPANIES, OnDBJob_LoadCompanies);
   RegisterDBHandler(DBQ_LOAD_COMPANY_COMPUTERS, OnDBJob_LoadCompanyComputers);
@@ -1219,6 +1245,46 @@ void FCLogicWorld::OnDBJob_LoadCharacterItems(DBIResultSet& resultSet, void*& pC
   pCtx->clientSocket = clientSocket;
   pCtx->pRouter = pSock;
   pCtx->pData = (void*)pPlayer;
+  pThis->GetDatabase().ExecuteJob(DBQ_LOAD_CHARACTER_MISSIONS, (void*)pCtx, pPlayer->GetID());
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::OnDBJob_LoadCharacterMissions(DBIResultSet& resultSet, void*& pContext)
+{
+  DBJobContext* pCtx = (DBJobContext*) pContext;
+  FCLogicWorld* pThis = pCtx->pThis;
+  RouterSocket* pSock = pCtx->pRouter;
+  Player* pPlayer = (Player*)pCtx->pData;
+  FCSOCKET clientSocket = pCtx->clientSocket;
+
+  if ( !pThis || !pPlayer || !pCtx->clientSocket || !pCtx->pRouter )
+    return;
+
+  size_t rowCount = resultSet.GetRowCount();
+  FCULONG mission_id;
+  FCSHORT isComplete;
+
+  for ( size_t i = 0; i < rowCount; i++ )
+  {
+    mission_id = resultSet.GetULongValue("mission_id", i);
+    isComplete= resultSet.GetShortValue("complete", i);
+
+    // assign the mission to the player
+    pThis->m_missionMgr.AssignMissionToPlayer(pPlayer, mission_id);
+    if ( isComplete > 0 )
+      pPlayer->HasCompletedMission(mission_id);
+  }
+
+  delete pCtx;
+  pContext = NULL;
+
+  // now that we have the player object, we need to load the player's facilities, items etc
+  pCtx = new DBJobContext;
+  pCtx->pThis = pThis;
+  pCtx->clientSocket = clientSocket;
+  pCtx->pRouter = pSock;
+  pCtx->pData = (void*)pPlayer;
   pThis->GetDatabase().ExecuteJob(DBQ_LOAD_CHARACTER_PORTS, (void*)pCtx, pPlayer->GetID());
 }
 
@@ -1461,6 +1527,18 @@ void FCLogicWorld::OnDBJob_LoadForumPosts(DBIResultSet& resultSet, void*& pConte
 	pContext = NULL;
 
   pThis->m_condSync.Signal();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::PersistNewCharacterMission(Player* pPlayer, FCULONG mission_id)
+{
+  if ( !pPlayer )
+    return;
+
+  FCDatabase& db = GetDatabase();
+
+  db.ExecuteJob(DBQ_SAVE_CHARACTER_MISSION_NEW, NULL, pPlayer->GetID(), mission_id);
 }
 
 ///////////////////////////////////////////////////////////////////////
