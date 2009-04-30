@@ -89,7 +89,7 @@ CREATE TABLE `fc_characterports` (
 
 /*Data for the table `fc_characterports` */
 
-insert  into `fc_characterports`(`character_id`,`port_number`,`item_id`,`enabled`) values (1,0,0,0),(1,1,NULL,0),(1,2,NULL,0),(1,3,NULL,0),(1,4,NULL,0),(1,5,NULL,0),(1,6,NULL,0),(1,7,NULL,0),(2,0,NULL,0),(2,1,NULL,0),(2,2,NULL,0),(2,3,NULL,0),(2,4,NULL,0),(2,5,NULL,0),(2,6,NULL,0),(2,7,NULL,0),(3,0,NULL,0),(3,1,NULL,0),(3,2,NULL,0),(3,3,NULL,0),(3,4,NULL,0),(3,5,NULL,0),(3,6,NULL,0),(3,7,NULL,0);
+insert  into `fc_characterports`(`character_id`,`port_number`,`item_id`,`enabled`) values (1,0,NULL,0),(1,1,NULL,0),(1,2,NULL,0),(1,3,NULL,0),(1,4,NULL,0),(1,5,NULL,0),(1,6,NULL,0),(1,7,NULL,0),(2,0,NULL,0),(2,1,NULL,0),(2,2,NULL,0),(2,3,NULL,0),(2,4,NULL,0),(2,5,NULL,0),(2,6,NULL,0),(2,7,NULL,0),(3,0,NULL,0),(3,1,NULL,0),(3,2,NULL,0),(3,3,NULL,0),(3,4,NULL,0),(3,5,NULL,0),(3,6,NULL,0),(3,7,NULL,0);
 
 /*Table structure for table `fc_characters` */
 
