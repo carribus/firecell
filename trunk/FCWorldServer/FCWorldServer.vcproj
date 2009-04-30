@@ -80,10 +80,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libmysql.lib"
+				AdditionalDependencies="libmysql.lib pthreadVSE2.lib"
 				OutputFile="$(OutDir)/FCWorldServer.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\common\mysql\lib\opt\"
+				AdditionalLibraryDirectories="..\common\mysql\lib\opt\;&quot;..\common\pthreads-win32\lib\&quot;"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
