@@ -71,6 +71,7 @@ private:
     bool OnCommandGetCharacterCreationParams(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
     bool OnCommandCharacterAssetRequest(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
 		bool OnCommandCharacterItemsRequest(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
+    bool OnCommandCharacterMissionsRequest(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
     bool OnCommandGetDesktopOptions(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
 		bool OnCommandActivateDesktopOption(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
     // console commands
@@ -104,6 +105,7 @@ private:
   static void OnDBJob_LoadCharacterComputer(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadCharacterPorts(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadCharacterItems(DBIResultSet& resultSet, void*& pContext);
+  static void OnDBJob_LoadCharacterMissions(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadWorldGeography(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadCompanies(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadCompanyComputers(DBIResultSet& resultSet, void*& pContext);
@@ -114,6 +116,7 @@ private:
   /*
    *  Data Persistence
    */
+  void PersistNewCharacterMission(Player* pPlayer, FCULONG mission_id);
   void PersistCharacterPorts(Player* pPlayer);
 
   /*

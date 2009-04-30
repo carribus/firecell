@@ -373,6 +373,12 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
 		}
 		break;
 
+  case  FCMSG_CHARACTER_MISSIONS_REQUEST:
+    {
+      bHandled = OnResponseCharacterMissionsRequest(pPkt, pSocket);
+    }
+    break;
+
   case  FCMSG_GET_DESKTOP_OPTIONS:
     {
       bHandled = OnResponseGetDesktopOptions(pPkt, pSocket);
@@ -742,6 +748,7 @@ bool FCModel::OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* pSocke
     ports.setPortMaxHealth(portnum, d.computer.network_ports[i].portMaxHealth);
   }
 
+  m_server.SendCharacterMissionsRequest(m_pCharacter->GetID());
   m_server.RequestDesktopOptions(m_pCharacter->GetID());
 
   return true;
@@ -782,6 +789,27 @@ bool FCModel::OnResponseCharacterItemsRequest(PEPacket* pPkt, BaseSocket* pSocke
   delete [] (FCBYTE*)d;
 
 	return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseCharacterMissionsRequest(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_CHARACTER_MISSIONS_REQUEST_RESP* d;
+  size_t dataLen = 0;
+  
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  d = (__FCPKT_CHARACTER_MISSIONS_REQUEST_RESP*) new FCBYTE[ dataLen ];
+  pPkt->GetField("data", d, dataLen);
+
+  for ( FCULONG i = 0; i < d->numMissions; i++ )
+  {
+    m_missionMgr.addMission( d->missions[i].mission_id, d->missions[i].completed, d->missions[i].parent_id );
+  }
+
+  delete [] (FCBYTE*)d;
+
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////

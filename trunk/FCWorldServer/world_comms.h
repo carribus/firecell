@@ -69,6 +69,13 @@ void SendCharacterItemsResponse(Player* pPlayer, ItemManager& itemMgr, BaseSocke
 
 /**
  *  @ingroup worldcomms
+ *  @brief This function sends a character's missions to them. The packet sent is: __FCPKT_CHARACTER_MISSIONS_REQUEST_RESP
+ *  @param pPlayer The player object that requested the missions list
+ */
+void SendCharacterMissionsResponse(Player* pPlayer, BaseSocket* pRouter, FCSOCKET clientSocket);
+
+/**
+ *  @ingroup worldcomms
  *  @brief This function sends the available desktop options that a character has. The packet sent is: __FCPKT_GET_DESKTOP_OPTIONS_RESP
  *  @param pPlayer The character that this response pertains to
  */

@@ -319,6 +319,33 @@ struct __FCPKT_CHARACTER_ITEMS_REQUEST_RESP
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_CHARACTER_MISSIONS_REQUEST  = 25;
+///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  @brief Packet sent from client to server requesting a character's missions
+ *  @ingroup fcprotocol
+ */
+struct __FCPKT_CHARACTER_MISSIONS_REQUEST
+{
+  FCUINT character_id;
+};
+
+/**
+ *  @brief Response packet sent from server to client containing a character's missions
+ *  @ingroup fcprotocol
+ */
+struct __FCPKT_CHARACTER_MISSIONS_REQUEST_RESP
+{
+  FCULONG numMissions;
+  struct _missions
+  {
+    FCULONG mission_id;
+    FCULONG parent_id;
+    bool completed;
+  } missions[1];
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
 const FCSHORT FCMSG_GET_DESKTOP_OPTIONS         = 40;
 ///////////////////////////////////////////////////////////////////////////////////////////
 /**

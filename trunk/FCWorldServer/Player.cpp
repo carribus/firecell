@@ -251,6 +251,33 @@ bool Player::HasCompletedMission(FCULONG missionID)
 
 ///////////////////////////////////////////////////////////////////////
 
+FCULONG Player::GetMissionCount(bool bActiveOnly)
+{
+  m_missionLock.LockForRead();
+  FCULONG count = 0;
+  
+  if ( !bActiveOnly )
+  {
+    count = (FCULONG)m_mapMissions.size();
+  }
+  else
+  {
+    MissionMap::iterator it = m_mapMissions.begin();
+    MissionMap::iterator limit = m_mapMissions.end();
+
+    for ( ; it != limit; ++it )
+    {
+      if ( !it->second->IsComplete() )
+        count++;
+    }
+  }
+  m_missionLock.Unlock();
+
+  return count;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void Player::AddItem(FCULONG itemID)
 {
   m_itemLock.LockForWrite();
