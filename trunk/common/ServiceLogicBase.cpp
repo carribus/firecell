@@ -44,7 +44,7 @@ void ServiceLogicBase::OnConnected(BaseSocket* pSocket, int nErrorCode)
   }
   else
   {
-    DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to connect to router (%s:%ld)", pSock->GetServer().c_str(), pSock->GetPort()) );
+    DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to connect to router (%s:%ld): Error:%ld", pSock->GetServer().c_str(), pSock->GetPort(), nErrorCode) );
   }
 }
 

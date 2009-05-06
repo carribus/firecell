@@ -1,114 +1,177 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.10"
+	Version="9.00"
 	Name="FCWorldServer"
 	ProjectGUID="{1D4D58E7-48DE-48B3-9268-A014750FE8C3}"
-	Keyword="Win32Proj">
+	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
+	>
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Win32"
+		/>
 	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="..\bin\Debug\Server"
 			IntermediateDirectory="Debug"
 			ConfigurationType="1"
-			CharacterSet="2">
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\common\mysql\include\"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;TIXML_USE_STL"
-				MinimalRebuild="TRUE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;TIXML_USE_STL;_CRT_SECURE_NO_WARNINGS"
+				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="4"/>
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="4"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="libmysql.lib pthreadVSE2.lib"
 				OutputFile="$(OutDir)/FCWorldServer.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;..\common\pthreads-win32\lib\&quot;;..\common\mysql\lib\debug\"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/FCWorldServer.pdb"
 				SubSystem="1"
-				TargetMachine="1"/>
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="1"
+			/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCAppVerifierTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\bin\Release\Server"
 			IntermediateDirectory="Release"
 			ConfigurationType="1"
-			CharacterSet="2">
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\common\mysql\include\"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;TIXML_USE_STL"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;TIXML_USE_STL;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="3"/>
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="3"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="libmysql.lib pthreadVSE2.lib"
 				OutputFile="$(OutDir)/FCWorldServer.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\common\mysql\lib\opt\;&quot;..\common\pthreads-win32\lib\&quot;"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				TargetMachine="1"/>
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="1"
+			/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCAppVerifierTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 	</Configurations>
 	<References>
@@ -117,421 +180,558 @@
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			>
 			<File
-				RelativePath="..\Clients\common\Socket\win\BaseSocket.cpp">
+				RelativePath="..\Clients\common\Socket\win\BaseSocket.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\CmdLineInfo.cpp">
+				RelativePath="..\common\CmdLineInfo.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\Company.cpp">
+				RelativePath=".\Company.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\Computer.cpp">
+				RelativePath=".\Computer.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\ComputerBase.cpp">
+				RelativePath="..\common\game_objects\ComputerBase.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\Event.cpp">
+				RelativePath=".\Event.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\EventSystem.cpp">
+				RelativePath=".\EventSystem.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\FCLogicWorld.cpp">
+				RelativePath=".\FCLogicWorld.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\FCObject.cpp">
+				RelativePath="..\common\game_objects\FCObject.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\FCObjectFactory.cpp">
+				RelativePath="..\common\game_objects\FCObjectFactory.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\FCWorldServer.cpp">
+				RelativePath=".\FCWorldServer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\FileSystem.cpp">
+				RelativePath=".\FileSystem.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\FileSystemActionHandler.cpp">
+				RelativePath=".\FileSystemActionHandler.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\Forum.cpp">
+				RelativePath=".\Forum.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\InGameIPAddress.cpp">
+				RelativePath="..\common\game_objects\InGameIPAddress.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\inifile.cpp">
+				RelativePath="..\common\inifile.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\ItemManager.cpp">
+				RelativePath=".\ItemManager.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\ItemMemory.cpp">
+				RelativePath="..\common\game_objects\ItemMemory.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\ItemOS.cpp">
+				RelativePath="..\common\game_objects\ItemOS.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\ItemProcessor.cpp">
+				RelativePath="..\common\game_objects\ItemProcessor.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\ItemSoftware.cpp">
+				RelativePath="..\common\game_objects\ItemSoftware.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\Mission.cpp">
+				RelativePath=".\Mission.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\MissionManager.cpp">
+				RelativePath=".\MissionManager.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\NetworkPorts.cpp">
+				RelativePath="..\common\game_objects\NetworkPorts.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\PacketDispatcher.cpp">
+				RelativePath=".\PacketDispatcher.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\PacketExtractor.cpp">
+				RelativePath="..\common\PacketExtractor.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\PEPacket.cpp">
+				RelativePath="..\common\PEPacket.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\PEPacketHelper.cpp">
+				RelativePath="..\common\PEPacketHelper.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\Player.cpp">
+				RelativePath=".\Player.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\PlayerManager.cpp">
+				RelativePath=".\PlayerManager.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\PThreadCond.cpp">
+				RelativePath="..\common\PThreadCond.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\PThreadMutex.cpp">
+				RelativePath="..\common\PThreadMutex.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\PThreadRWLock.cpp">
+				RelativePath="..\common\PThreadRWLock.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\ServiceLogicBase.cpp">
+				RelativePath="..\common\ServiceLogicBase.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\SoftwareHTTPServer.cpp">
+				RelativePath=".\SoftwareHTTPServer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\SoftwareService.cpp">
+				RelativePath=".\SoftwareService.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\daemon\win\W32Service.cpp">
+				RelativePath="..\common\daemon\win\W32Service.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\sockserver\win\W32SocketServer.cpp">
+				RelativePath="..\common\sockserver\win\W32SocketServer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\world_comms.cpp">
+				RelativePath=".\world_comms.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\WorldManager.cpp">
+				RelativePath=".\WorldManager.cpp"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			>
 			<File
-				RelativePath="..\Clients\common\Socket\win\BaseSocket.h">
+				RelativePath="..\Clients\common\Socket\win\BaseSocket.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\binstream.h">
+				RelativePath="..\common\binstream.h"
+				>
 			</File>
 			<File
-				RelativePath=".\City.h">
+				RelativePath=".\City.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\CmdLineInfo.h">
+				RelativePath="..\common\CmdLineInfo.h"
+				>
 			</File>
 			<File
-				RelativePath=".\Company.h">
+				RelativePath=".\Company.h"
+				>
 			</File>
 			<File
-				RelativePath=".\Computer.h">
+				RelativePath=".\Computer.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\ComputerBase.h">
+				RelativePath="..\common\game_objects\ComputerBase.h"
+				>
 			</File>
 			<File
-				RelativePath=".\Country.h">
+				RelativePath=".\Country.h"
+				>
 			</File>
 			<File
-				RelativePath=".\Event.h">
+				RelativePath=".\Event.h"
+				>
 			</File>
 			<File
-				RelativePath=".\EventSystem.h">
+				RelativePath=".\EventSystem.h"
+				>
 			</File>
 			<File
-				RelativePath=".\EventWithDisposableData.h">
+				RelativePath=".\EventWithDisposableData.h"
+				>
 			</File>
 			<File
-				RelativePath=".\FCLogicWorld.h">
+				RelativePath=".\FCLogicWorld.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\FCObject.h">
+				RelativePath="..\common\game_objects\FCObject.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\FCObjectFactory.h">
+				RelativePath="..\common\game_objects\FCObjectFactory.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\protocol\fcprotocol.h">
+				RelativePath="..\common\protocol\fcprotocol.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\fctypes.h">
+				RelativePath="..\common\fctypes.h"
+				>
 			</File>
 			<File
-				RelativePath=".\FileSystem.h">
+				RelativePath=".\FileSystem.h"
+				>
 			</File>
 			<File
-				RelativePath=".\FileSystemActionHandler.h">
+				RelativePath=".\FileSystemActionHandler.h"
+				>
 			</File>
 			<File
-				RelativePath=".\Forum.h">
+				RelativePath=".\Forum.h"
+				>
 			</File>
 			<File
-				RelativePath=".\ForumCategory.h">
+				RelativePath=".\ForumCategory.h"
+				>
 			</File>
 			<File
-				RelativePath=".\ForumPost.h">
+				RelativePath=".\ForumPost.h"
+				>
 			</File>
 			<File
-				RelativePath=".\IEventSystem.h">
+				RelativePath=".\IEventSystem.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\InGameIPAddress.h">
+				RelativePath="..\common\game_objects\InGameIPAddress.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\inifile.h">
+				RelativePath="..\common\inifile.h"
+				>
 			</File>
 			<File
-				RelativePath="..\fcserver\interfaces\IService.h">
+				RelativePath="..\fcserver\interfaces\IService.h"
+				>
 			</File>
 			<File
-				RelativePath="..\fcserver\interfaces\IServiceLogic.h">
+				RelativePath="..\fcserver\interfaces\IServiceLogic.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\Item.h">
+				RelativePath="..\common\game_objects\Item.h"
+				>
 			</File>
 			<File
-				RelativePath=".\ItemManager.h">
+				RelativePath=".\ItemManager.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\ItemMemory.h">
+				RelativePath="..\common\game_objects\ItemMemory.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\ItemOS.h">
+				RelativePath="..\common\game_objects\ItemOS.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\ItemProcessor.h">
+				RelativePath="..\common\game_objects\ItemProcessor.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\ItemSoftware.h">
+				RelativePath="..\common\game_objects\ItemSoftware.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\ItemType.h">
+				RelativePath="..\common\game_objects\ItemType.h"
+				>
 			</File>
 			<File
-				RelativePath=".\Mission.h">
+				RelativePath=".\Mission.h"
+				>
 			</File>
 			<File
-				RelativePath=".\MissionManager.h">
+				RelativePath=".\MissionManager.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\NetworkPorts.h">
+				RelativePath="..\common\game_objects\NetworkPorts.h"
+				>
 			</File>
 			<File
-				RelativePath=".\PacketDispatcher.h">
+				RelativePath=".\PacketDispatcher.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\PacketExtractor.h">
+				RelativePath="..\common\PacketExtractor.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\PEPacket.h">
+				RelativePath="..\common\PEPacket.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\PEPacketHelper.h">
+				RelativePath="..\common\PEPacketHelper.h"
+				>
 			</File>
 			<File
-				RelativePath=".\Player.h">
+				RelativePath=".\Player.h"
+				>
 			</File>
 			<File
-				RelativePath=".\PlayerManager.h">
+				RelativePath=".\PlayerManager.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\PThreadCond.h">
+				RelativePath="..\common\PThreadCond.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\PThreadMutex.h">
+				RelativePath="..\common\PThreadMutex.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\PThreadRWLock.h">
+				RelativePath="..\common\PThreadRWLock.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\ServiceLogicBase.h">
+				RelativePath="..\common\ServiceLogicBase.h"
+				>
 			</File>
 			<File
-				RelativePath=".\SoftwareHTTPServer.h">
+				RelativePath=".\SoftwareHTTPServer.h"
+				>
 			</File>
 			<File
-				RelativePath=".\SoftwareService.h">
+				RelativePath=".\SoftwareService.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\game_objects\swtypes.h">
+				RelativePath="..\common\game_objects\swtypes.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\daemon\win\W32Service.h">
+				RelativePath="..\common\daemon\win\W32Service.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\sockserver\win\W32SocketServer.h">
+				RelativePath="..\common\sockserver\win\W32SocketServer.h"
+				>
 			</File>
 			<File
-				RelativePath=".\world_comms.h">
+				RelativePath=".\world_comms.h"
+				>
 			</File>
 			<File
-				RelativePath=".\WorldManager.h">
+				RelativePath=".\WorldManager.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			>
 		</Filter>
 		<Filter
-			Name="Database">
+			Name="Database"
+			>
 			<File
-				RelativePath="..\common\database\mysql\DBIMySql.cpp">
+				RelativePath="..\common\database\mysql\DBIMySql.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\database\mysql\DBIMySql.h">
+				RelativePath="..\common\database\mysql\DBIMySql.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\database\mysql\DBIMySqlConnection.cpp">
+				RelativePath="..\common\database\mysql\DBIMySqlConnection.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\database\mysql\DBIMySqlConnection.h">
+				RelativePath="..\common\database\mysql\DBIMySqlConnection.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\database\mysql\DBIMySqlResultSet.cpp">
+				RelativePath="..\common\database\mysql\DBIMySqlResultSet.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\database\mysql\DBIMySqlResultSet.h">
+				RelativePath="..\common\database\mysql\DBIMySqlResultSet.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\database\DBIResults.cpp">
+				RelativePath="..\common\database\DBIResults.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\database\DBIResults.h">
+				RelativePath="..\common\database\DBIResults.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\database\DBIResultSet.cpp">
+				RelativePath="..\common\database\DBIResultSet.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\database\DBIResultSet.h">
+				RelativePath="..\common\database\DBIResultSet.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\database\FCDatabase.cpp">
+				RelativePath="..\common\database\FCDatabase.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\database\FCDatabase.h">
+				RelativePath="..\common\database\FCDatabase.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\database\FCDBJob.cpp">
+				RelativePath="..\common\database\FCDBJob.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\database\FCDBJob.h">
+				RelativePath="..\common\database\FCDBJob.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\database\IDBInterface.h">
+				RelativePath="..\common\database\IDBInterface.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="tinyXML"
-			Filter="">
+			>
 			<File
-				RelativePath="..\common\tinyXML\tinystr.cpp">
+				RelativePath="..\common\tinyXML\tinystr.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\tinyXML\tinystr.h">
+				RelativePath="..\common\tinyXML\tinystr.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\tinyXML\tinyxml.cpp">
+				RelativePath="..\common\tinyXML\tinyxml.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\tinyXML\tinyxml.h">
+				RelativePath="..\common\tinyXML\tinyxml.h"
+				>
 			</File>
 			<File
-				RelativePath="..\common\tinyXML\tinyxmlerror.cpp">
+				RelativePath="..\common\tinyXML\tinyxmlerror.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\common\tinyXML\tinyxmlparser.cpp">
+				RelativePath="..\common\tinyXML\tinyxmlparser.cpp"
+				>
 			</File>
 		</Filter>
 		<Filter
-			Name="Logging">
+			Name="Logging"
+			>
 			<Filter
-				Name="Source Files">
+				Name="Source Files"
+				>
 				<File
-					RelativePath="..\common\Logging\DynLog.cpp">
+					RelativePath="..\common\Logging\DynLog.cpp"
+					>
 				</File>
 				<File
-					RelativePath="..\common\Logging\DynLogConsoleWriter.cpp">
+					RelativePath="..\common\Logging\DynLogConsoleWriter.cpp"
+					>
 				</File>
 				<File
-					RelativePath="..\common\Logging\DynLogger.cpp">
+					RelativePath="..\common\Logging\DynLogger.cpp"
+					>
 				</File>
 				<File
-					RelativePath="..\common\Logging\DynLogItemBase.cpp">
+					RelativePath="..\common\Logging\DynLogItemBase.cpp"
+					>
 				</File>
 				<File
-					RelativePath="..\common\Logging\DynLogNullWriter.cpp">
+					RelativePath="..\common\Logging\DynLogNullWriter.cpp"
+					>
 				</File>
 				<File
-					RelativePath="..\common\Logging\DynLogStringItem.cpp">
+					RelativePath="..\common\Logging\DynLogStringItem.cpp"
+					>
 				</File>
 				<File
-					RelativePath="..\common\Logging\DynLogTextfileWriter.cpp">
+					RelativePath="..\common\Logging\DynLogTextfileWriter.cpp"
+					>
 				</File>
 			</Filter>
 			<Filter
-				Name="Header Files">
+				Name="Header Files"
+				>
 				<File
-					RelativePath="..\common\Logging\DynLog.h">
+					RelativePath="..\common\Logging\DynLog.h"
+					>
 				</File>
 				<File
-					RelativePath="..\common\Logging\DynLogConsoleWriter.h">
+					RelativePath="..\common\Logging\DynLogConsoleWriter.h"
+					>
 				</File>
 				<File
-					RelativePath="..\common\Logging\DynLogger.h">
+					RelativePath="..\common\Logging\DynLogger.h"
+					>
 				</File>
 				<File
-					RelativePath="..\common\Logging\DynLogItemBase.h">
+					RelativePath="..\common\Logging\DynLogItemBase.h"
+					>
 				</File>
 				<File
-					RelativePath="..\common\Logging\DynLogNullWriter.h">
+					RelativePath="..\common\Logging\DynLogNullWriter.h"
+					>
 				</File>
 				<File
-					RelativePath="..\common\Logging\DynLogStringItem.h">
+					RelativePath="..\common\Logging\DynLogStringItem.h"
+					>
 				</File>
 				<File
-					RelativePath="..\common\Logging\DynLogTextfileWriter.h">
+					RelativePath="..\common\Logging\DynLogTextfileWriter.h"
+					>
 				</File>
 				<File
-					RelativePath="..\common\Logging\IDynLog.h">
+					RelativePath="..\common\Logging\IDynLog.h"
+					>
 				</File>
 				<File
-					RelativePath="..\common\Logging\RefCounter.h">
+					RelativePath="..\common\Logging\RefCounter.h"
+					>
 				</File>
 			</Filter>
 		</Filter>

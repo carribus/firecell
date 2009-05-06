@@ -149,14 +149,14 @@ void ResourceManager::ParseClientStrings(IrrXMLReaderUTF16* pXML)
 		{
 		case	EXN_ELEMENT:
 			{
-				elemName = pXML->getNodeName();
+				elemName = (wchar_t*)pXML->getNodeName();
 				if ( elemName == L"FCStrings" )
 				{
 				}
 				else if ( elemName == L"String" )
 				{
 					// get the ID of the string
-					stringID = pXML->getAttributeValue(L"id");
+					stringID = (wchar_t*)pXML->getAttributeValue((char16*)L"id");
 				}
 			}
 			break;
@@ -166,7 +166,7 @@ void ResourceManager::ParseClientStrings(IrrXMLReaderUTF16* pXML)
 				if ( !stringID.empty() )
 				{
 					size_t pos = 0;
-					stringText = pXML->getNodeData();
+					stringText = (wchar_t*)pXML->getNodeData();
 					while ( (pos = stringText.find( L"\\n" )) != wstring::npos )
 					{
 						stringText.replace(pos, 2, L"\n");
