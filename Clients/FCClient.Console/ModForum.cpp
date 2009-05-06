@@ -63,10 +63,10 @@ void ModForum::QueueForAction()
 		{
 			DisplayForumCategories();
 			printf("\nSelect category (0 to exit): ");
-			int nOption = getch();
+			int nOption = _getch();
 
-			while ( nOption < (int)'0' || nOption > m_catID_max+48 )
-				nOption = getch();
+			while ( nOption < (int)'0' || nOption > (int)m_catID_max+48 )
+				nOption = _getch();
 
 			printf("\n");
 
@@ -88,10 +88,10 @@ void ModForum::QueueForAction()
 		{
 			DisplayCategoryThreads();
 			printf("\nSelect thread (0 - back to Categories): ");
-			int nOption = getch();
+			int nOption = _getch();
 
-			while ( nOption < (int)'0' || nOption > m_catID_max+48 )
-				nOption = getch();
+			while ( nOption < (int)'0' || nOption > (int)m_catID_max+48 )
+				nOption = _getch();
 
 			printf("\n");
 

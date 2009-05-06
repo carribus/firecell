@@ -95,7 +95,7 @@ DBIResults* DBIMySqlConnection::Execute(FCDBJob job)
         if ( mysql_field_count(m_conn) == 0 )
         {
           // query does not return data...
-          pResults->SetAffectedRows( mysql_affected_rows(m_conn) );
+          pResults->SetAffectedRows( (unsigned long)mysql_affected_rows(m_conn) );
         }
         else
         {

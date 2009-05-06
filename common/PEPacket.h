@@ -56,7 +56,7 @@ public:
 
 private:
 
-  typedef map< std::string, Field > FieldMap;
+  typedef std::map< std::string, Field > FieldMap;
   FieldMap                      m_fields;
   char*                         m_pDataBlock;
   size_t                        m_dataLen;

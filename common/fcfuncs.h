@@ -21,7 +21,7 @@
 #define _FCFUNCS_H_
 
 #ifdef _WIN32
-  #define fcstrcmpi strcmpi
+  #define fcstrcmpi _strcmpi
 #else
   #define fcstrcmpi strcasecmp
 #endif

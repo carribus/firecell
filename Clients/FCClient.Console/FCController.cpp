@@ -174,7 +174,7 @@ void FCController::QueueForAction()
 
         int nOption = -1;
         while ( !IsValidOption(nOption) )
-          nOption = getch()-48;
+          nOption = _getch()-48;
 
         switch ( nOption )
         {
@@ -524,7 +524,7 @@ bool FCController::OnResponseGetCharacters(PEPacket* pPkt, BaseSocket* pSocket)
     printf("Select the character you wish to play: ");
     do
     {
-      int nKey = getch();
+      int nKey = _getch();
       map<FCUINT, size_t>::iterator it = KeyToCharacterMap.find(nKey);
 
       if ( it == KeyToCharacterMap.end() )

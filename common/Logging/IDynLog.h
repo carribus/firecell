@@ -8,10 +8,6 @@
 #define NULL 0
 #endif//NULL
 
-#ifndef interface
-#define interface struct
-#endif//interface
-
 namespace Logging
 {
 
@@ -37,7 +33,7 @@ enum E_LOGWRITER_TYPE
  *  \ingroup DynLog
  *  \brief The IDynLogItem interface is the base interface that all log item implementations must expose
  */
-interface IDynLogItem : public IRefCounter
+struct IDynLogItem : public IRefCounter
 {
   /**
    *  \brief Return the data that this log item was coninterfaceed with
@@ -78,7 +74,7 @@ interface IDynLogItem : public IRefCounter
  *  create a IDynLogItem derived object that can serialise itself to your required
  *  format.
  */
-interface IDynLogWriter : public IRefCounter
+struct IDynLogWriter : public IRefCounter
 {
   virtual void setOutputFormat(const std::string& format = DYNLOG_DEFAULTFORMAT) = 0;
   /**
@@ -119,7 +115,7 @@ interface IDynLogWriter : public IRefCounter
  *  \ingroup DynLog
  *  \brief This interface is an extension of IDynLogWriter and exposes the required functions for setting/getting a target filename
  */
-interface IDynLogTextFileWriter : public IDynLogWriter
+struct IDynLogTextFileWriter : public IDynLogWriter
 {
   /**
    *  \brief Set the output filename for the writer
@@ -139,7 +135,7 @@ interface IDynLogTextFileWriter : public IDynLogWriter
  *
  *  IDynLogger is received as the result of a call to createLogger().
  */
-interface IDynLogger : public IRefCounter
+struct IDynLogger : public IRefCounter
 {
   /**
    *  \brief Attach a writer endpoint to the logger.

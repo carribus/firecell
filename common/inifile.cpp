@@ -176,6 +176,21 @@ INIFile::CSection* INIFile::AddSection(string name)
 
 ///////////////////////////////////////////////////////////////////////
 
+string INIFile::GetValueString(const string section, const string key)
+{
+  CSection* pSection = GetSection(section);
+  string val;
+
+  if ( pSection )
+  {
+    val = pSection->GetValue(key);
+  }
+
+  return val;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 short INIFile::GetValueShort(const string section, const string key)
 {
   CSection* pSection = GetSection(section);

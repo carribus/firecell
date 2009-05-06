@@ -194,11 +194,11 @@ public:
   void InstallSoftware(FCSHORT portNum, FCULONG itemID);
   void UninstallSoftware(FCSHORT portNum);
 
-  vector<Character>& GetCharacters()               { return m_characters; }
-  map<FCULONG, Country>& GetCountries()            { return m_countries; }
-	map<FCUINT, DesktopOption> GetDesktopOptions()	 { return m_desktopOptions; }
-	MissionMgr& GetMissionMgr()											 { return m_missionMgr; }
-  ItemMgr& GetItemMgr()                            { return m_itemMgr; }
+  vector<Character>& GetCharacters()                    { return m_characters; }
+  std::map<FCULONG, Country>& GetCountries()            { return m_countries; }
+  std::map<FCUINT, DesktopOption> GetDesktopOptions()	  { return m_desktopOptions; }
+	MissionMgr& GetMissionMgr()											      { return m_missionMgr; }
+  ItemMgr& GetItemMgr()                                 { return m_itemMgr; }
 
 private:
 

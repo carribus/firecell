@@ -69,6 +69,7 @@ public:
 	CSection*		AddSection(string name);
 	size_t      GetKeyCount()						{ return m_lstSections.size(); }
 
+  string      GetValueString(const string section, const string key);
   short       GetValueShort(const string section, const string key);
 
 private:
