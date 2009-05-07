@@ -21,7 +21,6 @@
 #include "../common/Logging/DynLog.h"
 #include "../common/fctypes.h"
 #ifdef _WIN32
-#error blah!
   #include "../common/daemon/win/W32Service.h"
 #else
   #include "../common/daemon/linux/Daemon.h"
