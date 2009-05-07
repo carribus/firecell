@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="FireCell workspace">
+		<Project filename="../../Clients/FCClient.Console/FCClient.Console.cbp" />
+		<Project filename="../../FCAuthServer/FCAuthServer.cbp" />
+		<Project filename="../../FCWorldServer/FCWorldServer.cbp" />
+		<Project filename="../../FCServer/FCServer.cbp" active="1" />
+		<Project filename="../../Clients/FCClient/FCClient.cbp" />
+		<Project filename="../../Tools/genstringh/genstringh.cbp" />
+		<Project filename="../../Tools/genswtypesh/genswtypesh.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>
