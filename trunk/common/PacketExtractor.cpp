@@ -17,6 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include <cstdlib>
+#include <cstring>
 #include "PacketExtractor.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -122,7 +124,7 @@ PEPacket* PacketExtractor::Extract(const char* pSrc, size_t& streamOffset, const
         memcpy( (void*)&width, pSrc + refOffset, refSize );
       }
     }
-    else 
+    else
       width = it->elem_width;
 
     // check if we have a fixed element count...
@@ -184,14 +186,14 @@ bool PacketExtractor::ParseFieldDef(string strDef, PacketExtractor::EPField& fie
   ClearField(field);
   offset++;
 
-  if ( (temp_ofs = strDef.find_first_of( PKTDEF_ELEMWIDTH_START, offset )) != -1 )
+  if ( (temp_ofs = strDef.find_first_of( PKTDEF_ELEMWIDTH_START, offset )) != string::npos )
   {
     // get the name
     field.name = strDef.substr( offset, temp_ofs - offset );
     offset = temp_ofs+1;
 
     // get the elem width
-    if ( (temp_ofs = strDef.find_first_of( PKTDEF_ELEMCOUNT_START, offset )) != -1 )
+    if ( (temp_ofs = strDef.find_first_of( PKTDEF_ELEMCOUNT_START, offset )) != string::npos )
     {
       // check for a variable derefence
       if ( strDef[offset] != PKTDEF_VARNAME_START )
@@ -208,7 +210,7 @@ bool PacketExtractor::ParseFieldDef(string strDef, PacketExtractor::EPField& fie
       offset = temp_ofs+1;
 
       // get the number of [width] size elements to read
-      if ( (temp_ofs = strDef.find_first_of( PKTDEF_FIELD_END, offset )) != -1 )
+      if ( (temp_ofs = strDef.find_first_of( PKTDEF_FIELD_END, offset )) != string::npos )
       {
         // check for a variable derefence
         if ( strDef[offset] != PKTDEF_VARNAME_START )

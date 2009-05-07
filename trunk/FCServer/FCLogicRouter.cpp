@@ -461,7 +461,7 @@ ClientSocket* FCLogicRouter::GetServiceConnectionByType(ServiceType type)
     {
       pResult = it->pSocket;
       break;
-    }    
+    }
   }
 
   pthread_mutex_unlock(&m_mutexServices);

@@ -22,7 +22,7 @@
 
 #include "../fctypes.h"
 #include "../PEPacket.h"
-#include "../BinStream.h"
+#include "../binstream.h"
 
 typedef CBinStream<FCBYTE, true> NetStream;
 
