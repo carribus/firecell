@@ -1,3 +1,4 @@
+#include <cstring>
 #include <sstream>
 #include "DynLogStringItem.h"
 
@@ -23,11 +24,11 @@ std::string DynLogStringItem::serialise()
   std::string result, ts = asctime(&m_timestamp);
 
   // format the timestamp into a string
-  ss << m_timestamp.tm_year+1900 << "-" 
-     << (m_timestamp.tm_mon <= 9 ? "0" : "") << m_timestamp.tm_mon+1 << "-" 
+  ss << m_timestamp.tm_year+1900 << "-"
+     << (m_timestamp.tm_mon <= 9 ? "0" : "") << m_timestamp.tm_mon+1 << "-"
      << (m_timestamp.tm_mday <= 9 ? "0" : "") << m_timestamp.tm_mday << " "
-     << (m_timestamp.tm_hour <= 9 ? "0" : "") << m_timestamp.tm_hour << ":" 
-     << (m_timestamp.tm_min <= 9 ? "0" : "") << m_timestamp.tm_min << ":" 
+     << (m_timestamp.tm_hour <= 9 ? "0" : "") << m_timestamp.tm_hour << ":"
+     << (m_timestamp.tm_min <= 9 ? "0" : "") << m_timestamp.tm_min << ":"
      << (m_timestamp.tm_sec <= 9 ? "0" : "") << m_timestamp.tm_sec;
   ts = ss.str();
 

@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <algorithm>
+#include <cstring>
 #include <string>
 #include <cctype>
 #include <fstream>
@@ -119,7 +120,7 @@ int INIFile::Load(const string filename)
     return -1;
 
   f.close();
-  
+
   return 0;
 }
 
@@ -143,14 +144,14 @@ INIFile::CSection* INIFile::GetSection(const string name)
 
 INIFile::CSection* INIFile::GetSection(size_t nIndex)
 {
-  if ( nIndex < 0 || nIndex >= m_lstSections.size()-1 )
+  if ( nIndex >= m_lstSections.size()-1 )
     return NULL;
 
   CSection* pSection = NULL;
   int nPos = 0;
   for ( SectionList::iterator it = m_lstSections.begin(); it != m_lstSections.end(); it++ )
   {
-    if ( nPos == nIndex )
+    if ( nPos == (int)nIndex )
     {
       pSection = *it;
       break;

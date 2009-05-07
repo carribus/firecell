@@ -1,19 +1,19 @@
 /*
  FireCell Server - The server code for the firecell multiplayer game
  Copyright (C) 2008  Peter M. Mares
- 
+
  Contact: carribus@gmail.com
- 
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
- 
+
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,7 +33,7 @@ BSDSocketServer::CSocketPool::CSocketPool(BSDSocketServer* pOwner)
 , m_nFdsMax(0)
 {
   FD_ZERO(&m_fdsSockets);
-  
+
   for ( int i = 0; i < MAX_WAIT_SOCKETS; i++ )
   {
     m_sockets[i].pPool = this;
@@ -52,7 +52,7 @@ BSDSocketServer::stClientSocket* BSDSocketServer::CSocketPool::GetSocket(int nIn
 {
   if ( nIndex < 0 || nIndex >= MAX_WAIT_SOCKETS )
     return NULL;
-  
+
   return &m_sockets[nIndex];
 }
 
@@ -61,22 +61,22 @@ BSDSocketServer::stClientSocket* BSDSocketServer::CSocketPool::GetSocket(int nIn
 bool BSDSocketServer::CSocketPool::AddSocket(int nIndex, FCSOCKET s)
 {
   bool bResult = false;
-  
+
   if ( m_sockets[nIndex].bAvailable )
   {
     m_sockets[nIndex].bAvailable = false;
     m_sockets[nIndex].s = s;
-    
+
     // add the socket to the fd_set
     FD_SET(s, &m_fdsSockets);
-    if ( s > m_nFdsMax )
+    if ( s > (FCSOCKET)m_nFdsMax )
       m_nFdsMax = s;
-    
+
     m_dwSocketCount++;
-    
+
     bResult = true;
   }
-  
+
   return bResult;
 }
 
@@ -93,7 +93,7 @@ void BSDSocketServer::CSocketPool::RemoveSocket(BSDSocketServer::stClientSocket*
 
       pSocket->s = 0;
       pSocket->bAvailable = true;
-      
+
       m_dwSocketCount--;
     }
   }
@@ -148,7 +148,7 @@ void BSDSocketServer::Start()
 void BSDSocketServer::Shutdown()
 {
   // stop all listening and serving activities
-  
+
   // free up the resources
   delete this;
 }
@@ -166,7 +166,7 @@ int BSDSocketServer::RegisterSink(ISocketServerSink* pSink)
 {
   if ( !IsSinkRegistered(pSink) )
     m_arrSinks.Add(pSink);
-  
+
   return m_arrSinks.GetSize();
 }
 
@@ -175,7 +175,7 @@ int BSDSocketServer::RegisterSink(ISocketServerSink* pSink)
 void BSDSocketServer::UnregisterSink(ISocketServerSink* pSink)
 {
   int nCount = m_arrSinks.GetSize();
-  
+
   for ( int i = 0; i < nCount; i++ )
   {
     if ( m_arrSinks.GetAt(i) == pSink )
@@ -191,13 +191,13 @@ void BSDSocketServer::UnregisterSink(ISocketServerSink* pSink)
 bool BSDSocketServer::IsSinkRegistered(ISocketServerSink* pSink)
 {
   int nCount = m_arrSinks.GetSize();
-  
+
   for ( int i = 0; i < nCount; i++ )
   {
     if ( m_arrSinks.GetAt(i) == pSink )
       return true;
   }
-  
+
   return false;
 }
 
@@ -214,7 +214,7 @@ bool BSDSocketServer::StartListening()
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_flags = AI_PASSIVE;
 
-  sprintf(port, "%ld", m_sPort);
+  sprintf(port, "%d", m_sPort);
   if ( getaddrinfo(m_lpszServer, port, &hints, &servinfo) == -1 )
   {
     return false;
@@ -243,14 +243,14 @@ bool BSDSocketServer::StartListening()
   {
     return false;
   }
-  
+
   nRet = pthread_create( &m_hListenThrd, NULL, thrdListenServer, (void*)this );
   if ( nRet != 0 )
   {
     // failed to start the thread...
     return false;
   }
-  
+
   return true;
 }
 
@@ -260,10 +260,10 @@ bool BSDSocketServer::AcceptConnection()
 {
   sockaddr addrClient;
   socklen_t addrSize = sizeof(addrClient);
-  
+
   // accep the new connection
   FCSOCKET s = (FCSOCKET) accept( m_sockListener, (sockaddr*)&addrClient, &addrSize );
-  
+
   if ( s == -1 )
     return false;
 
@@ -286,7 +286,7 @@ bool BSDSocketServer::AcceptConnection()
 		  m_arrSinks.GetAt(i)->OnDisconnect( s, 0xFFFFFFFF );
 	  }
   }
-  
+
   return true;
 }
 
@@ -296,12 +296,12 @@ bool BSDSocketServer::AddConnectionToPool(FCSOCKET s)
 {
   if ( s <= 0 )
     return false;
-  
+
   bool bSocketAdded = false;
   int nCount = m_socketPools.GetSize();
   stClientSocket* pSocket = NULL;
   CSocketPool* pPool = NULL;
-  
+
   for ( int i = 0; i < nCount && !bSocketAdded; i++ )
   {
     if ( !(pPool = m_socketPools.GetAt(i)) )
@@ -323,19 +323,19 @@ bool BSDSocketServer::AddConnectionToPool(FCSOCKET s)
       }
     }
   }
-  
+
   // check if the socket was placed
   if ( !bSocketAdded )
   {
     pthread_t hPoolThrd;
     // if not, then we need to create an additional connection pool
     pPool = new CSocketPool(this);
-    
+
     if ( pPool->AddSocket( 0, s ) )
     {
       pSocket = pPool->GetSocket(0);
       // select'ing here
-      
+
       // start a thread for the pool
       int nRet = pthread_create( &hPoolThrd, NULL, thrdClientServer, (void*)pPool );
       if ( nRet != 0 )
@@ -349,7 +349,7 @@ bool BSDSocketServer::AddConnectionToPool(FCSOCKET s)
     else
       delete pPool;
   }
-  
+
   return bSocketAdded;
 }
 
@@ -359,9 +359,9 @@ void BSDSocketServer::DestroyPool(CSocketPool*& pPool)
 {
   if ( !pPool )
     return;
-  
+
   int nCount = m_socketPools.GetSize();
-  
+
   for ( int i = 0; i < nCount; i++ )
   {
     if ( m_socketPools.GetAt(i) == pPool )
@@ -374,12 +374,12 @@ void BSDSocketServer::DestroyPool(CSocketPool*& pPool)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-  
+
 void BSDSocketServer::OnDataReceived(stClientSocket* pSocket)
 {
   int nBytesRead  = 0;
   char buffer[4096];
-  
+
   memset(buffer, 0, sizeof(buffer));
   nBytesRead = recv( pSocket->s, buffer, sizeof(buffer), 0);
   if ( nBytesRead <= 0 )
@@ -397,23 +397,23 @@ void BSDSocketServer::OnDataReceived(stClientSocket* pSocket)
     }
   }
 }
-  
+
 //////////////////////////////////////////////////////////////////////////////////////////
-  
+
 void BSDSocketServer::OnClientSocketClosed(stClientSocket* pSocket, FCDWORD dwErrorCode)
 {
   if ( !pSocket )
     return;
-  
+
   CSocketPool* pPool = pSocket->pPool;
-  
+
   // fire an event to all subscribers
   int nCount = m_arrSinks.GetSize();
   for ( int i = 0; i < nCount; i++ )
   {
     m_arrSinks.GetAt(i)->OnDisconnect(pSocket->s, dwErrorCode);
   }
-  
+
 	pPool->RemoveSocket(pSocket);
 	if ( pPool->GetSocketCount() == 0 )
 	{
@@ -423,34 +423,34 @@ void BSDSocketServer::OnClientSocketClosed(stClientSocket* pSocket, FCDWORD dwEr
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-  
+
 void* BSDSocketServer::thrdListenServer(void* pParam)
 {
   BSDSocketServer* pThis = (BSDSocketServer*) pParam;
   fd_set master_fds, read_fds;
   timeval tv;
-  
+
   if ( !pThis )
     return (void*)-1;
-  
+
   // initialise
   FD_ZERO(&master_fds);
   FD_ZERO(&read_fds);
-  
+
   FD_SET( pThis->m_sockListener, &master_fds );
-  
-  // setup the 2500ms delay for select( ) 
+
+  // setup the 2500ms delay for select( )
   tv.tv_sec = 2;
   tv.tv_usec = 500000;
-  
+
   // flag the thread to run
   pThis->m_bRun = true;
-  
+
   while ( pThis->m_bRun )
   {
     // copy the master over
     read_fds = master_fds;
-    
+
     if ( select( pThis->m_sockListener+1, &read_fds, NULL, NULL, &tv) == -1 )
     {
       // the select broke
@@ -463,12 +463,12 @@ void* BSDSocketServer::thrdListenServer(void* pParam)
       pThis->AcceptConnection();
     }
   }
-  
+
   return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-  
+
 void* BSDSocketServer::thrdClientServer(void* pParam)
 {
 	CSocketPool* pPool = (CSocketPool*) pParam;
@@ -476,24 +476,24 @@ void* BSDSocketServer::thrdClientServer(void* pParam)
   stClientSocket* pSocket = NULL;
   fd_set read_fds;
   timeval tv;
-  
+
   FD_ZERO(&read_fds);
-  
+
   // setup the 2500ms timeout for the select( )
   tv.tv_sec = 2;
   tv.tv_usec = 500000;
-  
+
   while ( pThis->m_bRun && pPool->GetSocketCount() )
   {
     int fdMax = pPool->GetMaxFDS();
     read_fds = pPool->GetFDS();
-    
+
     if ( select(fdMax+1, &read_fds, NULL, NULL, &tv) == -1 )
     {
       // something broke in the select( )
       break;
     }
-    
+
     for ( int i = 0; i <= fdMax; i++ )
     {
       if ( FD_ISSET(i, &read_fds) )
@@ -511,7 +511,7 @@ void* BSDSocketServer::thrdClientServer(void* pParam)
             pSocket = NULL;
           }
         }
-        
+
         if ( pSocket )
         {
           // got some data
@@ -522,6 +522,6 @@ void* BSDSocketServer::thrdClientServer(void* pParam)
   }
 
 	delete pPool;
-  
-	return 0;  
+
+	return 0;
 }

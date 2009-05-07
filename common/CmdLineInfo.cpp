@@ -89,7 +89,11 @@ void CCmdLineInfo::SetSwitches(const char* lpszSwitches)
 
 	// assign the switches
 	nLen = strlen(lpszSwitches);
+#ifdef _WIN32
   m_lpszSwitches = _strdup(lpszSwitches);
+#else
+  m_lpszSwitches = strdup(lpszSwitches);
+#endif//_WIN32
 }
 
 //////////////////////////////////////////////////////////////////////

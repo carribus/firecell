@@ -21,12 +21,13 @@
 #include "../common/Logging/DynLog.h"
 #include "../common/fctypes.h"
 #ifdef _WIN32
+#error blah!
   #include "../common/daemon/win/W32Service.h"
 #else
   #include "../common/daemon/linux/Daemon.h"
 #endif//_WIN32
 #include "../common/threading.h"
-#include "../common/cmdlineinfo.h"
+#include "../common/CmdLineInfo.h"
 #include "../common/interfaces/IService.h"
 #include "FCLogicRouter.h"
 
@@ -63,7 +64,7 @@ int main(int argc, FCSTR argv[])
 
   // and release the service/daemon object
   ReleaseServerObject(pService);
-  
+
   Logging::getLogger()->release();
 
 	return 0;
@@ -78,7 +79,7 @@ IService* CreateServerObject()
 #ifdef _WIN32
   CW32Service* serv = new CW32Service;
 
-  ps = serv;  
+  ps = serv;
 #else
   // instantiate daemons for other POSIX based systems
   CDaemon* serv = new CDaemon;
