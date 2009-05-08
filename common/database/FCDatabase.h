@@ -35,9 +35,12 @@ using namespace std;
 
 class FCDatabase
 {
-public:
   FCDatabase(void);
   virtual ~FCDatabase(void);
+public:
+
+  static FCDatabase& instance();
+  static void destroy();
 
   bool Initialise(string strEngine, string server, string dbName, string user, string pass, FCUINT uiNumWorkerThreads = 2);
 
@@ -65,6 +68,7 @@ private:
   /*
    *  PRIVATE: Attributes
    */
+  static FCDatabase* m_pThis;
   IDBInterface* m_pDBI;
   string m_strServer,
          m_strDBName,

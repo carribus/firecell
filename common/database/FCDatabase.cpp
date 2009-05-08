@@ -26,6 +26,8 @@
 #include "mysql/DBIMySql.h"
 #include "FCDatabase.h"
 
+FCDatabase* FCDatabase::m_pThis = NULL;
+
 FCDatabase::FCDatabase(void)
 : m_pDBI(NULL)
 , m_uiNumThreads(0)
@@ -47,6 +49,29 @@ FCDatabase::~FCDatabase(void)
 
   pthread_mutex_destroy(&m_mutexJobs);
   pthread_mutex_destroy(&m_mutexCompletedJobs);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+FCDatabase& FCDatabase::instance()
+{
+  if ( !m_pThis )
+  {
+    m_pThis = new FCDatabase;
+  }
+
+  return *m_pThis;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void FCDatabase::destroy()
+{
+  if ( m_pThis )
+  {
+    delete m_pThis;
+    m_pThis = NULL;
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

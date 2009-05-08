@@ -1538,7 +1538,23 @@ void FCLogicWorld::PersistNewCharacterMission(Player* pPlayer, FCULONG mission_i
 
   FCDatabase& db = GetDatabase();
 
-  db.ExecuteJob(DBQ_SAVE_CHARACTER_MISSION_NEW, NULL, pPlayer->GetID(), mission_id);
+  // get the mission object from the player
+  pPlayer->LockMissionsForRead();
+  Mission* pMission = pPlayer->GetMission(mission_id);
+
+  if ( pMission )
+  {
+    // persist this mission
+    db.ExecuteJob(DBQ_SAVE_CHARACTER_MISSION_NEW, NULL, pPlayer->GetID(), mission_id);
+
+    // now iterate through any child missions and persist those as well
+    size_t childCount = pMission->GetChildCount();
+    for ( size_t i = 0; i < childCount; i++ )
+    {
+      PersistNewCharacterMission(pPlayer, pMission->GetChildMission(i)->GetID());
+    }
+  }
+  pPlayer->UnlockMissions();
 }
 
 ///////////////////////////////////////////////////////////////////////

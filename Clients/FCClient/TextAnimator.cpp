@@ -53,6 +53,7 @@ void TextAnimator::refreshObjects()
 	m_lockElems.LockForRead();
 	
 	ElementVector::iterator it = m_objects.begin();
+  ElementVector::iterator nextIt;
 	u32 now = m_pTimer->getTime();
 
 	for ( ; it != m_objects.end(); it++ )
@@ -67,7 +68,17 @@ void TextAnimator::refreshObjects()
 			if ( it->numTicksAnimated >= it->ticksBeforeEnd )
 			{
 				delete it->pTextObj;
-				m_objects.erase(it--);
+        if ( it != m_objects.begin() )
+        {
+				  m_objects.erase(it--);
+        }
+        else
+        {
+          m_objects.erase(it);
+          it = m_objects.begin();
+        }
+        if ( it == m_objects.end() )
+          break;
 			}
 		}
 	}

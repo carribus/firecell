@@ -13,8 +13,11 @@ ServiceLogicBase::ServiceLogicBase(const string& serviceName, const string servi
 
 ServiceLogicBase::~ServiceLogicBase(void)
 {
-  m_bDBMonRunning = false;
-  pthread_join( m_thrdDBMon, NULL );
+  if ( m_bDBMonRunning )
+  {
+    m_bDBMonRunning = false;
+    pthread_join( m_thrdDBMon, NULL );
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -225,7 +228,7 @@ bool ServiceLogicBase::ConfigureDatabase(string strEngine, string strServer, str
     return false;
   }
 
-  return m_db.Initialise(strEngine, strServer, strDBName, strUser, strPass);
+  return FCDatabase::instance().Initialise(strEngine, strServer, strDBName, strUser, strPass);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -243,6 +246,7 @@ void ServiceLogicBase::RegisterDBHandler(const string strJobRef, DBHANDLERPROC h
 void* ServiceLogicBase::thrdDBWorker(void* pData)
 {
   ServiceLogicBase* pThis = (ServiceLogicBase*)pData;
+  FCDatabase& db = FCDatabase::instance();
   FCDBJob job;
 
   if ( !pThis )
@@ -252,9 +256,9 @@ void* ServiceLogicBase::thrdDBWorker(void* pData)
 
   while ( pThis->m_bDBMonRunning )
   {
-    while ( pThis->m_db.GetCompletedJobCount() )
+    while ( db.GetCompletedJobCount() )
     {
-      pThis->m_db.GetNextCompletedJob(job);
+      db.GetNextCompletedJob(job);
       pThis->HandleCompletedDBJob(job);
     }
 #ifdef _WIN32

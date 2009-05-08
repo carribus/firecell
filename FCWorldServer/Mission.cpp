@@ -1,4 +1,5 @@
 #include "../common/Logging/DynLog.h"
+#include "../common/database/FCDatabase.h"
 #include "world_comms.h"
 #include "EventSystem.h"
 #include "Event.h"
@@ -173,11 +174,11 @@ void Mission::OnEvent(IEventSource* pSource, IEvent* pEvent)
 					// handle events
 					if ( !eventCode.compare( Mission::EVT_Complete ) )
 					{
-						m_successCount++;
+						IncrementSuccessCount(pEvent->GetPlayer());
             // check if all child missions are complete
 						if ( m_successCount == m_successReqCount || (m_successReqCount == 0 && m_successCount == m_childMissions.size()) )
 						{
-							SetComplete(true);
+							SetComplete(true, pEvent->GetPlayer());
 							// all our missions are complete.. therefore we are complete
 							if ( pEvent->GetPlayer() )
 							{
@@ -202,46 +203,31 @@ void Mission::OnEvent(IEventSource* pSource, IEvent* pEvent)
 		// then check whether the mission was completed 
 		if ( !IsComplete() && !m_eventSuccess.compare( eventCode ) )
 		{
-			m_successCount++;
+      IncrementSuccessCount(pEvent->GetPlayer());
 			if ( m_successCount == m_successReqCount )
 			{
 				IEventTarget* pNextTarget = NULL;
-				SetComplete(true);
+				SetComplete(true, pEvent->GetPlayer());
 
 				if ( m_pParentMission )
 					pNextTarget = (IEventTarget*)m_pParentMission;
 				else
 					pNextTarget = (IEventTarget*)pEvent->GetPlayer();
 				EventSystem::GetInstance()->Emit(this, pNextTarget, new Event( Mission::EVT_Complete, (void*)m_id, pEvent->GetPlayer() ));
-
-/*
-				if ( m_pParentMission )
-				{
-          // send a message to the player indicating that a sub-mission has been completed...
-					SendMissionComplete( m_id, pEvent->GetPlayer()->GetRouterSocket(), pEvent->GetPlayer()->GetClientSocket() );
-					// create a 'child' complete event
-					EventSystem::GetInstance()->Emit(this, m_pParentMission, new Event( Mission::EVT_Complete, (void*)m_id, pEvent->GetPlayer() ));
-				}
-				else
-				{
-					if ( pEvent->GetPlayer() )
-					{
-						// emite a mission completion event to the player object
-						EventSystem::GetInstance()->Emit(this, (IEventTarget*)pEvent->GetPlayer(), new Event( Mission::EVT_Complete, (void*)m_id ));
-					}
-				}
-*/
-				bHandled = true;
 			}
+			bHandled = true;
 		}
 		else if ( !m_eventFailure.compare( eventCode) )
 		{
 			if ( m_pParentMission )
 			{
+        // TODO
 			}
 			else
 			{
+        // TODO
 			}
+			bHandled = true;
 		}
 
 		if ( !bHandled )
@@ -254,4 +240,34 @@ void Mission::OnEvent(IEventSource* pSource, IEvent* pEvent)
 const std::string& Mission::GetType()
 {
 	return Mission::EVTSYS_ObjectType;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Mission::IncrementSuccessCount(Player* pPlayer)
+{
+  if ( !pPlayer )
+    return;
+
+  FCDatabase& db = FCDatabase::instance();
+
+	m_successCount++;
+
+  // update the mission's success count
+  db.ExecuteJob(DBQ_SAVE_CHARACTER_MISSION_SUCCESS_COUNT, NULL, m_successCount, m_id, pPlayer->GetID());
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Mission::SetComplete(bool bComplete, Player* pPlayer)
+{
+  if ( !pPlayer )
+    return;
+
+  FCDatabase& db = FCDatabase::instance();
+
+  SetComplete(bComplete);
+
+  // update the mission's success count
+  db.ExecuteJob(DBQ_SAVE_CHARACTER_MISSION_COMPLETE_FLAG, NULL, bComplete ? "true" : "false", m_id, pPlayer->GetID());
 }

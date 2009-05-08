@@ -67,6 +67,9 @@ public:
 
 private:
 
+  void IncrementSuccessCount(Player* pPlayer);
+  void SetComplete(bool bComplete, Player* pPlayer);
+
   FCULONG m_id;
   FCULONG m_parentID;
   FCSHORT m_minLevel;
