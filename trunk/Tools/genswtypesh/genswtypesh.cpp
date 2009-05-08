@@ -73,7 +73,7 @@ int main(int argc, char** argv)
 	CCmdLineInfo cmdLine(argc, argv);
 	string server, dbname, user, password, target_file;
 	vector<string> arrStrings;
-	FCDatabase db;
+  FCDatabase& db = FCDatabase::instance();
 	FCDBJob job;
 
 	print_title();

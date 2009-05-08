@@ -66,7 +66,7 @@ public:
 	void OnDisconnected(BaseSocket* pSocket, int nErrorCode);
 	void OnDataReceived(BaseSocket* pSocket, FCBYTE* pData, int nLen);
 
-  FCDatabase& GetDatabase()                       { return m_db; }
+  FCDatabase& GetDatabase()                       { return FCDatabase::instance(); }
 
   virtual ServiceType GetServiceType() = 0;
 
@@ -108,7 +108,6 @@ private:
   bool m_bHasConsole;
 
   // Database related members
-  FCDatabase m_db;
   pthread_t m_thrdDBMon;
   bool m_bDBMonRunning;
 

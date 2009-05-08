@@ -9,6 +9,7 @@ MissionManager::MissionManager(IEventSystem* pEventSystem)
 
 MissionManager::~MissionManager(void)
 {
+  m_missionLock.LockForWrite();
 	MissionMap::iterator it = m_mapMissions.begin();
 	MissionMap::iterator limit = m_mapMissions.end();
 
@@ -16,6 +17,7 @@ MissionManager::~MissionManager(void)
 	{
 		delete it->second;
 	}
+  m_missionLock.Unlock();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -39,7 +41,9 @@ bool MissionManager::AddMission(FCULONG missionID, FCSHORT minLevel, FCSHORT max
     pMission->SetSuccessXP(xpSuccess);
     pMission->SetFailureXP(xpFailure);
 
+    m_missionLock.LockForWrite();
     m_mapMissions[missionID] = pMission;
+    m_missionLock.Unlock();
   }
   else
     return false;
@@ -51,10 +55,17 @@ bool MissionManager::AddMission(FCULONG missionID, FCSHORT minLevel, FCSHORT max
 
 Mission* MissionManager::GetMission(FCULONG missionID)
 {
+  m_missionLock.LockForRead();
   MissionMap::iterator it = m_mapMissions.find(missionID);
 
   if ( it != m_mapMissions.end() )
-    return it->second;
+  {
+    Mission* pMission = it->second;
+    m_missionLock.Unlock();
+    return pMission;
+  }
+
+  m_missionLock.Unlock();
 
   return NULL;
 }
@@ -66,6 +77,7 @@ FCULONG MissionManager::GetAvailableMissionsForPlayer(Player* pPlayer, vector<Mi
 	if ( !pPlayer )
 		return 0;
 
+  m_missionLock.LockForRead();
 	MissionMap::iterator it = m_mapMissions.begin();
 	Mission* pMission = NULL;
 
@@ -84,6 +96,8 @@ FCULONG MissionManager::GetAvailableMissionsForPlayer(Player* pPlayer, vector<Mi
 		}
 	}
 
+  m_missionLock.Unlock();
+
 	return (FCULONG)target.size();
 }
 
@@ -93,6 +107,8 @@ bool MissionManager::AssignMissionToPlayer(Player* pPlayer, FCULONG mission_id)
 {
 	if ( !pPlayer || !mission_id )
 		return false;
+
+  m_missionLock.LockForRead();
 
 	MissionMap::iterator it = m_mapMissions.begin();
 	MissionMap::iterator limit = m_mapMissions.end();
@@ -104,6 +120,8 @@ bool MissionManager::AssignMissionToPlayer(Player* pPlayer, FCULONG mission_id)
 		else if ( it->second->GetParentID() == mission_id )
 			AssignMissionToPlayer(pPlayer, it->second->GetID());
 	}
+
+  m_missionLock.Unlock();
 
 	return true;
 }

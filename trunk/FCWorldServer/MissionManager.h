@@ -2,6 +2,7 @@
 #define _MISSIONMANAGER_H_
 
 #include <map>
+#include "../common/PThreadRWLock.h"
 #include "IEventSystem.h"
 #include "Mission.h"
 #include "Player.h"
@@ -24,6 +25,7 @@ private:
 	IEventSystem* m_pEventSystem;
   typedef map<FCULONG, Mission*> MissionMap;
   MissionMap m_mapMissions;
+  PThreadRWLock m_missionLock;
 };
 
 #endif//_MISSIONMANAGER_H_
