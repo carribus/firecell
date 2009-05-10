@@ -25,7 +25,7 @@
 #include <queue>
 #include "../fctypes.h"
 #include "../fcqueries.h"
-#include "../INIFile.h"
+#include "../inifile.h"
 #include "../threading.h"
 #include "../PThreadCond.h"
 #include "FCDBJob.h"

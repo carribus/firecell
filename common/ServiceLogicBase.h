@@ -12,7 +12,7 @@
 #include "protocol/fcprotocol.h"
 #include "PEPacket.h"
 #include "PacketExtractor.h"
-#include "Database/FCDatabase.h"
+#include "database/FCDatabase.h"
 #include "../Clients/common/Socket/ClientSocket.h"
 
 using namespace std;
