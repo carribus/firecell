@@ -28,7 +28,7 @@
   #include "../common/daemon/linux/Daemon.h"
 #endif//_WIN32
 //#include "../common/threading.h"
-#include "../common/cmdlineinfo.h"
+#include "../common/CmdLineInfo.h"
 #include "../common/interfaces/IService.h"
 #include "FCLogicAuth.h"
 
@@ -80,7 +80,7 @@ IService* CreateServerObject()
 #ifdef _WIN32
   CW32Service* serv = new CW32Service;
 
-  ps = serv;  
+  ps = serv;
 #else
   // instantiate daemons for other POSIX based systems
   CDaemon* serv = new CDaemon;

@@ -1,4 +1,5 @@
 #include <sstream>
+#include <stdlib.h>
 #include "PEPacketHelper.h"
 #include "ServiceLogicBase.h"
 

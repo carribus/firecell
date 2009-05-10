@@ -19,6 +19,8 @@
 */
 #ifdef _WIN32
 #include <windows.h>
+#else
+#include <stdarg.h>
 #endif//_WIN32
 #include <algorithm>
 #include "../Logging/DynLog.h"
@@ -117,7 +119,7 @@ bool FCDatabase::ExecuteJob(const string QueryName, void* pData, ...)
     char buffer[32000];
     size_t queryLen = sqlQuery.length();
     // check if any variable args were passed in
-    va_list marker = NULL;
+    va_list marker;
 
     va_start( marker, pData );
     vsprintf(buffer, sqlQuery.c_str(), marker);
