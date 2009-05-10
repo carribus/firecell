@@ -10,18 +10,22 @@ public:
   MissionMgr(void);
   ~MissionMgr(void);
 
-  bool addMission(FCULONG mission_id, bool bCompleted = false, FCULONG parent_mission_id = 0);
+  bool addMission(FCULONG mission_id, FCSHORT successCount = 0, FCSHORT failureCount = 0, bool bCompleted = false, FCULONG parent_mission_id = 0);
 	bool completeMission(FCULONG mission_id);
 	bool removeMission(FCULONG mission_id);
 
 	bool isMissionAccepted(FCULONG mission_id);
 	bool isMissionComplete(FCULONG mission_id);
+  FCSHORT getMissionSuccessCount(FCULONG mission_id);
+  FCSHORT getMissionFailureCount(FCULONG mission_id);
 
 private:
 
   struct _Mission
   {
     FCULONG mission_id;
+    FCSHORT successCount;
+    FCSHORT failureCount;
     bool bCompleted;
     std::list<_Mission> children;
   };

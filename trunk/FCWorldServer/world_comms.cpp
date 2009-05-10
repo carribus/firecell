@@ -324,6 +324,8 @@ void SendCharacterMissionsResponse(Player* pPlayer, BaseSocket* pRouter, FCSOCKE
   {
     d->missions[i].mission_id = it->second->GetID();
     d->missions[i].parent_id = it->second->GetParentID();
+    d->missions[i].success_count = it->second->GetSuccessCount();
+    d->missions[i].failure_count = it->second->GetFailureCount();
     d->missions[i].completed = it->second->IsComplete();
   }
   pPlayer->UnlockMissions();

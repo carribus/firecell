@@ -12,11 +12,13 @@ MissionMgr::~MissionMgr(void)
 
 ///////////////////////////////////////////////////////////////////////
 
-bool MissionMgr::addMission(FCULONG mission_id, bool bCompleted, FCULONG parent_mission_id)
+bool MissionMgr::addMission(FCULONG mission_id, FCSHORT successCount, FCSHORT failureCount, bool bCompleted, FCULONG parent_mission_id)
 {
   _Mission m;
 
   m.mission_id = mission_id;
+  m.successCount = successCount;
+  m.failureCount = failureCount;
   m.bCompleted = bCompleted;
   if ( !parent_mission_id )
   {
@@ -102,6 +104,36 @@ bool MissionMgr::isMissionComplete(FCULONG mission_id)
   }
 
 	return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+FCSHORT MissionMgr::getMissionSuccessCount(FCULONG mission_id)
+{
+  FCSHORT ret = 0;
+  _Mission* pMission = getMission(mission_id);
+
+  if ( pMission )
+  {
+    ret = pMission->successCount;
+  }
+
+  return ret;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+FCSHORT MissionMgr::getMissionFailureCount(FCULONG mission_id)
+{
+  FCSHORT ret = 0;
+  _Mission* pMission = getMission(mission_id);
+
+  if ( pMission )
+  {
+    ret = pMission->failureCount;
+  }
+
+  return ret;
 }
 
 ///////////////////////////////////////////////////////////////////////

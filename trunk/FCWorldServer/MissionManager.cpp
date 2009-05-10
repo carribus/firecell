@@ -36,8 +36,8 @@ bool MissionManager::AddMission(FCULONG missionID, FCSHORT minLevel, FCSHORT max
     pMission->SetDifficulty(difficulty);
     pMission->SetEventSuccess(success_event);
     pMission->SetEventFailure(failure_event);
-    pMission->SetSuccessCount(successCount);
-    pMission->SetFailureCount(failureCount);
+    pMission->SetRequiredSuccessCount(successCount);
+    pMission->SetRequiredFailureCount(failureCount);
     pMission->SetSuccessXP(xpSuccess);
     pMission->SetFailureXP(xpFailure);
 
