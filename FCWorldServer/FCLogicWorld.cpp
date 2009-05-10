@@ -1262,18 +1262,26 @@ void FCLogicWorld::OnDBJob_LoadCharacterMissions(DBIResultSet& resultSet, void*&
     return;
 
   size_t rowCount = resultSet.GetRowCount();
+  Mission* pMission = NULL;
   FCULONG mission_id;
-  FCSHORT isComplete;
+  FCSHORT isComplete, successCount = 0, failureCount = 0;
 
   for ( size_t i = 0; i < rowCount; i++ )
   {
     mission_id = resultSet.GetULongValue("mission_id", i);
-    isComplete= resultSet.GetShortValue("complete", i);
+    isComplete = resultSet.GetShortValue("complete", i);
+    successCount = resultSet.GetShortValue("success_count", i);
+    failureCount = resultSet.GetShortValue("failure_count", i);
 
     // assign the mission to the player
     pThis->m_missionMgr.AssignMissionToPlayer(pPlayer, mission_id);
-    if ( isComplete > 0 )
-      pPlayer->HasCompletedMission(mission_id);
+    if ( (pMission = pPlayer->GetMission(mission_id)) )
+    {
+      pMission->SetSuccessCount(successCount);
+      pMission->SetFailureCount(failureCount);
+      if ( isComplete > 0 )
+        pPlayer->HasCompletedMission(mission_id);
+    }
   }
 
   delete pCtx;

@@ -187,28 +187,33 @@ Mission* Player::AcceptMission(Mission* pMission)
 	if ( !pMission )
 		return NULL;
 
-	Mission* pMyMission = pMission->Clone();
+	Mission* pMyMission = this->GetMission(pMission->GetID());;
+  
+  if ( !pMyMission )
+  {
+    pMyMission = pMission->Clone();
 	
-	if ( pMyMission )
-	{
-    m_missionLock.LockForWrite();
-		m_mapMissions[ pMyMission->GetID() ] = pMyMission;
-		pMyMission->SetComplete(false);
-    if ( pMyMission->GetParentID() != 0 )
-    {
-      MissionMap::iterator it = m_mapMissions.find( pMyMission->GetParentID() );
+	  if ( pMyMission )
+	  {
+      m_missionLock.LockForWrite();
+		  m_mapMissions[ pMyMission->GetID() ] = pMyMission;
+		  pMyMission->SetComplete(false);
+      if ( pMyMission->GetParentID() != 0 )
+      {
+        MissionMap::iterator it = m_mapMissions.find( pMyMission->GetParentID() );
 
-      if ( it != m_mapMissions.end() )
-      {
-        it->second->AddChildMission(pMyMission);
+        if ( it != m_mapMissions.end() )
+        {
+          it->second->AddChildMission(pMyMission);
+        }
+        else
+        {
+          DYNLOG_ADDLOG( DYNLOG_FORMAT("Player::AcceptMission(): Could not add mission id %ld as a child to mission %ld because parent does not exist in Player %ld object", pMyMission->GetID(), pMyMission->GetParentID(), m_id) );
+        }
       }
-      else
-      {
-        DYNLOG_ADDLOG( DYNLOG_FORMAT("Player::AcceptMission(): Could not add mission id %ld as a child to mission %ld because parent does not exist in Player %ld object", pMyMission->GetID(), pMyMission->GetParentID(), m_id) );
-      }
-    }
-    m_missionLock.Unlock();
-	}
+      m_missionLock.Unlock();
+	  }
+  }
 
   return pMyMission;
 }

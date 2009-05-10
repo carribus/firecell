@@ -293,7 +293,7 @@ bool FCModel::OnCommandMissionComplete(PEPacket* pPkt, BaseSocket* pSocket)
 	FireEvent(FCME_Mission_Completed, (void*)d.mission_id);
 
 	// remove the mission from the mission manager
-	m_missionMgr.removeMission(d.mission_id);
+//	m_missionMgr.removeMission(d.mission_id);
 
   return true;
 }
@@ -804,7 +804,7 @@ bool FCModel::OnResponseCharacterMissionsRequest(PEPacket* pPkt, BaseSocket* pSo
 
   for ( FCULONG i = 0; i < d->numMissions; i++ )
   {
-    m_missionMgr.addMission( d->missions[i].mission_id, d->missions[i].completed, d->missions[i].parent_id );
+    m_missionMgr.addMission( d->missions[i].mission_id, d->missions[i].success_count, d->missions[i].failure_count, d->missions[i].completed, d->missions[i].parent_id );
   }
 
   delete [] (FCBYTE*)d;
@@ -1093,7 +1093,7 @@ bool FCModel::OnResponseMissionAccepted(PEPacket* pPkt, BaseSocket* pSocket)
     m_missionMgr.addMission(d->mission_id);
     for ( FCULONG i = 0; i < d->numChildMissions; i++ )
     {
-      m_missionMgr.addMission(d->child_missions[i].mission_id, false, d->mission_id);
+      m_missionMgr.addMission(d->child_missions[i].mission_id, 0, 0, false, d->mission_id);
     }
 
     // send an event to the view notifying it that we have accepted new missions

@@ -341,6 +341,8 @@ struct __FCPKT_CHARACTER_MISSIONS_REQUEST_RESP
   {
     FCULONG mission_id;
     FCULONG parent_id;
+    FCSHORT success_count;
+    FCSHORT failure_count;
     bool completed;
   } missions[1];
 };

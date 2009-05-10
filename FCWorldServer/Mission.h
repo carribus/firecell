@@ -37,6 +37,8 @@ public:
   FCSHORT GetDifficulty()                                 { return m_difficulty; }
   string GetEventSuccess()                                { return m_eventSuccess; }
   string GetEventFailure()                                { return m_eventFailure; }
+  FCSHORT GetRequiredSuccessCount()                       { return m_successReqCount; }
+  FCSHORT GetRequiredFailureCount()                       { return m_failureReqCount; }
   FCSHORT GetSuccessCount()                               { return m_successCount; }
   FCSHORT GetFailureCount()                               { return m_failureCount; }
   FCSHORT GetSuccessXP()                                  { return m_successXP; }
@@ -51,8 +53,10 @@ public:
   void SetDifficulty(FCSHORT diff)                        { m_difficulty = diff; }
   void SetEventSuccess(string event)                      { m_eventSuccess = event; }
   void SetEventFailure(string event)                      { m_eventFailure = event; }
-  void SetSuccessCount(FCSHORT count)                     { m_successReqCount = count; }
-  void SetFailureCount(FCSHORT count)                     { m_failureReqCount = count; }
+  void SetRequiredSuccessCount(FCSHORT count)             { m_successReqCount = count; }
+  void SetRequiredFailureCount(FCSHORT count)             { m_failureReqCount = count; }
+  void SetSuccessCount(FCSHORT count)                     { m_successCount = count; }
+  void SetFailureCount(FCSHORT count)                     { m_failureCount = count; }
   void SetSuccessXP(FCSHORT xp)                           { m_successXP = xp; }
   void SetFailureXP(FCSHORT xp)                           { m_failureXP = xp; }
 	void SetComplete(bool bComplete = true)									{ m_bComplete = bComplete; }
