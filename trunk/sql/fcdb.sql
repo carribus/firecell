@@ -77,6 +77,8 @@ CREATE TABLE `fc_charactermissions` (
 
 /*Data for the table `fc_charactermissions` */
 
+insert  into `fc_charactermissions`(`character_id`,`mission_id`,`success_count`,`failure_count`,`complete`) values (1,1,3,0,'1'),(1,2,1,0,'1'),(1,3,1,0,'1'),(1,4,2,0,'1');
+
 /*Table structure for table `fc_characterports` */
 
 DROP TABLE IF EXISTS `fc_characterports`;
@@ -191,7 +193,7 @@ DROP TABLE IF EXISTS `fc_forumcategories`;
 CREATE TABLE `fc_forumcategories` (
   `forumcat_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) DEFAULT NULL COMMENT '[Optional] Parent Category ID',
-  `order` int(10) unsigned NOT NULL COMMENT 'Order of display',
+  `cat_order` int(10) unsigned NOT NULL COMMENT 'Order of display',
   `name` varchar(32) NOT NULL COMMENT 'Name of the category',
   `description` varchar(256) DEFAULT NULL COMMENT 'Description of category',
   `accounttype_required` int(10) unsigned NOT NULL COMMENT 'account type required to see the category',
@@ -202,28 +204,28 @@ CREATE TABLE `fc_forumcategories` (
 
 /*Data for the table `fc_forumcategories` */
 
-insert  into `fc_forumcategories`(`forumcat_id`,`parent_id`,`order`,`name`,`description`,`accounttype_required`,`min_level`,`max_level`) values (1,NULL,1,'General','All game related posts are made in these categories',1,1,100),(2,1,1,'Tutorial Missions','The introductory tutorial missions can be found here',1,1,5),(3,1,2,'Basic Missions','Basic Missions for the early levels..',1,1,15),(4,1,3,'General Missions','Missions here are available to all levels of players',1,1,100),(5,NULL,2,'Q&A',NULL,1,1,100),(6,5,1,'Beginner Questions','All beginner questions should be asked here...',1,1,100),(7,5,2,'General Questions','General game related questions go here',1,1,100),(8,1,4,'News','Game related news',1,1,100);
+insert  into `fc_forumcategories`(`forumcat_id`,`parent_id`,`cat_order`,`name`,`description`,`accounttype_required`,`min_level`,`max_level`) values (1,NULL,1,'General','All game related posts are made in these categories',1,1,100),(2,1,1,'Tutorial Missions','The introductory tutorial missions can be found here',1,1,5),(3,1,2,'Basic Missions','Basic Missions for the early levels..',1,1,15),(4,1,3,'General Missions','Missions here are available to all levels of players',1,1,100),(5,NULL,2,'Q&A',NULL,1,1,100),(6,5,1,'Beginner Questions','All beginner questions should be asked here...',1,1,100),(7,5,2,'General Questions','General game related questions go here',1,1,100),(8,1,4,'News','Game related news',1,1,100);
 
 /*Table structure for table `fc_forumposts` */
 
 DROP TABLE IF EXISTS `fc_forumposts`;
 
 CREATE TABLE `fc_forumposts` (
-  `forumpost_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `forumpost_id` bigint(20) unsigned NOT NULL,
   `parentpost_id` bigint(20) DEFAULT NULL COMMENT 'id of the parent thread post',
   `forumcategory_id` bigint(20) unsigned NOT NULL COMMENT 'category that this post belongs to',
-  `order` int(11) NOT NULL COMMENT 'this posts order in the thread',
+  `post_order` int(11) NOT NULL COMMENT 'this posts order in the thread',
   `title` varchar(255) DEFAULT NULL COMMENT 'Title of the thread',
   `author_id` bigint(20) NOT NULL COMMENT 'ID of the author of the thread',
   `content` text COMMENT 'Content of the thread post',
   `date_created` datetime NOT NULL COMMENT 'Datetime of thread creation',
   `mission_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Set if this post is tied to a mission',
   PRIMARY KEY (`forumpost_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_forumposts` */
 
-insert  into `fc_forumposts`(`forumpost_id`,`parentpost_id`,`forumcategory_id`,`order`,`title`,`author_id`,`content`,`date_created`,`mission_id`) values (1,NULL,2,1,'[M1:N]',1,'[M1:D]\r\n\r\n- [M2:N]\r\n- [M3:N]\r\n- [M4:N]','2008-12-11 11:44:41',1),(2,NULL,1,1,'Welcome to FireCell',1,'Hello and welcome to FireCell.\r\n\r\nThank you for taking the time to play this game that I have created in my spare time to enjoy with you, and all our friends on the internet. The Forums will serve as the primary point of communication, both with you and the community, but also with the various crews that are created in the game. You will also find missions to help you improve your character and hardware as well as earn as much money as possible!\r\n\r\nI hope you have a great time exploring this virtual cyberspace, and good luck in hacking your way to fame or notoriority. The choice is yours!\r\n\r\n-FCGM','2009-02-11 22:35:43',NULL),(3,NULL,1,2,'Rules for forum posting',1,'Although the cyberspace universe of FireCell can be as untamed and wild as the players make it, it would be appreciated if all players could control their language used in the publically available forums, as well as keeping their flaming to the flame section. Any players found callously ignoring this request will be banned after repeat offences.\r\n\r\nThank you for your understanding,\r\n- FCGM','2009-02-11 22:41:45',NULL),(4,3,1,1,'',2,'Good rules!\r\n\r\nI hope everything goes according to plan','2009-02-16 14:37:18',NULL);
+insert  into `fc_forumposts`(`forumpost_id`,`parentpost_id`,`forumcategory_id`,`post_order`,`title`,`author_id`,`content`,`date_created`,`mission_id`) values (1,NULL,2,1,'[M1:N]',1,'[M1:D]\r\n\r\n- [M2:N]\r\n- [M3:N]\r\n- [M4:N]','2008-12-11 11:44:41',1),(2,NULL,1,1,'Welcome to FireCell',1,'Hello and welcome to FireCell.\r\n\r\nThank you for taking the time to play this game that I have created in my spare time to enjoy with you, and all our friends on the internet. The Forums will serve as the primary point of communication, both with you and the community, but also with the various crews that are created in the game. You will also find missions to help you improve your character and hardware as well as earn as much money as possible!\r\n\r\nI hope you have a great time exploring this virtual cyberspace, and good luck in hacking your way to fame or notoriority. The choice is yours!\r\n\r\n-FCGM','2009-02-11 22:35:43',NULL),(3,NULL,1,2,'Rules for forum posting',1,'Although the cyberspace universe of FireCell can be as untamed and wild as the players make it, it would be appreciated if all players could control their language used in the publically available forums, as well as keeping their flaming to the flame section. Any players found callously ignoring this request will be banned after repeat offences.\r\n\r\nThank you for your understanding,\r\n- FCGM','2009-02-11 22:41:45',NULL),(4,3,1,1,'',2,'Good rules!\r\n\r\nI hope everything goes according to plan','2009-02-16 14:37:18',NULL);
 
 /*Table structure for table `fc_items` */
 

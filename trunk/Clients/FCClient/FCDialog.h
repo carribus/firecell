@@ -124,8 +124,8 @@ protected:
   virtual bool OnMenuItemSelected(s32 selectedItem, IGUIContextMenu* pMenu) { return false; }
   virtual bool OnUnknownGUIEvent(u32 eventType, s32 id, IGUIElement* pElem) { return false; }
 
-  void OnOK();
-  void OnCancel();
+  virtual void OnOK();
+  virtual void OnCancel();
 
 	//! sends the event that the file choose process has been canceld
 	void closeDialog();

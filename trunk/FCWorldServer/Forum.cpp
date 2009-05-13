@@ -1,4 +1,5 @@
 #include "../common/Logging/DynLog.h"
+#include "../common/database/FCDatabase.h"
 #include "EventSystem.h"
 #include "Event.h"
 #include "ForumPost.h"
@@ -146,6 +147,9 @@ bool Forum::CreateNewForumThread(FCULONG category_id, FCULONG thread_id, FCULONG
     sprintf(now, "%ld-%02ld-%02ld %02ld:%02ld:%02ld", pTime->tm_year+1900, pTime->tm_mon+1, pTime->tm_mday, pTime->tm_hour, pTime->tm_min, pTime->tm_sec);
     if ( (pNewPost = AddForumPost( postID, thread_id, category_id, (FCULONG)-1, title, content, author_id, author_name, now )) )
 		{
+      // save the post to the database
+      FCDatabase::instance().ExecuteJob(DBQ_SAVE_FORUM_POST, NULL, postID, thread_id, category_id, pNewPost->GetOrder(), title.c_str(), author_id, content.c_str());
+
       // emit an event for the new forum post
       EventSystem::GetInstance()->Emit( this, NULL, new Event(Forum::EVT_NewThread, (void*)pNewPost) );
 

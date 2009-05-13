@@ -335,6 +335,7 @@ void* FCDatabase::thrdDBWorker(void* pData)
           if ( strError.length() )
           {
             DYNLOG_ADDLOG( DYNLOG_FORMAT("FCDatabase Error [%ld]: %s", nError, strError.c_str()) );
+            DYNLOG_ADDLOG( DYNLOG_FORMAT("FCDatabase Error [%ld]: Query=%s", nError, job.GetQuery().c_str()) );
           }
 
 					switch ( nError )

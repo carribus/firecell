@@ -80,4 +80,9 @@
 #define DBQ_SAVE_CHARACTER_MISSION_SUCCESS_COUNT        "save_character_mission_success_count"
 #define DBQ_SAVE_CHARACTER_MISSION_COMPLETE_FLAG        "save_character_mission_complete_flag"
 
+////////////////////////////////////////
+// FORUM QUERIES
+////////////////////////////////////////
+#define DBQ_SAVE_FORUM_POST                             "save_forum_post"
+
 #endif//_FCQUERIES_H_

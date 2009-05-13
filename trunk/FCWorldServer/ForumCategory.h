@@ -44,6 +44,10 @@ public:
 
 		if ( pPost->GetParentID() == 0 )
 		{
+      if ( pPost->GetOrder() == -1 )
+      {
+        pPost->SetOrder( GetPostCount()+1 );
+      }
       m_mutexPosts.Lock();
 			m_posts.push_back(pPost);
 			result = m_posts.size();
@@ -55,6 +59,10 @@ public:
 
 			if ( pParent )
 			{
+        if ( pPost->GetOrder() == -1 )
+        {
+          pPost->SetOrder( pParent->GetPosts().size()+1 );
+        }
 				result = pParent->AddForumPost(pPost);
 			}
 		}
