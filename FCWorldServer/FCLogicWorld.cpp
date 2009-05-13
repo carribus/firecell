@@ -1477,7 +1477,7 @@ void FCLogicWorld::OnDBJob_LoadForumCategories(DBIResultSet& resultSet, void*& p
 	{
 		id = resultSet.GetULongValue("forumcat_id", i);
 		parentID = resultSet.GetULongValue("parent_id", i);
-		order = resultSet.GetULongValue("order", i);
+		order = resultSet.GetULongValue("cat_order", i);
 		name = resultSet.GetStringValue("name", i);
 		desc = resultSet.GetStringValue("description", i);
 		accountTypeReq = resultSet.GetULongValue("accounttype_required", i);
@@ -1517,7 +1517,7 @@ void FCLogicWorld::OnDBJob_LoadForumPosts(DBIResultSet& resultSet, void*& pConte
 		post_id = resultSet.GetULongValue("forumpost_id", i);
 		parent_id = resultSet.GetULongValue("parentpost_id", i);
 		category_id = resultSet.GetULongValue("forumcategory_id", i);
-		order = resultSet.GetULongValue("order", i);
+		order = resultSet.GetULongValue("post_order", i);
 		title = resultSet.GetStringValue("title", i);
 		author_id = resultSet.GetULongValue("author_id", i);
     author = resultSet.GetStringValue("author_name", i);
