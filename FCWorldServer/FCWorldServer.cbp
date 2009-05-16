@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="FCWorldServer" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Win32">
+				<Option output="../bin/Debug/Server/FCWorldServer" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Debug" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-DTIXML_USE_STL" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-O0" />
+					<Add directory="../common/mysql/include/" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="../common/mysql/include/" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="libmysql" />
+					<Add library="pthreadVSE2" />
+					<Add directory="../common/pthreads-win32/lib/" />
+					<Add directory="../common/mysql/lib/debug/" />
+				</Linker>
+			</Target>
+			<Target title="Release Win32">
+				<Option output="../bin/Release/Server/FCWorldServer" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Release" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-DTIXML_USE_STL" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-W" />
+					<Add directory="../common/mysql/include/" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="../common/mysql/include/" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="libmysql" />
+					<Add library="pthreadVSE2" />
+					<Add directory="../common/mysql/lib/opt/" />
+					<Add directory="../common/pthreads-win32/lib/" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="../Clients/common/Socket/win/BaseSocket.cpp" />
+		<Unit filename="../common/CmdLineInfo.cpp" />
+		<Unit filename="Company.cpp" />
+		<Unit filename="Computer.cpp" />
+		<Unit filename="../common/game_objects/ComputerBase.cpp" />
+		<Unit filename="Event.cpp" />
+		<Unit filename="EventSystem.cpp" />
+		<Unit filename="FCLogicWorld.cpp" />
+		<Unit filename="../common/game_objects/FCObject.cpp" />
+		<Unit filename="../common/game_objects/FCObjectFactory.cpp" />
+		<Unit filename="FCWorldServer.cpp" />
+		<Unit filename="FileSystem.cpp" />
+		<Unit filename="FileSystemActionHandler.cpp" />
+		<Unit filename="Forum.cpp" />
+		<Unit filename="../common/game_objects/InGameIPAddress.cpp" />
+		<Unit filename="../common/inifile.cpp" />
+		<Unit filename="ItemManager.cpp" />
+		<Unit filename="../common/game_objects/ItemMemory.cpp" />
+		<Unit filename="../common/game_objects/ItemOS.cpp" />
+		<Unit filename="../common/game_objects/ItemProcessor.cpp" />
+		<Unit filename="../common/game_objects/ItemSoftware.cpp" />
+		<Unit filename="Mission.cpp" />
+		<Unit filename="MissionManager.cpp" />
+		<Unit filename="../common/game_objects/NetworkPorts.cpp" />
+		<Unit filename="PacketDispatcher.cpp" />
+		<Unit filename="../common/PacketExtractor.cpp" />
+		<Unit filename="../common/PEPacket.cpp" />
+		<Unit filename="../common/PEPacketHelper.cpp" />
+		<Unit filename="Player.cpp" />
+		<Unit filename="PlayerManager.cpp" />
+		<Unit filename="../common/PThreadCond.cpp" />
+		<Unit filename="../common/PThreadMutex.cpp" />
+		<Unit filename="../common/PThreadRWLock.cpp" />
+		<Unit filename="../common/ServiceLogicBase.cpp" />
+		<Unit filename="SoftwareHTTPServer.cpp" />
+		<Unit filename="SoftwareService.cpp" />
+		<Unit filename="../common/daemon/win/W32Service.cpp" />
+		<Unit filename="../common/sockserver/win/W32SocketServer.cpp" />
+		<Unit filename="world_comms.cpp" />
+		<Unit filename="WorldManager.cpp" />
+		<Unit filename="../Clients/common/Socket/win/BaseSocket.h" />
+		<Unit filename="../common/binstream.h" />
+		<Unit filename="City.h" />
+		<Unit filename="../common/CmdLineInfo.h" />
+		<Unit filename="Company.h" />
+		<Unit filename="Computer.h" />
+		<Unit filename="../common/game_objects/ComputerBase.h" />
+		<Unit filename="Country.h" />
+		<Unit filename="Event.h" />
+		<Unit filename="EventSystem.h" />
+		<Unit filename="EventWithDisposableData.h" />
+		<Unit filename="FCLogicWorld.h" />
+		<Unit filename="../common/game_objects/FCObject.h" />
+		<Unit filename="../common/game_objects/FCObjectFactory.h" />
+		<Unit filename="../common/protocol/fcprotocol.h" />
+		<Unit filename="../common/fctypes.h" />
+		<Unit filename="FileSystem.h" />
+		<Unit filename="FileSystemActionHandler.h" />
+		<Unit filename="Forum.h" />
+		<Unit filename="ForumCategory.h" />
+		<Unit filename="ForumPost.h" />
+		<Unit filename="IEventSystem.h" />
+		<Unit filename="../common/game_objects/InGameIPAddress.h" />
+		<Unit filename="../common/inifile.h" />
+		<Unit filename="../fcserver/interfaces/IService.h" />
+		<Unit filename="../fcserver/interfaces/IServiceLogic.h" />
+		<Unit filename="../common/game_objects/Item.h" />
+		<Unit filename="ItemManager.h" />
+		<Unit filename="../common/game_objects/ItemMemory.h" />
+		<Unit filename="../common/game_objects/ItemOS.h" />
+		<Unit filename="../common/game_objects/ItemProcessor.h" />
+		<Unit filename="../common/game_objects/ItemSoftware.h" />
+		<Unit filename="../common/game_objects/ItemType.h" />
+		<Unit filename="Mission.h" />
+		<Unit filename="MissionManager.h" />
+		<Unit filename="../common/game_objects/NetworkPorts.h" />
+		<Unit filename="PacketDispatcher.h" />
+		<Unit filename="../common/PacketExtractor.h" />
+		<Unit filename="../common/PEPacket.h" />
+		<Unit filename="../common/PEPacketHelper.h" />
+		<Unit filename="Player.h" />
+		<Unit filename="PlayerManager.h" />
+		<Unit filename="../common/PThreadCond.h" />
+		<Unit filename="../common/PThreadMutex.h" />
+		<Unit filename="../common/PThreadRWLock.h" />
+		<Unit filename="../common/ServiceLogicBase.h" />
+		<Unit filename="SoftwareHTTPServer.h" />
+		<Unit filename="SoftwareService.h" />
+		<Unit filename="../common/game_objects/swtypes.h" />
+		<Unit filename="../common/daemon/win/W32Service.h" />
+		<Unit filename="../common/sockserver/win/W32SocketServer.h" />
+		<Unit filename="world_comms.h" />
+		<Unit filename="WorldManager.h" />
+		<Unit filename="../common/database/mysql/DBIMySql.cpp" />
+		<Unit filename="../common/database/mysql/DBIMySql.h" />
+		<Unit filename="../common/database/mysql/DBIMySqlConnection.cpp" />
+		<Unit filename="../common/database/mysql/DBIMySqlConnection.h" />
+		<Unit filename="../common/database/mysql/DBIMySqlResultSet.cpp" />
+		<Unit filename="../common/database/mysql/DBIMySqlResultSet.h" />
+		<Unit filename="../common/database/DBIResults.cpp" />
+		<Unit filename="../common/database/DBIResults.h" />
+		<Unit filename="../common/database/DBIResultSet.cpp" />
+		<Unit filename="../common/database/DBIResultSet.h" />
+		<Unit filename="../common/database/FCDatabase.cpp" />
+		<Unit filename="../common/database/FCDatabase.h" />
+		<Unit filename="../common/database/FCDBJob.cpp" />
+		<Unit filename="../common/database/FCDBJob.h" />
+		<Unit filename="../common/database/IDBInterface.h" />
+		<Unit filename="../common/tinyXML/tinystr.cpp" />
+		<Unit filename="../common/tinyXML/tinystr.h" />
+		<Unit filename="../common/tinyXML/tinyxml.cpp" />
+		<Unit filename="../common/tinyXML/tinyxml.h" />
+		<Unit filename="../common/tinyXML/tinyxmlerror.cpp" />
+		<Unit filename="../common/tinyXML/tinyxmlparser.cpp" />
+		<Unit filename="../common/Logging/DynLog.cpp" />
+		<Unit filename="../common/Logging/DynLogConsoleWriter.cpp" />
+		<Unit filename="../common/Logging/DynLogger.cpp" />
+		<Unit filename="../common/Logging/DynLogItemBase.cpp" />
+		<Unit filename="../common/Logging/DynLogNullWriter.cpp" />
+		<Unit filename="../common/Logging/DynLogStringItem.cpp" />
+		<Unit filename="../common/Logging/DynLogTextfileWriter.cpp" />
+		<Unit filename="../common/Logging/DynLog.h" />
+		<Unit filename="../common/Logging/DynLogConsoleWriter.h" />
+		<Unit filename="../common/Logging/DynLogger.h" />
+		<Unit filename="../common/Logging/DynLogItemBase.h" />
+		<Unit filename="../common/Logging/DynLogNullWriter.h" />
+		<Unit filename="../common/Logging/DynLogStringItem.h" />
+		<Unit filename="../common/Logging/DynLogTextfileWriter.h" />
+		<Unit filename="../common/Logging/IDynLog.h" />
+		<Unit filename="../common/Logging/RefCounter.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
