@@ -328,6 +328,24 @@ int CW32Service::ISRV_Stop()
 
 ///////////////////////////////////////////////////////////////////////
 
+void CW32Service::ISRV_GetBinPath(char* outBuffer, size_t& bufferSize)
+{
+  GetModuleFileName(NULL, outBuffer, bufferSize);
+  size_t len = strlen(outBuffer);
+  if ( len > 0 )
+  {
+    char* pPos = outBuffer+len;
+    while ( *pPos != '\\' )
+      pPos--;
+
+    if ( pPos > outBuffer )
+      *(pPos+1) = '\0';
+    bufferSize = strlen(outBuffer);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool CW32Service::InstallService(CW32Service* pService, const char* lpszParams)
 {
 	if ( !pService )

@@ -7,6 +7,7 @@ ServiceLogicBase::ServiceLogicBase(const string& serviceName, const string servi
 : m_ServiceName(serviceName)
 , m_ServiceDesc(serviceDesc)
 , m_bHasConsole(bHasConsole)
+, m_bDBMonRunning(false)
 {
 }
 

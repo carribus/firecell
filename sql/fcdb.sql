@@ -77,8 +77,6 @@ CREATE TABLE `fc_charactermissions` (
 
 /*Data for the table `fc_charactermissions` */
 
-insert  into `fc_charactermissions`(`character_id`,`mission_id`,`success_count`,`failure_count`,`complete`) values (1,1,3,0,'1'),(1,2,1,0,'1'),(1,3,1,0,'1'),(1,4,2,0,'1');
-
 /*Table structure for table `fc_characterports` */
 
 DROP TABLE IF EXISTS `fc_characterports`;
@@ -88,12 +86,13 @@ CREATE TABLE `fc_characterports` (
   `port_number` int(11) NOT NULL COMMENT 'a character''s specific port ',
   `item_id` bigint(20) DEFAULT '0' COMMENT 'the service attached to the port (if none, then null)',
   `enabled` smallint(6) NOT NULL DEFAULT '0' COMMENT 'enabled port flag',
+  `health` smallint(5) unsigned NOT NULL DEFAULT '100' COMMENT 'the port''s health',
   PRIMARY KEY (`character_id`,`port_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_characterports` */
 
-insert  into `fc_characterports`(`character_id`,`port_number`,`item_id`,`enabled`) values (1,0,NULL,0),(1,1,NULL,0),(1,2,NULL,0),(1,3,NULL,0),(1,4,NULL,0),(1,5,NULL,0),(1,6,NULL,0),(1,7,NULL,0),(2,0,NULL,0),(2,1,NULL,0),(2,2,NULL,0),(2,3,NULL,0),(2,4,NULL,0),(2,5,NULL,0),(2,6,NULL,0),(2,7,NULL,0),(3,0,NULL,0),(3,1,NULL,0),(3,2,NULL,0),(3,3,NULL,0),(3,4,NULL,0),(3,5,NULL,0),(3,6,NULL,0),(3,7,NULL,0);
+insert  into `fc_characterports`(`character_id`,`port_number`,`item_id`,`enabled`,`health`) values (1,0,NULL,0,100),(1,1,NULL,0,100),(1,2,NULL,0,100),(1,3,NULL,0,100),(1,4,NULL,0,100),(1,5,NULL,0,100),(1,6,NULL,0,100),(1,7,NULL,0,100),(2,0,NULL,0,100),(2,1,NULL,0,100),(2,2,NULL,0,100),(2,3,NULL,0,100),(2,4,NULL,0,100),(2,5,NULL,0,100),(2,6,NULL,0,100),(2,7,NULL,0,100),(3,0,NULL,0,100),(3,1,NULL,0,100),(3,2,NULL,0,100),(3,3,NULL,0,100),(3,4,NULL,0,100),(3,5,NULL,0,100),(3,6,NULL,0,100),(3,7,NULL,0,100);
 
 /*Table structure for table `fc_characters` */
 

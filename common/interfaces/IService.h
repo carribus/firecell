@@ -60,6 +60,11 @@ struct IService
    *  \brief Stops the service
    */
   virtual int ISRV_Stop() = 0;
+
+  /**
+   *  \brief Retrieves the path of the executing binary
+   */
+  virtual void ISRV_GetBinPath(char* outBuffer, size_t& bufferSize) = 0;
 };
 
 #endif//_ISERVICE_H_
