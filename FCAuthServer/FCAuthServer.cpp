@@ -44,14 +44,6 @@ int main(int argc, FCSTR argv[])
   IServiceLogic* pLogic = new FCLogicAuth;
   CCmdLineInfo  cmdLine(argc, argv);
 
-  char buffer[MAX_PATH];
-  size_t bufLen = sizeof(buffer);
-  pService->ISRV_GetBinPath(buffer, bufLen);
-#ifdef _WIN32
-  SetCurrentDirectory(buffer);
-#else
-#endif
-
   // create the logger
   Logging::IDynLogWriter* pWriter = Logging::createLogWriter( Logging::LOGWRITER_TEXTFILE);
   ((Logging::IDynLogTextFileWriter*)pWriter)->setFilename("FCAuthServer.log");
@@ -89,6 +81,10 @@ IService* CreateServerObject()
   CW32Service* serv = new CW32Service;
 
   ps = serv;
+  char buffer[MAX_PATH];
+  size_t bufLen = sizeof(buffer);
+  ps->ISRV_GetBinPath(buffer, bufLen);
+  SetCurrentDirectory(buffer);
 #else
   // instantiate daemons for other POSIX based systems
   CDaemon* serv = new CDaemon;

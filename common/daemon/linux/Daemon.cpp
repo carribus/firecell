@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include "../../Logging/DynLog.h"
 #include "Daemon.h"
 
 CDaemon::CDaemon()
@@ -72,13 +73,17 @@ int CDaemon::ISRV_Run(void* pData)
     // clear the file creation mask
     umask(0);
 
-    if ( (pid = fork()) < 0 )
+    pid = fork();
+    if ( pid < 0 )
     {
-      // something bad happened here...
-      return -1;
+      // an error occurred
+      DYNLOG_ADDLOG("An error occurred during fork()");
+      return 0;
     }
-    else if ( pid != 0 )
+    if ( pid > 0 )
     {
+      // this is the parent executing... so we can die now...
+      DYNLOG_ADDLOG("fork() successful. Parent exiting...");
       return 0;
     }
 
@@ -118,6 +123,13 @@ int CDaemon::ISRV_Stop()
   m_cond.Signal();
 
   return 0;
+}
+
+///////////////////////////////////////////////////////////////////
+
+void CDaemon::ISRV_GetBinPath(char* outBuffer, size_t& bufSize)
+{
+  bufSize = 0;
 }
 
 ///////////////////////////////////////////////////////////////////
