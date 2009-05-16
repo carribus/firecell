@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="FCAuthServer" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Win32">
+				<Option platforms="Windows;" />
+				<Option output="../bin/debug/server/FCAuthServer" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Debug" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-O0" />
+					<Add directory="../common/mysql/include/" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="../common/mysql/include/" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="libmysql" />
+					<Add library="pthreadVSE2" />
+					<Add directory="../common/pthreads-win32/lib/" />
+					<Add directory="../common/mysql/lib/debug/" />
+				</Linker>
+			</Target>
+			<Target title="Release Win32">
+				<Option platforms="Windows;" />
+				<Option output="../bin/Release/Server/FCAuthServer" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Release" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-W" />
+					<Add directory="../common/mysql/include/" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="../common/mysql/include/" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="libmysql" />
+					<Add library="pthreadVSE2" />
+					<Add directory="../common/mysql/lib/opt/" />
+					<Add directory="../common/pthreads-win32/lib/" />
+				</Linker>
+			</Target>
+			<Target title="Debug Linux">
+				<Option platforms="Unix;" />
+				<Option output="../bin/Debug/Server/FCAuthServer" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Debug" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-O0" />
+					<Add directory="../common/mysql/include/" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="../common/mysql/include/" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="libmysql" />
+					<Add library="pthreadVSE2" />
+					<Add directory="../common/pthreads-win32/lib/" />
+					<Add directory="../common/mysql/lib/debug/" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="../Clients/common/Socket/linux/BaseSocket.cpp">
+			<Option target="Debug Linux" />
+		</Unit>
+		<Unit filename="../Clients/common/Socket/linux/BaseSocket.h">
+			<Option target="Debug Linux" />
+		</Unit>
+		<Unit filename="../Clients/common/Socket/win/BaseSocket.cpp">
+			<Option target="Debug Win32" />
+			<Option target="Release Win32" />
+		</Unit>
+		<Unit filename="../Clients/common/Socket/win/BaseSocket.h">
+			<Option target="Debug Win32" />
+			<Option target="Release Win32" />
+		</Unit>
+		<Unit filename="Account.cpp" />
+		<Unit filename="Account.h" />
+		<Unit filename="FCAuthServer.cpp" />
+		<Unit filename="FCLogicAuth.cpp" />
+		<Unit filename="FCLogicAuth.h" />
+		<Unit filename="../common/CmdLineInfo.cpp" />
+		<Unit filename="../common/CmdLineInfo.h" />
+		<Unit filename="../common/Logging/DynLog.cpp" />
+		<Unit filename="../common/Logging/DynLog.h" />
+		<Unit filename="../common/Logging/DynLogConsoleWriter.cpp" />
+		<Unit filename="../common/Logging/DynLogConsoleWriter.h" />
+		<Unit filename="../common/Logging/DynLogItemBase.cpp" />
+		<Unit filename="../common/Logging/DynLogItemBase.h" />
+		<Unit filename="../common/Logging/DynLogNullWriter.cpp" />
+		<Unit filename="../common/Logging/DynLogNullWriter.h" />
+		<Unit filename="../common/Logging/DynLogStringItem.cpp" />
+		<Unit filename="../common/Logging/DynLogStringItem.h" />
+		<Unit filename="../common/Logging/DynLogTextfileWriter.cpp" />
+		<Unit filename="../common/Logging/DynLogTextfileWriter.h" />
+		<Unit filename="../common/Logging/DynLogger.cpp" />
+		<Unit filename="../common/Logging/DynLogger.h" />
+		<Unit filename="../common/Logging/IDynLog.h" />
+		<Unit filename="../common/Logging/RefCounter.h" />
+		<Unit filename="../common/PEPacket.cpp" />
+		<Unit filename="../common/PEPacket.h" />
+		<Unit filename="../common/PEPacketHelper.cpp" />
+		<Unit filename="../common/PEPacketHelper.h" />
+		<Unit filename="../common/PThreadCond.cpp" />
+		<Unit filename="../common/PThreadCond.h" />
+		<Unit filename="../common/PacketExtractor.cpp" />
+		<Unit filename="../common/PacketExtractor.h" />
+		<Unit filename="../common/ServiceLogicBase.cpp" />
+		<Unit filename="../common/ServiceLogicBase.h" />
+		<Unit filename="../common/daemon/linux/Daemon.cpp">
+			<Option target="Debug Linux" />
+		</Unit>
+		<Unit filename="../common/daemon/linux/Daemon.h">
+			<Option target="Debug Linux" />
+		</Unit>
+		<Unit filename="../common/daemon/win/W32Service.cpp">
+			<Option target="Debug Win32" />
+			<Option target="Release Win32" />
+		</Unit>
+		<Unit filename="../common/daemon/win/W32Service.h">
+			<Option target="Debug Win32" />
+			<Option target="Release Win32" />
+		</Unit>
+		<Unit filename="../common/database/DBIResultSet.cpp" />
+		<Unit filename="../common/database/DBIResultSet.h" />
+		<Unit filename="../common/database/DBIResults.cpp" />
+		<Unit filename="../common/database/DBIResults.h" />
+		<Unit filename="../common/database/FCDBJob.cpp" />
+		<Unit filename="../common/database/FCDBJob.h" />
+		<Unit filename="../common/database/FCDatabase.cpp" />
+		<Unit filename="../common/database/FCDatabase.h" />
+		<Unit filename="../common/database/IDBInterface.h" />
+		<Unit filename="../common/database/mysql/DBIMySql.cpp" />
+		<Unit filename="../common/database/mysql/DBIMySql.h" />
+		<Unit filename="../common/database/mysql/DBIMySqlConnection.cpp" />
+		<Unit filename="../common/database/mysql/DBIMySqlConnection.h" />
+		<Unit filename="../common/database/mysql/DBIMySqlResultSet.cpp" />
+		<Unit filename="../common/database/mysql/DBIMySqlResultSet.h" />
+		<Unit filename="../common/fcqueries.h" />
+		<Unit filename="../common/inifile.cpp" />
+		<Unit filename="../common/inifile.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
