@@ -36,6 +36,7 @@ public:
   void ISRV_RunAsApp(bool bAsApp);
   int ISRV_Run(void* pData);
   int ISRV_Stop();
+  void ISRV_GetBinPath(char* outBuffer, size_t& bufSize);
 
 private:
 

@@ -63,13 +63,13 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-O0" />
 					<Add option="-DWIN32" />
 					<Add option="-D_DEBUG" />
 					<Add option="-D_CONSOLE" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add option="-W" />
-					<Add option="-g" />
-					<Add option="-O0" />
 					<Add directory="../common/mysql/include/" />
 				</Compiler>
 				<ResourceCompiler>
@@ -77,9 +77,6 @@
 				</ResourceCompiler>
 				<Linker>
 					<Add library="libmysql" />
-					<Add library="pthreadVSE2" />
-					<Add directory="../common/pthreads-win32/lib/" />
-					<Add directory="../common/mysql/lib/debug/" />
 				</Linker>
 			</Target>
 		</Build>
