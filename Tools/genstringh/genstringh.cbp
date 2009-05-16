@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="genstringh" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Win32">
+				<Option output="../../bin/Debug/Tools/genstringh" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Debug" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-O0" />
+				</Compiler>
+			</Target>
+			<Target title="Release Win32">
+				<Option output="../../bin/Release/Tools/genstringh" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Release" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-W" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Unit filename="../../common/CmdLineInfo.cpp" />
+		<Unit filename="genstringh.cpp" />
+		<Unit filename="../../common/CmdLineInfo.h" />
+		<Unit filename="../../common/Xml/CXMLReaderImpl.h" />
+		<Unit filename="../../common/Xml/fast_atof.h" />
+		<Unit filename="../../common/Xml/heapsort.h" />
+		<Unit filename="../../common/Xml/irrArray.h" />
+		<Unit filename="../../common/Xml/irrString.h" />
+		<Unit filename="../../common/Xml/irrTypes.h" />
+		<Unit filename="../../common/Xml/irrXML.cpp" />
+		<Unit filename="../../common/Xml/irrXML.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
