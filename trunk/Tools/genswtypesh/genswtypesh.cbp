@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="genswtypesh" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Win32">
+				<Option output="../../bin/Debug/Tools/genswtypesh" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Debug" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-O0" />
+					<Add directory="../../common/mysql/include/" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="../../common/mysql/include/" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="libmysql" />
+					<Add library="pthreadVSE2" />
+					<Add directory="../../common/pthreads-win32/lib/" />
+					<Add directory="../../common/mysql/lib/debug/" />
+				</Linker>
+			</Target>
+			<Target title="Release Win32">
+				<Option output="../../bin/Release/Tools/genswtypesh" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Release" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-W" />
+					<Add directory="../../common/mysql/include/" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="../../common/mysql/include/" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="libmysql" />
+					<Add library="pthreadVSE2" />
+					<Add directory="../../common/pthreads-win32/lib/" />
+					<Add directory="../../common/mysql/lib/debug/" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="../../common/CmdLineInfo.cpp" />
+		<Unit filename="genswtypesh.cpp" />
+		<Unit filename="../../common/inifile.cpp" />
+		<Unit filename="../../common/PThreadCond.cpp" />
+		<Unit filename="../../common/CmdLineInfo.h" />
+		<Unit filename="../../common/inifile.h" />
+		<Unit filename="../../common/PThreadCond.h" />
+		<Unit filename="../../common/database/mysql/DBIMySql.cpp" />
+		<Unit filename="../../common/database/mysql/DBIMySql.h" />
+		<Unit filename="../../common/database/mysql/DBIMySqlConnection.cpp" />
+		<Unit filename="../../common/database/mysql/DBIMySqlConnection.h" />
+		<Unit filename="../../common/database/mysql/DBIMySqlResultSet.cpp" />
+		<Unit filename="../../common/database/mysql/DBIMySqlResultSet.h" />
+		<Unit filename="../../common/database/DBIResults.cpp" />
+		<Unit filename="../../common/database/DBIResults.h" />
+		<Unit filename="../../common/database/DBIResultSet.cpp" />
+		<Unit filename="../../common/database/DBIResultSet.h" />
+		<Unit filename="../../common/database/FCDatabase.cpp" />
+		<Unit filename="../../common/database/FCDatabase.h" />
+		<Unit filename="../../common/database/FCDBJob.cpp" />
+		<Unit filename="../../common/database/FCDBJob.h" />
+		<Unit filename="../../common/database/IDBInterface.h" />
+		<Unit filename="../../common/Logging/DynLog.cpp" />
+		<Unit filename="../../common/Logging/DynLogConsoleWriter.cpp" />
+		<Unit filename="../../common/Logging/DynLogger.cpp" />
+		<Unit filename="../../common/Logging/DynLogItemBase.cpp" />
+		<Unit filename="../../common/Logging/DynLogNullWriter.cpp" />
+		<Unit filename="../../common/Logging/DynLogStringItem.cpp" />
+		<Unit filename="../../common/Logging/DynLogTextfileWriter.cpp" />
+		<Unit filename="../../common/Logging/DynLog.h" />
+		<Unit filename="../../common/Logging/DynLogConsoleWriter.h" />
+		<Unit filename="../../common/Logging/DynLogger.h" />
+		<Unit filename="../../common/Logging/DynLogItemBase.h" />
+		<Unit filename="../../common/Logging/DynLogNullWriter.h" />
+		<Unit filename="../../common/Logging/DynLogStringItem.h" />
+		<Unit filename="../../common/Logging/DynLogTextfileWriter.h" />
+		<Unit filename="../../common/Logging/IDynLog.h" />
+		<Unit filename="../../common/Logging/RefCounter.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
