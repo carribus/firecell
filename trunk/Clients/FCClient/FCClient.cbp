@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="FCClient" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Win32">
+				<Option output="../../bin/Debug/Client/FCClient" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Debug" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-D_FCCLIENT_COMPILE_" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-O0" />
+				</Compiler>
+				<Linker>
+					<Add library="pthreadVSE2" />
+					<Add directory="../../common/pthreads-win32/lib" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="copy ..\..\common\pthreads-win32\lib\pthreadVSE2.dll ..\..\bin\Debug\Client" />
+				</ExtraCommands>
+			</Target>
+			<Target title="Release Win32">
+				<Option output="../../bin/Release/Client/FCClient" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Release" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-D_FCCLIENT_COMPILE_" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-W" />
+				</Compiler>
+				<Linker>
+					<Add library="pthreadVSE2" />
+					<Add directory="../../common/pthreads-win32/lib" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="../common/Socket/win/BaseSocket.cpp" />
+		<Unit filename="Character.cpp" />
+		<Unit filename="../../common/game_objects/ComputerBase.cpp" />
+		<Unit filename="ConsoleWindow.cpp" />
+		<Unit filename="Desktop.cpp" />
+		<Unit filename="DesktopAppBar.cpp" />
+		<Unit filename="DesktopIcon.cpp" />
+		<Unit filename="DlgNewCharacter.cpp" />
+		<Unit filename="DlgNewThread.cpp" />
+		<Unit filename="FCClient.cpp" />
+		<Unit filename="FCController.cpp" />
+		<Unit filename="FCDialog.cpp" />
+		<Unit filename="FCGUIElementFactory.cpp" />
+		<Unit filename="FCModel.cpp" />
+		<Unit filename="FCModelEvent.cpp" />
+		<Unit filename="../../common/game_objects/FCObject.cpp" />
+		<Unit filename="../../common/game_objects/FCObjectFactory.cpp" />
+		<Unit filename="../common/FCServerObj.cpp" />
+		<Unit filename="FCView.cpp" />
+		<Unit filename="FCViewEvent.cpp" />
+		<Unit filename="ForumCategory.cpp" />
+		<Unit filename="ForumModel.cpp" />
+		<Unit filename="ForumThread.cpp" />
+		<Unit filename="ForumWindow.cpp" />
+		<Unit filename="GUIConsoleCtrl.cpp" />
+		<Unit filename="GUIFCCharacterItem.cpp" />
+		<Unit filename="GUIForumCatBrowser.cpp" />
+		<Unit filename="GUIForumPostItem.cpp" />
+		<Unit filename="GUIForumThreadBrowser.cpp" />
+		<Unit filename="GUIForumThreadReader.cpp" />
+		<Unit filename="GUIHyperlink.cpp" />
+		<Unit filename="GUIVUMeter.cpp" />
+		<Unit filename="InGameAppWindow.cpp" />
+		<Unit filename="../../common/game_objects/InGameIPAddress.cpp" />
+		<Unit filename="../common/irrlichtUtil/irrDiag.cpp" />
+		<Unit filename="../common/irrlichtUtil/irrfontfx.cpp" />
+		<Unit filename="irrSingleton.cpp" />
+		<Unit filename="../common/irrlichtUtil/irrutils.cpp" />
+		<Unit filename="../../common/game_objects/ItemMemory.cpp" />
+		<Unit filename="ItemMgr.cpp" />
+		<Unit filename="../../common/game_objects/ItemOS.cpp" />
+		<Unit filename="../../common/game_objects/ItemProcessor.cpp" />
+		<Unit filename="../../common/game_objects/ItemSoftware.cpp" />
+		<Unit filename="MissionMgr.cpp" />
+		<Unit filename="../../common/game_objects/NetworkPorts.cpp" />
+		<Unit filename="../../common/PacketExtractor.cpp" />
+		<Unit filename="../../common/PEPacket.cpp" />
+		<Unit filename="../../common/PEPacketHelper.cpp" />
+		<Unit filename="../../common/PThreadMutex.cpp" />
+		<Unit filename="../../common/PThreadRWLock.cpp" />
+		<Unit filename="../common/ResourceManager.cpp" />
+		<Unit filename="Settings.cpp" />
+		<Unit filename="SoftwareMgrWindow.cpp" />
+		<Unit filename="TextAnimator.cpp" />
+		<Unit filename="../../common/time/timelib.cpp" />
+		<Unit filename="ViewLogicCharacterSelection.cpp" />
+		<Unit filename="ViewLogicGame.cpp" />
+		<Unit filename="ViewLogicLoading.cpp" />
+		<Unit filename="../common/Socket/win/BaseSocket.h" />
+		<Unit filename="Character.h" />
+		<Unit filename="City.h" />
+		<Unit filename="clientdefs.h" />
+		<Unit filename="clientstrings.h" />
+		<Unit filename="../common/clienttypes.h" />
+		<Unit filename="../../common/game_objects/ComputerBase.h" />
+		<Unit filename="ConsoleWindow.h" />
+		<Unit filename="Country.h" />
+		<Unit filename="Desktop.h" />
+		<Unit filename="DesktopAppBar.h" />
+		<Unit filename="DesktopIcon.h" />
+		<Unit filename="DlgNewCharacter.h" />
+		<Unit filename="DlgNewThread.h" />
+		<Unit filename="../../common/fcconstants.h" />
+		<Unit filename="FCController.h" />
+		<Unit filename="FCDialog.h" />
+		<Unit filename="FCGUIElementFactory.h" />
+		<Unit filename="FCModel.h" />
+		<Unit filename="FCModelEvent.h" />
+		<Unit filename="../../common/game_objects/FCObject.h" />
+		<Unit filename="../../common/game_objects/FCObjectFactory.h" />
+		<Unit filename="../common/FCServerObj.h" />
+		<Unit filename="FCView.h" />
+		<Unit filename="FCViewEvent.h" />
+		<Unit filename="ForumCategory.h" />
+		<Unit filename="ForumModel.h" />
+		<Unit filename="ForumThread.h" />
+		<Unit filename="ForumWindow.h" />
+		<Unit filename="GUIConsoleCtrl.h" />
+		<Unit filename="GUIFCCharacterItem.h" />
+		<Unit filename="GUIForumCatBrowser.h" />
+		<Unit filename="GUIForumPostItem.h" />
+		<Unit filename="GUIForumThreadBrowser.h" />
+		<Unit filename="GUIForumThreadReader.h" />
+		<Unit filename="GUIHyperlink.h" />
+		<Unit filename="GUIVUMeter.h" />
+		<Unit filename="IDesktop.h" />
+		<Unit filename="IModelEventSink.h" />
+		<Unit filename="InGameAppWindow.h" />
+		<Unit filename="../../common/game_objects/InGameIPAddress.h" />
+		<Unit filename="../common/irrlichtUtil/irrDiag.h" />
+		<Unit filename="../common/irrlichtUtil/irrfontfx.h" />
+		<Unit filename="irrSingleton.h" />
+		<Unit filename="../common/irrlichtUtil/irrutils.h" />
+		<Unit filename="../../common/game_objects/Item.h" />
+		<Unit filename="../../common/game_objects/ItemMemory.h" />
+		<Unit filename="ItemMgr.h" />
+		<Unit filename="../../common/game_objects/ItemOS.h" />
+		<Unit filename="../../common/game_objects/ItemProcessor.h" />
+		<Unit filename="../../common/game_objects/ItemSoftware.h" />
+		<Unit filename="../../common/game_objects/ItemType.h" />
+		<Unit filename="IViewLogic.h" />
+		<Unit filename="MissionMgr.h" />
+		<Unit filename="../../common/game_objects/NetworkPorts.h" />
+		<Unit filename="../../common/PacketExtractor.h" />
+		<Unit filename="../../common/PEPacket.h" />
+		<Unit filename="../../common/PEPacketHelper.h" />
+		<Unit filename="../../common/PThreadMutex.h" />
+		<Unit filename="../../common/PThreadRWLock.h" />
+		<Unit filename="PThreadWrapper.h" />
+		<Unit filename="QueueReaderThread.h" />
+		<Unit filename="../common/ResourceManager.h" />
+		<Unit filename="Settings.h" />
+		<Unit filename="SoftwareMgrWindow.h" />
+		<Unit filename="TextAnimator.h" />
+		<Unit filename="../../common/time/timelib.h" />
+		<Unit filename="ViewLogicCharacterSelection.h" />
+		<Unit filename="ViewLogicGame.h" />
+		<Unit filename="ViewLogicLoading.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
