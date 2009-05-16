@@ -1185,7 +1185,7 @@ void FCLogicWorld::OnDBJob_LoadCharacterPorts(DBIResultSet& resultSet, void*& pC
 
   size_t rowCount = resultSet.GetRowCount();
   FCULONG item_id;
-  FCSHORT portNum, enabled;
+  FCSHORT portNum, enabled, health;
   ItemSoftware* pItem = NULL;
 
   for ( size_t i = 0; i < rowCount; i++ )
@@ -1193,6 +1193,9 @@ void FCLogicWorld::OnDBJob_LoadCharacterPorts(DBIResultSet& resultSet, void*& pC
     portNum = resultSet.GetShortValue("port_number", i);
     item_id = resultSet.GetULongValue("item_id", i);
     enabled = resultSet.GetShortValue("enabled", i);
+    health = resultSet.GetShortValue("health", i);
+
+    ports.setPortHealth(portNum, health);
 
     pItem = (ItemSoftware*)pThis->m_itemMgr.GetItem(item_id);
     if ( pItem )
