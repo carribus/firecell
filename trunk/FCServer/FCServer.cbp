@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="FCServer" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Win32">
+				<Option platforms="Windows;" />
+				<Option output="../bin/Debug/Server/FCServer" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Debug" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-O0" />
+				</Compiler>
+				<Linker>
+					<Add library="pthreadVSE2" />
+					<Add directory="../common/pthreads-win32/lib/" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="copy ..\common\pthreads-win32\lib\pthreadVSE2.dll ..\bin\Debug\Server" />
+				</ExtraCommands>
+			</Target>
+			<Target title="Release Win32">
+				<Option platforms="Windows;" />
+				<Option output="../bin/Release/Server/FCServer" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Release" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-W" />
+				</Compiler>
+				<Linker>
+					<Add library="pthreadVSE2" />
+					<Add directory="../common/pthreads-win32/lib/" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="copy ..\common\pthreads-win32\lib\pthreadVSE2.dll ..\bin\Release\Server" />
+				</ExtraCommands>
+			</Target>
+			<Target title="Debug Linux">
+				<Option platforms="Unix;" />
+				<Option output="../bin/debug/server/FCServer" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../bin/debug/server" />
+				<Option object_output="Debug" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-O0" />
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+				</Compiler>
+				<Linker>
+					<Add library="libpthread" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="FCLogicRouter.cpp" />
+		<Unit filename="FCLogicRouter.h" />
+		<Unit filename="FCServer.cpp" />
+		<Unit filename="ReadMe.txt" />
+		<Unit filename="interfaces/ISocketServer.h" />
+		<Unit filename="../common/CmdLineInfo.cpp" />
+		<Unit filename="../common/CmdLineInfo.h" />
+		<Unit filename="../common/Logging/DynLog.cpp" />
+		<Unit filename="../common/Logging/DynLog.h" />
+		<Unit filename="../common/Logging/DynLogConsoleWriter.cpp" />
+		<Unit filename="../common/Logging/DynLogConsoleWriter.h" />
+		<Unit filename="../common/Logging/DynLogItemBase.cpp" />
+		<Unit filename="../common/Logging/DynLogItemBase.h" />
+		<Unit filename="../common/Logging/DynLogNullWriter.cpp" />
+		<Unit filename="../common/Logging/DynLogNullWriter.h" />
+		<Unit filename="../common/Logging/DynLogStringItem.cpp" />
+		<Unit filename="../common/Logging/DynLogStringItem.h" />
+		<Unit filename="../common/Logging/DynLogTextfileWriter.cpp" />
+		<Unit filename="../common/Logging/DynLogTextfileWriter.h" />
+		<Unit filename="../common/Logging/DynLogger.cpp" />
+		<Unit filename="../common/Logging/DynLogger.h" />
+		<Unit filename="../common/Logging/IDynLog.h" />
+		<Unit filename="../common/Logging/RefCounter.h" />
+		<Unit filename="../common/PEPacket.cpp" />
+		<Unit filename="../common/PEPacket.h" />
+		<Unit filename="../common/PEPacketHelper.cpp" />
+		<Unit filename="../common/PEPacketHelper.h" />
+		<Unit filename="../common/PThreadCond.cpp" />
+		<Unit filename="../common/PThreadCond.h" />
+		<Unit filename="../common/PacketExtractor.cpp" />
+		<Unit filename="../common/PacketExtractor.h" />
+		<Unit filename="../common/SocketServer.h" />
+		<Unit filename="../common/binstream.h" />
+		<Unit filename="../common/daemon/linux/Daemon.cpp">
+			<Option target="Debug Linux" />
+		</Unit>
+		<Unit filename="../common/daemon/linux/Daemon.h">
+			<Option target="Debug Linux" />
+		</Unit>
+		<Unit filename="../common/daemon/win/W32Service.cpp">
+			<Option target="Debug Win32" />
+			<Option target="Release Win32" />
+		</Unit>
+		<Unit filename="../common/daemon/win/W32Service.h">
+			<Option target="Debug Win32" />
+			<Option target="Release Win32" />
+		</Unit>
+		<Unit filename="../common/fctypes.h" />
+		<Unit filename="../common/inifile.cpp" />
+		<Unit filename="../common/inifile.h" />
+		<Unit filename="../common/interfaces/IService.h" />
+		<Unit filename="../common/interfaces/IServiceLogic.h" />
+		<Unit filename="../common/protocol/fcprotocol.h" />
+		<Unit filename="../common/protocol/fcserverprotocol.h" />
+		<Unit filename="../common/socket/ClientSocket.cpp" />
+		<Unit filename="../common/socket/ClientSocket.h" />
+		<Unit filename="../common/sockserver/linux/BSDSocketServer.cpp">
+			<Option target="Debug Linux" />
+		</Unit>
+		<Unit filename="../common/sockserver/linux/BSDSocketServer.h">
+			<Option target="Debug Linux" />
+		</Unit>
+		<Unit filename="../common/sockserver/win/W32SocketServer.cpp">
+			<Option target="Debug Win32" />
+			<Option target="Release Win32" />
+		</Unit>
+		<Unit filename="../common/sockserver/win/W32SocketServer.h">
+			<Option target="Debug Win32" />
+			<Option target="Release Win32" />
+		</Unit>
+		<Unit filename="../common/threading.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
