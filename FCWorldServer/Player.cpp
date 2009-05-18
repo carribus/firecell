@@ -17,6 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "../common/fcqueries.h"
+#include "../common/database/FCDatabase.h"
 #include "../common/Logging/DynLog.h"
 #include "../common/game_objects/FCObjectFactory.h"
 #include "world_comms.h"
@@ -283,7 +285,7 @@ FCULONG Player::GetMissionCount(bool bActiveOnly)
 
 ///////////////////////////////////////////////////////////////////////
 
-void Player::AddItem(FCULONG itemID)
+void Player::AddItem(FCULONG itemID, FCSHORT count)
 {
   m_itemLock.LockForWrite();
 
@@ -292,12 +294,15 @@ void Player::AddItem(FCULONG itemID)
 	if ( it == m_mapItems.end() )
 	{
 		// add a new item to the map
-		PlayerItem gi = {itemID, 1};
+		PlayerItem gi = {itemID, count};
 		m_mapItems[itemID] = gi;
+    InsertCharacterItemInfo(itemID, count);
 	}
 	else
 	{
 		it->second.count++;
+    UpdateCharacterItemInfo(itemID, it->second.count);
+
 	}
 
   m_itemLock.Unlock();
@@ -327,7 +332,18 @@ void Player::RemoveItem(FCULONG itemID)
 	ItemMap::iterator it = m_mapItems.find(itemID);
 
 	if ( it != m_mapItems.end() )
+  {
 		it->second.count--;
+    if ( it->second.count > 0 )
+    {
+      UpdateCharacterItemInfo(itemID, it->second.count);
+    }
+    else
+    {
+      m_mapItems.erase(it);
+      DeleteCharacterItemInfo(itemID);
+    }
+  }
   m_itemLock.Unlock();
 }
 
@@ -369,4 +385,31 @@ size_t Player::GetUniqueItemCount()
 void Player::createComputer()
 {
   m_computer = FCObjectFactory::instance().createObject<Computer>(this);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Player::InsertCharacterItemInfo(FCULONG itemID, FCSHORT count)
+{
+  FCDatabase& db = FCDatabase::instance();
+
+  db.ExecuteJob(DBQ_INSERT_CHARACTER_ITEM_INFO, NULL, m_id, itemID, count);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Player::UpdateCharacterItemInfo(FCULONG itemID, FCSHORT count)
+{
+  FCDatabase& db = FCDatabase::instance();
+
+  db.ExecuteJob(DBQ_UPDATE_CHARACTER_ITEM_INFO, NULL, count, m_id, itemID);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Player::DeleteCharacterItemInfo(FCULONG itemID)
+{
+  FCDatabase& db = FCDatabase::instance();
+
+  db.ExecuteJob(DBQ_DELETE_CHARACTER_ITEM_INFO, NULL, m_id, itemID);
 }

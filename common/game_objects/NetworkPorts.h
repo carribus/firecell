@@ -2,6 +2,7 @@
 #define _NETWORKPORTS_H_
 
 #include <vector>
+#include "../PThreadRWLock.h"
 #include "../fctypes.h"
 #include "swtypes.h"
 
@@ -31,6 +32,10 @@ public:
   FCSHORT getSoftwareInfo(FCSHORT portNum, FCULONG& itemID, FCULONG& softwareType);
   // TODO: Need to add firewalls here as well
 
+  void lockForRead()                            { m_lock.LockForRead(); }
+  void lockForWrite()                           { m_lock.LockForWrite(); }
+  void unlock()                                 { m_lock.Unlock(); }
+
 private:
 
   struct NetworkPort
@@ -46,6 +51,7 @@ private:
   FCSHORT m_maxPort;
   typedef std::vector<NetworkPort> NetworkPortVector;
 	NetworkPortVector m_ports;
+  PThreadRWLock m_lock;
 };
 
 #endif//_NETWORKPORTS_H_

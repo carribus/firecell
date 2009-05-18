@@ -21,6 +21,8 @@ enum e_FCEventType
   FCME_Software_SoftwareInstallFail,
   FCME_Software_SoftwareUninstallSuccess,
   FCME_Software_SoftwareUninstallFail,
+  FCME_Software_NetworkPortStatusChangeSuccess,
+  FCME_Software_NetworkPortStatusChangeFail,
 	/* XP Event */
 	FCME_XP_Gained
 };

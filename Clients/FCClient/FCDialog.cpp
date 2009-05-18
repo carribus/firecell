@@ -1,3 +1,5 @@
+#include "clientstrings.h"
+#include "../common/ResourceManager.h"
 #include "FCDialog.h"
 
 FCDialog::FCDialog(IGUIEnvironment* env, IGUIElement* pParent, wchar_t* caption, bool bModal, s32 id, core::rect<s32> rect)
@@ -27,7 +29,7 @@ FCDialog::FCDialog(IGUIEnvironment* env, IGUIElement* pParent, wchar_t* caption,
 	s32 posx = RelativeRect.getWidth() - buttonw - 4;
 
 	m_CloseButton = Environment->addButton(core::rect<s32>(posx, 3, posx + buttonw, 3 + buttonw), this, -1,
-		L"", skin ? skin->getDefaultText(EGDT_WINDOW_CLOSE) : L"Close");
+		L"", skin ? skin->getDefaultText(EGDT_WINDOW_CLOSE) : ResourceManager::instance().GetClientString(STR_DLG_CLOSE).c_str());
 	m_CloseButton->setSubElement(true);
 	m_CloseButton->setTabStop(false);
 	if (sprites)

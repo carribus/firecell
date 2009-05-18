@@ -346,6 +346,22 @@ void FCServerObj::SendUninstallSoftwareRequest(FCSHORT portNum)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCServerObj::SendNetworkPortEnableRequest(FCSHORT portNum, bool bEnable)
+{
+  PEPacket pkt;
+  __FCPKT_SOFTWARE_NETWORK_PORT_ENABLE d;
+
+  d.portNum = portNum;
+  d.bEnable = bEnable;
+
+	PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_SOFTWARE_NETWORK_PORT_ENABLE, ST_World);
+	PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+	SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCServerObj::SendPacket(PEPacket& pkt)
 {
   FCSHORT msgID = 0;

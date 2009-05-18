@@ -186,6 +186,10 @@ void FCController::OnViewEvent(FCViewEvent& event)
     break;
 
   case  VE_EnablePort:
+    {
+      FCViewEventEnableNetworkPort* pEv = (FCViewEventEnableNetworkPort*)&event;
+      m_pModel->EnableNetworkPort( pEv->getPortNum(), pEv->isEnabled() );
+    }
     break;
 	}
 }
