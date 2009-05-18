@@ -19,7 +19,7 @@ public:
 
   void Update();
 
-  bool OnButtonClicked(s32 id, IGUIButton* pBtn);
+  bool OnCheckboxChanged(s32 id, IGUICheckBox* pBtn);
   bool OnMenuItemSelected(s32 selectedItem, IGUIContextMenu* pMenu);
   bool OnUnknownGUIEvent(u32 eventType, s32 id, IGUIElement* pElem);
 
@@ -36,7 +36,6 @@ private:
    */
   void setLabels();
   void UpdateUIFromModel();
-//  void PopulateComboBoxes();
   void enablePort(FCSHORT port, bool bEnable);
   void setPortInfo(FCSHORT port, FCULONG itemID, FCULONG softwareType, bool bEnabled, u32 maxHealth, u32 health);
   void popupPortMenu(FCSHORT portNum);

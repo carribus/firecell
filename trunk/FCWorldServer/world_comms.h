@@ -198,6 +198,14 @@ void SendSoftwareInstallResponse(FCULONG itemID, FCSHORT portNum, bool bSuccess,
  */
 void SendSoftwareUninstallResponse(FCSHORT portNum, bool bSuccess, BaseSocket* pRouter, FCSOCKET clientSocket);
 
+/**
+ *  @ingroup worldcomms
+ *  @brief This functions sends teh result of a player attempting to enable/disable a specific port. The packet sent is: __FCPKT_SOFTWARE_NETWORK_PORT_ENABLE_RESP
+ *  @param portNum The port number that the enable/disable was attempted on
+ *  @param result The result of the action
+ */
+void SendNetworkPortEnabledResponse(FCSHORT portNum, bool bEnabled, FCSHORT result, BaseSocket* pRouter, FCSOCKET clientSocket);
+
 /*************************************************************************************************************** 
  *  MISCELLANEOUS SEND METHODS
  ***************************************************************************************************************/

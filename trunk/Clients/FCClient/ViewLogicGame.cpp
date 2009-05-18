@@ -249,6 +249,8 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
     case  FCME_Software_SoftwareInstallFail:
     case  FCME_Software_SoftwareUninstallSuccess:
     case  FCME_Software_SoftwareUninstallFail:
+    case  FCME_Software_NetworkPortStatusChangeSuccess:
+    case  FCME_Software_NetworkPortStatusChangeFail:
       m_pDesktop->OnSoftwareEvent(event);
       break;
 

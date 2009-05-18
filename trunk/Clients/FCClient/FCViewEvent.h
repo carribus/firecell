@@ -136,4 +136,26 @@ private:
   FCULONG m_itemID;
   FCSHORT m_portNum;
 };
+
+/////////////////////////////////////////////////////////////////
+
+class FCViewEventEnableNetworkPort : public FCViewEvent
+{
+public:
+  FCViewEventEnableNetworkPort(FCSHORT portNum, bool bEnabled)
+    : FCViewEvent(VE_EnablePort)
+    , m_portNum(portNum)
+    , m_bEnabled(bEnabled)
+  {
+  }
+
+  FCSHORT getPortNum()                        { return m_portNum; }
+  bool isEnabled()                            { return m_bEnabled; }
+
+private:
+
+  FCSHORT m_portNum;
+  bool m_bEnabled;
+};
+
 #endif//_FCVIEWEVENT_H_

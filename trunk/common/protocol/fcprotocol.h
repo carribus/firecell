@@ -669,6 +669,22 @@ struct __FCPKT_SOFTWARE_UNINSTALL_RESP
   bool bResult;
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_SOFTWARE_NETWORK_PORT_ENABLE = 552;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_SOFTWARE_NETWORK_PORT_ENABLE
+{
+  FCSHORT portNum;
+  bool bEnable;
+};
+
+struct __FCPKT_SOFTWARE_NETWORK_PORT_ENABLE_RESP
+{
+  FCSHORT portNum;
+  bool bEnabled;
+  FCSHORT result;
+};
+
 /*
  *  MISCELLANEOUS module specific commands
  */

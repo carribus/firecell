@@ -310,6 +310,12 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  case  FCMSG_SOFTWARE_NETWORK_PORT_ENABLE:
+    {
+      bHandled = OnCommandNetworkPortEnable(pPkt, pRouter, clientSock);
+    }
+    break;
+
   /*
    * Inter-service Messages
    */
@@ -819,6 +825,7 @@ bool FCLogicWorld::OnCommandSoftwareUninstall(PEPacket* pPkt, RouterSocket* pSoc
     NetworkPorts& ports = comp.GetNetworkPorts();
     FCULONG itemID, softwareType;
 
+    ports.lockForWrite();
     if ( ports.getSoftwareInfo( d.portNum, itemID, softwareType ) == NPE_OK )
     {
       if ( itemID != 0 && softwareType != 0 )
@@ -842,11 +849,42 @@ bool FCLogicWorld::OnCommandSoftwareUninstall(PEPacket* pPkt, RouterSocket* pSoc
         
         PersistCharacterPorts(pPlayer);
       }
+      ports.unlock();
     }
     else
     {
       // handle the error here
     }
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandNetworkPortEnable(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCPKT_SOFTWARE_NETWORK_PORT_ENABLE d;
+  size_t dataLen = 0;
+  Player* pPlayer = NULL;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+  {
+    NetworkPorts& ports = pPlayer->GetComputer().GetNetworkPorts();
+
+    ports.lockForWrite();
+
+    FCSHORT res = ports.enablePort( d.portNum, d.bEnable );
+
+    if ( res == NPE_OK )
+      PersistCharacterPorts(pPlayer);
+
+    SendNetworkPortEnabledResponse(d.portNum, ports.isPortEnabled(d.portNum), res, pSocket, clientSocket);
+
+    ports.unlock();
   }
 
   return true;
@@ -1229,14 +1267,15 @@ void FCLogicWorld::OnDBJob_LoadCharacterItems(DBIResultSet& resultSet, void*& pC
     return;
 
   size_t rowCount = resultSet.GetRowCount();
-  FCULONG item_id, count;
+  FCULONG item_id;
+  FCSHORT count;
 
   for ( size_t i = 0; i < rowCount; i++ )
   {
     item_id = resultSet.GetULongValue("item_id", i);
-    count = resultSet.GetULongValue("count", i);
+    count = resultSet.GetShortValue("count", i);
 
-    pPlayer->AddItem(item_id);
+    pPlayer->AddItem(item_id, count);
   }
 
   delete pCtx;

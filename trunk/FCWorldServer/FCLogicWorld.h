@@ -89,6 +89,7 @@ private:
     // software commands
     bool OnCommandSoftwareInstall(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
     bool OnCommandSoftwareUninstall(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
+    bool OnCommandNetworkPortEnable(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
 
     bool OnCommandClientDisconnect(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
 

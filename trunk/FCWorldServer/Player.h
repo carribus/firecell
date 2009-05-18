@@ -87,7 +87,7 @@ public:
 	/*
 	 *	Item related
 	 */
-	void AddItem(FCULONG itemID);
+	void AddItem(FCULONG itemID, FCSHORT count = 1);
 	bool HasItem(FCULONG itemID);
 	void RemoveItem(FCULONG itemID);
   size_t GetUniqueItemCount();
@@ -135,6 +135,9 @@ private:
    *  Private Methods
    */
   void createComputer();
+  void InsertCharacterItemInfo(FCULONG itemID, FCSHORT count);
+  void UpdateCharacterItemInfo(FCULONG itemID, FCSHORT count);
+  void DeleteCharacterItemInfo(FCULONG itemID);
 
   /*
    *  Private Members

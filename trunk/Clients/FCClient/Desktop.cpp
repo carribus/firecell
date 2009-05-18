@@ -521,6 +521,14 @@ bool Desktop::OnSoftwareEvent(FCModelEvent& event)
 
     case  FCME_Software_SoftwareUninstallFail:
       break;
+
+    case  FCME_Software_NetworkPortStatusChangeSuccess:
+      m_pSoftwareMgr->Update();
+      break;
+
+    case  FCME_Software_NetworkPortStatusChangeFail:
+      m_pSoftwareMgr->Update();
+      break;
     }
   }
 

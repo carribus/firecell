@@ -463,6 +463,12 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  case  FCMSG_SOFTWARE_NETWORK_PORT_ENABLE:
+    {
+      bHandled = OnResponseNetworkPortEnable(pPkt, pSocket);
+    }
+    break;
+
   default:
 
     if ( !bHandled )
@@ -1126,7 +1132,7 @@ bool FCModel::OnResponseSoftwareInstall(PEPacket* pPkt, BaseSocket* pSocket)
       {
         NetworkPorts& ports = m_pCharacter->GetComputer().GetNetworkPorts();
 
-        item.setCount( item.getCount()-1 );
+        m_itemMgr.setItemCount( d.itemID, item.getCount()-1 );
         ports.installPort(d.portNum, pItem->GetSoftwareType(), d.itemID);
 
         FireEvent(FCME_Software_SoftwareInstallSuccess, (void*)d.portNum);
@@ -1161,7 +1167,7 @@ bool FCModel::OnResponseSoftwareUninstall(PEPacket* pPkt, BaseSocket* pSocket)
     ports.uninstallPort(d.portNum);
     if ( m_itemMgr.getItem(itemID, item) )
     {
-      item.setCount( item.getCount() + 1 );
+      m_itemMgr.setItemCount( itemID, item.getCount()+1 );
     }
     else
     {
@@ -1174,6 +1180,42 @@ bool FCModel::OnResponseSoftwareUninstall(PEPacket* pPkt, BaseSocket* pSocket)
   {
     FireEvent(FCME_Software_SoftwareUninstallFail, (void*)d.portNum);
   }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseNetworkPortEnable(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_SOFTWARE_NETWORK_PORT_ENABLE_RESP d;
+  size_t dataLen = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+
+  NetworkPorts& ports = m_pCharacter->GetComputer().GetNetworkPorts();
+
+  ports.lockForWrite();
+  // updated the enabled status of the port
+  ports.enablePort( d.portNum, d.bEnabled );
+
+  switch ( d.result )
+  {
+  case  NPE_OK:
+    FireEvent(FCME_Software_NetworkPortStatusChangeSuccess, (void*)d.portNum);
+    break;
+
+  case  NPE_NO_SERVICE_ASSIGNED:
+  case  NPE_NO_SOFTWARETYPE:
+  case  NPE_PORT_DOESNT_EXIST:
+    FireEvent(FCME_Software_NetworkPortStatusChangeFail, (void*)d.portNum);
+    break;
+  
+  default:
+    break;
+  }
+  ports.unlock();
 
   return true;
 }
@@ -1493,6 +1535,16 @@ void FCModel::UninstallSoftware(FCSHORT portNum)
     return;
 
   m_server.SendUninstallSoftwareRequest(portNum);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::EnableNetworkPort(FCSHORT portNum, bool bEnable)
+{
+  if ( !m_pCharacter )
+    return;
+
+  m_server.SendNetworkPortEnableRequest(portNum, bEnable);
 }
 
 ///////////////////////////////////////////////////////////////////////

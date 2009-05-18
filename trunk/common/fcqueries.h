@@ -79,6 +79,9 @@
 #define DBQ_SAVE_CHARACTER_MISSION_NEW                  "save_character_mission_new"
 #define DBQ_SAVE_CHARACTER_MISSION_SUCCESS_COUNT        "save_character_mission_success_count"
 #define DBQ_SAVE_CHARACTER_MISSION_COMPLETE_FLAG        "save_character_mission_complete_flag"
+#define DBQ_INSERT_CHARACTER_ITEM_INFO                  "insert_character_item_info"
+#define DBQ_UPDATE_CHARACTER_ITEM_INFO                  "save_character_item_info"
+#define DBQ_DELETE_CHARACTER_ITEM_INFO                  "del_character_item_info"
 
 ////////////////////////////////////////
 // FORUM QUERIES

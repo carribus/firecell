@@ -858,6 +858,28 @@ void SendSoftwareUninstallResponse(FCSHORT portNum, bool bSuccess, BaseSocket* p
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void SendNetworkPortEnabledResponse(FCSHORT portNum, bool bEnabled, FCSHORT result, BaseSocket* pRouter, FCSOCKET clientSocket)
+{
+  PEPacket* pkt = new PEPacket;
+  __FCPKT_SOFTWARE_NETWORK_PORT_ENABLE_RESP d;
+
+  d.portNum = portNum;
+  d.bEnabled = bEnabled;
+  d.result = result;
+
+  // send the packet
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_SOFTWARE_NETWORK_PORT_ENABLE, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, 
+                                (void*)&d, 
+                                sizeof(d));
+
+  // send response to Client
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* Miscellaneous send methods */
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
