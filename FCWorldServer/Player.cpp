@@ -242,18 +242,28 @@ Mission* Player::GetMission(FCULONG missionID)
 
 bool Player::HasMission(FCULONG missionID)
 {
-	// TODO: return whether the player has accepted the mission yet
+  bool bResult = false;
 
-	return false;
+  m_missionLock.LockForRead();
+  MissionMap::iterator it = m_mapMissions.find(missionID);
+  bResult = (it == m_mapMissions.end());
+  m_missionLock.Unlock();
+
+	return bResult;
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 bool Player::HasCompletedMission(FCULONG missionID)
 {
-	// TODO: Put in check+data structures for missions completed
+	bool bResult = false;
 
-	return false;
+  m_missionLock.LockForRead();
+  MissionMap::iterator it = m_mapMissions.find(missionID);
+  bResult = it->second->IsComplete();
+  m_missionLock.Unlock();
+
+	return bResult;
 }
 
 ///////////////////////////////////////////////////////////////////////
