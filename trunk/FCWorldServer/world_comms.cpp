@@ -250,6 +250,18 @@ void SendCharacterItemsResponse(Player* pPlayer, ItemManager& itemMgr,  BaseSock
   std::map<FCULONG, Player::PlayerItem>::const_iterator limit = items.end();
   size_t itemCount = items.size(), index = 0;
   ItemSoftware* pItem = NULL;
+  FCULONG itemID, swTypeID;
+
+  // add the assigned items that are installed on ports
+  NetworkPorts& ports = pPlayer->GetComputer().GetNetworkPorts();
+
+  for ( FCSHORT i = 0; i < ports.getPortCount(); i++ )
+  {
+    if ( NPE_OK == ports.getSoftwareInfo(i, itemID, swTypeID) && itemID > 0 )
+    {
+      itemCount++;
+    }
+  }
 
   // calc the size of the packet
   nPktLen = sizeof(__FCPKT_CHARACTER_ITEMS_REQUEST_RESP) + ( ((int)itemCount-1) * sizeof(__FCPKT_CHARACTER_ITEMS_REQUEST_RESP::_software) );
@@ -280,6 +292,28 @@ void SendCharacterItemsResponse(Player* pPlayer, ItemManager& itemMgr,  BaseSock
       DYNLOG_ADDLOG( DYNLOG_FORMAT("SendCharacterItemsResponse(): Failed to find item ID %ld", it->first) );
     }
     index++;
+  }
+
+  // now loop through the installed software
+  for ( FCSHORT i = 0; i < ports.getPortCount(); i++ )
+  {
+    if ( NPE_OK == ports.getSoftwareInfo(i, itemID, swTypeID) && itemID > 0)
+    {
+      d->software[index].item_id = itemID;
+      d->software[index].softwareTypeID = (short)swTypeID;
+      if ( (pItem = (ItemSoftware*)itemMgr.GetItem( d->software[index].item_id )) )
+      {
+        strncpy( d->software[index].name, pItem->GetName().c_str(), sizeof(d->software[index].name)-1 );
+        d->software[index].itemtype_id = pItem->GetTypeID();
+        d->software[index].min_level = pItem->GetMinLevel();
+        d->software[index].max_level = pItem->GetMaxLevel();
+        d->software[index].npc_value = pItem->GetNPCValue();
+        d->software[index].is_service = pItem->IsService();
+        d->software[index].scriptID = 0;
+        d->software[index].itemCount = 0;
+      }
+      index++;
+    }
   }
 
   pPlayer->UnlockItems();

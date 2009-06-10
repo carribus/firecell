@@ -295,7 +295,7 @@ FCULONG Player::GetMissionCount(bool bActiveOnly)
 
 ///////////////////////////////////////////////////////////////////////
 
-void Player::AddItem(FCULONG itemID, FCSHORT count)
+void Player::AddItem(FCULONG itemID, FCSHORT count, bool bPersist)
 {
   m_itemLock.LockForWrite();
 
@@ -306,12 +306,14 @@ void Player::AddItem(FCULONG itemID, FCSHORT count)
 		// add a new item to the map
 		PlayerItem gi = {itemID, count};
 		m_mapItems[itemID] = gi;
-    InsertCharacterItemInfo(itemID, count);
+    if ( bPersist )
+      InsertCharacterItemInfo(itemID, count);
 	}
 	else
 	{
 		it->second.count++;
-    UpdateCharacterItemInfo(itemID, it->second.count);
+    if ( bPersist )
+      UpdateCharacterItemInfo(itemID, it->second.count);
 
 	}
 

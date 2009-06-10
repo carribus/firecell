@@ -1275,7 +1275,7 @@ void FCLogicWorld::OnDBJob_LoadCharacterItems(DBIResultSet& resultSet, void*& pC
     item_id = resultSet.GetULongValue("item_id", i);
     count = resultSet.GetShortValue("count", i);
 
-    pPlayer->AddItem(item_id, count);
+    pPlayer->AddItem(item_id, count, false);
   }
 
   delete pCtx;
