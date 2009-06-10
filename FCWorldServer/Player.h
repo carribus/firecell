@@ -87,7 +87,7 @@ public:
 	/*
 	 *	Item related
 	 */
-	void AddItem(FCULONG itemID, FCSHORT count = 1);
+	void AddItem(FCULONG itemID, FCSHORT count = 1, bool bPersist = true);
 	bool HasItem(FCULONG itemID);
 	void RemoveItem(FCULONG itemID);
   size_t GetUniqueItemCount();
