@@ -191,3 +191,26 @@ FCSHORT NetworkPorts::getSoftwareInfo(FCSHORT portNum, FCULONG& itemID, FCULONG&
 
   return NPE_OK;
 }
+
+////////////////////////////////////////////////////////////////////////
+
+bool NetworkPorts::isServiceRunning(FCULONG softwareType, FCSHORT* whichPort)
+{
+  bool bResult = false;
+
+  for ( FCSHORT i = 0; i < m_maxPort; i++ )
+  {
+    NetworkPort& port = m_ports.at(i);
+    
+    if ( port.softwareType == softwareType && port.enabled )
+    {
+      bResult = true;
+      if ( whichPort )
+      {
+        *whichPort = i;
+      }
+    }
+  }
+
+  return bResult;
+}

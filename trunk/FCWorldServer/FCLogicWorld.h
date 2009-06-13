@@ -124,6 +124,7 @@ private:
    *  Helper functions
    */
   void UpdateComputerFromResultSet(Computer& comp, DBIResultSet& resultSet, size_t row = 0);
+  FCULONG CanActivateOption(Player* pPlayer, DesktopOptionType optionType);
 
   /*
    *  Private members
