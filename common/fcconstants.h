@@ -38,6 +38,16 @@ enum DesktopOptionType
   DOT_HackingTools
 };
 
+#define ACTIVATERESULT_OK               0x00
+#define ACTIVATERESULT_NOT_ENOUGH_MEM   0x01
+#define ACTIVATERESULT_NOT_ENOUGH_CPU   0x02
+#define ACTIVATERESULT_NEED_HTTP        0x04
+#define ACTIVATERESULT_NEED_FTP         0x08
+#define ACTIVATERESULT_NEED_SSH         0x10
+#define ACTIVATERESULT_NEED_BANK        0x20
+#define ACTIVATERESULT_NEED_DB          0x40
+#define ACTIVATERESULT_NEED_MAIL        0x80
+
 /**
  *  \brief  Status of software installation attempt
  */

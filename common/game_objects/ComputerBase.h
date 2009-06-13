@@ -1,6 +1,7 @@
 #ifndef _COMPUTERBASE_H_
 #define _COMPUTERBASE_H_
 
+#include <list>
 #include <string>
 #include "FCObject.h"
 #include "ItemProcessor.h"
@@ -8,6 +9,7 @@
 #include "ItemMemory.h"
 #include "NetworkPorts.h"
 #include "../fctypes.h"
+#include "../fcconstants.h"
 
 using namespace std;
 
@@ -30,6 +32,8 @@ public:
   void SetHDDSize(FCUINT sizeMB)          { m_hddSizeMB = sizeMB; }
   void SetNetworkSpeed(FCUINT speedMBits) { m_networkSpeedMBits = speedMBits; }
 
+  size_t AddProcess(DesktopOptionType type, FCULONG cpuCost, FCULONG memCost);
+
 private:
 
   FCULONG         m_id;
@@ -40,6 +44,16 @@ private:
   ItemOS          m_os;
   ItemMemory      m_memory;
 	NetworkPorts		m_ports;
+  FCULONG         m_usageCPU;
+  FCULONG         m_usageMem;
+
+  struct stProcess
+  {
+    DesktopOptionType optionType;
+    FCULONG memCost;
+    FCULONG cpuCost;
+  };
+  std::list<stProcess>  m_processes;
 };
 
 #endif//_COMPUTERBASE_H_

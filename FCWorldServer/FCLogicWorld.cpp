@@ -33,6 +33,26 @@
 
 #define DBQ_LOAD_OBJECT_DATA    "load_object_data"
 
+/**
+ *  Desktop Option CPU and Memory costs
+ */
+static struct __DESKTOP_OPTION_COSTS
+{
+  DesktopOptionType optionType;
+  FCULONG cpuCost;
+  FCULONG memCost;
+} g_OptionCosts[] =
+{
+  { DOT_Forum,        200,    20    },
+  { DOT_News,         100,    15    },
+  { DOT_Email,        300,    50    },
+  { DOT_Console,      250,    5     },
+  { DOT_Bank,         600,    55    },
+  { DOT_Chat,         100,    20    },
+  { DOT_HackingTools, 750,    250   },
+  {(DesktopOptionType)0,0,0         }
+};
+
 FCLogicWorld::FCLogicWorld()
 : ServiceLogicBase("FC_World", "FireCell World Service", false)
 {
@@ -495,7 +515,15 @@ bool FCLogicWorld::OnCommandActivateDesktopOption(PEPacket* pPkt, RouterSocket* 
 
 	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
 	{
-		// calculate whether the player can run the option
+    Computer& comp = pPlayer->GetComputer();
+		// check whether the player can run the option
+    FCULONG res = CanActivateOption( pPlayer, (DesktopOptionType)d.optionID );
+    if ( res == ACTIVATERESULT_OK )
+    {
+      comp.AddProcess( (DesktopOptionType)d.optionID, g_OptionCosts[d.optionID].cpuCost, g_OptionCosts[d.optionID].memCost );
+    }
+
+    // if all is well, then continue with the execution
     if ( 1 )
     {
 		  SendActivateDesktopOptionResponse( d.optionID, pPlayer, pRouter, clientSocket );
@@ -1689,4 +1717,77 @@ void FCLogicWorld::UpdateComputerFromResultSet(Computer& comp, DBIResultSet& res
     return;
   }
   comp.GetFileSystem().LoadFromXML( ss.str() );
+}
+
+///////////////////////////////////////////////////////////////////////
+
+FCULONG FCLogicWorld::CanActivateOption(Player* pPlayer, DesktopOptionType optionType)
+{
+  FCULONG res = ACTIVATERESULT_OK;
+  Computer& comp = pPlayer->GetComputer();
+  NetworkPorts& ports = comp.GetNetworkPorts();
+  FCULONG cpuCost = g_OptionCosts[optionType].cpuCost;
+  FCULONG memCost = g_OptionCosts[optionType].memCost;
+
+  // first check if the computer can afford to run this app
+  if ( comp.GetAvailableMemory() < memCost )
+  {
+    res = ACTIVATERESULT_NOT_ENOUGH_MEM;
+    return res;
+  }
+  if ( comp.GetAvailableCPU() < cpuCost )
+  {
+    res = ACTIVATERESULT_NOT_ENOUGH_CPU;
+    return res;
+  }
+
+  // now check if the required services are running
+  switch ( optionType )
+  {
+  case  DOT_Forum:
+    if ( !ports.isServiceRunning( SWT_HTTPSERVER ) )
+    {
+      res = ACTIVATERESULT_NEED_HTTP;
+    }
+    if ( !ports.isServiceRunning( SWT_DBSERVER ) )
+    {
+      res = ACTIVATERESULT_NEED_DB;
+    }
+    break;
+
+  case  DOT_News:
+    if ( ports.isServiceRunning( SWT_HTTPSERVER ) )
+    {
+      res = ACTIVATERESULT_NEED_HTTP;
+    }
+    break;
+
+  case  DOT_Email:
+    if ( ports.isServiceRunning( SWT_MAILSERVER ) )
+    {
+      res = ACTIVATERESULT_NEED_MAIL;
+    }
+    break;
+
+  case  DOT_Console:
+    res = ACTIVATERESULT_OK;
+    break;
+
+  case  DOT_Bank:
+    if ( ports.isServiceRunning( SWT_BANKSERVER ) )
+    {
+      res = ACTIVATERESULT_NEED_BANK;
+    }
+    break;
+
+  case  DOT_Chat:
+    res = ACTIVATERESULT_OK;
+    break;
+
+  case  DOT_HackingTools:
+    bResult = true;
+    break;
+  }
+
+  return res;
 }

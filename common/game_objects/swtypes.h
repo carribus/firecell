@@ -14,3 +14,9 @@
 #define SWT_BANKSERVER                     4
 #define SWT_DBSERVER                       5
 #define SWT_MAILSERVER                     6
+#define SWT_APP_FORUM                      7
+#define SWT_APP_NEWS                       8
+#define SWT_APP_EMAIL                      9
+#define SWT_APP_CONSOLE                    10
+#define SWT_APP_BANK                       11
+#define SWT_APP_CHAT                       12

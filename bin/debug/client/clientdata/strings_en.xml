@@ -52,4 +52,8 @@
   <String id="SWM_INSTALL_SOFTWARE">Install Software</String>
   <String id="SWM_UNINSTALL_SOFTWARE">Uninstall Software</String>
   <String id="SWM_CONFIGURE_PORT">Configure Port</String>
+  
+  
+  <!-- ITEMS -->
+  
 </FCStrings>
