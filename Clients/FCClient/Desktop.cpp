@@ -273,6 +273,13 @@ void Desktop::GetDesktopRect(core::rect<s32>& rect)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool Desktop::AddApplication(ItemSoftware* pSoftware)
+{
+#error you left off here
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool Desktop::OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost)
 {
   bool bResult = true;

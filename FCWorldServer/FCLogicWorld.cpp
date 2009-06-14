@@ -39,7 +39,7 @@
 static struct __DESKTOP_OPTION_COSTS
 {
   DesktopOptionType optionType;
-  FCULONG cpuCost;
+  FCSHORT cpuCost;
   FCULONG memCost;
 } g_OptionCosts[] =
 {
@@ -1726,7 +1726,7 @@ FCULONG FCLogicWorld::CanActivateOption(Player* pPlayer, DesktopOptionType optio
   FCULONG res = ACTIVATERESULT_OK;
   Computer& comp = pPlayer->GetComputer();
   NetworkPorts& ports = comp.GetNetworkPorts();
-  FCULONG cpuCost = g_OptionCosts[optionType].cpuCost;
+  FCSHORT cpuCost = g_OptionCosts[optionType].cpuCost;
   FCULONG memCost = g_OptionCosts[optionType].memCost;
 
   // first check if the computer can afford to run this app
@@ -1785,7 +1785,7 @@ FCULONG FCLogicWorld::CanActivateOption(Player* pPlayer, DesktopOptionType optio
     break;
 
   case  DOT_HackingTools:
-    bResult = true;
+    res = ACTIVATERESULT_OK;
     break;
   }
 

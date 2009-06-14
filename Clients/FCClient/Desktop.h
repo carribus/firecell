@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <irrlicht.h>
+#include "../../common/game_objects/ItemSoftware.h"
 #include "../../common/PThreadMutex.h"
 #include "IDesktop.h"
 #include "DesktopAppBar.h"
@@ -39,6 +40,7 @@ public:
   void Draw();
 	bool OnEvent(const SEvent& event);
 
+  bool AddApplication(ItemSoftware* pSoftware);
   bool OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost);
 	bool IsApplicationRunning(FCUINT appType);
 
