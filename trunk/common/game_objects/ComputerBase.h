@@ -33,6 +33,8 @@ public:
   void SetNetworkSpeed(FCUINT speedMBits) { m_networkSpeedMBits = speedMBits; }
 
   size_t AddProcess(DesktopOptionType type, FCULONG cpuCost, FCULONG memCost);
+  FCSHORT GetAvailableCPU();
+  FCULONG GetAvailableMemory();
 
 private:
 
@@ -44,7 +46,7 @@ private:
   ItemOS          m_os;
   ItemMemory      m_memory;
 	NetworkPorts		m_ports;
-  FCULONG         m_usageCPU;
+  FCSHORT         m_usageCPU;
   FCULONG         m_usageMem;
 
   struct stProcess

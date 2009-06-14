@@ -787,6 +787,12 @@ bool FCModel::OnResponseCharacterItemsRequest(PEPacket* pPkt, BaseSocket* pSocke
 			pSoftware->SetSoftwareType( d->software[i].softwareTypeID );
 			pSoftware->IsService( d->software[i].is_service );
 			m_itemMgr.setItemCount( pItem->GetID(), d->software[i].itemCount );
+
+      // if the software is not a service, then notify the desktop that a new program is available.
+      if ( !pSoftware->IsService() )
+      {
+        FireEvent( FCME_ApplicationAdded, pSoftware );
+      }
 		}
 	}
 

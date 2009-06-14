@@ -25,3 +25,21 @@ size_t ComputerBase::AddProcess(DesktopOptionType type, FCULONG cpuCost, FCULONG
   m_processes.push_back(proc);
   return m_processes.size();
 }
+
+///////////////////////////////////////////////////////////////////////
+
+FCSHORT ComputerBase::GetAvailableCPU()
+{
+  FCSHORT maxMem = m_processor.GetCoreSpeed() * m_processor.GetCoreCount();
+
+  return (maxMem - m_usageCPU);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+FCULONG ComputerBase::GetAvailableMemory()
+{
+  return ( m_memory.GetMemorySize() - m_usageMem );
+}
+
+

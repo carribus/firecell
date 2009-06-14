@@ -5,6 +5,8 @@ enum e_FCEventType
 {
 	FCME_StateChange,
   FCME_NewCharacterParamsReady,
+  FCME_ApplicationAdded,
+  FCME_ApplicationRemoved,          /* not used yet */
 	FCME_OpenApplication,
 	/* Console events */
 	FCME_Console_FileSystemInfo,
