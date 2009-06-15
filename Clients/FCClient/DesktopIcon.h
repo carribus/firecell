@@ -3,6 +3,7 @@
 
 #include <string>
 #include <irrlicht.h>
+#include "../../common/game_objects/ItemSoftware.h"
 #include "IDesktop.h"
 
 using namespace irr;
@@ -23,8 +24,11 @@ public:
   void setHeight(s32 height);
 	void setSelected(bool bSelected)															{ m_bSelected = bSelected; }
   void setType(unsigned int type)                               { m_type = type; }
+  void setSoftware(ItemSoftware* pSoftware)                     { m_pSoftware = pSoftware; }
   unsigned int getType()                                        { return m_type; }
   void moveTo(s32 x, s32 y);
+
+  ItemSoftware* getSoftware()                                   { return m_pSoftware; }
 
   rect<s32> calculateDimensions();
 
@@ -41,6 +45,7 @@ private:
   IGUIFont*               m_pFont;
   bool                    m_bSelected;
   unsigned int            m_type;
+  ItemSoftware*           m_pSoftware;
 
   /*
    *  Double click tracking

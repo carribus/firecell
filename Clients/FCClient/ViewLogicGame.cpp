@@ -166,8 +166,8 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
 
     case  FCME_OpenApplication:
       {
-  		  __FCPKT_ACTIVATE_DESKTOP_OPTION_RESP* pData = (__FCPKT_ACTIVATE_DESKTOP_OPTION_RESP*) event.GetData();
-        bResult = m_pDesktop->OpenApplication( pData->optionID, pData->cpu_cost, pData->mem_cost );
+  		  __FCPKT_ACTIVATE_SOFTWARE_RESP* pData = (__FCPKT_ACTIVATE_SOFTWARE_RESP*) event.GetData();
+        bResult = m_pDesktop->OpenApplication( pData->itemID, pData->cpu_cost, pData->mem_cost );
       }
       break;
 

@@ -20,7 +20,7 @@ public:
 	InGameAppWindow(IDesktop* pDesktop, FCController* pController, IGUIEnvironment* pEnv);
 	virtual ~InGameAppWindow(void);
 
-	virtual bool Create(s32 AppElemID, FCUINT optionID, DesktopOptionType type, std::wstring caption, bool bModal = false);
+	virtual bool Create(s32 AppElemID, FCUINT optionID, FCULONG softwareType, std::wstring caption, bool bModal = false);
 	void GetClientRect(core::rect<s32>& rect);
   void CenterWindow();
 
@@ -30,7 +30,7 @@ public:
   virtual const wchar_t* getAppName() = 0;
 
 	FCUINT GetOptionID()												        { return m_optionID; }
-	DesktopOptionType GetAppType()							        { return m_type; }
+	FCULONG GetAppType()							                  { return m_type; }
   virtual void SetWaitingForResponse(bool bWait)      { m_bWaitingForResponse = bWait; }
 	bool IsWaitingForResponse()									        { return m_bWaitingForResponse; }
 	IGUIWindow* GetGUIWindow()													{ return m_pWindow; }
@@ -42,7 +42,7 @@ protected:
 	IGUIEnvironment*				m_pEnv;
 	IGUIWindow*							m_pWindow;
 	FCUINT									m_optionID;
-	DesktopOptionType				m_type;
+	FCULONG         				m_type;
 	bool										m_bWaitingForResponse;
 };
 

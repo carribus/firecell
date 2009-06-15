@@ -385,9 +385,9 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
-	case	FCMSG_ACTIVATE_DESKTOP_OPTION:
+	case	FCMSG_ACTIVATE_SOFTWARE:
 		{
-			bHandled = OnResponseActivateDesktopOptions(pPkt, pSocket);
+			bHandled = OnResponseActivateSoftware(pPkt, pSocket);
 		}
 		break;
 
@@ -769,6 +769,8 @@ bool FCModel::OnResponseCharacterItemsRequest(PEPacket* pPkt, BaseSocket* pSocke
 	Item* pItem = NULL;
 	ItemSoftware* pSoftware = NULL;
 
+	SetState( FCModel::Playing );
+
 	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
 	d = (__FCPKT_CHARACTER_ITEMS_REQUEST_RESP*) new FCBYTE[ dataLen ];
 	pPkt->GetField("data", d, dataLen);
@@ -828,6 +830,7 @@ bool FCModel::OnResponseCharacterMissionsRequest(PEPacket* pPkt, BaseSocket* pSo
 
 bool FCModel::OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket)
 {
+/*
   __FCPKT_GET_DESKTOP_OPTIONS_RESP* d;
   DesktopOption option;
   size_t dataLen;
@@ -848,22 +851,22 @@ bool FCModel::OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket)
 	SetState( FCModel::Playing );
 
   delete [] (FCBYTE*)d;
-	
+*/	
 	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-bool FCModel::OnResponseActivateDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket)
+bool FCModel::OnResponseActivateSoftware(PEPacket* pPkt, BaseSocket* pSocket)
 {
-	__FCPKT_ACTIVATE_DESKTOP_OPTION_RESP d;
+	__FCPKT_ACTIVATE_SOFTWARE_RESP d;
 	size_t dataLen;
 
 	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
 	pPkt->GetField("data", &d, sizeof(d));
 
 	// check if we can open the option
-	if ( d.canActivate )
+	if ( d.result == ACTIVATERESULT_OK )
 	{
 		FireEvent(FCME_OpenApplication, (void*)&d);
 	}
@@ -1458,9 +1461,9 @@ void FCModel::StartNewCharacterCreation()
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCModel::ActivateDesktopOption(FCULONG optionID)
+void FCModel::ActivateDesktopOption(FCULONG softwareID)
 {
-	m_server.RequestDesktopOptionActivate(optionID);
+	m_server.RequestSoftwareActivate(softwareID);
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -246,7 +246,7 @@ bool Player::HasMission(FCULONG missionID)
 
   m_missionLock.LockForRead();
   MissionMap::iterator it = m_mapMissions.find(missionID);
-  bResult = (it == m_mapMissions.end());
+  bResult = (it != m_mapMissions.end());
   m_missionLock.Unlock();
 
 	return bResult;
@@ -260,7 +260,8 @@ bool Player::HasCompletedMission(FCULONG missionID)
 
   m_missionLock.LockForRead();
   MissionMap::iterator it = m_mapMissions.find(missionID);
-  bResult = it->second->IsComplete();
+  if ( it != m_mapMissions.end() )
+    bResult = it->second->IsComplete();
   m_missionLock.Unlock();
 
 	return bResult;

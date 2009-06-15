@@ -55,5 +55,18 @@
   
   
   <!-- ITEMS -->
+	<!-- SOFTWARE -->
+	<String id="ITEM_SOFTWARE_20">Web Service</String>
+	<String id="ITEM_SOFTWARE_21">FTP Service</String>
+	<String id="ITEM_SOFTWARE_22">Secure Shell Service</String>
+	<String id="ITEM_SOFTWARE_23">Banking Service</String>
+	<String id="ITEM_SOFTWARE_24">Database Service</String>
+	<String id="ITEM_SOFTWARE_25">Mail Service</String>
+	<String id="ITEM_SOFTWARE_26">Forums</String>
+	<String id="ITEM_SOFTWARE_27">News Reader</String>
+	<String id="ITEM_SOFTWARE_28">Email</String>
+	<String id="ITEM_SOFTWARE_29">Console</String>
+	<String id="ITEM_SOFTWARE_30">Banking</String>
+	<String id="ITEM_SOFTWARE_31">Online Chat</String>
   
 </FCStrings>

@@ -73,7 +73,7 @@ private:
 		bool OnCommandCharacterItemsRequest(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
     bool OnCommandCharacterMissionsRequest(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
     bool OnCommandGetDesktopOptions(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
-		bool OnCommandActivateDesktopOption(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
+		bool OnCommandActivateSoftware(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
     // console commands
     bool OnCommandConsoleGetFSInfo(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
     bool OnCommandConsoleGetFileList(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
@@ -124,7 +124,7 @@ private:
    *  Helper functions
    */
   void UpdateComputerFromResultSet(Computer& comp, DBIResultSet& resultSet, size_t row = 0);
-  FCULONG CanActivateOption(Player* pPlayer, DesktopOptionType optionType);
+  FCULONG CanActivateSoftware(Player* pPlayer, FCULONG itemID);
 
   /*
    *  Private members

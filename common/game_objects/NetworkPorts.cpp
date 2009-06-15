@@ -209,6 +209,7 @@ bool NetworkPorts::isServiceRunning(FCULONG softwareType, FCSHORT* whichPort)
       {
         *whichPort = i;
       }
+      break;
     }
   }
 

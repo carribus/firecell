@@ -7,6 +7,7 @@
 #include "ItemProcessor.h"
 #include "ItemOS.h"
 #include "ItemMemory.h"
+#include "ItemSoftware.h"
 #include "NetworkPorts.h"
 #include "../fctypes.h"
 #include "../fcconstants.h"
@@ -32,7 +33,7 @@ public:
   void SetHDDSize(FCUINT sizeMB)          { m_hddSizeMB = sizeMB; }
   void SetNetworkSpeed(FCUINT speedMBits) { m_networkSpeedMBits = speedMBits; }
 
-  size_t AddProcess(DesktopOptionType type, FCULONG cpuCost, FCULONG memCost);
+  size_t AddProcess(ItemSoftware* pSoftware);
   FCSHORT GetAvailableCPU();
   FCULONG GetAvailableMemory();
 
@@ -49,13 +50,7 @@ private:
   FCSHORT         m_usageCPU;
   FCULONG         m_usageMem;
 
-  struct stProcess
-  {
-    DesktopOptionType optionType;
-    FCULONG memCost;
-    FCULONG cpuCost;
-  };
-  std::list<stProcess>  m_processes;
+  std::list<ItemSoftware*>  m_processes;
 };
 
 #endif//_COMPUTERBASE_H_

@@ -179,7 +179,7 @@ public:
 	void SelectCharacter(FCUINT characterID);
   void StartNewCharacterCreation();
   /* Desktop */
-	void ActivateDesktopOption(FCULONG optionID);
+	void ActivateDesktopOption(FCULONG softwareID);
 	/* Console methods */
 	void ConsoleRefresh();
 	void ConsoleCommandIssued(std::string cmd, std::string curdir);
@@ -230,7 +230,7 @@ private:
 		bool OnResponseCharacterItemsRequest(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseCharacterMissionsRequest(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket);
-		bool OnResponseActivateDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket);
+		bool OnResponseActivateSoftware(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseConsoleGetFileSystemInfo(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseConsoleCommand(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseForumGetCategories(PEPacket* pPkt, BaseSocket* pSocket);

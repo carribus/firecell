@@ -8,6 +8,7 @@ DesktopIcon::DesktopIcon(IDesktop* pDesktop, IGUIEnvironment* env, IGUIElement* 
 , m_pTexture(NULL)
 , m_pFont(NULL)
 , m_bSelected(false)
+, m_pSoftware(NULL)
 {
 #ifdef _DEBUG
   setDebugName("DesktopIcon");
