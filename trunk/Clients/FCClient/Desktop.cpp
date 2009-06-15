@@ -141,13 +141,13 @@ bool Desktop::OnEvent(const SEvent& event)
 
           switch ( elemID )
           {
-          case  INGAMEAPP_BASE_ID+DOT_Forum:
-          case  INGAMEAPP_BASE_ID+DOT_News:
-          case  INGAMEAPP_BASE_ID+DOT_Email:
-          case  INGAMEAPP_BASE_ID+DOT_Console:
-          case  INGAMEAPP_BASE_ID+DOT_Bank:
-          case  INGAMEAPP_BASE_ID+DOT_Chat:
-          case  INGAMEAPP_BASE_ID+DOT_HackingTools:
+          case  INGAMEAPP_BASE_ID+SWT_APP_FORUM:
+          case  INGAMEAPP_BASE_ID+SWT_APP_NEWS:
+          case  INGAMEAPP_BASE_ID+SWT_APP_EMAIL:
+          case  INGAMEAPP_BASE_ID+SWT_APP_CONSOLE:
+          case  INGAMEAPP_BASE_ID+SWT_APP_BANK:
+          case  INGAMEAPP_BASE_ID+SWT_APP_CHAT:
+//          case  INGAMEAPP_BASE_ID+DOT_HackingTools:
             {
               // an application has been activated...
               OnApplicationActivated( this->GetAppWindowByType(elemID-INGAMEAPP_BASE_ID) );
@@ -275,15 +275,134 @@ void Desktop::GetDesktopRect(core::rect<s32>& rect)
 
 bool Desktop::AddApplication(ItemSoftware* pSoftware)
 {
-#error you left off here
+	FCModel* pModel = m_owner.GetContainer()->GetModel();
+  DesktopIcon* pIcon = NULL;
+  core::dimension2d<s32> iconMax;
+  core::rect<s32> iRect;
+	std::string iconFilename;
+  wstringstream ss;
+  std::wstring strName;
+
+  // get the localised software name
+  ss << "ITEM_SOFTWARE_" << pSoftware->GetID();
+  strName = ResourceManager::instance().GetClientString( ss.str() );
+  ss.str(L"");
+
+  pIcon = new DesktopIcon(this, Environment, this, strName.c_str(), DESKTOPICON_BASE_ID+pSoftware->GetID());
+  if ( pIcon )
+  {
+    pIcon->setSoftware(pSoftware);
+    pIcon->setType(pSoftware->GetSoftwareType());
+    // set the font
+    pIcon->setFont(m_pFontCourier);
+    // set the icon
+  	iconFilename = "./clientdata/gfx/icons/web_normal.png";
+    pIcon->setIcon(iconFilename);
+    iRect = pIcon->getAbsolutePosition();
+
+		if ( iRect.getWidth() > iconMax.Width )
+			iconMax.Width = iRect.getWidth();
+		if ( iRect.getHeight() > iconMax.Height )
+			iconMax.Height = iRect.getHeight();
+
+    m_mapDesktopIcons[ pSoftware->GetID() ] = pIcon;
+  }
+
+  // make all icons the same size
+  for ( DesktopIconMap::iterator it = m_mapDesktopIcons.begin(); it != m_mapDesktopIcons.end(); ++it )
+  {
+    pIcon = it->second;
+    pIcon->setWidth( iconMax.Width );
+    pIcon->setHeight( iconMax.Height );
+  }
+
+  updateIconPositions();
+
+/*
+	std::map<FCUINT, FCModel::DesktopOption> mapOptions = pModel->GetDesktopOptions();
+	std::map<FCUINT, FCModel::DesktopOption>::iterator it = mapOptions.begin();
+	std::map<FCUINT, FCModel::DesktopOption>::iterator limit = mapOptions.end();
+  core::dimension2d<s32> iconMax;
+  core::rect<s32> iRect;
+  wstringstream ss;
+	std::string iconFilename;
+  DesktopIcon* pIcon = NULL;
+
+	for ( ; it != limit; it++ )
+  {
+    // get the text into a wchar_t format
+  	ss << it->second.name;
+    // create the desktop icon element
+    pIcon = new DesktopIcon(this, Environment, this, ss.str().c_str(), it->second.optionID+DESKTOPICON_BASE_ID);
+    ss.str(L"");
+    if ( pIcon )
+    {
+      // set the application type that this icon represents
+      pIcon->setType( it->second.type );
+      // set the font
+      pIcon->setFont(m_pFontCourier);
+			// determine which graphic file the icon should be using
+			switch ( it->second.type )
+			{
+			case	DOT_Forum:
+				iconFilename = "./clientdata/gfx/icons/web_normal.png";
+				break;
+
+			case	DOT_News:
+				iconFilename = "./clientdata/gfx/icons/web_normal.png";
+				break;
+
+			case	DOT_Email:
+				iconFilename = "./clientdata/gfx/icons/web_normal.png";
+				break;
+
+			case	DOT_Console:
+				iconFilename = "./clientdata/gfx/icons/web_normal.png";
+				break;
+
+			case	DOT_Bank:
+				iconFilename = "./clientdata/gfx/icons/web_normal.png";
+				break;
+
+			case	DOT_Chat:
+				iconFilename = "./clientdata/gfx/icons/web_normal.png";
+				break;
+
+			case	DOT_HackingTools:
+				iconFilename = "./clientdata/gfx/icons/web_normal.png";
+				break;
+			}
+      pIcon->setIcon(iconFilename);
+      iRect = pIcon->getAbsolutePosition();
+
+			if ( iRect.getWidth() > iconMax.Width )
+				iconMax.Width = iRect.getWidth();
+			if ( iRect.getHeight() > iconMax.Height )
+				iconMax.Height = iRect.getHeight();
+
+      m_mapDesktopIcons[ it->second.optionID ] = pIcon;
+    }
+	}
+
+  // make all icons the same size
+  for ( DesktopIconMap::iterator it2 = m_mapDesktopIcons.begin(); it2 != m_mapDesktopIcons.end(); it2++ )
+  {
+    pIcon = it2->second;
+    pIcon->setWidth( iconMax.Width );
+    pIcon->setHeight( iconMax.Height );
+  }
+
+  updateIconPositions();
+*/
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-bool Desktop::OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost)
+bool Desktop::OpenApplication(FCULONG itemID, FCSHORT cpuCost, FCULONG memCost)
 {
   bool bResult = true;
-  DesktopIconMap::iterator it = m_mapDesktopIcons.find(optionID);
+  DesktopIconMap::iterator it = m_mapDesktopIcons.find(itemID);
   InGameAppWindow* pAppWnd = NULL;
 
   if ( it != m_mapDesktopIcons.end() )
@@ -293,12 +412,12 @@ bool Desktop::OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost
     {
       switch ( it->second->getType() )
       {
-      case  DOT_Forum:
+      case  SWT_APP_FORUM:
         {
           ForumWindow* pForum = new ForumWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
 
 					m_mutexApps.Lock();
-          if ( pForum->Create( INGAMEAPP_BASE_ID+optionID, optionID, ResourceManager::instance().GetClientString( STR_APP_FORUM_CAPTION ) ) )
+          if ( pForum->Create( INGAMEAPP_BASE_ID+SWT_APP_FORUM, itemID, ResourceManager::instance().GetClientString( STR_APP_FORUM_CAPTION ) ) )
           {
             addChild( pForum->GetGUIWindow() );
             m_arrApps.push_back(pForum);
@@ -309,24 +428,24 @@ bool Desktop::OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost
         }
         break;
 
-      case  DOT_News:
+      case  SWT_APP_NEWS:
         {
           m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening News!", L"This will be the news browser app window");
         }
         break;
 
-      case  DOT_Email:
+      case  SWT_APP_EMAIL:
         {
           m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Email!", L"This will be the email app window");
         }
         break;
 
-		  case	 DOT_Console:
+		  case	 SWT_APP_CONSOLE:
 			  {
 					ConsoleWindow* pConsole = new ConsoleWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
 
 					m_mutexApps.Lock();
-          if ( pConsole->Create(INGAMEAPP_BASE_ID+optionID, optionID, ResourceManager::instance().GetClientString(STR_APP_CONSOLE_CAPTION) ) )
+          if ( pConsole->Create(INGAMEAPP_BASE_ID+SWT_APP_CONSOLE, itemID, ResourceManager::instance().GetClientString(STR_APP_CONSOLE_CAPTION) ) )
 					{
             addChild( pConsole->GetGUIWindow() );
 						m_arrApps.push_back(pConsole);
@@ -337,24 +456,24 @@ bool Desktop::OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost
 			  }
 			  break;
 
-      case  DOT_Bank:
+      case  SWT_APP_BANK:
         {
           m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Bank!", L"This will be the banking app window");
         }
         break;
 
-      case  DOT_Chat:
+      case  SWT_APP_CHAT:
         {
           m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Chat!", L"This will be the chatting app window");
         }
         break;
-
+/*
       case  DOT_HackingTools:
         {
           m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Hacking Toolkit!", L"This will be the hacking toolkit app window");
         }
         break;
-
+*/
 		  default:
 			  break;
 
@@ -412,7 +531,7 @@ bool Desktop::OnGUIEvent(SEvent::SGUIEvent event)
 bool Desktop::OnConsoleEvent(FCModelEvent& event)
 {
   bool bResult = true;
-  ConsoleWindow* pWnd = (ConsoleWindow*)GetAppWindowByType(DOT_Console);
+  ConsoleWindow* pWnd = (ConsoleWindow*)GetAppWindowByType(SWT_APP_CONSOLE);
 
   if ( pWnd )
   {
@@ -455,7 +574,7 @@ bool Desktop::OnConsoleEvent(FCModelEvent& event)
 bool Desktop::OnForumEvent(FCModelEvent& event)
 {
 	bool bResult = true;
-	ForumWindow* pWnd = (ForumWindow*) GetAppWindowByType( DOT_Forum );
+	ForumWindow* pWnd = (ForumWindow*) GetAppWindowByType( SWT_APP_FORUM );
 
 	if ( pWnd )
 	{
@@ -562,9 +681,17 @@ void Desktop::OnDesktopIconSelected(DesktopIcon* pIcon)
 
 void Desktop::OnDesktopIconActivated(DesktopIcon* pIcon)
 {
-	// fire an event to the controller
-	FCViewEvent e(VE_DesktopOptionActivated, pIcon->getID()-DESKTOPICON_BASE_ID);
-	m_owner.GetContainer()->GetController()->OnViewEvent(e);
+  if ( pIcon )
+  {
+    ItemSoftware* pSoftware = pIcon->getSoftware();
+
+    if ( pSoftware )
+    {
+	    // fire an event to the controller
+	    FCViewEvent e(VE_DesktopOptionActivated, pSoftware->GetID());
+	    m_owner.GetContainer()->GetController()->OnViewEvent(e);
+    }
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -582,6 +709,7 @@ void Desktop::OnApplicationActivated(InGameAppWindow* pApp)
 
 void Desktop::UpdateDesktopOptions()
 {
+/*
 	FCModel* pModel = m_owner.GetContainer()->GetModel();
 	std::map<FCUINT, FCModel::DesktopOption> mapOptions = pModel->GetDesktopOptions();
 	std::map<FCUINT, FCModel::DesktopOption>::iterator it = mapOptions.begin();
@@ -657,6 +785,7 @@ void Desktop::UpdateDesktopOptions()
   }
 
   updateIconPositions();
+*/
 }
 
 ///////////////////////////////////////////////////////////////////////

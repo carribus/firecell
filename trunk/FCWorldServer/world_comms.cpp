@@ -382,12 +382,15 @@ void SendCharacterMissionsResponse(Player* pPlayer, BaseSocket* pRouter, FCSOCKE
 
 void SendCharacterDesktopOptions(Player* pPlayer, BaseSocket* pRouter, FCSOCKET clientSocket)
 {
+/*
   if ( !pPlayer )
     return;
 
   PEPacket* pkt = new PEPacket;
   __FCPKT_GET_DESKTOP_OPTIONS_RESP* d = NULL;
+  const std::map<FCULONG, Player::PlayerItem> items = pPlayer->GetItems();
   int nPktLen = 0;
+
   int numOptions = 7;
   char* OptionNames[] =
   {
@@ -424,25 +427,26 @@ void SendCharacterDesktopOptions(Player* pPlayer, BaseSocket* pRouter, FCSOCKET 
 
   // clear the data portion
   delete [] d;
+*/
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SendActivateDesktopOptionResponse(FCULONG optionID, Player* pPlayer, BaseSocket* pRouter, FCSOCKET clientSocket)
+void SendActivateDesktopOptionResponse(ItemSoftware* pSoftware, FCULONG result, Player* pPlayer, BaseSocket* pRouter, FCSOCKET clientSocket)
 {
 	PEPacket* pkt = new PEPacket;
 	Computer& comp = pPlayer->GetComputer();
-	__FCPKT_ACTIVATE_DESKTOP_OPTION_RESP d;
+	__FCPKT_ACTIVATE_SOFTWARE_RESP d;
 	
 	// TODO: Need to add the necessary methods to calculate whether an application can run
-	d.optionID = optionID;
-	d.canActivate = true;
+	d.itemID = pSoftware->GetID();
+	d.result = result;
 	d.cpu_cost = 0;
 	d.mem_cost = 0;
 
   // send the packet
-  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_ACTIVATE_DESKTOP_OPTION, ST_None);
-  PEPacketHelper::SetPacketData(*pkt, (void*)&d, sizeof(__FCPKT_ACTIVATE_DESKTOP_OPTION_RESP));
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_ACTIVATE_SOFTWARE, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, (void*)&d, sizeof(__FCPKT_ACTIVATE_SOFTWARE_RESP));
 
   // send notification to Client
   pkt->SetFieldValue("target", (void*)&clientSocket);

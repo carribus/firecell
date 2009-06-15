@@ -40,7 +40,7 @@ ForumWindow::~ForumWindow(void)
 
 bool ForumWindow::Create(s32 AppElemID, FCUINT optionID, std::wstring caption)
 {
-  bool bResult = InGameAppWindow::Create(AppElemID, optionID, DOT_Forum, caption);
+  bool bResult = InGameAppWindow::Create(AppElemID, optionID, SWT_APP_FORUM, caption);
 	core::rect<s32> wndRect, clientRect;
 
   // calculate the size of the window

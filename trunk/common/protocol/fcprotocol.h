@@ -375,25 +375,25 @@ struct __FCPKT_GET_DESKTOP_OPTIONS_RESP
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-const FCSHORT FCMSG_ACTIVATE_DESKTOP_OPTION      = 41;
+const FCSHORT FCMSG_ACTIVATE_SOFTWARE      = 41;
 ///////////////////////////////////////////////////////////////////////////////////////////
 /**
- *  @brief Request packet from client to server to attempt to activate a desktop option/application
+ *  @brief Request packet from client to server to attempt to activate an application
  *  @ingroup fcprotocol
  */
-struct __FCPKT_ACTIVATE_DESKTOP_OPTION
+struct __FCPKT_ACTIVATE_SOFTWARE
 {
-  FCULONG optionID;
+  FCULONG itemID;
 };
 
 /**
  *  @brief Response packet from server to client for desktop option activation
  *  @ingroup fcprotocol
  */
-struct __FCPKT_ACTIVATE_DESKTOP_OPTION_RESP
+struct __FCPKT_ACTIVATE_SOFTWARE_RESP
 {
-	FCULONG optionID;
-	bool canActivate;
+	FCULONG itemID;
+	FCULONG result;
 	FCSHORT cpu_cost;
 	FCULONG mem_cost;
 };

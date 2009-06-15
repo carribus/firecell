@@ -23,7 +23,7 @@ ConsoleWindow::~ConsoleWindow(void)
 
 bool ConsoleWindow::Create(s32 AppElemID, FCUINT optionID, std::wstring caption)
 {
-	bool bResult = InGameAppWindow::Create(AppElemID, optionID, DOT_Console, caption);
+	bool bResult = InGameAppWindow::Create(AppElemID, optionID, SWT_APP_CONSOLE, caption);
 	core::rect<s32> wndRect(0, 0, 640, 480), clientRect;
 
 	if ( bResult )

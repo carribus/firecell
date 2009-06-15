@@ -41,7 +41,7 @@ public:
 	bool OnEvent(const SEvent& event);
 
   bool AddApplication(ItemSoftware* pSoftware);
-  bool OpenApplication(FCULONG optionID, FCSHORT cpuCost, FCULONG memCost);
+  bool OpenApplication(FCULONG itemID, FCSHORT cpuCost, FCULONG memCost);
 	bool IsApplicationRunning(FCUINT appType);
 
 	bool OnGUIEvent(SEvent::SGUIEvent event);

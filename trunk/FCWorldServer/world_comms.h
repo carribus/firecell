@@ -87,7 +87,7 @@ void SendCharacterDesktopOptions(Player* pPlayer, BaseSocket* pRouter, FCSOCKET 
  *  @param optionID The option ID of the desktop option that the player tried to activate
  *  @param pPlayer The player that tried to activate the desktop option
  */
-void SendActivateDesktopOptionResponse(FCULONG optionID, Player* pPlayer, BaseSocket* pRouter, FCSOCKET clientSocket);
+void SendActivateDesktopOptionResponse(ItemSoftware* pSoftware, FCULONG result, Player* pPlayer, BaseSocket* pRouter, FCSOCKET clientSocket);
 
 /*************************************************************************************************************** 
  *  CONSOLE SEND METHODS

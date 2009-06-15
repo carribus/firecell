@@ -246,9 +246,9 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
-	case	FCMSG_ACTIVATE_DESKTOP_OPTION:
+	case	FCMSG_ACTIVATE_SOFTWARE:
 		{
-			bHandled = OnCommandActivateDesktopOption(pPkt, pRouter, clientSock);
+			bHandled = OnCommandActivateSoftware(pPkt, pRouter, clientSock);
 		}
 		break;
 
@@ -504,9 +504,9 @@ bool FCLogicWorld::OnCommandGetDesktopOptions(PEPacket* pPkt, RouterSocket* pRou
 
 ///////////////////////////////////////////////////////////////////////
 
-bool FCLogicWorld::OnCommandActivateDesktopOption(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket)
+bool FCLogicWorld::OnCommandActivateSoftware(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket)
 {
-	__FCPKT_ACTIVATE_DESKTOP_OPTION d;
+	__FCPKT_ACTIVATE_SOFTWARE d;
 	size_t dataLen = 0;
 	Player* pPlayer = NULL;
 	
@@ -516,18 +516,16 @@ bool FCLogicWorld::OnCommandActivateDesktopOption(PEPacket* pPkt, RouterSocket* 
 	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
 	{
     Computer& comp = pPlayer->GetComputer();
+    ItemSoftware* pSoftware = (ItemSoftware*)m_itemMgr.GetItem(d.itemID);
 		// check whether the player can run the option
-    FCULONG res = CanActivateOption( pPlayer, (DesktopOptionType)d.optionID );
+    FCULONG res = CanActivateSoftware( pPlayer, d.itemID );
     if ( res == ACTIVATERESULT_OK )
     {
-      comp.AddProcess( (DesktopOptionType)d.optionID, g_OptionCosts[d.optionID].cpuCost, g_OptionCosts[d.optionID].memCost );
+      comp.AddProcess( pSoftware );
     }
 
     // if all is well, then continue with the execution
-    if ( 1 )
-    {
-		  SendActivateDesktopOptionResponse( d.optionID, pPlayer, pRouter, clientSocket );
-    }
+	  SendActivateDesktopOptionResponse( pSoftware, res, pPlayer, pRouter, clientSocket );
 	}
 	else
 		return false;
@@ -1721,14 +1719,97 @@ void FCLogicWorld::UpdateComputerFromResultSet(Computer& comp, DBIResultSet& res
 
 ///////////////////////////////////////////////////////////////////////
 
-FCULONG FCLogicWorld::CanActivateOption(Player* pPlayer, DesktopOptionType optionType)
+FCULONG FCLogicWorld::CanActivateSoftware(Player* pPlayer, FCULONG itemID)
 {
   FCULONG res = ACTIVATERESULT_OK;
   Computer& comp = pPlayer->GetComputer();
   NetworkPorts& ports = comp.GetNetworkPorts();
+  std::map<FCULONG, Player::PlayerItem> items = pPlayer->GetItems();
+  std::map<FCULONG, Player::PlayerItem>::iterator it;
+/*
   FCSHORT cpuCost = g_OptionCosts[optionType].cpuCost;
   FCULONG memCost = g_OptionCosts[optionType].memCost;
+*/
+  // find the item
+  it = items.find(itemID);
+  if ( it != items.end() && it->second.count > 0 )
+  {
+    Item* pItem = m_itemMgr.GetItem(itemID);
 
+    if ( pItem && pItem->GetTypeID() == ItemType::Software )
+    {
+      ItemSoftware* pSoftware = (ItemSoftware*)pItem;
+      FCSHORT cpuCost = pSoftware->GetCPUCost();
+      FCULONG memCost = pSoftware->GetMemCost();
+
+      // first check if the computer can afford to run this app
+      if ( comp.GetAvailableMemory() < memCost )
+      {
+        res = ACTIVATERESULT_NOT_ENOUGH_MEM;
+        return res;
+      }
+      if ( comp.GetAvailableCPU() < cpuCost )
+      {
+        res = ACTIVATERESULT_NOT_ENOUGH_CPU;
+        return res;
+      }
+
+      // now check if the required services are running
+      switch ( pSoftware->GetSoftwareType() )
+      {
+      case  SWT_APP_FORUM:
+        if ( !ports.isServiceRunning( SWT_HTTPSERVER ) )
+        {
+          res = ACTIVATERESULT_NEED_HTTP;
+        }
+        if ( !ports.isServiceRunning( SWT_DBSERVER ) )
+        {
+          res = ACTIVATERESULT_NEED_DB;
+        }
+        break;
+
+      case  SWT_APP_NEWS:
+        if ( ports.isServiceRunning( SWT_HTTPSERVER ) )
+        {
+          res = ACTIVATERESULT_NEED_HTTP;
+        }
+        break;
+
+      case  SWT_APP_EMAIL:
+        if ( ports.isServiceRunning( SWT_MAILSERVER ) )
+        {
+          res = ACTIVATERESULT_NEED_MAIL;
+        }
+        break;
+
+      case  SWT_APP_CONSOLE:
+        res = ACTIVATERESULT_OK;
+        break;
+
+      case  SWT_APP_BANK:
+        if ( ports.isServiceRunning( SWT_BANKSERVER ) )
+        {
+          res = ACTIVATERESULT_NEED_BANK;
+        }
+        break;
+
+      case  SWT_APP_CHAT:
+        res = ACTIVATERESULT_OK;
+        break;
+
+      default:
+        res = ACTIVATERESULT_UNKNOWN_APP;
+        break;
+/*
+      case  DOT_HackingTools:
+        res = ACTIVATERESULT_OK;
+        break;
+*/
+      }
+
+    }
+  }
+/*
   // first check if the computer can afford to run this app
   if ( comp.GetAvailableMemory() < memCost )
   {
@@ -1788,6 +1869,6 @@ FCULONG FCLogicWorld::CanActivateOption(Player* pPlayer, DesktopOptionType optio
     res = ACTIVATERESULT_OK;
     break;
   }
-
+*/
   return res;
 }

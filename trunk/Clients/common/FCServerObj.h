@@ -22,7 +22,7 @@ public:
 	void SendCharacterItemsRequest(size_t character_id);
   void SendCharacterMissionsRequest(size_t character_id);
   void RequestDesktopOptions(size_t character_id);
-	void RequestDesktopOptionActivate(FCULONG option_id);
+	void RequestSoftwareActivate(FCULONG software_id);
 
   // console commands
   void RequestCharacterFileSystemInfo(FCULONG character_id);

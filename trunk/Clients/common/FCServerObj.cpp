@@ -159,13 +159,13 @@ void FCServerObj::RequestDesktopOptions(size_t character_id)
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCServerObj::RequestDesktopOptionActivate(FCULONG option_id)
+void FCServerObj::RequestSoftwareActivate(FCULONG software_id)
 {
 	PEPacket pkt;
-	__FCPKT_ACTIVATE_DESKTOP_OPTION d;
+	__FCPKT_ACTIVATE_SOFTWARE d;
 
-	d.optionID = option_id;
-  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_ACTIVATE_DESKTOP_OPTION, ST_World);
+	d.itemID = software_id;
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_ACTIVATE_SOFTWARE, ST_World);
   PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
 
   SendPacket(pkt);

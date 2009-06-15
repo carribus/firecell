@@ -20,7 +20,7 @@ InGameAppWindow::~InGameAppWindow(void)
 
 ///////////////////////////////////////////////////////////////////////
 
-bool InGameAppWindow::Create(s32 AppElemID, FCUINT optionID, DesktopOptionType type, std::wstring caption, bool bModal)
+bool InGameAppWindow::Create(s32 AppElemID, FCUINT optionID, FCULONG softwareType, std::wstring caption, bool bModal)
 {
 	if ( !m_pEnv || !m_pController )
 		return false;
@@ -34,7 +34,7 @@ bool InGameAppWindow::Create(s32 AppElemID, FCUINT optionID, DesktopOptionType t
   pBtn = m_pWindow->getMinimizeButton();
   pBtn->setVisible(true);
 
-	m_type = type;
+	m_type = softwareType;
 	m_optionID = optionID;
 		
 	return true;

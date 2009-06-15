@@ -18,11 +18,12 @@ ComputerBase::~ComputerBase(void)
 
 ///////////////////////////////////////////////////////////////////////
 
-size_t ComputerBase::AddProcess(DesktopOptionType type, FCULONG cpuCost, FCULONG memCost)
+size_t ComputerBase::AddProcess(ItemSoftware* pSoftware)
 {
-  stProcess proc = { type, memCost, cpuCost };
+  m_usageCPU += pSoftware->GetCPUCost();
+  m_usageMem += pSoftware->GetMemCost();
 
-  m_processes.push_back(proc);
+  m_processes.push_back(pSoftware);
   return m_processes.size();
 }
 

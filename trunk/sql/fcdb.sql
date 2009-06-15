@@ -1,6 +1,6 @@
 /*
 SQLyog Enterprise - MySQL GUI v7.15 
-MySQL - 5.0.67-community-nt : Database - firecell
+MySQL - 5.1.33-community : Database - firecell
 *********************************************************************
 */
 
@@ -20,13 +20,13 @@ USE `firecell`;
 DROP TABLE IF EXISTS `fc_accounts`;
 
 CREATE TABLE `fc_accounts` (
-  `account_id` bigint(20) unsigned NOT NULL auto_increment,
+  `account_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `acc_name` varchar(64) NOT NULL COMMENT 'account name',
   `acc_password` varchar(64) NOT NULL COMMENT 'account password',
-  `created` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT 'datetime of account creation',
-  `acc_type` smallint(5) unsigned NOT NULL default '0' COMMENT 'type of account (see fc_accounttypes)',
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'datetime of account creation',
+  `acc_type` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'type of account (see fc_accounttypes)',
   `email` varchar(64) NOT NULL,
-  PRIMARY KEY  (`account_id`)
+  PRIMARY KEY (`account_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_accounts` */
@@ -40,7 +40,7 @@ DROP TABLE IF EXISTS `fc_accounttypes`;
 CREATE TABLE `fc_accounttypes` (
   `accounttype_level` smallint(5) unsigned NOT NULL,
   `name` varchar(32) NOT NULL,
-  PRIMARY KEY  (`accounttype_level`)
+  PRIMARY KEY (`accounttype_level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_accounttypes` */
@@ -55,7 +55,7 @@ CREATE TABLE `fc_characteritems` (
   `character_id` bigint(20) unsigned NOT NULL COMMENT 'the character that owns this item',
   `item_id` bigint(20) unsigned NOT NULL COMMENT 'the item',
   `count` smallint(5) unsigned NOT NULL COMMENT 'the number of items of this type the character owns',
-  PRIMARY KEY  (`character_id`,`item_id`)
+  PRIMARY KEY (`character_id`,`item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_characteritems` */
@@ -69,13 +69,15 @@ DROP TABLE IF EXISTS `fc_charactermissions`;
 CREATE TABLE `fc_charactermissions` (
   `character_id` bigint(20) NOT NULL,
   `mission_id` int(10) unsigned NOT NULL,
-  `success_count` int(10) unsigned default '0' COMMENT 'success count',
-  `failure_count` int(11) default '0' COMMENT 'failure count',
-  `complete` char(1) default '0' COMMENT 'completed flag',
-  PRIMARY KEY  (`character_id`,`mission_id`)
+  `success_count` int(10) unsigned DEFAULT '0' COMMENT 'success count',
+  `failure_count` int(11) DEFAULT '0' COMMENT 'failure count',
+  `complete` char(1) DEFAULT '0' COMMENT 'completed flag',
+  PRIMARY KEY (`character_id`,`mission_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_charactermissions` */
+
+insert  into `fc_charactermissions`(`character_id`,`mission_id`,`success_count`,`failure_count`,`complete`) values (1,1,3,0,'1'),(1,2,1,0,'1'),(1,3,1,0,'1'),(1,4,3,0,'1');
 
 /*Table structure for table `fc_characterports` */
 
@@ -84,31 +86,31 @@ DROP TABLE IF EXISTS `fc_characterports`;
 CREATE TABLE `fc_characterports` (
   `character_id` bigint(20) unsigned NOT NULL COMMENT 'the character''s id',
   `port_number` int(11) NOT NULL COMMENT 'a character''s specific port ',
-  `item_id` bigint(20) default '0' COMMENT 'the service attached to the port (if none, then null)',
-  `enabled` smallint(6) NOT NULL default '0' COMMENT 'enabled port flag',
-  `health` smallint(5) unsigned NOT NULL default '100' COMMENT 'the port''s health',
-  PRIMARY KEY  (`character_id`,`port_number`)
+  `item_id` bigint(20) DEFAULT '0' COMMENT 'the service attached to the port (if none, then null)',
+  `enabled` smallint(6) NOT NULL DEFAULT '0' COMMENT 'enabled port flag',
+  `health` smallint(5) unsigned NOT NULL DEFAULT '100' COMMENT 'the port''s health',
+  PRIMARY KEY (`character_id`,`port_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_characterports` */
 
-insert  into `fc_characterports`(`character_id`,`port_number`,`item_id`,`enabled`,`health`) values (1,0,24,0,100),(1,1,23,1,100),(1,2,20,0,100),(1,3,0,0,100),(1,4,0,0,100),(1,5,0,0,100),(1,6,0,0,100),(1,7,0,0,100),(2,0,NULL,0,100),(2,1,NULL,0,100),(2,2,NULL,0,100),(2,3,NULL,0,100),(2,4,NULL,0,100),(2,5,NULL,0,100),(2,6,NULL,0,100),(2,7,NULL,0,100),(3,0,NULL,0,100),(3,1,NULL,0,100),(3,2,NULL,0,100),(3,3,NULL,0,100),(3,4,NULL,0,100),(3,5,NULL,0,100),(3,6,NULL,0,100),(3,7,NULL,0,100);
+insert  into `fc_characterports`(`character_id`,`port_number`,`item_id`,`enabled`,`health`) values (1,0,24,1,100),(1,1,23,0,100),(1,2,20,1,100),(1,3,0,0,100),(1,4,0,0,100),(1,5,0,0,100),(1,6,0,0,100),(1,7,0,0,100),(2,0,NULL,0,100),(2,1,NULL,0,100),(2,2,NULL,0,100),(2,3,NULL,0,100),(2,4,NULL,0,100),(2,5,NULL,0,100),(2,6,NULL,0,100),(2,7,NULL,0,100),(3,0,NULL,0,100),(3,1,NULL,0,100),(3,2,NULL,0,100),(3,3,NULL,0,100),(3,4,NULL,0,100),(3,5,NULL,0,100),(3,6,NULL,0,100),(3,7,NULL,0,100);
 
 /*Table structure for table `fc_characters` */
 
 DROP TABLE IF EXISTS `fc_characters`;
 
 CREATE TABLE `fc_characters` (
-  `character_id` bigint(20) unsigned NOT NULL auto_increment,
+  `character_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `account_id` bigint(20) unsigned NOT NULL COMMENT 'account id that this character belongs to',
   `name` char(32) NOT NULL COMMENT 'character''s name',
-  `xp` bigint(20) unsigned NOT NULL default '0' COMMENT 'character''s experience points',
-  `level` int(10) unsigned NOT NULL default '1' COMMENT 'character''s level',
-  `fame_scale` int(11) NOT NULL default '0' COMMENT 'character''s fame/notoriety value',
+  `xp` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'character''s experience points',
+  `level` int(10) unsigned NOT NULL DEFAULT '1' COMMENT 'character''s level',
+  `fame_scale` int(11) NOT NULL DEFAULT '0' COMMENT 'character''s fame/notoriety value',
   `country_id` int(10) unsigned NOT NULL COMMENT 'country that character is in',
   `city_id` int(10) unsigned NOT NULL COMMENT 'city that character is in',
-  `is_logged_in` tinyint(1) NOT NULL default '0' COMMENT 'flag that is set when a player logs in and choose a character to play',
-  PRIMARY KEY  (`character_id`)
+  `is_logged_in` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'flag that is set when a player logs in and choose a character to play',
+  PRIMARY KEY (`character_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_characters` */
@@ -120,12 +122,12 @@ insert  into `fc_characters`(`character_id`,`account_id`,`name`,`xp`,`level`,`fa
 DROP TABLE IF EXISTS `fc_cities`;
 
 CREATE TABLE `fc_cities` (
-  `city_id` int(10) unsigned NOT NULL auto_increment,
+  `city_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `country_id` int(10) unsigned NOT NULL COMMENT 'country that this city belongs to',
   `name` varchar(64) NOT NULL,
   `IP_groupB` smallint(6) unsigned NOT NULL COMMENT 'Group B IP range for city',
-  `support_char_creation` tinyint(1) NOT NULL default '1' COMMENT 'flag indicating whether characters can be created in this city',
-  PRIMARY KEY  (`city_id`,`IP_groupB`)
+  `support_char_creation` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'flag indicating whether characters can be created in this city',
+  PRIMARY KEY (`city_id`,`IP_groupB`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_cities` */
@@ -137,12 +139,12 @@ insert  into `fc_cities`(`city_id`,`country_id`,`name`,`IP_groupB`,`support_char
 DROP TABLE IF EXISTS `fc_companies`;
 
 CREATE TABLE `fc_companies` (
-  `company_id` int(10) unsigned NOT NULL auto_increment,
+  `company_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `company_name` varchar(64) NOT NULL,
   `city_id` smallint(5) unsigned NOT NULL COMMENT 'City where company exists (to get Group A + B IP classes)',
-  `IP_groupC` smallint(5) unsigned default NULL COMMENT 'Group C IP Range (if these are null, the IP is not fixed)',
-  `IP_groupD` smallint(5) unsigned default NULL COMMENT 'Group D IP Range (if these are null, the IP is not fixed)',
-  PRIMARY KEY  (`company_id`)
+  `IP_groupC` smallint(5) unsigned DEFAULT NULL COMMENT 'Group C IP Range (if these are null, the IP is not fixed)',
+  `IP_groupD` smallint(5) unsigned DEFAULT NULL COMMENT 'Group D IP Range (if these are null, the IP is not fixed)',
+  PRIMARY KEY (`company_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_companies` */
@@ -154,16 +156,16 @@ insert  into `fc_companies`(`company_id`,`company_name`,`city_id`,`IP_groupC`,`I
 DROP TABLE IF EXISTS `fc_computers`;
 
 CREATE TABLE `fc_computers` (
-  `computer_id` bigint(20) unsigned NOT NULL auto_increment,
+  `computer_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `owner_id` bigint(20) unsigned NOT NULL COMMENT 'ID of the owner this computer belongs ',
   `ownertype_id` smallint(5) unsigned NOT NULL COMMENT 'Type of owner (refer to fc_ownertypes)',
   `processor_id` int(10) unsigned NOT NULL COMMENT 'Processor installed in the computer',
-  `name` varchar(32) default NULL COMMENT '[optional] Name of computer given by player',
+  `name` varchar(32) DEFAULT NULL COMMENT '[optional] Name of computer given by player',
   `memory_id` int(10) unsigned NOT NULL COMMENT 'ID of the memory item that is installed in this machine',
   `os_id` int(10) unsigned NOT NULL COMMENT 'Operating system installed on machine',
   `harddrive_size` bigint(20) unsigned NOT NULL COMMENT 'Amount of storage space on machine (in MB)',
   `network_speed` int(10) unsigned NOT NULL COMMENT 'Speed of network connection (MBits)',
-  PRIMARY KEY  (`computer_id`)
+  PRIMARY KEY (`computer_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_computers` */
@@ -175,10 +177,10 @@ insert  into `fc_computers`(`computer_id`,`owner_id`,`ownertype_id`,`processor_i
 DROP TABLE IF EXISTS `fc_countries`;
 
 CREATE TABLE `fc_countries` (
-  `country_id` int(10) unsigned NOT NULL auto_increment,
+  `country_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(64) NOT NULL,
   `IP_groupA` smallint(5) unsigned NOT NULL COMMENT 'Group A IP block for country',
-  PRIMARY KEY  (`country_id`,`IP_groupA`)
+  PRIMARY KEY (`country_id`,`IP_groupA`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_countries` */
@@ -190,15 +192,15 @@ insert  into `fc_countries`(`country_id`,`name`,`IP_groupA`) values (1,'USA',216
 DROP TABLE IF EXISTS `fc_forumcategories`;
 
 CREATE TABLE `fc_forumcategories` (
-  `forumcat_id` int(10) unsigned NOT NULL auto_increment,
-  `parent_id` int(11) default NULL COMMENT '[Optional] Parent Category ID',
+  `forumcat_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `parent_id` int(11) DEFAULT NULL COMMENT '[Optional] Parent Category ID',
   `cat_order` int(10) unsigned NOT NULL COMMENT 'Order of display',
   `name` varchar(32) NOT NULL COMMENT 'Name of the category',
-  `description` varchar(256) default NULL COMMENT 'Description of category',
+  `description` varchar(256) DEFAULT NULL COMMENT 'Description of category',
   `accounttype_required` int(10) unsigned NOT NULL COMMENT 'account type required to see the category',
   `min_level` int(10) unsigned NOT NULL COMMENT 'minimum level required to see this category',
-  `max_level` int(11) default NULL COMMENT 'max level that could see this category',
-  PRIMARY KEY  (`forumcat_id`)
+  `max_level` int(11) DEFAULT NULL COMMENT 'max level that could see this category',
+  PRIMARY KEY (`forumcat_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_forumcategories` */
@@ -211,15 +213,15 @@ DROP TABLE IF EXISTS `fc_forumposts`;
 
 CREATE TABLE `fc_forumposts` (
   `forumpost_id` bigint(20) unsigned NOT NULL,
-  `parentpost_id` bigint(20) default NULL COMMENT 'id of the parent thread post',
+  `parentpost_id` bigint(20) DEFAULT NULL COMMENT 'id of the parent thread post',
   `forumcategory_id` bigint(20) unsigned NOT NULL COMMENT 'category that this post belongs to',
   `post_order` int(11) NOT NULL COMMENT 'this posts order in the thread',
-  `title` varchar(255) default NULL COMMENT 'Title of the thread',
+  `title` varchar(255) DEFAULT NULL COMMENT 'Title of the thread',
   `author_id` bigint(20) NOT NULL COMMENT 'ID of the author of the thread',
   `content` text COMMENT 'Content of the thread post',
   `date_created` datetime NOT NULL COMMENT 'Datetime of thread creation',
-  `mission_id` bigint(20) unsigned default NULL COMMENT 'Set if this post is tied to a mission',
-  PRIMARY KEY  (`forumpost_id`)
+  `mission_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Set if this post is tied to a mission',
+  PRIMARY KEY (`forumpost_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_forumposts` */
@@ -231,15 +233,15 @@ insert  into `fc_forumposts`(`forumpost_id`,`parentpost_id`,`forumcategory_id`,`
 DROP TABLE IF EXISTS `fc_items`;
 
 CREATE TABLE `fc_items` (
-  `item_id` bigint(20) unsigned NOT NULL auto_increment,
-  `item_name` char(64) default NULL,
+  `item_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `item_name` char(64) DEFAULT NULL,
   `itemtype_id` int(10) unsigned NOT NULL COMMENT 'type of item (tb_itemtypes)',
   `object_id` bigint(20) unsigned NOT NULL COMMENT 'ID of the object in the table corresponding to the item type',
   `description` text,
   `min_level` int(10) unsigned NOT NULL COMMENT 'minimum level that this item can be created for',
-  `max_level` int(10) unsigned default NULL COMMENT 'maximum level that this item can be created for',
+  `max_level` int(10) unsigned DEFAULT NULL COMMENT 'maximum level that this item can be created for',
   `npc_value` bigint(20) unsigned NOT NULL COMMENT 'Items NPC value',
-  PRIMARY KEY  (`item_id`)
+  PRIMARY KEY (`item_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_items` */
@@ -251,10 +253,10 @@ insert  into `fc_items`(`item_id`,`item_name`,`itemtype_id`,`object_id`,`descrip
 DROP TABLE IF EXISTS `fc_itemtypes`;
 
 CREATE TABLE `fc_itemtypes` (
-  `itemtype_id` int(10) unsigned NOT NULL auto_increment,
+  `itemtype_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `itemtype_name` varchar(32) NOT NULL,
   `itemtype_table` varchar(32) NOT NULL COMMENT 'sql table that stores items of this type',
-  PRIMARY KEY  (`itemtype_id`)
+  PRIMARY KEY (`itemtype_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_itemtypes` */
@@ -266,9 +268,9 @@ insert  into `fc_itemtypes`(`itemtype_id`,`itemtype_name`,`itemtype_table`) valu
 DROP TABLE IF EXISTS `fc_memory`;
 
 CREATE TABLE `fc_memory` (
-  `memory_id` smallint(5) unsigned NOT NULL auto_increment,
+  `memory_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `memory_size` int(10) unsigned NOT NULL COMMENT 'Size of Memory Module in MB',
-  PRIMARY KEY  (`memory_id`)
+  PRIMARY KEY (`memory_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_memory` */
@@ -281,17 +283,17 @@ DROP TABLE IF EXISTS `fc_missions`;
 
 CREATE TABLE `fc_missions` (
   `mission_id` int(10) unsigned NOT NULL,
-  `parentmission_id` int(10) unsigned default NULL COMMENT 'Parent ID for sub quests of a main mission',
-  `min_level` int(11) default '1' COMMENT 'minimum character level when mission becomes available',
-  `max_level` int(11) default '100' COMMENT 'maximum character level before mission stops being available',
+  `parentmission_id` int(10) unsigned DEFAULT NULL COMMENT 'Parent ID for sub quests of a main mission',
+  `min_level` int(11) DEFAULT '1' COMMENT 'minimum character level when mission becomes available',
+  `max_level` int(11) DEFAULT '100' COMMENT 'maximum character level before mission stops being available',
   `difficulty` smallint(5) unsigned NOT NULL COMMENT 'difficulty rating of the mission (1-10)',
   `success_event_id` varchar(32) NOT NULL COMMENT 'event that will indicate success of a mission',
-  `failure_event_id` varchar(32) default NULL COMMENT '[optional] event that will cause mission to fail',
-  `success_count` smallint(5) unsigned NOT NULL default '1' COMMENT 'Number of times the success event needs to fire to succeed in the mission',
-  `failure_count` smallint(5) unsigned NOT NULL default '1' COMMENT 'number of times the failure event needs to fire to fail the mission',
-  `xp_success` smallint(6) NOT NULL default '0' COMMENT 'Amount of xp gained if completed successfully',
-  `xp_failure` smallint(6) NOT NULL default '0' COMMENT 'Amount of xp gained/lost if failed (use -ve value for loss)',
-  PRIMARY KEY  (`mission_id`)
+  `failure_event_id` varchar(32) DEFAULT NULL COMMENT '[optional] event that will cause mission to fail',
+  `success_count` smallint(5) unsigned NOT NULL DEFAULT '1' COMMENT 'Number of times the success event needs to fire to succeed in the mission',
+  `failure_count` smallint(5) unsigned NOT NULL DEFAULT '1' COMMENT 'number of times the failure event needs to fire to fail the mission',
+  `xp_success` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Amount of xp gained if completed successfully',
+  `xp_failure` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Amount of xp gained/lost if failed (use -ve value for loss)',
+  PRIMARY KEY (`mission_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_missions` */
@@ -303,12 +305,12 @@ insert  into `fc_missions`(`mission_id`,`parentmission_id`,`min_level`,`max_leve
 DROP TABLE IF EXISTS `fc_npcs`;
 
 CREATE TABLE `fc_npcs` (
-  `npc_id` bigint(20) unsigned NOT NULL auto_increment,
+  `npc_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` char(64) NOT NULL COMMENT 'NPC''s name',
   `level` int(10) unsigned NOT NULL COMMENT 'level of the NPC',
-  `email` char(64) default NULL COMMENT 'NPC''s email address (if any)',
-  `phone_number` char(20) default NULL COMMENT 'NPC''s phone number (if any)',
-  PRIMARY KEY  (`npc_id`)
+  `email` char(64) DEFAULT NULL COMMENT 'NPC''s email address (if any)',
+  `phone_number` char(20) DEFAULT NULL COMMENT 'NPC''s phone number (if any)',
+  PRIMARY KEY (`npc_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_npcs` */
@@ -318,9 +320,9 @@ CREATE TABLE `fc_npcs` (
 DROP TABLE IF EXISTS `fc_operatingsystems`;
 
 CREATE TABLE `fc_operatingsystems` (
-  `os_id` int(10) unsigned NOT NULL auto_increment,
+  `os_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `oskernel_id` smallint(5) unsigned NOT NULL COMMENT 'Kernel Type of the OS (this is for software compatibility)',
-  PRIMARY KEY  (`os_id`)
+  PRIMARY KEY (`os_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_operatingsystems` */
@@ -332,9 +334,9 @@ insert  into `fc_operatingsystems`(`os_id`,`oskernel_id`) values (1,1),(2,2),(3,
 DROP TABLE IF EXISTS `fc_oskernels`;
 
 CREATE TABLE `fc_oskernels` (
-  `oskernel_id` smallint(5) unsigned NOT NULL auto_increment,
+  `oskernel_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL COMMENT 'Name of the operating system kernel',
-  PRIMARY KEY  (`oskernel_id`)
+  PRIMARY KEY (`oskernel_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_oskernels` */
@@ -348,7 +350,7 @@ DROP TABLE IF EXISTS `fc_ownertypes`;
 CREATE TABLE `fc_ownertypes` (
   `ownertype_id` smallint(5) unsigned NOT NULL,
   `ownertype` varchar(32) NOT NULL COMMENT 'description of the owner type',
-  PRIMARY KEY  (`ownertype_id`)
+  PRIMARY KEY (`ownertype_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_ownertypes` */
@@ -360,10 +362,10 @@ insert  into `fc_ownertypes`(`ownertype_id`,`ownertype`) values (1,'Player'),(2,
 DROP TABLE IF EXISTS `fc_processors`;
 
 CREATE TABLE `fc_processors` (
-  `processor_id` int(10) unsigned NOT NULL auto_increment,
+  `processor_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `core_count` smallint(5) unsigned NOT NULL COMMENT 'Number of cores on the processor',
   `core_speed` smallint(5) unsigned NOT NULL COMMENT 'Speed of cores (GHz)',
-  PRIMARY KEY  (`processor_id`)
+  PRIMARY KEY (`processor_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_processors` */
@@ -375,10 +377,10 @@ insert  into `fc_processors`(`processor_id`,`core_count`,`core_speed`) values (1
 DROP TABLE IF EXISTS `fc_scripts`;
 
 CREATE TABLE `fc_scripts` (
-  `script_id` int(10) unsigned NOT NULL auto_increment,
+  `script_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `character_id` int(10) unsigned NOT NULL COMMENT 'Character that created this script',
   `script_content` text NOT NULL COMMENT 'the content of the script',
-  PRIMARY KEY  (`script_id`)
+  PRIMARY KEY (`script_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_scripts` */
@@ -388,13 +390,13 @@ CREATE TABLE `fc_scripts` (
 DROP TABLE IF EXISTS `fc_software`;
 
 CREATE TABLE `fc_software` (
-  `software_id` int(10) unsigned NOT NULL auto_increment,
+  `software_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `software_type_id` smallint(5) unsigned NOT NULL COMMENT 'The type of software',
-  `is_service` tinyint(1) NOT NULL default '1' COMMENT 'Flag indicating if its a service or a tool',
+  `is_service` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Flag indicating if its a service or a tool',
   `cpu_cost` smallint(5) unsigned NOT NULL COMMENT 'CPU Cost when app is running',
   `mem_cost` smallint(5) unsigned NOT NULL COMMENT 'Memory cost when app is running',
-  `script_id` int(11) default NULL COMMENT 'ID of the script associated with this software (only for user created software)',
-  PRIMARY KEY  (`software_id`)
+  `script_id` int(11) DEFAULT NULL COMMENT 'ID of the script associated with this software (only for user created software)',
+  PRIMARY KEY (`software_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_software` */
@@ -406,10 +408,10 @@ insert  into `fc_software`(`software_id`,`software_type_id`,`is_service`,`cpu_co
 DROP TABLE IF EXISTS `fc_softwaretypes`;
 
 CREATE TABLE `fc_softwaretypes` (
-  `software_type_id` smallint(5) unsigned NOT NULL auto_increment,
+  `software_type_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL COMMENT 'Name of the software type',
   `identifier` varchar(32) NOT NULL COMMENT 'Identifier used in source code',
-  PRIMARY KEY  (`software_type_id`)
+  PRIMARY KEY (`software_type_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_softwaretypes` */
