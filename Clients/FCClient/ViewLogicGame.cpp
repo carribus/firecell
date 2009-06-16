@@ -167,7 +167,17 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
     case  FCME_OpenApplication:
       {
   		  __FCPKT_ACTIVATE_SOFTWARE_RESP* pData = (__FCPKT_ACTIVATE_SOFTWARE_RESP*) event.GetData();
-        bResult = m_pDesktop->OpenApplication( pData->itemID, pData->cpu_cost, pData->mem_cost );
+        if ( pData->result == ACTIVATERESULT_OK )
+        {
+          bResult = m_pDesktop->OpenApplication( pData->itemID, pData->cpu_cost, pData->mem_cost );
+        }
+        else
+        {
+          std::wstringstream ss;
+
+          m_pDesktop->ShowError(L"Open Application Error!", 
+                                L"An error occurred while attempting to open the application!");
+        }
       }
       break;
 

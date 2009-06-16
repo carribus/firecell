@@ -12,6 +12,7 @@
 
 #include "ForumWindow.h"
 #include "ConsoleWindow.h"
+#include "BankingWindow.h"
 
 #define ICON_PADDING_X						0
 #define ICON_PADDING_Y						30
@@ -416,15 +417,18 @@ bool Desktop::OpenApplication(FCULONG itemID, FCSHORT cpuCost, FCULONG memCost)
         {
           ForumWindow* pForum = new ForumWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
 
-					m_mutexApps.Lock();
-          if ( pForum->Create( INGAMEAPP_BASE_ID+SWT_APP_FORUM, itemID, ResourceManager::instance().GetClientString( STR_APP_FORUM_CAPTION ) ) )
+          if ( pForum )
           {
-            addChild( pForum->GetGUIWindow() );
-            m_arrApps.push_back(pForum);
-            if ( m_pAppBar )
-              m_pAppBar->setActiveApp( pForum );
+					  m_mutexApps.Lock();
+            if ( pForum->Create( INGAMEAPP_BASE_ID+SWT_APP_FORUM, itemID, ResourceManager::instance().GetClientString( STR_APP_FORUM_CAPTION ) ) )
+            {
+              addChild( pForum->GetGUIWindow() );
+              m_arrApps.push_back(pForum);
+              if ( m_pAppBar )
+                m_pAppBar->setActiveApp( pForum );
+            }
+					  m_mutexApps.Unlock();
           }
-					m_mutexApps.Unlock();
         }
         break;
 
@@ -444,21 +448,39 @@ bool Desktop::OpenApplication(FCULONG itemID, FCSHORT cpuCost, FCULONG memCost)
 			  {
 					ConsoleWindow* pConsole = new ConsoleWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
 
-					m_mutexApps.Lock();
-          if ( pConsole->Create(INGAMEAPP_BASE_ID+SWT_APP_CONSOLE, itemID, ResourceManager::instance().GetClientString(STR_APP_CONSOLE_CAPTION) ) )
-					{
-            addChild( pConsole->GetGUIWindow() );
-						m_arrApps.push_back(pConsole);
-            if ( m_pAppBar )
-              m_pAppBar->setActiveApp( pConsole );
-					}
-					m_mutexApps.Unlock();
+          if ( pConsole )
+          {
+					  m_mutexApps.Lock();
+            if ( pConsole->Create(INGAMEAPP_BASE_ID+SWT_APP_CONSOLE, itemID, ResourceManager::instance().GetClientString(STR_APP_CONSOLE_CAPTION) ) )
+					  {
+              addChild( pConsole->GetGUIWindow() );
+						  m_arrApps.push_back(pConsole);
+              if ( m_pAppBar )
+                m_pAppBar->setActiveApp( pConsole );
+					  }
+					  m_mutexApps.Unlock();
+          }
 			  }
 			  break;
 
       case  SWT_APP_BANK:
         {
-          m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Bank!", L"This will be the banking app window");
+          BankingWindow* pBank = new BankingWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
+
+          if ( pBank )
+          {
+            m_mutexApps.Lock();
+            if ( pBank->Create(INGAMEAPP_BASE_ID+SWT_APP_BANK, itemID, ResourceManager::instance().GetClientString(STR_APP_BANK_CAPTION) ) )
+            {
+              addChild( pBank->GetGUIWindow() );
+						  m_arrApps.push_back(pBank);
+              if ( m_pAppBar )
+                m_pAppBar->setActiveApp( pBank );
+            }
+            m_mutexApps.Unlock();
+          }
+
+//          m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Bank!", L"This will be the banking app window");
         }
         break;
 
@@ -515,6 +537,17 @@ bool Desktop::IsApplicationRunning(FCUINT appType)
 	m_mutexApps.Unlock();
 
 	return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Desktop::ShowError(const wchar_t* caption, const wchar_t* text, bool bModal, int flags)
+{
+  IGUIWindow* pMsgBox = Environment->addMessageBox( caption, 
+                                                    text,
+                                                    bModal,
+                                                    flags,
+                                                    this );
 }
 
 ///////////////////////////////////////////////////////////////////////

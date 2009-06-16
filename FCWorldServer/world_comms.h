@@ -83,11 +83,11 @@ void SendCharacterDesktopOptions(Player* pPlayer, BaseSocket* pRouter, FCSOCKET 
 
 /**
  *  @ingroup worldcomms
- *  @brief This function sends the result of a player trying to activate a desktop option (app). The packet sent is: __FCPKT_ACTIVATE_DESKTOP_OPTION_RESP
+ *  @brief This function sends the result of a player trying to activate a desktop option (app). The packet sent is: __FCPKT_ACTIVATE_SOFTWARE_RESP
  *  @param optionID The option ID of the desktop option that the player tried to activate
  *  @param pPlayer The player that tried to activate the desktop option
  */
-void SendActivateDesktopOptionResponse(ItemSoftware* pSoftware, FCULONG result, Player* pPlayer, BaseSocket* pRouter, FCSOCKET clientSocket);
+void SendActivateSoftwareResponse(ItemSoftware* pSoftware, FCULONG result, Player* pPlayer, BaseSocket* pRouter, FCSOCKET clientSocket);
 
 /*************************************************************************************************************** 
  *  CONSOLE SEND METHODS

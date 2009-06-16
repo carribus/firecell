@@ -44,6 +44,8 @@ public:
   bool OpenApplication(FCULONG itemID, FCSHORT cpuCost, FCULONG memCost);
 	bool IsApplicationRunning(FCUINT appType);
 
+  void ShowError(const wchar_t* caption, const wchar_t* text, bool bModal = true, int flags = EMBF_OK);
+
 	bool OnGUIEvent(SEvent::SGUIEvent event);
   bool OnConsoleEvent(FCModelEvent& event);
 	bool OnForumEvent(FCModelEvent& event);

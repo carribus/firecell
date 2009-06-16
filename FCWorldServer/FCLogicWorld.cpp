@@ -525,7 +525,7 @@ bool FCLogicWorld::OnCommandActivateSoftware(PEPacket* pPkt, RouterSocket* pRout
     }
 
     // if all is well, then continue with the execution
-	  SendActivateDesktopOptionResponse( pSoftware, res, pPlayer, pRouter, clientSocket );
+	  SendActivateSoftwareResponse( pSoftware, res, pPlayer, pRouter, clientSocket );
 	}
 	else
 		return false;
@@ -1185,6 +1185,8 @@ void FCLogicWorld::OnDBJob_LoadObjectData(DBIResultSet& resultSet, void*& pConte
       {
         pItem->SetSoftwareType( resultSet.GetShortValue("software_type_id", 0) );
         pItem->IsService( resultSet.GetByteValue("is_service", 0) ? true : false );
+        pItem->SetCPUCost( resultSet.GetShortValue("cpu_cost", 0) );
+        pItem->SetMemCost( resultSet.GetULongValue("mem_cost", 0) );
       }
     }
     break;
@@ -1769,14 +1771,14 @@ FCULONG FCLogicWorld::CanActivateSoftware(Player* pPlayer, FCULONG itemID)
         break;
 
       case  SWT_APP_NEWS:
-        if ( ports.isServiceRunning( SWT_HTTPSERVER ) )
+        if ( !ports.isServiceRunning( SWT_HTTPSERVER ) )
         {
           res = ACTIVATERESULT_NEED_HTTP;
         }
         break;
 
       case  SWT_APP_EMAIL:
-        if ( ports.isServiceRunning( SWT_MAILSERVER ) )
+        if ( !ports.isServiceRunning( SWT_MAILSERVER ) )
         {
           res = ACTIVATERESULT_NEED_MAIL;
         }
@@ -1787,7 +1789,7 @@ FCULONG FCLogicWorld::CanActivateSoftware(Player* pPlayer, FCULONG itemID)
         break;
 
       case  SWT_APP_BANK:
-        if ( ports.isServiceRunning( SWT_BANKSERVER ) )
+        if ( !ports.isServiceRunning( SWT_BANKSERVER ) )
         {
           res = ACTIVATERESULT_NEED_BANK;
         }
