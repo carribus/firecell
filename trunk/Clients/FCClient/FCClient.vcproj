@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="FCClient"
 	ProjectGUID="{21FA62D8-B9A1-4560-9114-B1AC1C8AF472}"
+	RootNamespace="FCClient"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -182,6 +183,10 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
+			<File
+				RelativePath=".\BankingWindow.cpp"
+				>
+			</File>
 			<File
 				RelativePath="..\common\Socket\win\BaseSocket.cpp"
 				>
@@ -420,6 +425,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\BankingWindow.h"
+				>
+			</File>
 			<File
 				RelativePath="..\common\Socket\win\BaseSocket.h"
 				>

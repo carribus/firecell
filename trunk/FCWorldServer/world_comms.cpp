@@ -432,7 +432,7 @@ void SendCharacterDesktopOptions(Player* pPlayer, BaseSocket* pRouter, FCSOCKET 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SendActivateDesktopOptionResponse(ItemSoftware* pSoftware, FCULONG result, Player* pPlayer, BaseSocket* pRouter, FCSOCKET clientSocket)
+void SendActivateSoftwareResponse(ItemSoftware* pSoftware, FCULONG result, Player* pPlayer, BaseSocket* pRouter, FCSOCKET clientSocket)
 {
 	PEPacket* pkt = new PEPacket;
 	Computer& comp = pPlayer->GetComputer();
@@ -441,8 +441,8 @@ void SendActivateDesktopOptionResponse(ItemSoftware* pSoftware, FCULONG result, 
 	// TODO: Need to add the necessary methods to calculate whether an application can run
 	d.itemID = pSoftware->GetID();
 	d.result = result;
-	d.cpu_cost = 0;
-	d.mem_cost = 0;
+	d.cpu_cost = pSoftware->GetCPUCost();
+	d.mem_cost = pSoftware->GetMemCost();
 
   // send the packet
   PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_ACTIVATE_SOFTWARE, ST_None);

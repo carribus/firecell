@@ -866,13 +866,7 @@ bool FCModel::OnResponseActivateSoftware(PEPacket* pPkt, BaseSocket* pSocket)
 	pPkt->GetField("data", &d, sizeof(d));
 
 	// check if we can open the option
-	if ( d.result == ACTIVATERESULT_OK )
-	{
-		FireEvent(FCME_OpenApplication, (void*)&d);
-	}
-	else
-	{
-	}
+	FireEvent(FCME_OpenApplication, (void*)&d);
 
 	return true;
 }

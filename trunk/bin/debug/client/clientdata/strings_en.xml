@@ -38,6 +38,8 @@
 	<String id="APP_FORUM_OPTION_BACK">&lt;&lt; Back</String>
 	<String id="APP_FORUM_OPTION_NEWTOPIC">New Topic</String>
 	<String id="APP_FORUM_OPTION_REPLY">Reply</String>
+  <!-- BANK APPLICATION -->
+  <String id="APP_BANK_CAPTION">Banking</String>
 	<!-- APP BAR -->
 	<String id="APP_APPBAR_SYSTEM">System</String>
 	<!-- APP BAR: System Menu -->
