@@ -1515,6 +1515,13 @@ void FCModel::ForumGetThreadDetails(FCULONG category_id, FCULONG thread_id)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCModel::BankConnect()
+{
+  m_server.RequestBankConnect(m_pCharacter->GetID());
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void FCModel::MissionAccept(FCULONG mission_id)
 {
 	m_server.SendMissionAccept(mission_id);

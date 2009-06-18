@@ -4,6 +4,7 @@
 #include <string>
 #include "FCModel.h"
 #include "InGameAppWindow.h"
+#include "GUIBankView.h"
 
 class BankingWindow : public InGameAppWindow
 {
@@ -13,6 +14,11 @@ public:
 
   bool Create(s32 AppElemID, FCUINT optionID, std::wstring caption);
 
+  /**
+   *  @brief Connects to the banking server and determines authentication requirements for the player
+   */
+  void ConnectToBank();
+
   const wchar_t* getAppName()                             { return L"Banking"; }
 
 private:
@@ -21,6 +27,9 @@ private:
    *  Private Members
    */
   IrrlichtDevice*         m_pDevice;
+  GUIBankView*            m_pBankView;
+
+  BankModel*              m_pModel;
 };
 
 #endif//_BANKINGWINDOW_H_

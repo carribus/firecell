@@ -77,8 +77,6 @@ CREATE TABLE `fc_charactermissions` (
 
 /*Data for the table `fc_charactermissions` */
 
-insert  into `fc_charactermissions`(`character_id`,`mission_id`,`success_count`,`failure_count`,`complete`) values (1,1,3,0,'1'),(1,2,1,0,'1'),(1,3,1,0,'1'),(1,4,3,0,'1');
-
 /*Table structure for table `fc_characterports` */
 
 DROP TABLE IF EXISTS `fc_characterports`;
@@ -94,7 +92,7 @@ CREATE TABLE `fc_characterports` (
 
 /*Data for the table `fc_characterports` */
 
-insert  into `fc_characterports`(`character_id`,`port_number`,`item_id`,`enabled`,`health`) values (1,0,24,1,100),(1,1,23,0,100),(1,2,20,1,100),(1,3,0,0,100),(1,4,0,0,100),(1,5,0,0,100),(1,6,0,0,100),(1,7,0,0,100),(2,0,NULL,0,100),(2,1,NULL,0,100),(2,2,NULL,0,100),(2,3,NULL,0,100),(2,4,NULL,0,100),(2,5,NULL,0,100),(2,6,NULL,0,100),(2,7,NULL,0,100),(3,0,NULL,0,100),(3,1,NULL,0,100),(3,2,NULL,0,100),(3,3,NULL,0,100),(3,4,NULL,0,100),(3,5,NULL,0,100),(3,6,NULL,0,100),(3,7,NULL,0,100);
+insert  into `fc_characterports`(`character_id`,`port_number`,`item_id`,`enabled`,`health`) values (1,0,24,1,100),(1,1,23,1,100),(1,2,20,1,100),(1,3,0,0,100),(1,4,0,0,100),(1,5,0,0,100),(1,6,0,0,100),(1,7,0,0,100),(2,0,NULL,0,100),(2,1,NULL,0,100),(2,2,NULL,0,100),(2,3,NULL,0,100),(2,4,NULL,0,100),(2,5,NULL,0,100),(2,6,NULL,0,100),(2,7,NULL,0,100),(3,0,NULL,0,100),(3,1,NULL,0,100),(3,2,NULL,0,100),(3,3,NULL,0,100),(3,4,NULL,0,100),(3,5,NULL,0,100),(3,6,NULL,0,100),(3,7,NULL,0,100);
 
 /*Table structure for table `fc_characters` */
 

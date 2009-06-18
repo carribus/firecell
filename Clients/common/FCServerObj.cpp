@@ -301,6 +301,39 @@ void FCServerObj::SendNewForumPost(FCULONG category_id, FCULONG thread_id, const
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCServerObj::RequestBankConnect(FCULONG character_id)
+{
+  PEPacket pkt;
+  __FCPKT_BANK_CONNECT d;
+
+  d.character_id = character_id;
+
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_BANK_CONNECT, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCServerObj::SendBankingPassword(FCCHAR* password, FCSHORT pwLen)
+{
+  if ( !password || (pwLen < 1 || pwLen > 32) )
+    return;
+
+  PEPacket pkt;
+  __FCPKT_BANK_AUTHENTICATE d;
+
+  strncpy( d.password, password, 32 );
+
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_BANK_AUTHENTICATE, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void FCServerObj::SendMissionAccept(FCULONG mission_id)
 {
 	PEPacket pkt;

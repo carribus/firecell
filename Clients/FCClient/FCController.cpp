@@ -166,6 +166,14 @@ void FCController::OnViewEvent(FCViewEvent& event)
     }
     break;
 
+  //
+  // Banking Events
+  case  VE_BankConnect:
+    {
+      m_pModel->BankConnect();
+    }
+    break;
+
 	//
 	// Mission Events
 	case	VE_MissionAccepted:
