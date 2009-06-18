@@ -197,6 +197,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ModBank.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ModConsole.cpp"
 				>
 			</File>
@@ -248,6 +252,10 @@
 			</File>
 			<File
 				RelativePath=".\IGameModule.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ModBank.h"
 				>
 			</File>
 			<File

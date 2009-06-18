@@ -22,6 +22,8 @@ enum e_FCViewEventType
 	VE_ForumCategorySelected,
   VE_ForumNewThread,
   VE_ForumThreadSelected,
+  /* Bank Events */
+  VE_BankConnect,
 	/* Mission Events */
 	VE_MissionAccepted,
   /* Software Events */

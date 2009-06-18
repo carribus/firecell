@@ -32,6 +32,7 @@
 #include "IGameModule.h"
 #include "ModConsole.h"
 #include "ModForum.h"
+#include "ModBank.h"
 
 using namespace std;
 
@@ -131,6 +132,7 @@ private:
   IGameModule*            m_pCurrentModule;
   ModConsole              m_modConsole;
   ModForum                m_modForum;
+  ModBank                 m_modBank;
 };
 
 #endif//_FCCONTROLLER_H_

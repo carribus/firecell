@@ -36,6 +36,10 @@ public:
   void RequestForumThreadContentBlob(FCULONG category_id, FCULONG thread_id);
   void SendNewForumPost(FCULONG category_id, FCULONG thread_id, const char* pSubject, FCULONG msgLen, const char* pMessage);
 
+  // bank commands
+  void RequestBankConnect(FCULONG character_id);
+  void SendBankingPassword(FCCHAR* password, FCSHORT pwLen);
+
 	// mission commands
 	void SendMissionAccept(FCULONG mission_id);
 

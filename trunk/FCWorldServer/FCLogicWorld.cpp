@@ -306,6 +306,21 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  /*
+   *  Banking Messages
+   */
+  case  FCMSG_BANK_CONNECT:
+    {
+      bHandled = OnCommandBankConnect(pPkt, pRouter, clientSock);
+    }
+    break;
+
+  case  FCMSG_BANK_AUTHENTICATE:
+    {
+      bHandled = OnCommandBankAuthenticate(pPkt, pRouter, clientSock);
+    }
+    break;
+
 	/*
 	 *	Mission Messages
 	 */
@@ -746,6 +761,44 @@ bool FCLogicWorld::OnCommandForumCreateNewThread(PEPacket* pPkt, RouterSocket* p
   }
 
   delete [] (FCBYTE*)d;
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandBankConnect(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCPKT_BANK_CONNECT d;
+  size_t dataLen = 0;
+  Player* pPlayer = NULL;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, sizeof(d));
+
+  if ( (pPlayer = m_playerMgr.GetPlayerByID(d.character_id)) )
+  {
+#error implement this
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandBankAuthenticate(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCPKT_BANK_AUTHENTICATE d;
+  size_t dataLen = 0;
+  Player* pPlayer = NULL;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, sizeof(d));
+
+  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+  {
+#error implement this
+  }
 
   return true;
 }
