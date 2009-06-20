@@ -315,6 +315,12 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  case  FCMSG_BANK_CREATE_ACCOUNT:
+    {
+      bHandled = OnCommandBankCreateAccount(pPkt, pRouter, clientSock);
+    }
+    break;
+
   case  FCMSG_BANK_AUTHENTICATE:
     {
       bHandled = OnCommandBankAuthenticate(pPkt, pRouter, clientSock);
@@ -778,7 +784,66 @@ bool FCLogicWorld::OnCommandBankConnect(PEPacket* pPkt, RouterSocket* pSocket, F
 
   if ( (pPlayer = m_playerMgr.GetPlayerByID(d.character_id)) )
   {
-//#error implement this
+    BankStatus status;
+    // attempt to fetch the account for the player
+    BankAccount* pAccount = m_bank.getBankAccount(d.character_id);
+
+    if ( !pAccount )
+    {
+      status = BS_NoAccountExists;
+    }
+    else
+    {
+      pAccount->setConnected(true);
+      status = (pAccount->isSecure() ? BS_AccountNeedAuth : BS_OK);
+      if ( status == BS_AccountNeedAuth && pAccount->isAuthenticated() )
+      {
+        status = BS_OK;
+      }
+    }
+
+    SendBankConnectResponse(status, pSocket, clientSocket);
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandBankCreateAccount(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCPKT_BANK_CREATE_ACCOUNT d;
+  size_t dataLen = 0;
+  Player* pPlayer = NULL;
+  bool bResult = false;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, sizeof(d));
+
+  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+  {
+    BankAccount* pAccount = m_bank.getBankAccount(pPlayer->GetID());
+    bool bSecure = false;
+
+    if ( !pAccount )
+    {
+      if ( strlen(d.password) > 0 )
+        bSecure = true;
+      if ( (pAccount = m_bank.createBankAccount(pPlayer, 0, 0, 0, bSecure, d.password)) )
+      {
+        pAccount->setConnected(true);
+        bResult = true;
+      }
+      else
+      {
+        bResult = false;
+        DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to create bank account for character id: %ld", pPlayer->GetID()) );
+      }
+    }
+    else
+      bResult = false;
+
+    SendBankCreateAccountResponse(bResult, pSocket, clientSocket);
   }
 
   return true;
@@ -791,13 +856,34 @@ bool FCLogicWorld::OnCommandBankAuthenticate(PEPacket* pPkt, RouterSocket* pSock
   __FCPKT_BANK_AUTHENTICATE d;
   size_t dataLen = 0;
   Player* pPlayer = NULL;
+  bool bResult = false;
 
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, sizeof(d));
 
   if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
   {
-//#error implement this
+    BankAccount* pAccount = m_bank.getBankAccount(pPlayer->GetID());
+
+    if ( pAccount )
+    {
+      if ( pAccount->isConnected() )
+      {
+        bResult = pAccount->verifyPassword(d.password);
+      }
+      else
+      {
+        DYNLOG_ADDLOG( DYNLOG_FORMAT("Account authenticate attempted without a connection to the account by character %ld", pPlayer->GetID()) );
+        bResult = false;
+      }
+    }
+    else
+    {
+      bResult = false;
+      DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to locate bank account for character id: %ld", pPlayer->GetID()) );
+    }
+
+    SendBankAuthenticateResponse(bResult, pSocket, clientSocket);
   }
 
   return true;
@@ -986,6 +1072,7 @@ bool FCLogicWorld::OnCommandClientDisconnect(PEPacket* pPkt, RouterSocket* pSock
     Player* pEventData = pPlayer->CreateSafeHandle();
     EventSystem::GetInstance()->Emit( NULL, NULL, new EventWithDisposableData<Player>(Player::EVT_LoggedOut, pEventData) );
 
+    m_bank.removeBankAccount(pPlayer);
     m_playerMgr.RemovePlayer(pPlayer);
   }
 

@@ -41,7 +41,11 @@ public:
   void                setInterestRate(FCSHORT rate)           { m_interest_rate = rate; }
   bool                isSecure()                              { return m_isSecure; }
   void                setSecure(bool bSecure)                 { m_isSecure = bSecure; }
+  std::string         getPassword()                           { return m_password; }
   void                setPassword(const std::string& pw)      { m_password = pw; }
+  bool                isConnected()                           { return m_bConnected; }
+  void                setConnected(bool bFlag)                { m_bConnected = bFlag; }
+  bool                isAuthenticated()                       { return m_bAuthenticated; }
 
 private:
 
@@ -51,6 +55,9 @@ private:
   FCSHORT             m_interest_rate;
   bool                m_isSecure;
   std::string         m_password;
+
+  bool                m_bConnected;
+  bool                m_bAuthenticated;
 };
 
 #endif//_BANKACCOUNT_H_

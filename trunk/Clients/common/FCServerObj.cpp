@@ -316,6 +316,21 @@ void FCServerObj::RequestBankConnect(FCULONG character_id)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCServerObj::SendBankAccountCreateRequest(FCCHAR* password)
+{
+  PEPacket pkt;
+  __FCPKT_BANK_CREATE_ACCOUNT d;
+
+  strncpy(d.password, password, sizeof(d.password));
+
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_BANK_CREATE_ACCOUNT, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void FCServerObj::SendBankingPassword(FCCHAR* password, FCSHORT pwLen)
 {
   if ( !password || (pwLen < 1 || pwLen > 32) )

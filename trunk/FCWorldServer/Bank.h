@@ -33,11 +33,15 @@ public:
   Bank(void);
   ~Bank(void);
 
+  BankAccount* createBankAccount(Player* pPlayer, FCULONG balance, FCULONG debt, FCSHORT interest_rate, bool isSecure, const string& password);
   BankAccount* addBankAccount(Player* pPlayer, FCULONG balance, FCULONG debt, FCSHORT interest_rate, bool isSecure, const string& password);
   BankAccount* getBankAccount(FCULONG characterID);
-#error you left off here
+  bool removeBankAccount(Player* pPlayer);
 
 private:
+
+  void PersistNewBankAccount(Player* pPlayer, BankAccount* pAccount);
+  void PersistBankAccount(Player* pPlayer, BankAccount* pAccount);
 
   /*
    *  Private Data members

@@ -25,6 +25,8 @@ BankAccount::BankAccount()
 , m_debt(0)
 , m_interest_rate(0)
 , m_isSecure(false)
+, m_bConnected(false)
+, m_bAuthenticated(false)
 {
 }
 
@@ -41,5 +43,7 @@ bool BankAccount::verifyPassword(const char* password)
   if ( !password )
     return false;
 
-  return (m_password.compare(password) == 0);
+  m_bAuthenticated = (m_password.compare(password) == 0);
+
+  return m_bAuthenticated;
 }

@@ -38,6 +38,7 @@ public:
 
   // bank commands
   void RequestBankConnect(FCULONG character_id);
+  void SendBankAccountCreateRequest(FCCHAR* password);
   void SendBankingPassword(FCCHAR* password, FCSHORT pwLen);
 
 	// mission commands

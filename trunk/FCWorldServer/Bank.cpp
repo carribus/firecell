@@ -33,13 +33,56 @@ Bank::~Bank(void)
 
 ///////////////////////////////////////////////////////////////////////
 
-BankAccount* Bank::addBankAccount(Player* pPlayer, FCULONG balance, FCULONG debt, FCSHORT interest_rate, bool isSecure, const string& password)
+BankAccount* Bank::createBankAccount(Player* pPlayer, FCULONG balance, FCULONG debt, FCSHORT interest_rate, bool isSecure, const string& password)
 {
-  m_lock.LockForWrite();
+  if ( !pPlayer )
+    return NULL;
 
   BankAccount* pAccount = NULL;
-  BankAccountsMap::iterator it = m_bankAccounts.find(pPlayer->GetID());
+  BankAccountsMap::iterator it;
 
+  m_lock.LockForWrite();
+
+  it = m_bankAccounts.find(pPlayer->GetID());
+  if ( it == m_bankAccounts.end() )
+  {
+    // it doesn't so we can create it
+    if ( (pAccount = new BankAccount) )
+    {
+      pAccount->setCharacterID(pPlayer->GetID());
+      pAccount->setBalance(balance);
+      pAccount->setDebt(debt);
+      pAccount->setInterestRate(interest_rate);
+      pAccount->setSecure(isSecure);
+      pAccount->setPassword(password);
+      m_bankAccounts[pPlayer->GetID()] = pAccount;
+
+      PersistNewBankAccount(pPlayer, pAccount);
+    }
+  }
+  else
+  {
+    DYNLOG_ADDLOG( DYNLOG_FORMAT("Bank::createBankAccount(): Account creationg failed for character %ld because account already exists in memory.", pPlayer->GetID()) );
+  }
+
+  m_lock.Unlock();
+
+  return pAccount;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+BankAccount* Bank::addBankAccount(Player* pPlayer, FCULONG balance, FCULONG debt, FCSHORT interest_rate, bool isSecure, const string& password)
+{
+  if ( !pPlayer )
+    return NULL;
+
+  BankAccount* pAccount = NULL;
+  BankAccountsMap::iterator it;
+
+  m_lock.LockForWrite();
+
+  it = m_bankAccounts.find(pPlayer->GetID());
   // check if this account exists already
   if ( it == m_bankAccounts.end() )
   {
@@ -93,4 +136,56 @@ BankAccount* Bank::getBankAccount(FCULONG characterID)
   m_lock.Unlock();
 
   return pAcc;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Bank::removeBankAccount(Player* pPlayer)
+{
+  BankAccountsMap::iterator it;
+  bool bResult = false;
+
+  m_lock.LockForWrite();
+  
+  it = m_bankAccounts.find(pPlayer->GetID());
+  if ( it != m_bankAccounts.end() )
+  {
+    PersistBankAccount(pPlayer, it->second);
+    delete it->second;
+    m_bankAccounts.erase(it);
+  }
+
+  m_lock.Unlock();
+
+  return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Bank::PersistNewBankAccount(Player* pPlayer, BankAccount* pAccount)
+{
+  FCDatabase& db = FCDatabase::instance();
+
+  db.ExecuteJob(DBQ_INSERT_CHARACTER_BANK_ACCOUNT, NULL, 
+                pPlayer->GetID(),
+                pAccount->getBalance(),
+                pAccount->getDebt(),
+                pAccount->getInterestRate(),
+                pAccount->isSecure(),
+                pAccount->getPassword().c_str());
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Bank::PersistBankAccount(Player* pPlayer, BankAccount* pAccount)
+{
+  FCDatabase& db = FCDatabase::instance();
+
+  db.ExecuteJob(DBQ_UPDATE_CHARACTER_BANK_ACCOUNT, NULL, 
+                pAccount->getBalance(),
+                pAccount->getDebt(),
+                pAccount->getInterestRate(),
+                pAccount->isSecure(),
+                pAccount->getPassword().c_str(),
+                pPlayer->GetID());
 }

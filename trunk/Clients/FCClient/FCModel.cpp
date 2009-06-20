@@ -755,7 +755,7 @@ bool FCModel::OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* pSocke
   }
 
   m_server.SendCharacterMissionsRequest(m_pCharacter->GetID());
-  m_server.RequestDesktopOptions(m_pCharacter->GetID());
+//  m_server.RequestDesktopOptions(m_pCharacter->GetID());
 
   return true;
 }
