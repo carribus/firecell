@@ -822,12 +822,12 @@ void SendMissionAcceptedResponse(Player* pPlayer, FCULONG mission_id, bool bSucc
     }
     else
     {
-      DYNLOG_ADDLOG( "FCLogicWorld::SendMissionAcceptedResponse(): Failed to allocate memory for the packet" );
+      DYNLOG_ADDLOG( "SendMissionAcceptedResponse(): Failed to allocate memory for the packet" );
     }
   }
   else
   {
-    DYNLOG_ADDLOG( "FCLogicWorld::SendMissionAcceptedResponse(): Failed to send response because accepted mission was not found in player's mission list" );
+    DYNLOG_ADDLOG( "SendMissionAcceptedResponse(): Failed to send response because accepted mission was not found in player's mission list" );
   }
 }
 
@@ -842,6 +842,66 @@ void SendMissionComplete(FCULONG mission_id, BaseSocket* pRouter, FCSOCKET clien
 
   // send the packet
   PEPacketHelper::CreatePacket(*pkt, FCPKT_COMMAND, FCMSG_MISSION_COMPLETE, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, 
+                                (void*)&d, 
+                                sizeof(d));
+
+  // send response to Client
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void SendBankConnectResponse(BankStatus status, BaseSocket* pRouter, FCSOCKET clientSocket)
+{
+  PEPacket* pkt = new PEPacket;
+  __FCPKT_BANK_CONNECT_RESP d;
+
+  d.status = status;
+
+  // send the packet
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_BANK_CONNECT, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, 
+                                (void*)&d, 
+                                sizeof(d));
+
+  // send response to Client
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void SendBankCreateAccountResponse(bool bResult, BaseSocket* pRouter, FCSOCKET clientSocket)
+{
+  PEPacket* pkt = new PEPacket;
+  __FCPKT_BANK_CREATE_ACCOUNT_RESP d;
+
+  d.bResult = bResult;
+
+  // send the packet
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_BANK_CREATE_ACCOUNT, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, 
+                                (void*)&d, 
+                                sizeof(d));
+
+  // send response to Client
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void SendBankAuthenticateResponse(bool bResult, BaseSocket* pRouter, FCSOCKET clientSocket)
+{
+  PEPacket* pkt = new PEPacket;
+  __FCPKT_BANK_AUTHENTICATE_RESP d;
+
+  d.bResult = bResult;
+
+  // send the packet
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_BANK_AUTHENTICATE, ST_None);
   PEPacketHelper::SetPacketData(*pkt, 
                                 (void*)&d, 
                                 sizeof(d));

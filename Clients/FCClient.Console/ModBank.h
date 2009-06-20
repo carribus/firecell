@@ -32,7 +32,9 @@ class ModBank : public IGameModule
     Initialise = 1,
     Running,
     WaitingForResponse,
-    NeedAuth
+    NeedAuth,
+    NoAccountExists,
+    CreatingAccount
   };
 
 public:
@@ -45,6 +47,7 @@ public:
   void QueueForAction();
   bool OnResponse(FCSHORT msgID, PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseBankConnect(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnResponseBankAuthenticate(PEPacket* pPkt, BaseSocket* pSocket);
 
 private:
 

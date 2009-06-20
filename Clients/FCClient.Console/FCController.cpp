@@ -21,6 +21,8 @@
 #include <map>
 #include "../../common/protocol/fcprotocol.h"
 #include "../../common/PEPacketHelper.h"
+#include "../../common/game_objects/ItemType.h"
+#include "../../common/game_objects/swtypes.h"
 #include "../common/ResourceManager.h"
 #include "FCController.h"
 
@@ -169,7 +171,7 @@ void FCController::QueueForAction()
         map<FCUINT, DesktopOption>::iterator it;
         for ( it = m_desktopOptions.begin(); it != m_desktopOptions.end(); it++ )
         {
-          printf("[%ld] %s\n", it->second.optionID, it->second.name);
+          printf("[%ld] %s\n", it->first, it->second.name);
         }
         printf("\nSelect an option: ");
 
@@ -191,30 +193,30 @@ void FCController::QueueForAction()
 
             switch (it->second.type)
             {
-            case  DOT_Forum:
+            case  SWT_APP_FORUM:
               m_pCurrentModule = &m_modForum;
               break;
 
-            case  DOT_News:
+            case  SWT_APP_NEWS:
               break;
 
-            case  DOT_Email:
+            case  SWT_APP_EMAIL:
               break;
 
-            case  DOT_Console:
+            case  SWT_APP_CONSOLE:
               m_pCurrentModule = &m_modConsole;
               break;
 
-            case  DOT_Bank:
+            case  SWT_APP_BANK:
               m_pCurrentModule = &m_modBank;
               break;
 
-            case  DOT_Chat:
+            case  SWT_APP_CHAT:
               break;
-
+/*
             case  DOT_HackingTools:
               break;
-
+*/
             default:
               printf("(unknown option) - WTF was that?\n");
               break;
@@ -400,6 +402,12 @@ bool FCController::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  case  FCMSG_CHARACTER_ITEMS_REQUEST:
+    {
+      bHandled = OnResponseCharacterItemsRequest(pPkt, pSocket);
+    }
+    break;
+
   case  FCMSG_CHARACTER_ASSET_REQUEST:
     {
       bHandled = OnResponseCharacterAssetRequest(pPkt, pSocket);
@@ -556,7 +564,7 @@ bool FCController::OnResponseSelectCharacter(PEPacket* pPkt, BaseSocket* pSocket
   if ( d.status == CharacterSelectSucceeded )
   {
     printf("Character id:%ld selected\n", d.character_id);
-    m_server.SendCharacterAssetRequest(d.character_id);
+    m_server.SendCharacterItemsRequest(d.character_id);
   }
   else
   {
@@ -564,6 +572,48 @@ bool FCController::OnResponseSelectCharacter(PEPacket* pPkt, BaseSocket* pSocket
   }
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCController::OnResponseCharacterItemsRequest(PEPacket* pPkt, BaseSocket* pSocket)
+{
+	__FCPKT_CHARACTER_ITEMS_REQUEST_RESP* d;
+	size_t dataLen;
+  DesktopOption dOption;
+  FCULONG indexOption = 1;
+
+	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+	d = (__FCPKT_CHARACTER_ITEMS_REQUEST_RESP*) new FCBYTE[ dataLen ];
+	pPkt->GetField("data", d, dataLen);
+
+	for (FCULONG i = 0; i < d->itemCount; i++ )
+	{
+    strncpy( dOption.name, d->software[i].name, 32 );
+    dOption.optionID = d->software[i].item_id;
+    dOption.type = d->software[i].softwareTypeID;
+
+    if ( d->software[i].itemtype_id == ItemType::Software )
+		{
+      // if the software is not a service, then notify the desktop that a new program is available.
+      if ( !d->software[i].is_service )
+      {
+        m_desktopOptions[indexOption++] = dOption;
+      }
+		}
+	}
+
+  // add the default quit option
+  dOption.optionID = 0;
+  dOption.type = 0;
+  strncpy(dOption.name, "Logout", sizeof(dOption.name));
+  m_desktopOptions[0] = dOption;
+
+  m_server.SendCharacterAssetRequest(m_CurrentCharacterID);
+
+  delete [] (FCBYTE*)d;
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -587,7 +637,10 @@ bool FCController::OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* p
   printf("\tMemory Module:\n\t\tName: %s\n\t\tSize: %ldMB\n",
          d.computer.memory.name, d.computer.memory.mem_size);
 
-  m_server.RequestDesktopOptions(m_CurrentCharacterID);
+//  m_server.SendCharacterMissionsRequest(m_CurrentCharacterID);
+//  m_server.RequestDesktopOptions(m_CurrentCharacterID);
+
+  m_gameState = Idle;
 
   return true;
 }
@@ -596,6 +649,7 @@ bool FCController::OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* p
 
 bool FCController::OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket)
 {
+/*
   __FCPKT_GET_DESKTOP_OPTIONS_RESP* d;
   DesktopOption option;
   size_t dataLen;
@@ -623,6 +677,7 @@ bool FCController::OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSock
 
   delete [] (FCBYTE*)d;
 
+*/
   return true;
 }
 

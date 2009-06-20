@@ -179,6 +179,31 @@ void SendMissionAcceptedResponse(Player* pPlayer, FCULONG mission_id, bool bSucc
 void SendMissionComplete(FCULONG mission_id, BaseSocket* pRouter, FCSOCKET clientSocket);
 
 /*************************************************************************************************************** 
+ *  BANK SEND METHODS
+ ***************************************************************************************************************/
+
+/**
+ *  @ingroup worldcomms
+ *  @brief This function sends the result of a player attempting to connect to the bank. The packet sent is: __FCPKT_BANK_CONNECT_RESP
+ *  @param status The status of the connection attempt
+ */
+void SendBankConnectResponse(BankStatus status, BaseSocket* pRouter, FCSOCKET clientSocket);
+
+/**
+ *  @ingroup worldcomms
+ *  @brief This function sends the result of a player attempting to create a new bank account. The packet sent is: __FCPKT_BANK_CREATE_ACCOUNT_RESP
+ *  @param bResult The result of the attempted account creation
+ */
+void SendBankCreateAccountResponse(bool bResult, BaseSocket* pRouter, FCSOCKET clientSocket);
+
+/**
+ *  @ingroup worldcomms
+ *  @brief This function sends the result of a player attempting to authenticate for their bank account. The packet sent is: __FCPKT_BANK_AUTHENTICATE_RESP
+ *  @param bResult The result of the attempted account authentication
+ */
+void SendBankAuthenticateResponse(bool bResult, BaseSocket* pRouter, FCSOCKET clientSocket);
+
+/*************************************************************************************************************** 
  *  SOFTWARE INSTALLATION SEND METHODS
  ***************************************************************************************************************/
 

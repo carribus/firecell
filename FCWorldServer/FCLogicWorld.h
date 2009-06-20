@@ -87,6 +87,7 @@ private:
     bool OnCommandForumCreateNewThread(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
     // bank commands
     bool OnCommandBankConnect(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
+    bool OnCommandBankCreateAccount(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
     bool OnCommandBankAuthenticate(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
 		// mission commands
 		bool OnCommandMissionAccept(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);

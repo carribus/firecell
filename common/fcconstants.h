@@ -37,6 +37,15 @@ enum DesktopOptionType
   DOT_HackingTools
 };
 
+/**
+ *  \brief Bank Status
+ */
+enum BankStatus
+{
+  BS_OK = 1,
+  BS_NoAccountExists,
+  BS_AccountNeedAuth
+};
 
 /**
  *  \brief Application activation results

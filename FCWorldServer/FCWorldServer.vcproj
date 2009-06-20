@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="FCWorldServer"
 	ProjectGUID="{1D4D58E7-48DE-48B3-9268-A014750FE8C3}"
+	RootNamespace="FCWorldServer"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>

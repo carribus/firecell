@@ -83,6 +83,8 @@
 #define DBQ_INSERT_CHARACTER_ITEM_INFO                  "insert_character_item_info"
 #define DBQ_UPDATE_CHARACTER_ITEM_INFO                  "save_character_item_info"
 #define DBQ_DELETE_CHARACTER_ITEM_INFO                  "del_character_item_info"
+#define DBQ_INSERT_CHARACTER_BANK_ACCOUNT               "insert_character_bank_account"
+#define DBQ_UPDATE_CHARACTER_BANK_ACCOUNT               "save_character_bank_account"
 
 ////////////////////////////////////////
 // FORUM QUERIES
