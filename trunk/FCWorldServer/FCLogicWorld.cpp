@@ -778,7 +778,7 @@ bool FCLogicWorld::OnCommandBankConnect(PEPacket* pPkt, RouterSocket* pSocket, F
 
   if ( (pPlayer = m_playerMgr.GetPlayerByID(d.character_id)) )
   {
-#error implement this
+//#error implement this
   }
 
   return true;
@@ -797,7 +797,7 @@ bool FCLogicWorld::OnCommandBankAuthenticate(PEPacket* pPkt, RouterSocket* pSock
 
   if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
   {
-#error implement this
+//#error implement this
   }
 
   return true;
@@ -1054,6 +1054,7 @@ void FCLogicWorld::RegisterDBHandlers()
   RegisterDBHandler(DBQ_LOAD_CHARACTER_PORTS, OnDBJob_LoadCharacterPorts);
   RegisterDBHandler(DBQ_LOAD_CHARACTER_ITEMS, OnDBJob_LoadCharacterItems);
   RegisterDBHandler(DBQ_LOAD_CHARACTER_MISSIONS, OnDBJob_LoadCharacterMissions);
+  RegisterDBHandler(DBQ_LOAD_CHARACTER_BANKACCOUNT, OnDBJob_LoadCharacterBankAccount);
   RegisterDBHandler(DBQ_LOAD_WORLD_GEOGRAPHY, OnDBJob_LoadWorldGeography);
   RegisterDBHandler(DBQ_LOAD_COMPANIES, OnDBJob_LoadCompanies);
   RegisterDBHandler(DBQ_LOAD_COMPANY_COMPUTERS, OnDBJob_LoadCompanyComputers);
@@ -1362,7 +1363,7 @@ void FCLogicWorld::OnDBJob_LoadCharacterItems(DBIResultSet& resultSet, void*& pC
   delete pCtx;
   pContext = NULL;
 
-  // now that we have the player object, we need to load the player's facilities, items etc
+  // now that we have the player object, we need to load the player's missions
   pCtx = new DBJobContext;
   pCtx->pThis = pThis;
   pCtx->clientSocket = clientSocket;
@@ -1410,7 +1411,57 @@ void FCLogicWorld::OnDBJob_LoadCharacterMissions(DBIResultSet& resultSet, void*&
   delete pCtx;
   pContext = NULL;
 
-  // now that we have the player object, we need to load the player's facilities, items etc
+  // now that we have the player object, we need to load the player's bank account
+  pCtx = new DBJobContext;
+  pCtx->pThis = pThis;
+  pCtx->clientSocket = clientSocket;
+  pCtx->pRouter = pSock;
+  pCtx->pData = (void*)pPlayer;
+  pThis->GetDatabase().ExecuteJob(DBQ_LOAD_CHARACTER_BANKACCOUNT, (void*)pCtx, pPlayer->GetID());
+
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::OnDBJob_LoadCharacterBankAccount(DBIResultSet& resultSet, void*& pContext)
+{
+  DBJobContext* pCtx = (DBJobContext*) pContext;
+  FCLogicWorld* pThis = pCtx->pThis;
+  RouterSocket* pSock = pCtx->pRouter;
+  Player* pPlayer = (Player*)pCtx->pData;
+  FCSOCKET clientSocket = pCtx->clientSocket;
+
+  if ( !pThis || !pPlayer || !pCtx->clientSocket || !pCtx->pRouter )
+    return;
+
+  size_t rowCount = resultSet.GetRowCount();
+  FCULONG character_id, balance, debt;
+  FCSHORT is_secure, interest_rate;
+  string password;
+
+  for ( size_t i = 0; i < rowCount; i++ )
+  {
+    character_id = resultSet.GetULongValue("character_id", i);
+    password = resultSet.GetStringValue("password", i);
+    is_secure = resultSet.GetShortValue("is_secure", i);
+    balance = resultSet.GetULongValue("balance", i);
+    debt = resultSet.GetULongValue("debt", i);
+    interest_rate = resultSet.GetShortValue("interest_rate", i);
+
+    if ( pPlayer->GetID() == character_id )
+    {
+      pThis->m_bank.addBankAccount(pPlayer, balance, debt, interest_rate, is_secure ?true:false, password);
+    }
+    else
+    {
+      DYNLOG_ADDLOG( DYNLOG_FORMAT( "Wrong bank account loaded for character id: %ld (Account loaded: %ld)", pPlayer->GetID(), character_id) );
+    }
+  }
+
+  delete pCtx;
+  pContext = NULL;
+
+  // now that we have the player object, we need to load the player's network port configuration
   pCtx = new DBJobContext;
   pCtx->pThis = pThis;
   pCtx->clientSocket = clientSocket;
