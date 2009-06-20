@@ -71,6 +71,7 @@
 #define DBQ_LOAD_CHARACTER_PORTS                        "load_character_ports"
 #define DBQ_LOAD_CHARACTER_ITEMS                        "load_character_items"
 #define DBQ_LOAD_CHARACTER_MISSIONS                     "load_character_missions"
+#define DBQ_LOAD_CHARACTER_BANKACCOUNT                  "load_character_bankaccount"
 
 ////////////////////////////////////////
 // CHARACTER PERSISTANCE QUERIES

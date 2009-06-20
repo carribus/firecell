@@ -29,6 +29,7 @@
 #include "WorldManager.h"
 #include "MissionManager.h"
 #include "Forum.h"
+#include "Bank.h"
 #include "../common/PThreadCond.h"
 #include "../common/ServiceLogicBase.h"
 #include "../common/threading.h"
@@ -110,6 +111,7 @@ private:
   static void OnDBJob_LoadCharacterPorts(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadCharacterItems(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadCharacterMissions(DBIResultSet& resultSet, void*& pContext);
+  static void OnDBJob_LoadCharacterBankAccount(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadWorldGeography(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadCompanies(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadCompanyComputers(DBIResultSet& resultSet, void*& pContext);
@@ -140,6 +142,7 @@ private:
   WorldManager          m_worldMgr;
   MissionManager        m_missionMgr;
 	Forum									m_forum;
+  Bank                  m_bank;
 
   PThreadCond           m_condSync;
 };
