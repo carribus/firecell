@@ -47,6 +47,24 @@ CREATE TABLE `fc_accounttypes` (
 
 insert  into `fc_accounttypes`(`accounttype_level`,`name`) values (0,'Guest'),(1,'Normal'),(2,'GM'),(3,'Administrator');
 
+/*Table structure for table `fc_characterbankaccounts` */
+
+DROP TABLE IF EXISTS `fc_characterbankaccounts`;
+
+CREATE TABLE `fc_characterbankaccounts` (
+  `character_id` bigint(20) unsigned NOT NULL,
+  `password` varchar(32) DEFAULT NULL,
+  `is_secure` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'indicates whether password is required',
+  `balance` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'character''s balance',
+  `debt` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'character debt to bank',
+  `interest_rate` smallint(5) unsigned DEFAULT NULL COMMENT 'if specified, is an override to default banking interest rates for this character',
+  PRIMARY KEY (`character_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_characterbankaccounts` */
+
+insert  into `fc_characterbankaccounts`(`character_id`,`password`,`is_secure`,`balance`,`debt`,`interest_rate`) values (1,'toor',1,100000,0,10),(2,NULL,0,1000,0,NULL),(3,NULL,0,1000,0,NULL);
+
 /*Table structure for table `fc_characteritems` */
 
 DROP TABLE IF EXISTS `fc_characteritems`;
