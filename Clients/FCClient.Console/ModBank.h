@@ -47,7 +47,9 @@ public:
   void QueueForAction();
   bool OnResponse(FCSHORT msgID, PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseBankConnect(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnResponseBankCreateAccount(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseBankAuthenticate(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnResponseBankGetDetails(PEPacket* pPkt, BaseSocket* pSocket);
 
 private:
 
@@ -55,6 +57,7 @@ private:
   FCULONG             m_characterID;
   FCServerObj*        m_pServer;
   BankState           m_state;
+  FCULONG             m_ticket;
 };
 
 #endif//_MODBANK_H_

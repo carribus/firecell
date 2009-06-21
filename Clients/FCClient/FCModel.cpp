@@ -35,6 +35,7 @@ FCModel::FCModel(void)
 : m_connectRetry(1)
 , m_pCharacter(NULL)
 , m_latency(0)
+, m_bankAccount(NULL)
 {
 	m_state.state = FCModel::None;
 	m_state.stateStep = 0;
@@ -44,6 +45,8 @@ FCModel::FCModel(void)
 
 FCModel::~FCModel(void)
 {
+  if ( m_bankAccount )
+    delete m_bankAccount;
 	if ( m_pCharacter )
 		delete m_pCharacter;
 
@@ -445,6 +448,36 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
   case  FCMSG_MISSION_ACCEPT:
     {
       bHandled = OnResponseMissionAccepted(pPkt, pSocket);
+    }
+    break;
+
+  /*
+   *  Bank Responses
+   */
+  case  FCMSG_BANK_CONNECT:
+    {
+      bHandled = OnResponseBankConnect(pPkt, pSocket);
+    }
+    break;
+
+  case  FCMSG_BANK_AUTHENTICATE:
+    {
+    }
+    break;
+
+  case  FCMSG_BANK_CREATE_ACCOUNT:
+    {
+    }
+    break;
+
+  case  FCMSG_BANK_GET_DETAILS:
+    {
+      bHandled = OnResponseBankGetDetails(pPkt, pSocket);
+    }
+    break;
+
+  case  FCMSG_BANK_TRANSFER:
+    {
     }
     break;
 
@@ -1110,6 +1143,70 @@ bool FCModel::OnResponseMissionAccepted(PEPacket* pPkt, BaseSocket* pSocket)
   }
 
   delete [] (FCBYTE*)d;
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseBankConnect(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_BANK_CONNECT_RESP d;
+  size_t dataLen = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+
+#error you left off here
+  /*
+    - Need to wire up the Banking events into the view so that we can update the dialog accordingly.
+    - Need to provide different views for interacting with the banking app
+  */
+
+  switch ( d.status )
+  {
+  case  BS_OK:
+    if ( !m_bankAccount )
+      m_bankAccount = new BankAccount;
+    m_bankAccount->setTicket(d.ticket);
+    FireEvent(FCME_Bank_Connected, NULL);
+    m_server.RequestBankAccountDetails( d.ticket );
+    break;
+
+  case  BS_NoAccountExists:
+    FireEvent(FCME_Bank_NoAccountExists, NULL);
+    break;
+
+  case  BS_AccountNeedAuth:
+    FireEvent(FCME_Bank_AuthNeeded, NULL);
+    break;
+
+  default:
+    break;
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseBankGetDetails(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_BANK_GET_DETAILS_RESP d;
+  size_t dataLen = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+
+  if ( m_bankAccount )
+  {
+    m_bankAccount->setBalance( d.balance );
+    m_bankAccount->setDebt( d.debt );
+    m_bankAccount->setInterestRate( d.interest_rate );
+    m_bankAccount->setSecure( d.is_secure );
+
+    FireEvent(FCME_Bank_AccountDetailsUpdated, (void*)m_bankAccount);
+  }
 
   return true;
 }

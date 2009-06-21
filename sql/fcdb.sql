@@ -58,12 +58,13 @@ CREATE TABLE `fc_characterbankaccounts` (
   `balance` bigint(20) unsigned NOT NULL default '0' COMMENT 'character''s balance',
   `debt` bigint(20) unsigned NOT NULL default '0' COMMENT 'character debt to bank',
   `interest_rate` smallint(5) unsigned default NULL COMMENT 'if specified, is an override to default banking interest rates for this character',
+  `date_created` datetime default NULL,
   PRIMARY KEY  (`character_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_characterbankaccounts` */
 
-insert  into `fc_characterbankaccounts`(`character_id`,`password`,`is_secure`,`balance`,`debt`,`interest_rate`) values (1,'toor',1,1000000,0,10),(2,NULL,0,1000,0,NULL),(3,NULL,0,1000,0,NULL);
+insert  into `fc_characterbankaccounts`(`character_id`,`password`,`is_secure`,`balance`,`debt`,`interest_rate`,`date_created`) values (1,'toor',1,1000000,0,10,'2009-06-21 12:42:30'),(2,NULL,0,1000,0,NULL,'2009-06-21 12:42:30'),(3,NULL,0,1000,0,NULL,'2009-06-21 12:42:30');
 
 /*Table structure for table `fc_characteritems` */
 

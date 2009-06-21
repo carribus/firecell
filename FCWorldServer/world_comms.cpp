@@ -853,11 +853,12 @@ void SendMissionComplete(FCULONG mission_id, BaseSocket* pRouter, FCSOCKET clien
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SendBankConnectResponse(BankStatus status, BaseSocket* pRouter, FCSOCKET clientSocket)
+void SendBankConnectResponse(FCULONG ticket, BankStatus status, BaseSocket* pRouter, FCSOCKET clientSocket)
 {
   PEPacket* pkt = new PEPacket;
   __FCPKT_BANK_CONNECT_RESP d;
 
+  d.ticket = ticket;
   d.status = status;
 
   // send the packet
@@ -873,11 +874,12 @@ void SendBankConnectResponse(BankStatus status, BaseSocket* pRouter, FCSOCKET cl
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SendBankCreateAccountResponse(bool bResult, BaseSocket* pRouter, FCSOCKET clientSocket)
+void SendBankCreateAccountResponse(FCULONG ticket, bool bResult, BaseSocket* pRouter, FCSOCKET clientSocket)
 {
   PEPacket* pkt = new PEPacket;
   __FCPKT_BANK_CREATE_ACCOUNT_RESP d;
 
+  d.ticket = ticket;
   d.bResult = bResult;
 
   // send the packet
@@ -893,15 +895,40 @@ void SendBankCreateAccountResponse(bool bResult, BaseSocket* pRouter, FCSOCKET c
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SendBankAuthenticateResponse(bool bResult, BaseSocket* pRouter, FCSOCKET clientSocket)
+void SendBankAuthenticateResponse(FCULONG ticket, bool bResult, BaseSocket* pRouter, FCSOCKET clientSocket)
 {
   PEPacket* pkt = new PEPacket;
   __FCPKT_BANK_AUTHENTICATE_RESP d;
 
+  d.ticket = ticket;
   d.bResult = bResult;
 
   // send the packet
   PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_BANK_AUTHENTICATE, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, 
+                                (void*)&d, 
+                                sizeof(d));
+
+  // send response to Client
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void SendBankAccountDetailsResponse(BankAccount* pAccount, BaseSocket* pRouter, FCSOCKET clientSocket)
+{
+  PEPacket* pkt = new PEPacket;
+  __FCPKT_BANK_GET_DETAILS_RESP d;
+
+  // populate the details structure
+  d.balance = pAccount->getBalance();
+  d.debt = pAccount->getDebt();
+  d.interest_rate = pAccount->getInterestRate();
+  d.is_secure = pAccount->isSecure();
+
+  // send the packet
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_BANK_GET_DETAILS, ST_None);
   PEPacketHelper::SetPacketData(*pkt, 
                                 (void*)&d, 
                                 sizeof(d));

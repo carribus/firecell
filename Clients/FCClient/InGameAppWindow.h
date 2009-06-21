@@ -27,7 +27,7 @@ public:
   /*
    * Pure Abstract Functions
    */
-  virtual const wchar_t* getAppName() = 0;
+  const wchar_t* getAppName()                         { return m_appName.c_str(); }
 
 	FCUINT GetOptionID()												        { return m_optionID; }
 	FCULONG GetAppType()							                  { return m_type; }
@@ -41,6 +41,7 @@ protected:
   IDesktop*               m_pDesktop;
 	IGUIEnvironment*				m_pEnv;
 	IGUIWindow*							m_pWindow;
+  std::wstring            m_appName;
 	FCUINT									m_optionID;
 	FCULONG         				m_type;
 	bool										m_bWaitingForResponse;

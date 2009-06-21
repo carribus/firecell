@@ -1,4 +1,6 @@
 #include "../common/clienttypes.h"
+#include "../common/ResourceManager.h"
+#include "clientstrings.h"
 #include "FCController.h"
 #include "FCViewEvent.h"
 #include "BankingWindow.h"
@@ -10,6 +12,7 @@ BankingWindow::BankingWindow(IDesktop* pDesktop, FCController* pController, Irrl
 , m_pModel(NULL)
 {
   m_pModel = BankModel::instance();
+  m_appName = ResourceManager::instance().GetClientString(STR_APP_BANK_CAPTION);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -59,3 +62,6 @@ void BankingWindow::ConnectToBank()
   SetWaitingForResponse(true);
   m_pController->OnViewEvent(e);
 }
+
+///////////////////////////////////////////////////////////////////////
+

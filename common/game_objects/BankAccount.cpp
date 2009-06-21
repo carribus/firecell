@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include <time.h>
 #include "BankAccount.h"
 
 BankAccount::BankAccount()
@@ -25,8 +26,10 @@ BankAccount::BankAccount()
 , m_debt(0)
 , m_interest_rate(0)
 , m_isSecure(false)
+#ifndef _FCCLIENT_COMPILE_
 , m_bConnected(false)
-, m_bAuthenticated(false)
+#endif//_FCCLIENT_COMPILE_
+, m_dwTicket(0)
 {
 }
 
@@ -37,13 +40,35 @@ BankAccount::~BankAccount(void)
 }
 
 ///////////////////////////////////////////////////////////////////////
+#ifndef _FCCLIENT_COMPILE_
 
 bool BankAccount::verifyPassword(const char* password)
 {
   if ( !password )
     return false;
 
-  m_bAuthenticated = (m_password.compare(password) == 0);
-
-  return m_bAuthenticated;
+  return (m_password.compare(password) == 0);
 }
+
+///////////////////////////////////////////////////////////////////////
+
+bool BankAccount::verifyTicket(FCULONG ticket)
+{
+  if ( !ticket )
+    return false;
+
+  return (ticket == m_dwTicket); 
+}
+
+///////////////////////////////////////////////////////////////////////
+
+FCULONG BankAccount::generateTicket()
+{
+  srand( (unsigned int)time(NULL) );
+  int nBaseVal = rand();
+  m_dwTicket = (FCULONG)nBaseVal ^ m_characterID;
+
+  return m_dwTicket;
+}
+
+#endif//_FCCLIENT_COMPILE_

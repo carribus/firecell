@@ -37,9 +37,10 @@ public:
   void SendNewForumPost(FCULONG category_id, FCULONG thread_id, const char* pSubject, FCULONG msgLen, const char* pMessage);
 
   // bank commands
-  void RequestBankConnect(FCULONG character_id);
+  void RequestBankConnect(FCULONG ticket = 0);
   void SendBankAccountCreateRequest(FCCHAR* password);
   void SendBankingPassword(FCCHAR* password, FCSHORT pwLen);
+  void RequestBankAccountDetails(FCULONG ticket);
 
 	// mission commands
 	void SendMissionAccept(FCULONG mission_id);

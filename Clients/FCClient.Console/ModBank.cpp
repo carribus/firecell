@@ -28,6 +28,7 @@ ModBank::ModBank(void)
 , m_characterID(0)
 , m_pServer(NULL)
 , m_state(ModBank::Initialise)
+, m_ticket(0)
 {
 }
 
@@ -47,7 +48,7 @@ void ModBank::QueueForAction()
     {
       if ( m_pServer )
       {
-        m_pServer->RequestBankConnect(m_characterID);
+        m_pServer->RequestBankConnect(m_ticket);
         m_state = WaitingForResponse;
       }
     }
@@ -58,14 +59,12 @@ void ModBank::QueueForAction()
       printf("Banking Options\n");
       printf("---------------\n");
       printf("[1] Get Account Details\n");
-      printf("[2] Withdraw\n");
-      printf("[3] Deposit\n");
-      printf("[4] Transfer\n");
+      printf("[2] Transfer\n");
       printf("[0] Exit\n");
       printf("\nSelect option: ");
 
       int nOption = _getch();
-      while ( nOption < (int)'0' || nOption > (int)'4' )
+      while ( nOption < (int)'0' || nOption > (int)'2' )
         nOption = _getch();
       printf("\n");
 
@@ -77,15 +76,18 @@ void ModBank::QueueForAction()
           m_pSink->CloseModule(this);
         break;
 
-      case  1:
+      case  1:    // Get Account Details
+        {
+          m_pServer->RequestBankAccountDetails(m_ticket);
+        }
         break;
 
-      case  2:
-        break;
+      case  2:    // Transfer
+        {
 
-      case  3:
+        }
         break;
-       
+  
       default:
         break;
       }
@@ -123,6 +125,8 @@ void ModBank::QueueForAction()
       FCCHAR buffer[33];
       printf("Account creation: Do you want a password for your account? (Y/N): ");
       int nOption = _getch();
+
+      memset(buffer, 0, sizeof(buffer));
 
       while ( !(nOption == 'Y' || nOption == 'y') && !(nOption == 'N' || nOption == 'n') )
         nOption = _getch();
@@ -171,10 +175,15 @@ bool ModBank::OnResponse(FCSHORT msgID, PEPacket* pPkt, BaseSocket* pSocket)
     break;
 
   case  FCMSG_BANK_CREATE_ACCOUNT:
+    bHandled = OnResponseBankCreateAccount(pPkt, pSocket);
     break;
 
   case  FCMSG_BANK_AUTHENTICATE:
     bHandled = OnResponseBankAuthenticate(pPkt, pSocket);
+    break;
+
+  case  FCMSG_BANK_GET_DETAILS:
+    bHandled = OnResponseBankGetDetails(pPkt, pSocket);
     break;
 
   default:
@@ -200,6 +209,7 @@ bool ModBank::OnResponseBankConnect(PEPacket* pPkt, BaseSocket* pSocket)
   switch ( d.status )
   {
   case  BS_OK:
+    m_ticket = d.ticket;
     m_state = ModBank::Running;
     break;
 
@@ -223,6 +233,29 @@ bool ModBank::OnResponseBankConnect(PEPacket* pPkt, BaseSocket* pSocket)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool ModBank::OnResponseBankCreateAccount(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_BANK_CREATE_ACCOUNT_RESP d;
+  size_t dataLen;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+
+  if ( d.bResult )
+  {
+    m_ticket = d.ticket;
+    printf("[BANK] Account created successfully!\n");
+  }
+  else
+    printf("[BANK] Account creation failed!\n");
+
+  m_state = ModBank::Running;
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool ModBank::OnResponseBankAuthenticate(PEPacket* pPkt, BaseSocket* pSocket)
 {
   __FCPKT_BANK_AUTHENTICATE_RESP d;
@@ -233,6 +266,7 @@ bool ModBank::OnResponseBankAuthenticate(PEPacket* pPkt, BaseSocket* pSocket)
 
   if ( d.bResult )
   {
+    m_ticket = d.ticket;
     m_state = ModBank::Running;
   }
   else
@@ -242,6 +276,24 @@ bool ModBank::OnResponseBankAuthenticate(PEPacket* pPkt, BaseSocket* pSocket)
     if ( m_pSink )
       m_pSink->CloseModule(this);
   }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool ModBank::OnResponseBankGetDetails(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_BANK_GET_DETAILS_RESP d;
+  size_t dataLen;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+
+  printf("\nBalance  : %ld\n", d.balance);
+  printf("Debt     : %ld\n", d.debt);
+  printf("%% Rate   : %ld\n", d.interest_rate);
+  printf("Secure   : %s\n\n", d.is_secure ? "Yes" : "No");
 
   return true;
 }

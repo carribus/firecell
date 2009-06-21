@@ -89,6 +89,7 @@ private:
     bool OnCommandBankConnect(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
     bool OnCommandBankCreateAccount(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
     bool OnCommandBankAuthenticate(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
+    bool OnCommandBankGetDetails(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
 		// mission commands
 		bool OnCommandMissionAccept(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket);
     // software commands

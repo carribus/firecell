@@ -54,8 +54,6 @@ public:
   void OnThreadReply(FCULONG category_id, FCULONG thread_id, std::wstring& subject, std::wstring& message);
 	void OnThreadMissionAccept(FCULONG mission_id);
 
-  const wchar_t* getAppName()                             { return L"Forum Browser"; }
-
 private:
 
   /*

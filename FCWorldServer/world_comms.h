@@ -9,6 +9,7 @@
 #include <vector>
 #include "../common/protocol/fcprotocol.h"
 #include "../common/ServiceLogicBase.h"
+#include "../common/game_objects/BankAccount.h"
 #include "City.h"
 #include "Country.h"
 #include "FileSystem.h"
@@ -185,23 +186,33 @@ void SendMissionComplete(FCULONG mission_id, BaseSocket* pRouter, FCSOCKET clien
 /**
  *  @ingroup worldcomms
  *  @brief This function sends the result of a player attempting to connect to the bank. The packet sent is: __FCPKT_BANK_CONNECT_RESP
+ *  @param ticket The ticket generated for this bank account connection
  *  @param status The status of the connection attempt
  */
-void SendBankConnectResponse(BankStatus status, BaseSocket* pRouter, FCSOCKET clientSocket);
+void SendBankConnectResponse(FCULONG ticket, BankStatus status, BaseSocket* pRouter, FCSOCKET clientSocket);
 
 /**
  *  @ingroup worldcomms
  *  @brief This function sends the result of a player attempting to create a new bank account. The packet sent is: __FCPKT_BANK_CREATE_ACCOUNT_RESP
+ *  @param ticket The ticket generated for this bank account connection
  *  @param bResult The result of the attempted account creation
  */
-void SendBankCreateAccountResponse(bool bResult, BaseSocket* pRouter, FCSOCKET clientSocket);
+void SendBankCreateAccountResponse(FCULONG ticket, bool bResult, BaseSocket* pRouter, FCSOCKET clientSocket);
 
 /**
  *  @ingroup worldcomms
  *  @brief This function sends the result of a player attempting to authenticate for their bank account. The packet sent is: __FCPKT_BANK_AUTHENTICATE_RESP
+ *  @param ticket The ticket generated for this bank account connection
  *  @param bResult The result of the attempted account authentication
  */
-void SendBankAuthenticateResponse(bool bResult, BaseSocket* pRouter, FCSOCKET clientSocket);
+void SendBankAuthenticateResponse(FCULONG ticket, bool bResult, BaseSocket* pRouter, FCSOCKET clientSocket);
+
+/**
+ *  @ingroup worldcomms
+ *  @brief This function sends the details of a player's bank account to them. The packet sent is: __FCPKT_BANK_GET_DETAILS_RESP
+ *  @param pAccount The account that should have its details sent
+ */
+void SendBankAccountDetailsResponse(BankAccount* pAccount, BaseSocket* pRouter, FCSOCKET clientSocket);
 
 /*************************************************************************************************************** 
  *  SOFTWARE INSTALLATION SEND METHODS

@@ -301,12 +301,12 @@ void FCServerObj::SendNewForumPost(FCULONG category_id, FCULONG thread_id, const
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCServerObj::RequestBankConnect(FCULONG character_id)
+void FCServerObj::RequestBankConnect(FCULONG ticket)
 {
   PEPacket pkt;
   __FCPKT_BANK_CONNECT d;
 
-  d.character_id = character_id;
+  d.ticket = ticket;
 
   PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_BANK_CONNECT, ST_World);
   PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
@@ -321,6 +321,7 @@ void FCServerObj::SendBankAccountCreateRequest(FCCHAR* password)
   PEPacket pkt;
   __FCPKT_BANK_CREATE_ACCOUNT d;
 
+  memset(d.password, 0, sizeof(d.password));
   strncpy(d.password, password, sizeof(d.password));
 
   PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_BANK_CREATE_ACCOUNT, ST_World);
@@ -342,6 +343,21 @@ void FCServerObj::SendBankingPassword(FCCHAR* password, FCSHORT pwLen)
   strncpy( d.password, password, 32 );
 
   PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_BANK_AUTHENTICATE, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCServerObj::RequestBankAccountDetails(FCULONG ticket)
+{
+  PEPacket pkt;
+  __FCPKT_BANK_GET_DETAILS d;
+
+  d.ticket = ticket;
+
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_BANK_GET_DETAILS, ST_World);
   PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
 
   SendPacket(pkt);
