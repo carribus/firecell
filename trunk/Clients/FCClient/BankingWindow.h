@@ -19,8 +19,6 @@ public:
    */
   void ConnectToBank();
 
-  const wchar_t* getAppName()                             { return L"Banking"; }
-
 private:
 
   /*

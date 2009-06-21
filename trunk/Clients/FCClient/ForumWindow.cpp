@@ -1,4 +1,6 @@
 #include <map>
+#include "../common/ResourceManager.h"
+#include "clientstrings.h"
 #include "../common/clienttypes.h"
 #include "FCController.h"
 #include "FCViewEvent.h"
@@ -12,6 +14,7 @@ ForumWindow::ForumWindow(IDesktop* pDesktop, FCController* pController, Irrlicht
 , m_pForumThreadReader(NULL)
 , m_pModel(NULL)
 {
+  m_appName = ResourceManager::instance().GetClientString(STR_APP_FORUM_CAPTION);
 }
 
 ///////////////////////////////////////////////////////////////////////

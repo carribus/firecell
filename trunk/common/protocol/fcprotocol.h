@@ -42,6 +42,8 @@ const FCBYTE      FCPKT_ERROR = 3;
 
 */
 
+#define FCUSERNAME_MAXLEN           33
+
 /**
  *  @brief This is the PEPacketExtractor packet defintion for a firecell packet
  *  @ingroup fcprotocol
@@ -73,7 +75,7 @@ struct __FCPACKET
 struct _game_item
 {
   FCULONG item_id;
-  char name[65];
+  char name[FCUSERNAME_MAXLEN];
   FCINT itemtype_id;
   FCINT min_level;
   FCINT max_level;
@@ -121,8 +123,8 @@ const FCSHORT FCMSG_LOGIN                       = 3;
  */
 struct __FCPKT_LOGIN
 {
-  char username[65];
-  char password[65];
+  char username[FCUSERNAME_MAXLEN];
+  char password[33];
 };
 
 /**
@@ -148,7 +150,7 @@ struct __FCPKT_CHARACTER_LIST
   struct Character
   {
     FCUINT character_id;
-    char name[32];
+    char name[FCUSERNAME_MAXLEN];
     FCUINT xp;
     FCUINT level;
     FCUINT fame_scale;
@@ -526,7 +528,7 @@ struct __FCPKT_FORUM_GET_THREADS_RESP
 		FCULONG order;
 		char title[255];
 		FCULONG author_id;
-		char author_name[32];
+		char author_name[FCUSERNAME_MAXLEN];
 		char date_created[32];
 		FCULONG mission_id;
 	} threads[1];
@@ -555,7 +557,7 @@ struct __FCPKT_FORUM_GET_THREAD_DETAILS_RESP
     FCULONG thread_id;
     FCULONG parent_id;
     FCULONG author_id;
-    char author_name[32];
+    char author_name[FCUSERNAME_MAXLEN];
 		char title[255];
     char date_created[32];
     FCULONG contentIndex;           // index into blob at the end of this packet for this posts's content
@@ -604,11 +606,12 @@ const FCSHORT FCMSG_BANK_CONNECT			          = 250;
 ///////////////////////////////////////////////////////////////////////////////////////////
 struct __FCPKT_BANK_CONNECT
 {
-  FCULONG character_id;
+  FCULONG ticket;
 };
 
 struct __FCPKT_BANK_CONNECT_RESP
 {
+  FCULONG ticket;
   BankStatus status;
 };
 
@@ -622,6 +625,7 @@ struct __FCPKT_BANK_CREATE_ACCOUNT
 
 struct __FCPKT_BANK_CREATE_ACCOUNT_RESP
 {
+  FCULONG ticket;
   bool bResult;
 };
 
@@ -635,7 +639,40 @@ struct __FCPKT_BANK_AUTHENTICATE
 
 struct __FCPKT_BANK_AUTHENTICATE_RESP
 {
+  FCULONG ticket;
   bool bResult;
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_BANK_GET_DETAILS            = 253;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_BANK_GET_DETAILS
+{
+  FCULONG ticket;
+};
+
+struct __FCPKT_BANK_GET_DETAILS_RESP
+{
+  FCULONG balance;
+  FCULONG debt;
+  FCSHORT interest_rate;
+  bool is_secure;
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_BANK_TRANSFER               = 254;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_BANK_TRANSFER
+{
+  FCULONG ticket;
+  FCCHAR targetCharacterName[FCUSERNAME_MAXLEN];
+  FCULONG amountToTransfer;
+};
+
+struct __FCPKT_BANK_TRANSFER_RESP
+{
+  bool bResult;
+  FCULONG newBalance;
 };
 
 /*

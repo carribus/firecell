@@ -29,7 +29,12 @@ public:
   BankAccount();
   ~BankAccount(void);
 
+#ifndef _FCCLIENT_COMPILE_
   bool verifyPassword(const char* password);
+  bool verifyTicket(FCULONG ticket);
+
+  FCULONG             generateTicket();
+#endif//_FCCLIENT_COMPILE_
 
   FCULONG             getCharacterID()                        { return m_characterID; }
   void                setCharacterID(FCULONG charID)          { m_characterID = charID; }
@@ -43,9 +48,13 @@ public:
   void                setSecure(bool bSecure)                 { m_isSecure = bSecure; }
   std::string         getPassword()                           { return m_password; }
   void                setPassword(const std::string& pw)      { m_password = pw; }
+#ifndef _FCCLIENT_COMPILE_
   bool                isConnected()                           { return m_bConnected; }
   void                setConnected(bool bFlag)                { m_bConnected = bFlag; }
-  bool                isAuthenticated()                       { return m_bAuthenticated; }
+#else
+  FCULONG             getTicket()                             { return m_dwTicket; }
+  void                setTicket(FCULONG ticket)               { m_dwTicket = ticket; }
+#endif//_FCCLIENT_COMPILE_
 
 private:
 
@@ -56,8 +65,10 @@ private:
   bool                m_isSecure;
   std::string         m_password;
 
+#ifndef _FCCLIENT_COMPILE_
   bool                m_bConnected;
-  bool                m_bAuthenticated;
+#endif//_FCCLIENT_COMPILE_
+  FCULONG             m_dwTicket;
 };
 
 #endif//_BANKACCOUNT_H_

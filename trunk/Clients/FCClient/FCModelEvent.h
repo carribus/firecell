@@ -18,6 +18,11 @@ enum e_FCEventType
 	/* Mission Events */
 	FCME_Mission_MissionAccepted,
 	FCME_Mission_Completed,
+  /* Bank Events */
+  FCME_Bank_Connected,
+  FCME_Bank_AuthNeeded,
+  FCME_Bank_NoAccountExists,
+  FCME_Bank_AccountDetailsUpdated,
   /* Software Events */
   FCME_Software_SoftwareInstallSuccess,
   FCME_Software_SoftwareInstallFail,

@@ -327,6 +327,12 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  case  FCMSG_BANK_GET_DETAILS:
+    {
+      bHandled = OnCommandBankGetDetails(pPkt, pRouter, clientSock);
+    }
+    break;
+
 	/*
 	 *	Mission Messages
 	 */
@@ -778,15 +784,16 @@ bool FCLogicWorld::OnCommandBankConnect(PEPacket* pPkt, RouterSocket* pSocket, F
   __FCPKT_BANK_CONNECT d;
   size_t dataLen = 0;
   Player* pPlayer = NULL;
+  FCULONG ticket = 0;
 
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, sizeof(d));
 
-  if ( (pPlayer = m_playerMgr.GetPlayerByID(d.character_id)) )
+  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
   {
     BankStatus status;
     // attempt to fetch the account for the player
-    BankAccount* pAccount = m_bank.getBankAccount(d.character_id);
+    BankAccount* pAccount = m_bank.getBankAccount(pPlayer->GetID());
 
     if ( !pAccount )
     {
@@ -796,13 +803,15 @@ bool FCLogicWorld::OnCommandBankConnect(PEPacket* pPkt, RouterSocket* pSocket, F
     {
       pAccount->setConnected(true);
       status = (pAccount->isSecure() ? BS_AccountNeedAuth : BS_OK);
-      if ( status == BS_AccountNeedAuth && pAccount->isAuthenticated() )
+      if ( status == BS_AccountNeedAuth && pAccount->verifyTicket(d.ticket) )
       {
         status = BS_OK;
       }
+      if ( status == BS_OK )
+        ticket = pAccount->generateTicket();
     }
 
-    SendBankConnectResponse(status, pSocket, clientSocket);
+    SendBankConnectResponse(ticket, status, pSocket, clientSocket);
   }
 
   return true;
@@ -815,6 +824,7 @@ bool FCLogicWorld::OnCommandBankCreateAccount(PEPacket* pPkt, RouterSocket* pSoc
   __FCPKT_BANK_CREATE_ACCOUNT d;
   size_t dataLen = 0;
   Player* pPlayer = NULL;
+  FCULONG ticket = 0;
   bool bResult = false;
 
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
@@ -832,6 +842,7 @@ bool FCLogicWorld::OnCommandBankCreateAccount(PEPacket* pPkt, RouterSocket* pSoc
       if ( (pAccount = m_bank.createBankAccount(pPlayer, 0, 0, 0, bSecure, d.password)) )
       {
         pAccount->setConnected(true);
+        ticket = pAccount->generateTicket();
         bResult = true;
       }
       else
@@ -843,7 +854,7 @@ bool FCLogicWorld::OnCommandBankCreateAccount(PEPacket* pPkt, RouterSocket* pSoc
     else
       bResult = false;
 
-    SendBankCreateAccountResponse(bResult, pSocket, clientSocket);
+    SendBankCreateAccountResponse(ticket, bResult, pSocket, clientSocket);
   }
 
   return true;
@@ -856,6 +867,7 @@ bool FCLogicWorld::OnCommandBankAuthenticate(PEPacket* pPkt, RouterSocket* pSock
   __FCPKT_BANK_AUTHENTICATE d;
   size_t dataLen = 0;
   Player* pPlayer = NULL;
+  FCULONG ticket = 0;
   bool bResult = false;
 
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
@@ -869,7 +881,8 @@ bool FCLogicWorld::OnCommandBankAuthenticate(PEPacket* pPkt, RouterSocket* pSock
     {
       if ( pAccount->isConnected() )
       {
-        bResult = pAccount->verifyPassword(d.password);
+        if ( (bResult = pAccount->verifyPassword(d.password)) )
+          ticket = pAccount->generateTicket();
       }
       else
       {
@@ -883,7 +896,35 @@ bool FCLogicWorld::OnCommandBankAuthenticate(PEPacket* pPkt, RouterSocket* pSock
       DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to locate bank account for character id: %ld", pPlayer->GetID()) );
     }
 
-    SendBankAuthenticateResponse(bResult, pSocket, clientSocket);
+    SendBankAuthenticateResponse(ticket, bResult, pSocket, clientSocket);
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicWorld::OnCommandBankGetDetails(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCPKT_BANK_GET_DETAILS d;
+	size_t dataLen = 0;
+	Player* pPlayer = NULL;
+
+	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+	pPkt->GetField("data", (void*)&d, dataLen);
+
+	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+	{
+    BankAccount* pAccount = m_bank.getBankAccount(pPlayer->GetID());
+
+    if ( pAccount && pAccount->isConnected() && pAccount->verifyTicket(d.ticket) )
+    {
+      SendBankAccountDetailsResponse(pAccount, pSocket, clientSocket);
+    }
+    else
+    {
+      // request occurred without being connect and authenticated so it should be ignored
+    }
   }
 
   return true;

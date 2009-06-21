@@ -1,4 +1,6 @@
 #include <sstream>
+#include "../common/ResourceManager.h"
+#include "clientstrings.h"
 #include "../common/clienttypes.h"
 #include "FCController.h"
 #include "FCViewEvent.h"
@@ -11,6 +13,7 @@ ConsoleWindow::ConsoleWindow(IDesktop* pDesktop, FCController* pController, Irrl
 , m_pDevice(pDevice)
 , m_pLogWnd(NULL)
 {
+  m_appName = ResourceManager::instance().GetClientString(STR_APP_CONSOLE_CAPTION);
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -26,6 +26,7 @@
 #include "../../common/PacketExtractor.h"
 #include "../../common/PEPacket.h"
 #include "../../common/PThreadMutex.h"
+#include "../../common/game_objects/BankAccount.h"
 #include "../common/Socket/ClientSocket.h"
 #include "../common/FCServerObj.h"
 #include "IModelEventSink.h"
@@ -198,6 +199,7 @@ public:
   void EnableNetworkPort(FCSHORT portNum, bool bEnable);
 
   vector<Character>& GetCharacters()                    { return m_characters; }
+  BankAccount* GetBankAccount()                         { return m_bankAccount; }
   std::map<FCULONG, Country>& GetCountries()            { return m_countries; }
   std::map<FCUINT, DesktopOption> GetDesktopOptions()	  { return m_desktopOptions; }
 	MissionMgr& GetMissionMgr()											      { return m_missionMgr; }
@@ -232,15 +234,22 @@ private:
 		bool OnResponseCharacterItemsRequest(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseCharacterMissionsRequest(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket);
-		bool OnResponseActivateSoftware(PEPacket* pPkt, BaseSocket* pSocket);
-		bool OnResponseConsoleGetFileSystemInfo(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnResponseActivateSoftware(PEPacket* pPkt, BaseSocket* pSocket);
+
+    bool OnResponseConsoleGetFileSystemInfo(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseConsoleCommand(PEPacket* pPkt, BaseSocket* pSocket);
+
     bool OnResponseForumGetCategories(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseForumGetThreads(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseForumGetThreadDetails(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseForumGetThreadContentBlob(PEPacket* pPkt, BaseSocket* pSocket);
 		bool OnResponseForumCreateNewThread(PEPacket* pPkt, BaseSocket* pSocket);
+
     bool OnResponseMissionAccepted(PEPacket* pPkt, BaseSocket* pSocket);
+
+    bool OnResponseBankConnect(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnResponseBankGetDetails(PEPacket* pPkt, BaseSocket* pSocket);
+
     bool OnResponseSoftwareInstall(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseSoftwareUninstall(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseNetworkPortEnable(PEPacket* pPkt, BaseSocket* pSocket);
@@ -271,6 +280,7 @@ private:
 
   vector<Character> m_characters;
 	Character*				m_pCharacter;					// selected character
+  BankAccount*      m_bankAccount;        // bank account of the current character
 
   /*
    *  Geography information
