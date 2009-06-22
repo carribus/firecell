@@ -191,6 +191,7 @@ public:
   void ForumGetThreadDetails(FCULONG category_id, FCULONG thread_id);
   /* Banking methods */
   void BankConnect();
+  void BankAuthenticate(std::wstring str);
 	/* Mission methods */
 	void MissionAccept(FCULONG mission_id);
   /* Software methods */
@@ -199,11 +200,12 @@ public:
   void EnableNetworkPort(FCSHORT portNum, bool bEnable);
 
   vector<Character>& GetCharacters()                    { return m_characters; }
-  BankAccount* GetBankAccount()                         { return m_bankAccount; }
   std::map<FCULONG, Country>& GetCountries()            { return m_countries; }
   std::map<FCUINT, DesktopOption> GetDesktopOptions()	  { return m_desktopOptions; }
 	MissionMgr& GetMissionMgr()											      { return m_missionMgr; }
   ItemMgr& GetItemMgr()                                 { return m_itemMgr; }
+
+  BankAccount* GetBankAccount();
 
 private:
 
@@ -248,8 +250,9 @@ private:
     bool OnResponseMissionAccepted(PEPacket* pPkt, BaseSocket* pSocket);
 
     bool OnResponseBankConnect(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnResponseBankAuthenticate(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseBankGetDetails(PEPacket* pPkt, BaseSocket* pSocket);
-
+    
     bool OnResponseSoftwareInstall(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseSoftwareUninstall(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseNetworkPortEnable(PEPacket* pPkt, BaseSocket* pSocket);

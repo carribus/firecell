@@ -174,6 +174,13 @@ void FCController::OnViewEvent(FCViewEvent& event)
     }
     break;
 
+  case  VE_BankAuthenticate:
+    {
+      FCViewEventBankAuth* pEv = (FCViewEventBankAuth*)&event;
+      m_pModel->BankAuthenticate(pEv->getStr());
+    }
+    break;
+
 	//
 	// Mission Events
 	case	VE_MissionAccepted:

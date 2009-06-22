@@ -462,6 +462,7 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
 
   case  FCMSG_BANK_AUTHENTICATE:
     {
+      bHandled = OnResponseBankAuthenticate(pPkt, pSocket);
     }
     break;
 
@@ -1165,11 +1166,15 @@ bool FCModel::OnResponseBankConnect(PEPacket* pPkt, BaseSocket* pSocket)
   switch ( d.status )
   {
   case  BS_OK:
-    if ( !m_bankAccount )
-      m_bankAccount = new BankAccount;
-    m_bankAccount->setTicket(d.ticket);
-    FireEvent(FCME_Bank_Connected, NULL);
-    m_server.RequestBankAccountDetails( d.ticket );
+    {
+      BankAccount* pAcc = GetBankAccount();
+      if ( pAcc )
+      {
+        pAcc->setTicket(d.ticket);
+        FireEvent(FCME_Bank_Connected, NULL);
+        m_server.RequestBankAccountDetails( d.ticket );
+      }
+    }
     break;
 
   case  BS_NoAccountExists:
@@ -1182,6 +1187,28 @@ bool FCModel::OnResponseBankConnect(PEPacket* pPkt, BaseSocket* pSocket)
 
   default:
     break;
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseBankAuthenticate(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_BANK_AUTHENTICATE_RESP d;
+  size_t dataLen = 0;
+  BankAccount* pAcc = NULL;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+
+  if ( d.bResult )
+  {
+    if ( (pAcc = GetBankAccount()) )
+    {
+      pAcc->setTicket(d.ticket);
+    }
   }
 
   return true;
@@ -1392,6 +1419,16 @@ std::string FCModel::ParseMissionString(std::string source)
 	}
 
 	return source;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+BankAccount* FCModel::GetBankAccount()
+{
+  if ( !m_bankAccount )
+    m_bankAccount = new BankAccount;
+
+  return m_bankAccount;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -1613,7 +1650,19 @@ void FCModel::ForumGetThreadDetails(FCULONG category_id, FCULONG thread_id)
 
 void FCModel::BankConnect()
 {
-  m_server.RequestBankConnect(m_pCharacter->GetID());
+  FCULONG ticket = (m_bankAccount ? m_bankAccount->getTicket() : 0);
+  m_server.RequestBankConnect(ticket);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::BankAuthenticate(std::wstring str)
+{
+	char pw[FCUSERNAME_MAXLEN];
+
+	sprintf(pw, "%S", str.c_str());
+
+  m_server.SendBankingPassword(pw, str.length());
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -40,6 +40,7 @@
 	<String id="APP_FORUM_OPTION_REPLY">Reply</String>
   <!-- BANK APPLICATION -->
   <String id="APP_BANK_CAPTION">Banking</String>
+  <String id="APP_BANK_AUTH_OK_BUTTON">Login</String>
 	<!-- APP BAR -->
 	<String id="APP_APPBAR_SYSTEM">System</String>
 	<!-- APP BAR: System Menu -->
