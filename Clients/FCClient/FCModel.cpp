@@ -1157,7 +1157,6 @@ bool FCModel::OnResponseBankConnect(PEPacket* pPkt, BaseSocket* pSocket)
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", &d, dataLen);
 
-#error you left off here
   /*
     - Need to wire up the Banking events into the view so that we can update the dialog accordingly.
     - Need to provide different views for interacting with the banking app

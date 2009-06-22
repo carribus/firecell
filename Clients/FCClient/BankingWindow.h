@@ -4,6 +4,7 @@
 #include <string>
 #include "FCModel.h"
 #include "InGameAppWindow.h"
+#include "GUIBankAuthView.h"
 #include "GUIBankView.h"
 
 class BankingWindow : public InGameAppWindow
@@ -19,12 +20,33 @@ public:
    */
   void ConnectToBank();
 
+  /**
+   *  @brief Event handler called when a successful connection has been established to the bank account
+   */
+  bool OnBankConnected();
+
+  /**
+   *  @brief Event handler called when authentication is needed for a bank account
+   */
+  bool OnBankAuthNeeded();
+
+  /**
+   *  @brief Event handler called when the player does not have a bank account
+   */
+  bool OnNoAccountExists();
+
+  /**
+   *  @brief Event handler called when a player's bank account details have been updated
+   */
+  bool OnAccountDetailsUpdated(BankAccount* pAccount);
+
 private:
 
   /*
    *  Private Members
    */
   IrrlichtDevice*         m_pDevice;
+  GUIBankAuthView*        m_pAuthView;
   GUIBankView*            m_pBankView;
 
   BankModel*              m_pModel;

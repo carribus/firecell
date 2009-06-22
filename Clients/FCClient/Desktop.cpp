@@ -659,6 +659,46 @@ bool Desktop::OnMissionEvent(FCModelEvent& event)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool Desktop::OnBankEvent(FCModelEvent& event)
+{
+  bool bResult = false;
+	BankingWindow* pWnd = (BankingWindow*) GetAppWindowByType( SWT_APP_BANK );
+
+  if ( pWnd )
+  {
+    switch ( event.GetType() )
+    {
+    case  FCME_Bank_Connected:
+      {
+        bResult = pWnd->OnBankConnected();
+      }
+      break;
+
+    case  FCME_Bank_AuthNeeded:
+      {
+        bResult = pWnd->OnBankAuthNeeded();
+      }
+      break;
+
+    case  FCME_Bank_NoAccountExists:
+      {
+        bResult = pWnd->OnNoAccountExists();
+      }
+      break;
+
+    case  FCME_Bank_AccountDetailsUpdated:
+      {
+        bResult = pWnd->OnAccountDetailsUpdated((BankAccount*)event.GetData());
+      }
+      break;
+    }
+  }
+
+  return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool Desktop::OnSoftwareEvent(FCModelEvent& event)
 {
   bool bResult = false;

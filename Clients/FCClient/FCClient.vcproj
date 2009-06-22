@@ -292,6 +292,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\GUIBankAuthView.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\GUIBankView.cpp"
 				>
 			</File>
@@ -563,6 +567,10 @@
 			</File>
 			<File
 				RelativePath=".\ForumWindow.h"
+				>
+			</File>
+			<File
+				RelativePath=".\GUIBankAuthView.h"
 				>
 			</File>
 			<File

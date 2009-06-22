@@ -50,6 +50,7 @@ public:
   bool OnConsoleEvent(FCModelEvent& event);
 	bool OnForumEvent(FCModelEvent& event);
 	bool OnMissionEvent(FCModelEvent& event);
+  bool OnBankEvent(FCModelEvent& event);
   bool OnSoftwareEvent(FCModelEvent& event);
 
   /*
