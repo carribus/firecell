@@ -224,7 +224,7 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
         r.UpperLeftCorner.Y = (r.getHeight()/2) - (fontDim.Height/2);
         r.LowerRightCorner.Y = r.UpperLeftCorner.Y + fontDim.Height;
 
-				AnimatedText* pText = new AnimatedText( m_pFontImpactLarge, L"New Mission Accepted:", SColor(255, 0, 255, 0), r);
+				AnimatedText* pText = new AnimatedText( m_pFontImpactLarge, ResourceManager::instance().GetClientString(STR_MISSION_NEWMISSION).c_str(), SColor(255, 0, 255, 0), r);
 				m_textAnimator.addTextToAnimate(pText, TextAnimator::TAD_VERTICAL, -4, 25, TextAnimator::TAE_FADEOUT, 50, 75);
 				offsetRect(r, 0, r.getHeight());
 				pText = new AnimatedText( m_pFontImpactLarge, ss.str().c_str(), SColor(255, 255, 255, 255), r);
@@ -245,12 +245,12 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
         r.UpperLeftCorner.Y = (r.getHeight()/2) - (fontDim.Height/2);
         r.LowerRightCorner.Y = r.UpperLeftCorner.Y + fontDim.Height;
 
-				AnimatedText* pText = new AnimatedText( m_pFontImpactLarge, L"Congratulations!", SColor(255, 255, 255, 255), r);
+        AnimatedText* pText = new AnimatedText( m_pFontImpactLarge, ResourceManager::instance().GetClientString(STR_MISSION_CONGRATULATIONS).c_str(), SColor(255, 255, 255, 255), r);
 				m_textAnimator.addTextToAnimate(pText, TextAnimator::TAD_VERTICAL, -4, 25, TextAnimator::TAE_FADEOUT, 50, 75);
 
 				offsetRect(r, 0, r.getHeight());
 
-				pText = new AnimatedText( m_pFontImpactLarge, L"You have completed the mission:", SColor(255, 255, 0, 0), r);
+				pText = new AnimatedText( m_pFontImpactLarge, ResourceManager::instance().GetClientString(STR_MISSION_COMPLETE).c_str(), SColor(255, 255, 0, 0), r);
 				m_textAnimator.addTextToAnimate(pText, TextAnimator::TAD_VERTICAL, -4, 25, TextAnimator::TAE_FADEOUT, 50, 75);
 
 				offsetRect(r, 0, r.getHeight());
@@ -260,6 +260,15 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
 				m_textAnimator.addTextToAnimate(pText, TextAnimator::TAD_VERTICAL, -4, 25, TextAnimator::TAE_FADEOUT, 50, 75);
 			}
 			break;
+
+    case  FCME_Bank_Connected:
+    case  FCME_Bank_AuthNeeded:
+    case  FCME_Bank_NoAccountExists:
+    case  FCME_Bank_AccountDetailsUpdated:
+      {
+        m_pDesktop->OnBankEvent(event);
+      }
+      break;
 
     case  FCME_Software_SoftwareInstallSuccess:
     case  FCME_Software_SoftwareInstallFail:

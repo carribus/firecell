@@ -54,6 +54,10 @@
   <String id="SWM_INSTALL_SOFTWARE">Install Software</String>
   <String id="SWM_UNINSTALL_SOFTWARE">Uninstall Software</String>
   <String id="SWM_CONFIGURE_PORT">Configure Port</String>
+  <!-- MISSION STRINGS -->
+  <String id="MISSION_NEWMISSION">New Mission Accepted:</String>
+  <String id="MISSION_CONGRATULATIONS">Congratulations!</String>
+  <String id="MISSION_COMPLETE">You have completed the mission:</String>
   
   
   <!-- ITEMS -->
