@@ -40,6 +40,8 @@ public:
    */
   bool OnAccountDetailsUpdated(BankAccount* pAccount);
 
+  void SendBankAuthentication(std::wstring& password);
+
 private:
 
   /*

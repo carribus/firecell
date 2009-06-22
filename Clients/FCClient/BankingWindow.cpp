@@ -47,7 +47,7 @@ bool BankingWindow::Create(s32 AppElemID, FCUINT optionID, std::wstring caption)
   }
 
   // create the banking auth view
-  m_pAuthView = new GUIBankAuthView(m_pEnv, clientRect, m_pWindow);
+  m_pAuthView = new GUIBankAuthView(this, m_pEnv, clientRect, m_pWindow);
   m_pAuthView->setVisible(false);
   m_pAuthView->drop();
   // create the banking view
@@ -104,4 +104,12 @@ bool BankingWindow::OnAccountDetailsUpdated(BankAccount* pAccount)
     return false;
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void BankingWindow::SendBankAuthentication(std::wstring& password)
+{
+  FCViewEventBankAuth e(password);
+  m_pController->OnViewEvent(e);
 }

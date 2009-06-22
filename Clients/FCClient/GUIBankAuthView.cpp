@@ -1,9 +1,12 @@
 #include "../common/ResourceManager.h"
 #include "clientstrings.h"
+#include "BankingWindow.h"
 #include "GUIBankAuthView.h"
 
-GUIBankAuthView::GUIBankAuthView(IGUIEnvironment* environment, core::rect<s32>& rect, IGUIElement* pParent, s32 id)
+GUIBankAuthView::GUIBankAuthView(BankingWindow* pOwner, IGUIEnvironment* environment, core::rect<s32>& rect, IGUIElement* pParent, s32 id)
 : IGUIElement(EGUIET_ELEMENT, environment, pParent, id, rect)
+, m_pOwner(pOwner)
+, m_pEdtPassword(NULL)
 {
 #ifdef _DEBUG
   setDebugName("GUIBankAuthView");
@@ -31,13 +34,12 @@ GUIBankAuthView::GUIBankAuthView(IGUIEnvironment* environment, core::rect<s32>& 
   pTxt->setTextAlignment( EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT );
   pTxt->setOverrideColor( SColor(255, 128, 128, 255) );
 
-  boundingRect = pTxt->getRelativePosition();
-
-  pElem = environment->addEditBox( L"",
+  m_pEdtPassword = environment->addEditBox( L"",
                                    core::rect<s32>(105, 38, 280, 61),
                                    true,
                                    this,
                                    1);
+  environment->addButton( core::rect<s32>(180, 70, 280, 100), this, 2, ResourceManager::instance().GetClientString(STR_APP_BANK_AUTH_OK_BUTTON).c_str());
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -66,6 +68,35 @@ void GUIBankAuthView::draw()
 bool GUIBankAuthView::OnEvent(const SEvent& event)
 {
   bool bResult = false;
+
+  switch ( event.EventType )
+  {
+	case	EET_GUI_EVENT:
+		{
+			switch ( event.GUIEvent.EventType )
+			{
+      case  EGET_BUTTON_CLICKED:
+        {
+          s32 id = event.GUIEvent.Caller->getID();
+
+          if ( id == 2 )
+          {
+            if ( m_pEdtPassword )
+            {
+              std::wstring pw = m_pEdtPassword->getText();
+              if ( m_pOwner )
+                m_pOwner->SendBankAuthentication(pw);
+            }
+          }
+        }
+        break;
+      }
+    }
+    break;
+
+  default:
+    break;
+  }  
 
   return bResult;
 }

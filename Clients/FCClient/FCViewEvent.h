@@ -24,6 +24,7 @@ enum e_FCViewEventType
   VE_ForumThreadSelected,
   /* Bank Events */
   VE_BankConnect,
+  VE_BankAuthenticate,
 	/* Mission Events */
 	VE_MissionAccepted,
   /* Software Events */
@@ -158,6 +159,24 @@ private:
 
   FCSHORT m_portNum;
   bool m_bEnabled;
+};
+
+/////////////////////////////////////////////////////////////////
+
+class FCViewEventBankAuth : public FCViewEvent
+{
+public:
+  FCViewEventBankAuth(std::wstring str)
+    : FCViewEvent(VE_BankAuthenticate)
+    , m_str(str)
+  {
+  }
+
+  const std::wstring& getStr()                { return m_str; }
+
+private:
+
+  std::wstring    m_str;
 };
 
 #endif//_FCVIEWEVENT_H_
