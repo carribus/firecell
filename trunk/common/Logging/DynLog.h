@@ -9,8 +9,22 @@
 #define DYNLOG_FORMAT \
   Logging::getLogger()->formatLog
 
-#define DYNLOG_ADDLOG( str ) \
-  Logging::getLogger()->addLog(str, __FILE__, __LINE__);
+#define DYNLOG_ADDLOG1(str) \
+  Logging::getLogger()->addLog(str, __FILE__, __LINE__, 1);
+
+#define DYNLOG_ADDLOG2(str) \
+  Logging::getLogger()->addLog(str, __FILE__, __LINE__, 2);
+
+#define DYNLOG_ADDLOG3(str) \
+  Logging::getLogger()->addLog(str, __FILE__, __LINE__, 3);
+
+#define DYNLOG_ADDLOG4(str) \
+  Logging::getLogger()->addLog(str, __FILE__, __LINE__, 4);
+
+#define DYNLOG_ADDLOG5(str) \
+  Logging::getLogger()->addLog(str, __FILE__, __LINE__, 5);
+
+#define DYNLOG_ADDLOG( str ) DYNLOG_ADDLOG1(str)
 
 namespace Logging
 {

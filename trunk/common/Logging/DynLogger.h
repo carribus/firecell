@@ -35,8 +35,9 @@ public:
   size_t getWriterCount();
   void flush();
   size_t getBackLog();
-  size_t addLog(const std::string& data, const char* sourceFile, size_t sourceLineNum);
+  size_t addLog(const std::string& data, const char* sourceFile, size_t sourceLineNum, size_t logLevel = 1);
   std::string formatLog(const char* data, ...);
+  void setLogLevelFilter(size_t maxLevelToLog);
 
 private:
 
@@ -69,6 +70,11 @@ private:
   };
   typedef std::deque<stLogItem> LogItemQueue;
   LogItemQueue            m_items;
+
+  /** 
+   *  m_logLevelFilter indicates which entries should be logged. Always log on levels equal or less than m_logLevelFilter
+   */ 
+  size_t m_logLevelFilter;
 
 };
 
