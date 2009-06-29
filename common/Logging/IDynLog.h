@@ -179,9 +179,11 @@ struct IDynLogger : public IRefCounter
    *  pLogger->addLog("This is a log item", __FILE__, __LINE__);
    *  \endcode
    */
-  virtual size_t addLog(const std::string& data, const char* sourceFile, size_t sourceLineNum) = 0;
+  virtual size_t addLog(const std::string& data, const char* sourceFile, size_t sourceLineNum, size_t logLevel) = 0;
 
   virtual std::string formatLog(const char* data, ...) = 0;
+
+  virtual void setLogLevelFilter(size_t maxLevelToLog) = 0;
 };
 
 }; // end of Logging namespace

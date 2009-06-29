@@ -109,7 +109,7 @@ bool FCDatabase::ExecuteJob(const string QueryName, void* pData, ...)
     return false;
 
   if ( QueryName.empty() )
-    DYNLOG_ADDLOG( DYNLOG_FORMAT("ExecuteJob: QueryName=%s", QueryName.c_str()) );
+    DYNLOG_ADDLOG5( DYNLOG_FORMAT("ExecuteJob: QueryName=%s", QueryName.c_str()) );
 
   bool bResult = false;
   string sqlQuery = m_pQueries->GetValue(QueryName);
@@ -129,6 +129,10 @@ bool FCDatabase::ExecuteJob(const string QueryName, void* pData, ...)
 
     QueueJob(sqlQuery, QueryName, pData);
     bResult = true;
+  }
+  else
+  {
+    DYNLOG_ADDLOG5( "ExecuteJob(): Query string is empty!" );
   }
 
   return bResult;
@@ -204,6 +208,7 @@ FCUINT FCDatabase::LoadQueries(string strEngine)
     if ( m_pQueries )
     {
       uiCount = (FCUINT) m_pQueries->GetCount();
+      DYNLOG_ADDLOG5( DYNLOG_FORMAT("FCDatabase: %ld queries pre-loaded", uiCount) );
     }
   }
 
@@ -224,6 +229,7 @@ void FCDatabase::StartWorkerThreads(FCUINT uiNumThreads)
     if ( pthread_create( &pThread->thread, NULL, thrdDBWorker, (void*)pThread ) != 0 )
     {
       // failed to create a worker thread :(
+      DYNLOG_ADDLOG("Database Worked thread failed to create!");
       delete pThread;
     }
     else
@@ -291,11 +297,14 @@ void* FCDatabase::thrdDBWorker(void* pData)
     return NULL;
 
   // attempt to connect to the database
+  DYNLOG_ADDLOG5( "[FCDB] Establishing database connection" );
   if ( !(pConn = pDB->Connect(pThis->m_strServer, 0, pThis->m_strDBName, pThis->m_strUser, pThis->m_strPass)) )
   {
     // failed to connect...
+    DYNLOG_ADDLOG( DYNLOG_FORMAT("Failed to connect to database: server=%s | dbname=%s", pThis->m_strServer.c_str(), pThis->m_strDBName.c_str()) );
     return NULL;
   }
+  DYNLOG_ADDLOG5( "[FCDB] Database connection established successfully" );
 
   pThreadObj->bRunning = true;
 
@@ -335,18 +344,18 @@ void* FCDatabase::thrdDBWorker(void* pData)
           if ( strError.length() )
           {
             DYNLOG_ADDLOG( DYNLOG_FORMAT("FCDatabase Error [%ld]: %s", nError, strError.c_str()) );
-            DYNLOG_ADDLOG( DYNLOG_FORMAT("FCDatabase Error [%ld]: Query=%s", nError, job.GetQuery().c_str()) );
+            DYNLOG_ADDLOG3( DYNLOG_FORMAT("FCDatabase Error [%ld]: Query=%s", nError, job.GetQuery().c_str()) );
           }
 
 					switch ( nError )
 					{
 					case	2006:				// server has gone away
 						{
-							DYNLOG_ADDLOG("Attempting to re-establish database connection...");
+							DYNLOG_ADDLOG3("Attempting to re-establish database connection...");
 							pDB->Disconnect(pConn);
 							pConn = pDB->Connect(pThis->m_strServer, 0, pThis->m_strDBName, pThis->m_strUser, pThis->m_strPass);
 							if ( pConn )
-								DYNLOG_ADDLOG( "Connection to database restored..." );
+								DYNLOG_ADDLOG3( "Connection to database restored..." );
 						}
 						break;
 					}

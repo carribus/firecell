@@ -172,6 +172,7 @@ void FCLogicWorld::ConfigureEventSystem()
 void FCLogicWorld::LoadWorldData()
 {
 	// load the world related data
+  DYNLOG_ADDLOG( "Loading World Geography" );
   DBJobContext* pCtx = new DBJobContext;
   pCtx->pThis = this;
   GetDatabase().ExecuteJob(DBQ_LOAD_WORLD_GEOGRAPHY, (void*)pCtx);
@@ -180,6 +181,7 @@ void FCLogicWorld::LoadWorldData()
   m_condSync.WaitForSignal();
 
   // load missions
+  DYNLOG_ADDLOG( "Loading Missions" );
   pCtx = new DBJobContext;
   pCtx->pThis = this;
   GetDatabase().ExecuteJob(DBQ_LOAD_MISSIONS, (void*)pCtx);
@@ -188,6 +190,7 @@ void FCLogicWorld::LoadWorldData()
   m_condSync.WaitForSignal();
 
 	// load forum data
+  DYNLOG_ADDLOG( "Loading Forum Data" );
 	pCtx = new DBJobContext;
 	pCtx->pThis = this;
 	GetDatabase().ExecuteJob(DBQ_LOAD_FORUM_CATEGORIES, (void*)pCtx);
@@ -1219,7 +1222,7 @@ void FCLogicWorld::OnDBJob_LoadItemTypes(DBIResultSet& resultSet, void*& pContex
   pContext = NULL;
 
   // now try and load the items
-  DYNLOG_ADDLOG( DYNLOG_FORMAT("Loading Item Definitions", rowCount) );
+  DYNLOG_ADDLOG( "Loading Item Definitions" );
 
   pCtx = new DBJobContext;
   pCtx->pThis = pThis;

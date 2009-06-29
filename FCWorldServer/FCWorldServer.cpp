@@ -54,6 +54,7 @@ int main(int argc, FCSTR argv[])
   Logging::IDynLogWriter* pWriter = Logging::createLogWriter( Logging::LOGWRITER_TEXTFILE);
   ((Logging::IDynLogTextFileWriter*)pWriter)->setFilename("FCWorldServer.log");
   Logging::getLogger()->addWriter(pWriter);
+  Logging::getLogger()->setLogLevelFilter(5);
   pWriter->release();
 
   if ( pService )

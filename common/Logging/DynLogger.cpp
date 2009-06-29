@@ -9,6 +9,7 @@ DynLogger* DynLogger::m_pThis = NULL;
 //////////////////////////////////////////////////////////////////////////////////////////
 
 DynLogger::DynLogger(void)
+: m_logLevelFilter(3)
 {
 }
 
@@ -88,21 +89,24 @@ size_t DynLogger::getBackLog()
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-size_t DynLogger::addLog(const std::string& data, const char* sourceFile, size_t sourceLineNum)
+size_t DynLogger::addLog(const std::string& data, const char* sourceFile, size_t sourceLineNum, size_t logLevel)
 {
-  WritersVector::iterator it = m_writers.begin();
-  WritersVector::iterator limit = m_writers.end();
-  IDynLogItem* pItem = NULL;
-  time_t t = time(NULL);
-  tm timestamp = *gmtime(&t);
-
-  for ( ; it != limit; it++ )
+  if ( logLevel <= m_logLevelFilter )
   {
-    pItem = (*it)->createLogItem( data, sourceFile, sourceLineNum, timestamp );
-    if ( pItem )
+    WritersVector::iterator it = m_writers.begin();
+    WritersVector::iterator limit = m_writers.end();
+    IDynLogItem* pItem = NULL;
+    time_t t = time(NULL);
+    tm timestamp = *gmtime(&t);
+
+    for ( ; it != limit; it++ )
     {
-      (*it)->writeItem(pItem);
-			delete pItem;
+      pItem = (*it)->createLogItem( data, sourceFile, sourceLineNum, timestamp );
+      if ( pItem )
+      {
+        (*it)->writeItem(pItem);
+			  delete pItem;
+      }
     }
   }
 
@@ -121,6 +125,13 @@ std::string DynLogger::formatLog(const char* data, ...)
   va_end(l);
 
   return buffer;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void DynLogger::setLogLevelFilter(size_t maxLevelToLog)
+{
+  m_logLevelFilter = maxLevelToLog;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
