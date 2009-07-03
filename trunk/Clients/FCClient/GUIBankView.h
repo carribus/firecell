@@ -2,7 +2,7 @@
 #define _GUIBANKVIEW_H_
 
 #include <irrlicht.h>
-#include "BankModel.h"
+#include "../../common/game_objects/BankAccount.h"
 
 using namespace irr;
 using namespace core;
@@ -15,6 +15,8 @@ public:
   GUIBankView(IGUIEnvironment* environment, core::rect<s32>& rect, IGUIElement* pParent = 0, s32 id = -1);
   ~GUIBankView(void);
 
+  void updateAccountDetails(BankAccount* pAccount);
+
   /*
    *  IGUIElement overrides
    */
@@ -23,8 +25,6 @@ public:
 
 private:
 
-
-  BankModel*        m_pModel;
 };
 
 #endif//_GUIBANKVIEW_H_

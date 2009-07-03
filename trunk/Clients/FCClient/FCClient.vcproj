@@ -192,10 +192,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\BankModel.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\common\Socket\win\BaseSocket.cpp"
 				>
 			</File>
@@ -447,10 +443,6 @@
 			</File>
 			<File
 				RelativePath=".\BankingWindow.h"
-				>
-			</File>
-			<File
-				RelativePath=".\BankModel.h"
 				>
 			</File>
 			<File
