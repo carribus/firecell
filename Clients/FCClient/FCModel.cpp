@@ -1208,6 +1208,8 @@ bool FCModel::OnResponseBankAuthenticate(PEPacket* pPkt, BaseSocket* pSocket)
     if ( (pAcc = GetBankAccount()) )
     {
       pAcc->setTicket(d.ticket);
+      FireEvent(FCME_Bank_Connected, NULL);
+      m_server.RequestBankAccountDetails( d.ticket );
     }
   }
 

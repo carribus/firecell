@@ -2,7 +2,6 @@
 #define _GUIBANKAUTHVIEW_H_
 
 #include <irrlicht.h>
-#include "BankModel.h"
 
 using namespace irr;
 using namespace core;

@@ -50,8 +50,6 @@ private:
   IrrlichtDevice*         m_pDevice;
   GUIBankAuthView*        m_pAuthView;
   GUIBankView*            m_pBankView;
-
-  BankModel*              m_pModel;
 };
 
 #endif//_BANKINGWINDOW_H_

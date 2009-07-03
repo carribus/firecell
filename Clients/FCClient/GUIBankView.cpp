@@ -2,19 +2,26 @@
 
 GUIBankView::GUIBankView(IGUIEnvironment* environment, core::rect<s32>& rect, IGUIElement* pParent, s32 id)
 : IGUIElement(EGUIET_ELEMENT, environment, pParent, id, rect)
-, m_pModel(NULL)
 {
 #ifdef _DEBUG
   setDebugName("GUIBankView");
 #endif//_DEBUG
-
-  m_pModel = BankModel::instance();
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 GUIBankView::~GUIBankView(void)
 {
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void GUIBankView::updateAccountDetails(BankAccount* pAccount)
+{
+  if ( !pAccount )
+    return;
+
+
 }
 
 ///////////////////////////////////////////////////////////////////////

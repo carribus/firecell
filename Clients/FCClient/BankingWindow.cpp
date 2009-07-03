@@ -10,9 +10,7 @@ BankingWindow::BankingWindow(IDesktop* pDesktop, FCController* pController, Irrl
 , m_pDevice(pDevice)
 , m_pAuthView(NULL)
 , m_pBankView(NULL)
-, m_pModel(NULL)
 {
-  m_pModel = BankModel::instance();
   m_appName = ResourceManager::instance().GetClientString(STR_APP_BANK_CAPTION);
 }
 
@@ -76,6 +74,8 @@ void BankingWindow::ConnectToBank()
 
 bool BankingWindow::OnBankConnected()
 {
+  m_pAuthView->setVisible(false);
+  m_pBankView->setVisible(true);
   return true;
 }
 
@@ -102,6 +102,11 @@ bool BankingWindow::OnAccountDetailsUpdated(BankAccount* pAccount)
 {
   if ( !pAccount )
     return false;
+
+  if ( m_pBankView->isVisible() )
+  {
+    m_pBankView->updateAccountDetails(pAccount);
+  }
 
   return true;
 }
