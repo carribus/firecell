@@ -25,6 +25,8 @@ public:
 
 private:
 
+  IGUIStaticText*       m_pTxtDetailsLabels;
+  IGUIStaticText*       m_pTxtDetails;
 };
 
 #endif//_GUIBANKVIEW_H_

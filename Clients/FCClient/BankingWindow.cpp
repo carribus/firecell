@@ -35,6 +35,7 @@ bool BankingWindow::Create(s32 AppElemID, FCUINT optionID, std::wstring caption)
   m_pDesktop->GetDesktopRect(wndRect);
   wndRect.UpperLeftCorner.X += wndRect.getWidth()/4;
   wndRect.UpperLeftCorner.Y += wndRect.getHeight()/4;
+  wndRect.LowerRightCorner.Y = wndRect.UpperLeftCorner.Y + 200;
 
   // update the window
 	if ( bResult )
