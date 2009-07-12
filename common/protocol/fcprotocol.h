@@ -601,6 +601,12 @@ struct __FCPKT_FORUM_CREATE_NEW_THREAD_RESP
 	bool bSuccess;
 };
 
+/*
+ *  BANK module specific commands
+ *
+ *  These messages are specifically for use by the banking 'application' on the user's desktop
+ */
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 const FCSHORT FCMSG_BANK_CONNECT			          = 250;
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -772,6 +778,10 @@ struct __FCPKT_XP_GAINED
   FCSHORT xpGained;								//!> The amount of xp gained
 	FCULONG xpTotal;								//!> The new total of XP the player has
 };
+
+/*
+ *  HACKING specific commands
+ */
 
 #pragma pack(pop)
 

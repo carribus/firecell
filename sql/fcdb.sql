@@ -168,27 +168,6 @@ CREATE TABLE `fc_companies` (
 
 insert  into `fc_companies`(`company_id`,`company_name`,`city_id`,`IP_groupC`,`IP_groupD`) values (1,'Anion Devices',1,1,242),(2,'CON Development',5,8,231),(3,'Advan Design',2,12,200),(4,'Incoak Group',3,25,194),(5,'Equic Capital',9,29,184),(6,'Tass Consulting',7,36,175),(7,'COA Ventures',8,43,156),(8,'Mango Corporation',6,44,127),(9,'Quant Research',4,56,126),(10,'RAM Consulting',11,71,123),(11,'Micon Research',1,72,118),(12,'Vlsilinx Incorporated',5,75,114),(13,'Zilinett',2,76,109),(14,'Catmel Asia',6,82,108),(15,'Belluted Systems, Inc',3,95,104),(16,'Citas Asia',7,99,99),(17,'Cadvanducts Ventures',8,104,95),(18,'Softwart Capital',9,108,82),(19,'Klated USA',3,109,76),(20,'Soft Design',4,114,75),(21,'MIC Manufacturing',6,118,72),(22,'TIOTIO Corporation',10,123,71),(23,'Compute Incorporated',10,126,56),(24,'Sechnology Research',1,127,44),(25,'COR Technology',2,156,43),(26,'Tectoduct Partners',7,175,36),(27,'Miconatione Design',5,184,29),(28,'Cromed Corporation',2,194,25),(29,'Ants Consulting',5,200,12),(30,'Systro',7,231,8),(31,'Systems Corporation',9,242,1),(32,'Macrosoft',1,NULL,NULL);
 
-/*Table structure for table `fc_companycomputers` */
-
-DROP TABLE IF EXISTS `fc_companycomputers`;
-
-CREATE TABLE `fc_companycomputers` (
-  `computer_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `owner_id` bigint(20) unsigned NOT NULL COMMENT 'ID of the owner this computer belongs ',
-  `ownertype_id` smallint(5) unsigned NOT NULL COMMENT 'Type of owner (refer to fc_ownertypes)',
-  `processor_id` int(10) unsigned NOT NULL COMMENT 'Processor installed in the computer',
-  `name` varchar(32) DEFAULT NULL COMMENT '[optional] Name of computer given by player',
-  `memory_id` int(10) unsigned NOT NULL COMMENT 'ID of the memory item that is installed in this machine',
-  `os_id` int(10) unsigned NOT NULL COMMENT 'Operating system installed on machine',
-  `harddrive_size` bigint(20) unsigned NOT NULL COMMENT 'Amount of storage space on machine (in MB)',
-  `network_speed` int(10) unsigned NOT NULL COMMENT 'Speed of network connection (MBits)',
-  PRIMARY KEY (`computer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
-
-/*Data for the table `fc_companycomputers` */
-
-insert  into `fc_companycomputers`(`computer_id`,`owner_id`,`ownertype_id`,`processor_id`,`name`,`memory_id`,`os_id`,`harddrive_size`,`network_speed`) values (1,1,1,11,'GM Computer',19,12,1048576,100),(2,2,1,1,'TestUser PC',15,13,81920,4),(3,3,1,1,NULL,15,14,81920,4),(4,1,3,1,'Anion Gateway',15,13,81920,4),(5,2,3,1,'CON Development',15,13,81920,4),(6,3,3,1,'Advan Development',15,13,81920,4),(7,4,3,1,'Incoak Group',15,14,81920,4),(8,5,3,1,'Equic Capital',15,14,81920,4),(9,6,3,1,'Tass Consulting',15,14,81920,4),(10,7,3,1,'COA Ventures',15,14,81920,4),(11,8,3,1,'Mango Corporation',15,14,81920,4),(12,9,3,1,'Quant Research',15,14,81920,4),(13,10,3,1,'RAM Consulting',15,14,81920,4),(14,11,3,1,'Micon Research',15,14,81920,4),(15,12,3,1,'Visilinx Incorporated',15,14,81920,4),(16,13,3,1,'Zilinett',15,14,81920,4),(17,14,3,1,'Catmel Asia',15,14,81920,4),(18,15,3,1,'Belluted Systems',15,14,81920,4),(19,16,3,1,'Citas Asia',15,14,81920,4),(20,17,3,1,'Cadvanducts Ventures',15,14,81920,4),(21,18,3,1,'Softwart Capital',15,14,81920,4),(22,19,3,1,'Klated USA',15,14,81920,4),(23,20,3,1,'Soft Design',15,14,81920,4),(24,21,3,1,'MIC Manufacturing',15,14,81920,4),(25,22,3,1,'TIOTIO Corporation',15,14,81920,4),(26,23,3,1,'Compute Incorporated',15,14,81920,4),(27,24,3,1,'Sechnology Research',15,14,81920,4),(28,25,3,1,'COR Technology',15,14,81920,4),(29,26,3,1,'Tectoduct Partners',15,14,81920,4),(30,27,3,1,'Miconatione Design',15,14,81920,4),(31,28,3,1,'Cromed Corporation',15,14,81920,4),(32,29,3,1,'Ants Consulting',15,13,81920,4),(33,30,3,1,'Systro',15,13,81920,4),(34,31,3,1,'Systems Corporationg',15,13,81920,4),(35,32,3,1,'Macrosoft',15,13,81920,4);
-
 /*Table structure for table `fc_companyports` */
 
 DROP TABLE IF EXISTS `fc_companyports`;
@@ -205,6 +184,27 @@ CREATE TABLE `fc_companyports` (
 /*Data for the table `fc_companyports` */
 
 insert  into `fc_companyports`(`company_id`,`port_number`,`item_id`,`enabled`,`health`) values (1,1,21,1,100),(2,1,20,1,100);
+
+/*Table structure for table `fc_computers` */
+
+DROP TABLE IF EXISTS `fc_computers`;
+
+CREATE TABLE `fc_computers` (
+  `computer_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `owner_id` bigint(20) unsigned NOT NULL COMMENT 'ID of the owner this computer belongs ',
+  `ownertype_id` smallint(5) unsigned NOT NULL COMMENT 'Type of owner (refer to fc_ownertypes)',
+  `processor_id` int(10) unsigned NOT NULL COMMENT 'Processor installed in the computer',
+  `name` varchar(32) DEFAULT NULL COMMENT '[optional] Name of computer given by player',
+  `memory_id` int(10) unsigned NOT NULL COMMENT 'ID of the memory item that is installed in this machine',
+  `os_id` int(10) unsigned NOT NULL COMMENT 'Operating system installed on machine',
+  `harddrive_size` bigint(20) unsigned NOT NULL COMMENT 'Amount of storage space on machine (in MB)',
+  `network_speed` int(10) unsigned NOT NULL COMMENT 'Speed of network connection (MBits)',
+  PRIMARY KEY (`computer_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_computers` */
+
+insert  into `fc_computers`(`computer_id`,`owner_id`,`ownertype_id`,`processor_id`,`name`,`memory_id`,`os_id`,`harddrive_size`,`network_speed`) values (1,1,1,11,'GM Computer',19,12,1048576,100),(2,2,1,1,'TestUser PC',15,13,81920,4),(3,3,1,1,NULL,15,14,81920,4),(4,1,3,1,'Anion Gateway',15,13,81920,4),(5,2,3,1,'CON Development',15,13,81920,4),(6,3,3,1,'Advan Development',15,13,81920,4),(7,4,3,1,'Incoak Group',15,14,81920,4),(8,5,3,1,'Equic Capital',15,14,81920,4),(9,6,3,1,'Tass Consulting',15,14,81920,4),(10,7,3,1,'COA Ventures',15,14,81920,4),(11,8,3,1,'Mango Corporation',15,14,81920,4),(12,9,3,1,'Quant Research',15,14,81920,4),(13,10,3,1,'RAM Consulting',15,14,81920,4),(14,11,3,1,'Micon Research',15,14,81920,4),(15,12,3,1,'Visilinx Incorporated',15,14,81920,4),(16,13,3,1,'Zilinett',15,14,81920,4),(17,14,3,1,'Catmel Asia',15,14,81920,4),(18,15,3,1,'Belluted Systems',15,14,81920,4),(19,16,3,1,'Citas Asia',15,14,81920,4),(20,17,3,1,'Cadvanducts Ventures',15,14,81920,4),(21,18,3,1,'Softwart Capital',15,14,81920,4),(22,19,3,1,'Klated USA',15,14,81920,4),(23,20,3,1,'Soft Design',15,14,81920,4),(24,21,3,1,'MIC Manufacturing',15,14,81920,4),(25,22,3,1,'TIOTIO Corporation',15,14,81920,4),(26,23,3,1,'Compute Incorporated',15,14,81920,4),(27,24,3,1,'Sechnology Research',15,14,81920,4),(28,25,3,1,'COR Technology',15,14,81920,4),(29,26,3,1,'Tectoduct Partners',15,14,81920,4),(30,27,3,1,'Miconatione Design',15,14,81920,4),(31,28,3,1,'Cromed Corporation',15,14,81920,4),(32,29,3,1,'Ants Consulting',15,13,81920,4),(33,30,3,1,'Systro',15,13,81920,4),(34,31,3,1,'Systems Corporationg',15,13,81920,4),(35,32,3,1,'Macrosoft',15,13,81920,4);
 
 /*Table structure for table `fc_countries` */
 

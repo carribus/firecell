@@ -124,12 +124,13 @@ size_t FileSystem::EnumerateFiles(std::string path, vector<FileSystem::File>& ta
 
 ////////////////////////////////////////////////////////////////////////
 
-string FileSystem::ExecuteCommand(Player* pCaller, const std::string& cmd, const std::string& arguments)
+bool FileSystem::ExecuteCommand(Player* pCaller, const std::string& cmd, const std::string& arguments, std::string& result)
 {
   if ( cmd.length() == 0 )
     return "";
 
-  string ret, action, cmdName;
+  bool ret = false;
+  string action, cmdName;
   CommandMap::iterator it = m_mapCommands.find(cmd);
 
   if ( it != m_mapCommands.end() )
@@ -139,29 +140,32 @@ string FileSystem::ExecuteCommand(Player* pCaller, const std::string& cmd, const
 
     if ( action == "FileListing" )
     {
-      ret = FileSystemActionHandler::Action_FileListing(this, arguments);
+      result = FileSystemActionHandler::Action_FileListing(this, arguments);
+      ret = true;
       // emit an event to the caller object
       EventSystem::GetInstance()->Emit( this, static_cast<IEventTarget*>(pCaller), new Event(FileSystem::EVT_FileListing, NULL, pCaller) );
     }
     else if ( action == "ChangeDir" )
     {
-      ret = FileSystemActionHandler::Action_ChangeDirectory(this, arguments);
+      result = FileSystemActionHandler::Action_ChangeDirectory(this, arguments);
+      ret = true;
       // emit an event to the caller object
       EventSystem::GetInstance()->Emit( this, static_cast<IEventTarget*>(pCaller), new Event(FileSystem::EVT_ChangeDir, NULL, pCaller) );
     }
     else if ( action == "OSVersion" )
     {
-      ret = FileSystemActionHandler::Action_OSVersion(this, arguments);
+      result = FileSystemActionHandler::Action_OSVersion(this, arguments);
+      ret = true;
       // emit an event to the caller object
       EventSystem::GetInstance()->Emit( this, static_cast<IEventTarget*>(pCaller), new Event(FileSystem::EVT_OSVersion, NULL, pCaller) );
     }
     else
     {
-      ret = "Unrecognised command\n\n";
+      result = "Unrecognised command\n\n";
     }
   }
   else
-    ret = "Unrecognised command\n\n";
+    result = "Unrecognised command\n\n";
 
   return ret;
 }
