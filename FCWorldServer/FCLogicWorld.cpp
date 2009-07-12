@@ -485,7 +485,7 @@ bool FCLogicWorld::OnCommandCharacterItemsRequest(PEPacket* pPkt, RouterSocket* 
 
 	if ( (pPlayer = m_playerMgr.GetPlayerByID( d.character_id )) )
 	{
-		SendCharacterItemsResponse( pPlayer, m_itemMgr, pRouter, clientSocket );
+    SendCharacterItemsResponse( pPlayer, ItemManager::instance(), pRouter, clientSocket );
 	}
 
 	return true;
@@ -546,7 +546,7 @@ bool FCLogicWorld::OnCommandActivateSoftware(PEPacket* pPkt, RouterSocket* pRout
 	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
 	{
     Computer& comp = pPlayer->GetComputer();
-    ItemSoftware* pSoftware = (ItemSoftware*)m_itemMgr.GetItem(d.itemID);
+    ItemSoftware* pSoftware = (ItemSoftware*)ItemManager::instance().GetItem(d.itemID);
 		// check whether the player can run the option
     FCULONG res = CanActivateSoftware( pPlayer, d.itemID );
     if ( res == ACTIVATERESULT_OK )
@@ -624,6 +624,12 @@ bool FCLogicWorld::OnCommandConsoleCommand(PEPacket* pPkt, RouterSocket* pSocket
 
   if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket( clientSocket )) )
   {
+    std::string result;
+    Console& console = pPlayer->GetConsole();
+
+    console.executeCommand(d.command, d.currentDir, result);
+
+/*
     string cmd, args, result;
     size_t pos;
 
@@ -673,6 +679,7 @@ bool FCLogicWorld::OnCommandConsoleCommand(PEPacket* pPkt, RouterSocket* pSocket
       }
       
     }
+*/
     SendConsoleCommandResult(pPlayer, result, pSocket, clientSocket);
   }
   else
@@ -1030,7 +1037,7 @@ bool FCLogicWorld::OnCommandSoftwareInstall(PEPacket* pPkt, RouterSocket* pSocke
       FCSHORT installResult = NPE_OK;
       // get the actual item
       pPlayer->WriteLock();
-      pItem = (ItemSoftware*)m_itemMgr.GetItem(d.itemID);      
+      pItem = (ItemSoftware*)ItemManager::instance().GetItem(d.itemID);      
       // take the item out of the player's inventory
       pPlayer->RemoveItem( d.itemID );
       pPlayer->Unlock();
@@ -1250,7 +1257,7 @@ void FCLogicWorld::OnDBJob_LoadItemTypes(DBIResultSet& resultSet, void*& pContex
     string name = resultSet.GetStringValue( "itemtype_name", i );
     string dbTable = resultSet.GetStringValue( "itemtype_table", i );
     
-    pThis->m_itemMgr.AddItemType(id, name, dbTable);
+    ItemManager::instance().AddItemType(id, name, dbTable);
   }
 
   delete pCtx;
@@ -1295,7 +1302,7 @@ void FCLogicWorld::OnDBJob_LoadItemDefs(DBIResultSet& resultSet, void*& pContext
     FCULONG npcValue = resultSet.GetULongValue("npc_value", i);
 
     // create the item
-    if ( pThis->m_itemMgr.AddItem(id, name, typeID, objID, minLevel, maxLevel, npcValue) )
+    if ( ItemManager::instance().AddItem(id, name, typeID, objID, minLevel, maxLevel, npcValue) )
     {
       static char buffer[32000];
 
@@ -1351,6 +1358,7 @@ void FCLogicWorld::OnDBJob_LoadObjectData(DBIResultSet& resultSet, void*& pConte
   RouterSocket* pSock = pCtx->pRouter;
   FCLogicWorld* pThis = pCtx->pThis;
   size_t objectsLeftToLoad = (size_t)(pCtx->pData);
+  ItemManager& itemMgr = ItemManager::instance();
 
   if ( !pThis )
     return;
@@ -1364,7 +1372,7 @@ void FCLogicWorld::OnDBJob_LoadObjectData(DBIResultSet& resultSet, void*& pConte
   {
   case  ItemType::Processor:
     {
-      ItemProcessor* pItem = (ItemProcessor*)pThis->m_itemMgr.GetItem(itemID);
+      ItemProcessor* pItem = (ItemProcessor*)itemMgr.GetItem(itemID);
 
       if ( pItem )
       {
@@ -1376,7 +1384,7 @@ void FCLogicWorld::OnDBJob_LoadObjectData(DBIResultSet& resultSet, void*& pConte
 
   case  ItemType::OS:
     {
-      ItemOS* pItem = (ItemOS*)pThis->m_itemMgr.GetItem(itemID);
+      ItemOS* pItem = (ItemOS*)itemMgr.GetItem(itemID);
 
       if ( pItem )
       {
@@ -1388,7 +1396,7 @@ void FCLogicWorld::OnDBJob_LoadObjectData(DBIResultSet& resultSet, void*& pConte
 
   case  ItemType::Memory:
     {
-      ItemMemory* pItem = (ItemMemory*)pThis->m_itemMgr.GetItem(itemID);
+      ItemMemory* pItem = (ItemMemory*)itemMgr.GetItem(itemID);
 
       if ( pItem )
       {
@@ -1399,7 +1407,7 @@ void FCLogicWorld::OnDBJob_LoadObjectData(DBIResultSet& resultSet, void*& pConte
 
   case  ItemType::Software:
     {
-      ItemSoftware* pItem = (ItemSoftware*)pThis->m_itemMgr.GetItem(itemID);
+      ItemSoftware* pItem = (ItemSoftware*)itemMgr.GetItem(itemID);
 
       if ( pItem )
       {
@@ -1483,7 +1491,7 @@ void FCLogicWorld::OnDBJob_LoadCharacterPorts(DBIResultSet& resultSet, void*& pC
 
     ports.setPortHealth(portNum, health);
 
-    pItem = (ItemSoftware*)pThis->m_itemMgr.GetItem(item_id);
+    pItem = (ItemSoftware*)ItemManager::instance().GetItem(item_id);
     if ( pItem )
     {
       ports.installPort( portNum, pItem->GetSoftwareType(), item_id );
@@ -1796,7 +1804,7 @@ void FCLogicWorld::OnDBJob_LoadCompanyPorts(DBIResultSet& resultSet, void*& pCon
 
       ports.setPortHealth( portNum, health );
 
-      pItem = (ItemSoftware*)pThis->m_itemMgr.GetItem(item_id);
+      pItem = (ItemSoftware*)ItemManager::instance().GetItem(item_id);
       if ( pItem )
       {
         ports.installPort( portNum, pItem->GetSoftwareType(), item_id );
@@ -2002,6 +2010,7 @@ void FCLogicWorld::UpdateComputerFromResultSet(Computer& comp, DBIResultSet& res
 {
   FCULONG ownerID = 0; 
   FCSHORT ownertypeID = 0; 
+  ItemManager& itemMgr = ItemManager::instance();
 
   ownerID = resultSet.GetULongValue("owner_id", row);
   ownertypeID = resultSet.GetShortValue("ownertype_id", row);
@@ -2015,9 +2024,9 @@ void FCLogicWorld::UpdateComputerFromResultSet(Computer& comp, DBIResultSet& res
   ItemProcessor& cpu = comp.GetProcessor();
   ItemOS& os = comp.GetOS();
   ItemMemory& mem = comp.GetMemory();
-  ItemProcessor* pProcessor = (ItemProcessor*)m_itemMgr.GetItem( resultSet.GetULongValue("processor_id", row) );
-  ItemOS* pOS = (ItemOS*)m_itemMgr.GetItem( resultSet.GetULongValue("os_id", row) );
-  ItemMemory* pMem = (ItemMemory*)m_itemMgr.GetItem( resultSet.GetULongValue("memory_id", row) );
+  ItemProcessor* pProcessor = (ItemProcessor*)itemMgr.GetItem( resultSet.GetULongValue("processor_id", row) );
+  ItemOS* pOS = (ItemOS*)itemMgr.GetItem( resultSet.GetULongValue("os_id", row) );
+  ItemMemory* pMem = (ItemMemory*)itemMgr.GetItem( resultSet.GetULongValue("memory_id", row) );
 
   if ( pProcessor )  
     cpu = *pProcessor;
@@ -2066,7 +2075,7 @@ FCULONG FCLogicWorld::CanActivateSoftware(Player* pPlayer, FCULONG itemID)
   it = items.find(itemID);
   if ( it != items.end() && it->second.count > 0 )
   {
-    Item* pItem = m_itemMgr.GetItem(itemID);
+    Item* pItem = ItemManager::instance().GetItem(itemID);
 
     if ( pItem && pItem->GetTypeID() == ItemType::Software )
     {

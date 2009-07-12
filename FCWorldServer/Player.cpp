@@ -76,6 +76,9 @@ Player::~Player(void)
     m_pEventSystem->UnregisterEventTarget(this, Player::EVT_LoggedIn);
     m_pEventSystem->UnregisterEventTarget(this, Player::EVT_LoggedOut);
   }
+
+  if ( m_console )
+    delete m_console;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -361,32 +364,6 @@ void Player::RemoveItem(FCULONG itemID)
 }
 
 ///////////////////////////////////////////////////////////////////////
-/*
-bool Player::GetItemByIndex(FCULONG index, Player::PlayerItem& item)
-{
-  memset(&item, 0, sizeof(PlayerItem));
-  if ( index >= m_mapItems.size() )
-    return false;
-
-  bool bResult = false;
-  ItemMap::iterator it = m_mapItems.begin() + index;
-
-  if ( it != m_mapItems.end() )
-  {
-    item = it->second;
-    bResult = true;
-  }
-
-  return bResult;
-}
-
-///////////////////////////////////////////////////////////////////////
-
-bool Player::GetItemByID(FCULONG itemID, PlayerItem& item)
-{
-}
-*/
-///////////////////////////////////////////////////////////////////////
 
 size_t Player::GetUniqueItemCount()
 {
@@ -398,6 +375,7 @@ size_t Player::GetUniqueItemCount()
 void Player::createComputer()
 {
   m_computer = FCObjectFactory::instance().createObject<Computer>(this);
+  m_console = new Console(*this);
 }
 
 ///////////////////////////////////////////////////////////////////////

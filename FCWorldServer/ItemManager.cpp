@@ -19,6 +19,10 @@
 */
 #include "ItemManager.h"
 
+ItemManager* ItemManager::m_pThis = NULL;
+
+///////////////////////////////////////////////////////////////////////
+
 ItemManager::ItemManager(void)
 {
 }
@@ -29,6 +33,28 @@ ItemManager::~ItemManager(void)
 {
   ClearItems();
   ClearItemTypes();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+ItemManager& ItemManager::instance()
+{
+  if ( !m_pThis )
+  {
+    m_pThis = new ItemManager;
+  }
+  return *m_pThis;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ItemManager::destroy()
+{
+  if ( m_pThis )
+  {
+    delete m_pThis;
+    m_pThis = NULL;
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////

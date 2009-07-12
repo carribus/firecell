@@ -89,6 +89,7 @@ public:
 
   bool LoadFromXML(const string& filename);
   size_t EnumerateFiles(string path, vector<FileSystem::File>& target);
+  bool CanHandleCommand(const std::string& cmd);
   bool ExecuteCommand(Player* pCaller, const string& cmd, const string& arguments, string& result);
 
   bool IsRootDir(const string& path);
