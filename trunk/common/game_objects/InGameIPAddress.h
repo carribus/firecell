@@ -9,6 +9,7 @@ public:
   InGameIPAddress(void);
   ~InGameIPAddress(void);
 
+  void SetIP(const std::string& ipAddress);
   void SetIP(FCSHORT a, FCSHORT b, FCSHORT c, FCSHORT d);
   void GetIP(FCSHORT& a, FCSHORT& b, FCSHORT& c, FCSHORT& d);
   FCULONG ToULong();

@@ -25,9 +25,12 @@
 
 class PlayerManager
 {
-public:
-  PlayerManager(IEventSystem* pEventSystem = NULL);
+  PlayerManager();
   ~PlayerManager(void);
+public:
+
+  static PlayerManager& instance();
+  static void destroy();
 
   Player* CreatePlayer(FCULONG accountID, FCULONG id, string name, FCULONG xp, FCULONG level, FCINT fame_scale, FCULONG country_id, FCULONG city_id, FCSOCKET clientSocket);
   Player* GetPlayerByName(string name);
@@ -39,6 +42,8 @@ public:
   void SetEventSystem(IEventSystem* pES)                { m_pEventSystem = pES; }
 
 private:
+
+  static PlayerManager* m_pThis;
 
   /*
    *  Map of players by their alias

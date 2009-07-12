@@ -20,3 +20,4 @@
 #define SWT_APP_CONSOLE                    10
 #define SWT_APP_BANK                       11
 #define SWT_APP_CHAT                       12
+#define SWT_APP_PORTSCAN                   13

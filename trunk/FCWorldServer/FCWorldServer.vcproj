@@ -332,11 +332,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SoftwareHTTPServer.cpp"
+				RelativePath=".\SoftwareService.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\SoftwareService.cpp"
+				RelativePath=".\SWLogicFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SWPortScan.cpp"
 				>
 			</File>
 			<File
@@ -478,6 +482,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\common\interfaces\ISoftwareLogic.h"
+				>
+			</File>
+			<File
 				RelativePath="..\common\game_objects\Item.h"
 				>
 			</File>
@@ -558,11 +566,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SoftwareHTTPServer.h"
+				RelativePath=".\SoftwareService.h"
 				>
 			</File>
 			<File
-				RelativePath=".\SoftwareService.h"
+				RelativePath=".\SWLogicFactory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SWPortScan.h"
 				>
 			</File>
 			<File

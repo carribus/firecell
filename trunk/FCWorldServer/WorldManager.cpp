@@ -1,5 +1,9 @@
 #include "WorldManager.h"
 
+WorldManager* WorldManager::m_pThis = NULL;
+
+///////////////////////////////////////////////////////////////////////
+
 WorldManager::WorldManager(void)
 {
 }
@@ -38,6 +42,28 @@ WorldManager::~WorldManager(void)
   }
   m_mapCompanies.erase( m_mapCompanies.begin(), m_mapCompanies.end() );
   m_mapIPToCompany.erase( m_mapIPToCompany.begin(), m_mapIPToCompany.end() );
+}
+
+///////////////////////////////////////////////////////////////////////
+
+WorldManager& WorldManager::instance()
+{
+  if ( !m_pThis )
+  {
+    m_pThis = new WorldManager;
+  }
+  return *m_pThis;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void WorldManager::destroy()
+{
+  if ( m_pThis )
+  {
+    delete m_pThis;
+    m_pThis = NULL;
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -236,7 +262,7 @@ bool WorldManager::GetNetworkObject(InGameIPAddress& ip, WorldManager::NetConnec
   FCULONG ipAddress = ip.ToULong();
   NetConnectionMap::iterator it = m_mapNetConnections.find(ipAddress);
 
-  if ( it == m_mapNetConnections.end() )
+  if ( it != m_mapNetConnections.end() )
   {
     dest = it->second;
     bResult = true;

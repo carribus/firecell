@@ -24,7 +24,6 @@
 #include <map>
 #include <queue>
 #include "Player.h"
-#include "PlayerManager.h"
 #include "WorldManager.h"
 #include "MissionManager.h"
 #include "Forum.h"
@@ -139,8 +138,6 @@ private:
   string                m_pathFileSystems;
 	string								m_pathIntermediateData;
 
-  PlayerManager         m_playerMgr;
-  WorldManager          m_worldMgr;
   MissionManager        m_missionMgr;
 	Forum									m_forum;
   Bank                  m_bank;
