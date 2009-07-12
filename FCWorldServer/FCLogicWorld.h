@@ -117,6 +117,7 @@ private:
   static void OnDBJob_LoadWorldGeography(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadCompanies(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadCompanyComputers(DBIResultSet& resultSet, void*& pContext);
+  static void OnDBJob_LoadCompanyPorts(DBIResultSet& resultSet, void*& pContext);
   static void OnDBJob_LoadMissions(DBIResultSet& resultSet, void*& pContext);
 	static void OnDBJob_LoadForumCategories(DBIResultSet& resultSet, void*& pContext);
 	static void OnDBJob_LoadForumPosts(DBIResultSet& resultSet, void*& pContext);

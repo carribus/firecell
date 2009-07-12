@@ -38,23 +38,24 @@
 ////////////////////////////////////////
 // ITEM LOADING QUERIES
 ////////////////////////////////////////
-#define DBQ_LOAD_ITEM_TYPES               "load_item_types"
-#define DBQ_LOAD_ITEM_DEFS                "load_items"
-#define DBQ_LOAD_PROCESSOR_ITEM           "load_item_processor"
-#define DBQ_LOAD_OS_ITEM                  "load_item_os"
-#define DBQ_LOAD_MEMORY_ITEM              "load_item_memory"
-#define DBQ_LOAD_SOFTWARE_ITEM            "load_item_software"
+#define DBQ_LOAD_ITEM_TYPES                             "load_item_types"
+#define DBQ_LOAD_ITEM_DEFS                              "load_items"
+#define DBQ_LOAD_PROCESSOR_ITEM                         "load_item_processor"
+#define DBQ_LOAD_OS_ITEM                                "load_item_os"
+#define DBQ_LOAD_MEMORY_ITEM                            "load_item_memory"
+#define DBQ_LOAD_SOFTWARE_ITEM                          "load_item_software"
 
 ////////////////////////////////////////
 // WORLD DATA QUERIES
 ////////////////////////////////////////
-#define DBQ_LOAD_WORLD_GEOGRAPHY          "load_world_geography"
-#define DBQ_LOAD_COMPANIES                "load_companies"
-#define DBQ_LOAD_COMPANY_COMPUTERS        "load_company_computers"
-#define DBQ_LOAD_MISSIONS                 "load_missions"
+#define DBQ_LOAD_WORLD_GEOGRAPHY                        "load_world_geography"
+#define DBQ_LOAD_COMPANIES                              "load_companies"
+#define DBQ_LOAD_COMPANY_COMPUTERS                      "load_company_computers"
+#define DBQ_LOAD_COMPANY_PORTS                          "load_company_ports"
+#define DBQ_LOAD_MISSIONS                               "load_missions"
 
-#define DBQ_LOAD_FORUM_CATEGORIES					"load_forum_categories"
-#define DBQ_LOAD_FORUM_POSTS							"load_forum_posts"
+#define DBQ_LOAD_FORUM_CATEGORIES					              "load_forum_categories"
+#define DBQ_LOAD_FORUM_POSTS							              "load_forum_posts"
 
 ////////////////////////////////////////
 // ACCOUNT QUERIES

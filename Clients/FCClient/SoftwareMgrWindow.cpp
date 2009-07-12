@@ -394,7 +394,7 @@ void SoftwareMgrWindow::popupPortMenu(FCSHORT portNum)
  
   pMenu = m_pEnv->addContextMenu(r, this);
   
-  menuIdx = pMenu->addItem(ResourceManager::instance().GetClientString(STR_SWM_INSTALL_SOFTWARE).c_str(), -1, true, true);
+  menuIdx = pMenu->addItem(ResourceManager::instance().GetClientString(STR_SWM_INSTALL_SOFTWARE).c_str(), -1, services.size() > 0, services.size() > 0);
   if ( (pSubMenu = pMenu->getSubMenu(menuIdx)) )
   {
     std::vector<ItemMgr::GameItem>::iterator it = services.begin();

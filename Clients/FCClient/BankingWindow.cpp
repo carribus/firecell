@@ -33,7 +33,7 @@ bool BankingWindow::Create(s32 AppElemID, FCUINT optionID, std::wstring caption)
 
   // calculate the size of the window
   m_pDesktop->GetDesktopRect(wndRect);
-  wndRect.UpperLeftCorner.X += wndRect.getWidth()/4;
+  wndRect.UpperLeftCorner.X += wndRect.getWidth()/2;
   wndRect.UpperLeftCorner.Y += wndRect.getHeight()/4;
   wndRect.LowerRightCorner.Y = wndRect.UpperLeftCorner.Y + 200;
 
@@ -53,8 +53,6 @@ bool BankingWindow::Create(s32 AppElemID, FCUINT optionID, std::wstring caption)
   m_pBankView = new GUIBankView(m_pEnv, clientRect, m_pWindow);
   m_pBankView->setVisible(true);
   m_pBankView->drop();
-
-  m_pEnv->setFocus( m_pBankView );
 
   ConnectToBank();
 

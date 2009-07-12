@@ -1189,6 +1189,7 @@ void FCLogicWorld::RegisterDBHandlers()
   RegisterDBHandler(DBQ_LOAD_WORLD_GEOGRAPHY, OnDBJob_LoadWorldGeography);
   RegisterDBHandler(DBQ_LOAD_COMPANIES, OnDBJob_LoadCompanies);
   RegisterDBHandler(DBQ_LOAD_COMPANY_COMPUTERS, OnDBJob_LoadCompanyComputers);
+  RegisterDBHandler(DBQ_LOAD_COMPANY_PORTS, OnDBJob_LoadCompanyPorts);
   RegisterDBHandler(DBQ_LOAD_MISSIONS, OnDBJob_LoadMissions);
 	RegisterDBHandler(DBQ_LOAD_FORUM_CATEGORIES, OnDBJob_LoadForumCategories);
 	RegisterDBHandler(DBQ_LOAD_FORUM_POSTS, OnDBJob_LoadForumPosts);
@@ -1644,7 +1645,6 @@ void FCLogicWorld::OnDBJob_LoadWorldGeography(DBIResultSet& resultSet, void*& pC
   pCtx = new DBJobContext;
   pCtx->pThis = pThis;
   pThis->GetDatabase().ExecuteJob(DBQ_LOAD_COMPANIES, (void*)pCtx);
-
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -1699,6 +1699,7 @@ void FCLogicWorld::OnDBJob_LoadCompanyComputers(DBIResultSet& resultSet, void*& 
   FCULONG companyID;
 
   size_t rowCount = resultSet.GetRowCount();
+  size_t exceptionCount = 0;
 
   for ( size_t i = 0; i < rowCount; i++ )
   {
@@ -1713,13 +1714,73 @@ void FCLogicWorld::OnDBJob_LoadCompanyComputers(DBIResultSet& resultSet, void*& 
     else
     {
       // failed to find company that this computer belongs to...
+      DYNLOG_ADDLOG3( DYNLOG_FORMAT("Computer loaded for Company id %ld. Company was not found. Computer discarded.", companyID) );
+      exceptionCount++;
     }
   }
 
   delete pCtx;
   pContext = NULL;
 
-  DYNLOG_ADDLOG( DYNLOG_FORMAT("%ld company computers loaded", rowCount) );
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("%ld company computers loaded (%ld exceptions)", rowCount, exceptionCount) );
+
+  pCtx = new DBJobContext;
+  pCtx->pThis = pThis;
+  pThis->GetDatabase().ExecuteJob(DBQ_LOAD_COMPANY_PORTS, (void*)pCtx);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicWorld::OnDBJob_LoadCompanyPorts(DBIResultSet& resultSet, void*& pContext)
+{
+  DBJobContext* pCtx = (DBJobContext*) pContext;
+  FCLogicWorld* pThis = pCtx->pThis;
+  Company* pCompany = NULL;
+
+  if ( !pThis )
+    return;
+
+  FCULONG companyID;
+
+  size_t rowCount = resultSet.GetRowCount();
+  size_t exceptionCount = 0;
+  FCULONG item_id;
+  FCSHORT portNum, enabled, health;
+  ItemSoftware* pItem = NULL;
+
+  for ( size_t i = 0; i < rowCount; i++ )
+  {
+    companyID = resultSet.GetULongValue("company_id", i);
+    if ( (pCompany = pThis->m_worldMgr.GetCompany(companyID)) )
+    {
+      NetworkPorts& ports = pCompany->GetComputer().GetNetworkPorts();
+
+      portNum = resultSet.GetShortValue("port_number", i);
+      item_id = resultSet.GetULongValue("item_id", i);
+      enabled = resultSet.GetShortValue("enabled", i);
+      health = resultSet.GetShortValue("health", i);
+
+      ports.setPortHealth( portNum, health );
+
+      pItem = (ItemSoftware*)pThis->m_itemMgr.GetItem(item_id);
+      if ( pItem )
+      {
+        ports.installPort( portNum, pItem->GetSoftwareType(), item_id );
+        ports.enablePort( portNum, enabled?true:false );
+      }
+    }
+    else
+    {
+      // failed to find company that this computer belongs to...
+      DYNLOG_ADDLOG3( DYNLOG_FORMAT("Network port loaded for Company id %ld. Company was not found. Computer discarded.", companyID) );
+      exceptionCount++;
+    }
+  }
+
+  delete pCtx;
+  pContext = NULL;
+
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("%ld company computer network ports loaded (%ld exceptions)", rowCount, exceptionCount) );
 
   pThis->m_condSync.Signal();
 }
