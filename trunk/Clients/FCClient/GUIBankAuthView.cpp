@@ -34,12 +34,15 @@ GUIBankAuthView::GUIBankAuthView(BankingWindow* pOwner, IGUIEnvironment* environ
   pTxt->setTextAlignment( EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT );
   pTxt->setOverrideColor( SColor(255, 128, 128, 255) );
 
+  environment->addButton( core::rect<s32>(180, 70, 280, 100), this, 2, ResourceManager::instance().GetClientString(STR_APP_BANK_AUTH_OK_BUTTON).c_str());
+
   m_pEdtPassword = environment->addEditBox( L"",
                                    core::rect<s32>(105, 38, 280, 61),
                                    true,
                                    this,
                                    1);
-  environment->addButton( core::rect<s32>(180, 70, 280, 100), this, 2, ResourceManager::instance().GetClientString(STR_APP_BANK_AUTH_OK_BUTTON).c_str());
+  m_pEdtPassword->setPasswordBox(true, '*');
+  environment->setFocus( m_pEdtPassword );
 }
 
 ///////////////////////////////////////////////////////////////////////

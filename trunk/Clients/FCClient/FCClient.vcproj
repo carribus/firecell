@@ -236,6 +236,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\common\fccutils.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FCDialog.cpp"
 				>
 			</File>
@@ -507,6 +511,10 @@
 			</File>
 			<File
 				RelativePath=".\FCController.h"
+				>
+			</File>
+			<File
+				RelativePath="..\common\fccutils.h"
 				>
 			</File>
 			<File

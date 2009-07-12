@@ -1,4 +1,5 @@
 #include <sstream>
+#include "../common/fccutils.h"
 #include "GUIBankView.h"
 
 GUIBankView::GUIBankView(IGUIEnvironment* environment, core::rect<s32>& rect, IGUIElement* pParent, s32 id)
@@ -48,7 +49,9 @@ void GUIBankView::updateAccountDetails(BankAccount* pAccount)
 
   std::wstringstream ss;
 
-  ss << pAccount->getBalance() << "\n" << pAccount->getDebt() << "\n" << pAccount->getInterestRate() << "%\n" << (pAccount->isSecure() ? "Yes" : "No");
+  ss << formatCurrencyValue( "$", pAccount->getBalance() ).c_str() << "\n" << 
+        formatCurrencyValue( "$", pAccount->getDebt() ).c_str() << "\n" << 
+        pAccount->getInterestRate() << "%\n" << (pAccount->isSecure() ? "Yes" : "No");
 
   m_pTxtDetailsLabels->setText(L"Balance :\nDebt :\nInterest Rate :\nIs secure :\n");
   m_pTxtDetails->setText(ss.str().c_str());
