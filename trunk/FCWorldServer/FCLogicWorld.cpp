@@ -624,7 +624,7 @@ bool FCLogicWorld::OnCommandConsoleCommand(PEPacket* pPkt, RouterSocket* pSocket
 
   if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket( clientSocket )) )
   {
-    string cmd, args;
+    string cmd, args, result;
     size_t pos;
 
     // now we need to know how to execute commands
@@ -638,7 +638,41 @@ bool FCLogicWorld::OnCommandConsoleCommand(PEPacket* pPkt, RouterSocket* pSocket
       cmd.erase(cmd.find_first_of(" "), cmd.length());
     }
 
-    string result = fs.ExecuteCommand(pPlayer, cmd, args);
+    // attempt to execute the command as a filesystem command
+    bool bHandled = fs.ExecuteCommand(pPlayer, cmd, args, result);
+    // if the filesystem didn't handle it...
+    if ( !bHandled )
+    {
+      Item* pItem = NULL;
+      ItemSoftware* pSoftware = NULL;
+      // check if we can execute one of the software items
+      std::map<FCULONG, Player::PlayerItem> items = pPlayer->GetItems();
+      std::map<FCULONG, Player::PlayerItem>::iterator it = items.begin();
+      std::map<FCULONG, Player::PlayerItem>::iterator limit = items.end();
+
+      for ( ; it != limit; ++it )
+      {
+        pItem = NULL;
+        pSoftware = NULL;
+        if ( it->second.count )
+        {
+          pItem = m_itemMgr.GetItem( it->second.itemID );
+        }
+        if ( pItem && pItem->GetTypeID() == ItemType::Software )
+        {
+          if ( (pSoftware = static_cast<ItemSoftware*>(pItem)) )
+          {
+#error Console Overhaul Requested SIR!
+            // TODO: Either finish this prototype code off, or refactor the console handling into a more manageable structure.
+            // The idea here is to correlate commands to items, so we will probably need additional data for software items,
+            // eg corresponding filename and path, to allow players to run commands in the console, or as seperate apps.
+            // ItemSoftware objects will need to be able to handle different running contexts (i.e. from console or as a windowed app).
+
+          }
+        }
+      }
+      
+    }
     SendConsoleCommandResult(pPlayer, result, pSocket, clientSocket);
   }
   else
