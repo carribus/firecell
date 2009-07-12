@@ -29,7 +29,7 @@ bool Console::executeCommand(std::string cmd, std::string curPath, std::string& 
 
   if ( fs.CanHandleCommand(cmd) )
   {
-    bResult = fs.ExecuteCommand( &m_player, cmd, args, strRes );
+    bResult = fs.ExecuteCommand( &m_player, cmd, args, result );
   }
   else
   {
@@ -40,27 +40,46 @@ bool Console::executeCommand(std::string cmd, std::string curPath, std::string& 
     std::map<FCULONG, Player::PlayerItem>::iterator it = items.begin();
     std::map<FCULONG, Player::PlayerItem>::iterator limit = items.end();
 
-      for ( ; it != limit; ++it )
+    for ( ; it != limit; ++it )
+    {
+      pItem = NULL;
+      pSoftware = NULL;
+      if ( it->second.count )
       {
-        pItem = NULL;
-        pSoftware = NULL;
-        if ( it->second.count )
+        pItem = itemMgr.GetItem( it->second.itemID );
+      }
+      if ( pItem && pItem->GetTypeID() == ItemType::Software )
+      {
+        if ( (pSoftware = static_cast<ItemSoftware*>(pItem)) )
         {
-          pItem = itemMgr.GetItem( it->second.itemID );
-        }
-        if ( pItem && pItem->GetTypeID() == ItemType::Software )
-        {
-          if ( (pSoftware = static_cast<ItemSoftware*>(pItem)) )
-          {
-#error Refactor in progress!!
-            // TODO: Either finish this prototype code off, or refactor the console handling into a more manageable structure.
-            // The idea here is to correlate commands to items, so we will probably need additional data for software items,
-            // eg corresponding filename and path, to allow players to run commands in the console, or as seperate apps.
-            // ItemSoftware objects will need to be able to handle different running contexts (i.e. from console or as a windowed app).
+          std::string itemCmd = pSoftware->GetCommand();
+          bool bIsCommand = false;
 
+          if ( fs.IsCaseSensitive() )
+          {
+            bIsCommand = ( itemCmd.compare( cmd ) == 0 );
+          }
+          else
+          {
+            std::string c1 = cmd, c2 = itemCmd;
+            std::transform(c1.begin(), c1.end(), c1.begin(), (int(*)(int))tolower);
+            std::transform(c2.begin(), c2.end(), c2.begin(), (int(*)(int))tolower);
+            bIsCommand = ( c1.compare(c2) == 0 );
+          }
+            
+          if ( bIsCommand )
+          {
+            cmd = pSoftware->GetCommand();
+            bResult = pSoftware->Execute(cmd, args, result);
           }
         }
       }
+    }
+  }
+
+  if ( !bResult )
+  {
+    result = "Unrecognised command\n\n";
   }
 
   return bResult;

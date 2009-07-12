@@ -12,6 +12,9 @@ using namespace std;
 
 class WorldManager
 {
+  WorldManager(void);
+  ~WorldManager(void);
+
 public:
 
   struct NetConnection
@@ -31,8 +34,8 @@ public:
     FCULONG objID;
   };
 
-  WorldManager(void);
-  ~WorldManager(void);
+  static WorldManager& instance();
+  static void destroy();
 
   /*
    *  Countries
@@ -64,6 +67,8 @@ public:
   bool GenerateIPAddress(const FCULONG countryID, const FCULONG cityID, InGameIPAddress& dest);
 
 private:
+
+  static WorldManager* m_pThis;
 
   /*
    *  Countries

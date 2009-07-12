@@ -20,10 +20,12 @@
 #include "../common/threading.h"
 #include "PlayerManager.h"
 
+PlayerManager* PlayerManager::m_pThis = NULL;
+
 ///////////////////////////////////////////////////////////////////////
 
-PlayerManager::PlayerManager(IEventSystem* pEventSystem)
-: m_pEventSystem(pEventSystem)
+PlayerManager::PlayerManager()
+: m_pEventSystem(NULL)
 {
   pthread_mutex_init(&m_mutexAliases, NULL);
   pthread_mutex_init(&m_mutexIDs, NULL);
@@ -39,6 +41,28 @@ PlayerManager::~PlayerManager(void)
   pthread_mutex_destroy(&m_mutexAliases);
   pthread_mutex_destroy(&m_mutexIDs);
   pthread_mutex_destroy(&m_mutexClientSocks);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+PlayerManager& PlayerManager::instance()
+{
+  if ( !m_pThis )
+  {
+    m_pThis = new PlayerManager;
+  }
+  return *m_pThis;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void PlayerManager::destroy()
+{
+  if ( m_pThis )
+  {
+    delete m_pThis;
+    m_pThis = NULL;
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////

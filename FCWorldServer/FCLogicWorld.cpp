@@ -28,6 +28,8 @@
 #include "Forum.h"
 #include "ForumCategory.h"
 #include "PacketDispatcher.h"
+#include "PlayerManager.h"
+#include "SWLogicFactory.h"
 #include "world_comms.h"
 #include "FCLogicWorld.h"
 
@@ -102,6 +104,10 @@ int FCLogicWorld::Start()
   // initialise the packet dispatcher
   PacketDispatcher::instance().initialise(1);
 
+  // create the singletons
+  WorldManager::instance();
+  ItemManager::instance();
+
   /*
    *  Initialise the Database object
    */
@@ -134,7 +140,7 @@ int FCLogicWorld::Start()
    *  Configure the Event System and set up dependencies
    */
   ConfigureEventSystem();
-  m_playerMgr.SetEventSystem( EventSystem::GetInstance() );
+  PlayerManager::instance().SetEventSystem( EventSystem::GetInstance() );
 	m_missionMgr.SetEventSystem( EventSystem::GetInstance() );
 
   /*
@@ -149,8 +155,11 @@ int FCLogicWorld::Start()
 
 int FCLogicWorld::Stop()
 {
-  m_playerMgr.RemoveAllPlayers();
+  PlayerManager::instance().RemoveAllPlayers();
+  PlayerManager::destroy();
   EventSystem::Shutdown();
+  WorldManager::destroy();
+  ItemManager::destroy();
 	PacketDispatcher::destroy();
   DisconnectFromRouters();
 	FCObjectFactory::destroy();
@@ -388,12 +397,13 @@ bool FCLogicWorld::OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRou
 {
   __FCSPKT_CHARACTER_LOGGEDIN d;
   size_t dataLen = 0;
+  WorldManager& worldMgr = WorldManager::instance();
 
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
 
   // create the player's character
-  Player* pPlayer = m_playerMgr.CreatePlayer(d.account_id, d.character_id, d.name, d.xp, d.level, d.fame_scale, d.country_id, d.city_id, d.clientSocket);
+  Player* pPlayer = PlayerManager::instance().CreatePlayer(d.account_id, d.character_id, d.name, d.xp, d.level, d.fame_scale, d.country_id, d.city_id, d.clientSocket);
 
   // if we fail to create or locate an existing player object, then something went terribly wrong...
   // we need to notify the player of the problem, as well as the auth service
@@ -409,8 +419,8 @@ bool FCLogicWorld::OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRou
     bool bAddedToNetwork = false;
     do
     {
-      m_worldMgr.GenerateIPAddress(pPlayer->GetCountryID(), pPlayer->GetCityID(), pPlayer->GetIP());
-      bAddedToNetwork = m_worldMgr.AddToNetwork( pPlayer->GetIP(), WorldManager::NetConnection::Player, pPlayer->GetID() );
+      worldMgr.GenerateIPAddress(pPlayer->GetCountryID(), pPlayer->GetCityID(), pPlayer->GetIP());
+      bAddedToNetwork = worldMgr.AddToNetwork( pPlayer->GetIP(), WorldManager::NetConnection::Player, pPlayer->GetID() );
     } while ( !bAddedToNetwork );
 
     // now that we have the player object, we need to load the player's facilities, items etc
@@ -432,6 +442,7 @@ bool FCLogicWorld::OnCommandGetCharacterCreationParams(PEPacket* pPkt, RouterSoc
 {
   __FCPKT_GET_CHAR_CREATION_PARAMS d;
   size_t dataLen = 0;
+  WorldManager& worldMgr = WorldManager::instance();
 
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
@@ -441,10 +452,10 @@ bool FCLogicWorld::OnCommandGetCharacterCreationParams(PEPacket* pPkt, RouterSoc
   FCUINT countriesAvailable = 0, citiesAvailable = 0;         // count of countries and cities that support character creation
 
   // populate the packet with the available countries
-  m_worldMgr.GetAllCountries(arrCountries, true);
+  worldMgr.GetAllCountries(arrCountries, true);
 
   // populate the packet with the available cities
-  m_worldMgr.GetAllCities(arrCities, true);
+  worldMgr.GetAllCities(arrCities, true);
 
   SendCharCreationParameters(arrCountries, arrCities, pRouter, clientSocket);
 
@@ -462,7 +473,7 @@ bool FCLogicWorld::OnCommandCharacterAssetRequest(PEPacket* pPkt, RouterSocket* 
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
 
-  if ( (pPlayer = m_playerMgr.GetPlayerByID( d.character_id )) )
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByID( d.character_id )) )
   {
     SendCharacterAssetResponse( pPlayer, pRouter, clientSocket );
   }
@@ -483,7 +494,7 @@ bool FCLogicWorld::OnCommandCharacterItemsRequest(PEPacket* pPkt, RouterSocket* 
 	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
 	pPkt->GetField("data", (void*)&d, dataLen);
 
-	if ( (pPlayer = m_playerMgr.GetPlayerByID( d.character_id )) )
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByID( d.character_id )) )
 	{
     SendCharacterItemsResponse( pPlayer, ItemManager::instance(), pRouter, clientSocket );
 	}
@@ -502,7 +513,7 @@ bool FCLogicWorld::OnCommandCharacterMissionsRequest(PEPacket* pPkt, RouterSocke
 	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
 	pPkt->GetField("data", (void*)&d, dataLen);
 
-	if ( (pPlayer = m_playerMgr.GetPlayerByID( d.character_id )) )
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByID( d.character_id )) )
 	{
 		SendCharacterMissionsResponse( pPlayer, pRouter, clientSocket );
 	}
@@ -521,7 +532,7 @@ bool FCLogicWorld::OnCommandGetDesktopOptions(PEPacket* pPkt, RouterSocket* pRou
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
 
-  if ( (pPlayer = m_playerMgr.GetPlayerByID( d.character_id )) )
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByID( d.character_id )) )
   {
     // return all available desktop options that the player has
     SendCharacterDesktopOptions( pPlayer, pRouter, clientSocket );
@@ -543,7 +554,7 @@ bool FCLogicWorld::OnCommandActivateSoftware(PEPacket* pPkt, RouterSocket* pRout
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
 
-	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+	if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket(clientSocket)) )
 	{
     Computer& comp = pPlayer->GetComputer();
     ItemSoftware* pSoftware = (ItemSoftware*)ItemManager::instance().GetItem(d.itemID);
@@ -574,7 +585,7 @@ bool FCLogicWorld::OnCommandConsoleGetFSInfo(PEPacket* pPkt, RouterSocket* pSock
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
 
-  if ( (pPlayer = m_playerMgr.GetPlayerByID( d.character_id )) )
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByID( d.character_id )) )
   {
     FileSystem& fs = pPlayer->GetComputer().GetFileSystem();
 
@@ -598,7 +609,7 @@ bool FCLogicWorld::OnCommandConsoleGetFileList(PEPacket* pPkt, RouterSocket* pSo
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
 
-  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket( clientSocket )) )
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket( clientSocket )) )
   {
     FileSystem& fs = pPlayer->GetComputer().GetFileSystem();
 
@@ -622,7 +633,7 @@ bool FCLogicWorld::OnCommandConsoleCommand(PEPacket* pPkt, RouterSocket* pSocket
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
 
-  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket( clientSocket )) )
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket( clientSocket )) )
   {
     std::string result;
     Console& console = pPlayer->GetConsole();
@@ -699,7 +710,7 @@ bool FCLogicWorld::OnCommandForumGetCategories(PEPacket* pPkt, RouterSocket* pSo
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
 
-	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+	if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket(clientSocket)) )
 	{
 		vector<ForumCategory*> arrCategories;
 
@@ -723,7 +734,7 @@ bool FCLogicWorld::OnCommandForumGetThreads(PEPacket* pPkt, RouterSocket* pSocke
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
 
-  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket(clientSocket)) )
   {
 		vector<ForumPost*> target;
 		m_forum.GetForumThreads( d.category_id, target );
@@ -745,7 +756,7 @@ bool FCLogicWorld::OnCommandForumGetThreadDetails(PEPacket* pPkt, RouterSocket* 
 	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
 	pPkt->GetField("data", (void*)&d, dataLen);
 
-	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+	if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket(clientSocket)) )
 	{
     ForumCategory* pCat = m_forum.GetCategoryByID(d.category_id);
 
@@ -774,7 +785,7 @@ bool FCLogicWorld::OnCommandForumGetThreadContentBlob(PEPacket* pPkt, RouterSock
 	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
 	pPkt->GetField("data", (void*)&d, dataLen);
 
-	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+	if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket(clientSocket)) )
 	{
     ForumCategory* pCat = m_forum.GetCategoryByID(d.category_id);
 
@@ -805,7 +816,7 @@ bool FCLogicWorld::OnCommandForumCreateNewThread(PEPacket* pPkt, RouterSocket* p
   d = (__FCPKT_FORUM_CREATE_NEW_THREAD*) new FCBYTE[dataLen];
   pPkt->GetField("data", (void*)d, dataLen);
 
-  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket(clientSocket)) )
   {
     std::string message;
     message.assign( d->content, d->contentLength );
@@ -833,7 +844,7 @@ bool FCLogicWorld::OnCommandBankConnect(PEPacket* pPkt, RouterSocket* pSocket, F
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, sizeof(d));
 
-  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket(clientSocket)) )
   {
     BankStatus status;
     // attempt to fetch the account for the player
@@ -874,7 +885,7 @@ bool FCLogicWorld::OnCommandBankCreateAccount(PEPacket* pPkt, RouterSocket* pSoc
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, sizeof(d));
 
-  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket(clientSocket)) )
   {
     BankAccount* pAccount = m_bank.getBankAccount(pPlayer->GetID());
     bool bSecure = false;
@@ -917,7 +928,7 @@ bool FCLogicWorld::OnCommandBankAuthenticate(PEPacket* pPkt, RouterSocket* pSock
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, sizeof(d));
 
-  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket(clientSocket)) )
   {
     BankAccount* pAccount = m_bank.getBankAccount(pPlayer->GetID());
 
@@ -957,7 +968,7 @@ bool FCLogicWorld::OnCommandBankGetDetails(PEPacket* pPkt, RouterSocket* pSocket
 	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
 	pPkt->GetField("data", (void*)&d, dataLen);
 
-	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+	if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket(clientSocket)) )
 	{
     BankAccount* pAccount = m_bank.getBankAccount(pPlayer->GetID());
 
@@ -986,7 +997,7 @@ bool FCLogicWorld::OnCommandMissionAccept(PEPacket* pPkt, RouterSocket* pSocket,
 	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
 	pPkt->GetField("data", (void*)&d, dataLen);
 
-	if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+	if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket(clientSocket)) )
 	{
 		// find the mission that the player accepted
 		if ( (pMission = m_missionMgr.GetMission( d.mission_id )) )
@@ -1026,7 +1037,7 @@ bool FCLogicWorld::OnCommandSoftwareInstall(PEPacket* pPkt, RouterSocket* pSocke
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
 
-  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket(clientSocket)) )
   {
     Computer& comp = pPlayer->GetComputer();
     NetworkPorts& ports = comp.GetNetworkPorts();
@@ -1069,7 +1080,7 @@ bool FCLogicWorld::OnCommandSoftwareUninstall(PEPacket* pPkt, RouterSocket* pSoc
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
 
-  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket(clientSocket)) )
   {
     Computer& comp = pPlayer->GetComputer();
     NetworkPorts& ports = comp.GetNetworkPorts();
@@ -1121,7 +1132,7 @@ bool FCLogicWorld::OnCommandNetworkPortEnable(PEPacket* pPkt, RouterSocket* pSoc
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
 
-  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(clientSocket)) )
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket(clientSocket)) )
   {
     NetworkPorts& ports = pPlayer->GetComputer().GetNetworkPorts();
 
@@ -1146,19 +1157,20 @@ bool FCLogicWorld::OnCommandClientDisconnect(PEPacket* pPkt, RouterSocket* pSock
 {
   __FCSPKT_CLIENT_DISCONNECT d;
   size_t dataLen = 0;
+  PlayerManager& playerMgr = PlayerManager::instance();
   Player* pPlayer = NULL;
 
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
 
   // try and retrieve the player object
-  if ( (pPlayer = m_playerMgr.GetPlayerByClientSocket(d.clientSocket)) )
+  if ( (pPlayer = playerMgr.GetPlayerByClientSocket(d.clientSocket)) )
   {
     Player* pEventData = pPlayer->CreateSafeHandle();
     EventSystem::GetInstance()->Emit( NULL, NULL, new EventWithDisposableData<Player>(Player::EVT_LoggedOut, pEventData) );
 
     m_bank.removeBankAccount(pPlayer);
-    m_playerMgr.RemovePlayer(pPlayer);
+    playerMgr.RemovePlayer(pPlayer);
   }
 
   return true;
@@ -1415,6 +1427,8 @@ void FCLogicWorld::OnDBJob_LoadObjectData(DBIResultSet& resultSet, void*& pConte
         pItem->IsService( resultSet.GetByteValue("is_service", 0) ? true : false );
         pItem->SetCPUCost( resultSet.GetShortValue("cpu_cost", 0) );
         pItem->SetMemCost( resultSet.GetULongValue("mem_cost", 0) );
+        pItem->SetCommand( resultSet.GetStringValue("filename", 0) );
+        pItem->SetLogic( SWLogicFactory::instance().createLogic( pItem->GetSoftwareType() ) );
       }
     }
     break;
@@ -1650,6 +1664,7 @@ void FCLogicWorld::OnDBJob_LoadWorldGeography(DBIResultSet& resultSet, void*& pC
 {
   DBJobContext* pCtx = (DBJobContext*) pContext;
   FCLogicWorld* pThis = pCtx->pThis;
+  WorldManager& worldMgr = WorldManager::instance();
 
   if ( !pThis )
     return;
@@ -1673,9 +1688,9 @@ void FCLogicWorld::OnDBJob_LoadWorldGeography(DBIResultSet& resultSet, void*& pC
     supportsCharCreation = resultSet.GetByteValue("support_char_creation", i);
 
     // create the country...
-    if ( (pCountry = pThis->m_worldMgr.AddCountry(countryID, countryName, countryIP, (supportsCharCreation ? true : false))) )
+    if ( (pCountry = worldMgr.AddCountry(countryID, countryName, countryIP, (supportsCharCreation ? true : false))) )
     {
-      pThis->m_worldMgr.AddCity(pCountry, cityID, cityName, cityIP, (supportsCharCreation ? true : false));
+      worldMgr.AddCity(pCountry, cityID, cityName, cityIP, (supportsCharCreation ? true : false));
     }
   }
 
@@ -1714,7 +1729,7 @@ void FCLogicWorld::OnDBJob_LoadCompanies(DBIResultSet& resultSet, void*& pContex
              resultSet.GetShortValue("IP_groupC", i),
              resultSet.GetShortValue("IP_groupD", i));
 
-    pThis->m_worldMgr.AddCompany(companyID, name, cityID, ip);
+    WorldManager::instance().AddCompany(companyID, name, cityID, ip);
   }
 
   delete pCtx;
@@ -1733,6 +1748,7 @@ void FCLogicWorld::OnDBJob_LoadCompanyComputers(DBIResultSet& resultSet, void*& 
 {
   DBJobContext* pCtx = (DBJobContext*) pContext;
   FCLogicWorld* pThis = pCtx->pThis;
+  WorldManager& worldMgr = WorldManager::instance();
   Company* pCompany = NULL;
 
   if ( !pThis )
@@ -1746,12 +1762,12 @@ void FCLogicWorld::OnDBJob_LoadCompanyComputers(DBIResultSet& resultSet, void*& 
   for ( size_t i = 0; i < rowCount; i++ )
   {
     companyID = resultSet.GetULongValue("owner_id", i);
-    if ( (pCompany = pThis->m_worldMgr.GetCompany(companyID)) )
+    if ( (pCompany = worldMgr.GetCompany(companyID)) )
     {
       Computer& comp = pCompany->GetComputer();
 
       pThis->UpdateComputerFromResultSet(comp, resultSet, i);
-      pThis->m_worldMgr.AddToNetwork( pCompany->GetIP(), WorldManager::NetConnection::Company, companyID );
+      worldMgr.AddToNetwork( pCompany->GetIP(), WorldManager::NetConnection::Company, companyID );
     }
     else
     {
@@ -1793,7 +1809,7 @@ void FCLogicWorld::OnDBJob_LoadCompanyPorts(DBIResultSet& resultSet, void*& pCon
   for ( size_t i = 0; i < rowCount; i++ )
   {
     companyID = resultSet.GetULongValue("company_id", i);
-    if ( (pCompany = pThis->m_worldMgr.GetCompany(companyID)) )
+    if ( (pCompany = WorldManager::instance().GetCompany(companyID)) )
     {
       NetworkPorts& ports = pCompany->GetComputer().GetNetworkPorts();
 
@@ -1802,6 +1818,7 @@ void FCLogicWorld::OnDBJob_LoadCompanyPorts(DBIResultSet& resultSet, void*& pCon
       enabled = resultSet.GetShortValue("enabled", i);
       health = resultSet.GetShortValue("health", i);
 
+      ports.addPort();
       ports.setPortHealth( portNum, health );
 
       pItem = (ItemSoftware*)ItemManager::instance().GetItem(item_id);
