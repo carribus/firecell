@@ -212,6 +212,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Console.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Event.cpp"
 				>
 			</File>
@@ -391,6 +395,10 @@
 			</File>
 			<File
 				RelativePath="..\common\game_objects\ComputerBase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Console.h"
 				>
 			</File>
 			<File

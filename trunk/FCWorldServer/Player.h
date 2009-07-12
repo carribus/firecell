@@ -28,6 +28,7 @@
 #include "../Clients/common/Socket/ClientSocket.h"
 #include "IEventSystem.h"
 #include "Computer.h"
+#include "Console.h"
 #include "Mission.h"
 #include "../common/game_objects/FCObject.h"
 #include "../common/game_objects/InGameIPAddress.h"
@@ -112,6 +113,7 @@ public:
   FCULONG GetCityID() const               { return m_cityID; }
   FCULONG GetCountryID() const            { return m_countryID; }
   Computer& GetComputer()                 { return *m_computer; }
+  Console& GetConsole()                   { return *m_console; }
   InGameIPAddress& GetIP()                { return m_ip; }
   FCSOCKET GetClientSocket() const        { return m_clientSocket; }
 	BaseSocket* GetRouterSocket()						{ return m_pRouterSocket; }
@@ -152,6 +154,7 @@ private:
   FCULONG m_cityID;
   FCULONG m_countryID;
   Computer* m_computer;
+  Console* m_console;
   InGameIPAddress m_ip;
   FCSOCKET m_clientSocket;
 	BaseSocket* m_pRouterSocket;

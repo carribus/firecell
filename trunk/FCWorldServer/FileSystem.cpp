@@ -124,6 +124,15 @@ size_t FileSystem::EnumerateFiles(std::string path, vector<FileSystem::File>& ta
 
 ////////////////////////////////////////////////////////////////////////
 
+bool FileSystem::CanHandleCommand(const std::string& cmd)
+{
+  CommandMap::iterator it = m_mapCommands.find(cmd);
+
+  return ( it != m_mapCommands.end() );
+}
+
+////////////////////////////////////////////////////////////////////////
+
 bool FileSystem::ExecuteCommand(Player* pCaller, const std::string& cmd, const std::string& arguments, std::string& result)
 {
   if ( cmd.length() == 0 )

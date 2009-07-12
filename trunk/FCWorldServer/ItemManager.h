@@ -30,9 +30,12 @@
 
 class ItemManager
 {
-public:
   ItemManager(void);
   ~ItemManager(void);
+public:
+
+  static ItemManager& instance();
+  static void destroy();
 
   /*
    *  Item Type Functions
@@ -51,6 +54,8 @@ private:
   void ClearItemTypes();
   void ClearItems();
   
+  static ItemManager* m_pThis;
+
   /*
    *  Item Types
    */
