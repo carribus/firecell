@@ -121,7 +121,7 @@ const c8* FCGUIElementFactory::getCreateableGUIElementTypeName(EGUI_ELEMENT_TYPE
   TypeToName* p = m_arrTypeToName;
   for ( ; p->type; p++ )
   {
-    if ( p->type == type )
+    if ( (EGUI_ELEMENT_TYPE)p->type == type )
       return p->name;
   }
 

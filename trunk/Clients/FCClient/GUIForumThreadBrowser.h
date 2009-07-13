@@ -17,7 +17,7 @@ struct IForumThreadBrowserSink
 {
 	virtual void OnThreadSelected(FCULONG category_id, FCULONG thread_id) = 0;
   virtual void OnThreadViewClosed() = 0;
-  virtual void OnNewThreadPost(FCULONG category_id, std::wstring& subject, std::wstring& message) = 0;
+  virtual void OnNewThreadPost(FCULONG category_id, std::wstring subject, std::wstring message) = 0;
 };
 
 class GUIForumThreadBrowser : public IGUIElement

@@ -87,8 +87,8 @@ public:
 
   FCULONG getCategoryID()                    { return m_category_id; }
 	FCULONG getThreadID()											 { return m_thread_id; }
-  wstring getSubject()                       { return m_subject; }
-  wstring getMessage()                       { return m_message; }
+  std::wstring getSubject()                  { return m_subject; }
+  std::wstring getMessage()                  { return m_message; }
 
 private:
 

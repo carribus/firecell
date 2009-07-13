@@ -45,13 +45,13 @@ public:
    */
   void OnThreadSelected(FCULONG category_id, FCULONG thread_id);
   void OnThreadViewClosed();
-  void OnNewThreadPost(FCULONG category_id, std::wstring& subject, std::wstring& message);
+  void OnNewThreadPost(FCULONG category_id, std::wstring subject, std::wstring message);
 
   /*
    *  IForumThreadReaderSink implementation
    */
   void OnThreadReaderViewClosed();
-  void OnThreadReply(FCULONG category_id, FCULONG thread_id, std::wstring& subject, std::wstring& message);
+  void OnThreadReply(FCULONG category_id, FCULONG thread_id, std::wstring subject, std::wstring message);
 	void OnThreadMissionAccept(FCULONG mission_id);
 
 private:
