@@ -1,4 +1,4 @@
-#include ".\itemprocessor.h"
+#include "ItemProcessor.h"
 
 ItemProcessor::ItemProcessor(void)
 {

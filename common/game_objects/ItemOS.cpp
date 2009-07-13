@@ -1,4 +1,4 @@
-#include ".\itemos.h"
+#include "ItemOS.h"
 
 ItemOS::ItemOS(void)
 {

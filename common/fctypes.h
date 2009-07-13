@@ -24,6 +24,14 @@
 #define NULL 0
 #endif//NULL
 
+#ifndef MAX
+#define MAX(a,b)        (((a) > (b)) ? (a) : (b))
+#endif//max
+
+#ifndef MIN
+#define MIN(a,b)        (((a) < (b)) ? (a) : (b))
+#endif//min
+
 #define FCBYTE        unsigned char
 #define FCWORD        unsigned short
 #define FCUSHORT      FCWORD
