@@ -187,7 +187,7 @@ public:
   /* Forum methods */
   void ForumGetCategories();
 	void ForumGetThreads(FCULONG category_id);
-  void ForumCreateNewThread(FCULONG category_id, FCULONG thread_id, std::wstring& subject, std::wstring& message);
+  void ForumCreateNewThread(FCULONG category_id, FCULONG thread_id, std::wstring subject, std::wstring message);
   void ForumGetThreadDetails(FCULONG category_id, FCULONG thread_id);
   /* Banking methods */
   void BankConnect();

@@ -1625,7 +1625,7 @@ void FCModel::ForumGetThreads(FCULONG category_id)
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCModel::ForumCreateNewThread(FCULONG category_id, FCULONG thread_id, std::wstring& subject, std::wstring& message)
+void FCModel::ForumCreateNewThread(FCULONG category_id, FCULONG thread_id, std::wstring subject, std::wstring message)
 {
   size_t subLen = subject.size(), msgLen = message.size();
   char* pSubject = new char[ subLen+1 ];

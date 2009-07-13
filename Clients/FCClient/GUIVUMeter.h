@@ -21,7 +21,7 @@ public:
     Blocks
   };
 
-  GUIVUMeter(IGUIEnvironment* environment, core::rect<s32>& rect, IGUIElement* pParent = 0, SColor backColor = SColor(255, 0, 0, 0), SColor barColor = SColor(255, 128, 255, 128), s32 id = -1);
+  GUIVUMeter(IGUIEnvironment*& environment, core::rect<s32> rect, IGUIElement*& pParent = 0, SColor backColor = SColor(255, 0, 0, 0), SColor barColor = SColor(255, 128, 255, 128), s32 id = -1);
   ~GUIVUMeter(void);
 
   /*

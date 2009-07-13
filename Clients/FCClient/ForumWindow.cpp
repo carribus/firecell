@@ -179,7 +179,7 @@ void ForumWindow::OnThreadViewClosed()
 
 ///////////////////////////////////////////////////////////////////////
 
-void ForumWindow::OnNewThreadPost(FCULONG category_id, std::wstring& subject, std::wstring& message)
+void ForumWindow::OnNewThreadPost(FCULONG category_id, std::wstring subject, std::wstring message)
 {
   SetWaitingForResponse(true);
   FCViewEventNewForumPost e(category_id, 0, subject, message);
@@ -198,7 +198,7 @@ void ForumWindow::OnThreadReaderViewClosed()
 
 ///////////////////////////////////////////////////////////////////////
 
-void ForumWindow::OnThreadReply(FCULONG category_id, FCULONG thread_id, std::wstring& subject, std::wstring& message)
+void ForumWindow::OnThreadReply(FCULONG category_id, FCULONG thread_id, std::wstring subject, std::wstring message)
 {
   SetWaitingForResponse(true);
   FCViewEventNewForumPost e(category_id, thread_id, subject, message);

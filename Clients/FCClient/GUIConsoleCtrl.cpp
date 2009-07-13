@@ -1,7 +1,7 @@
 #include "FCGUIElementFactory.h"
 #include "GUIConsoleCtrl.h"
 
-GUIConsoleCtrl::GUIConsoleCtrl(IGUIEnvironment* environment, core::rect<s32>& rect, IGUIElement* pParent, SColor backColor, SColor textColor, s32 id)
+GUIConsoleCtrl::GUIConsoleCtrl(IGUIEnvironment*& environment, core::rect<s32> rect, IGUIElement*& pParent, SColor backColor, SColor textColor, s32 id)
 : IGUIElement((EGUI_ELEMENT_TYPE)FCGUIElementFactory::EGUIET_CONSOLE, environment, pParent, id, rect)
 , m_pTimer(NULL)
 , m_backColor(backColor)

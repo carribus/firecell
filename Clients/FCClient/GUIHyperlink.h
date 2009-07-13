@@ -3,7 +3,11 @@
 
 #include <irrlicht.h>
 
-#define EGET_HYPERLINK_CLICKED      EGET_TABLE_SELECTED_AGAIN+1
+#ifndef MACOSX
+  #define EGET_HYPERLINK_CLICKED      EGET_TABLE_SELECTED_AGAIN+1
+#else
+  #define EGET_HYPERLINK_CLICKED      EGET_SPINBOX_CHANGED+1
+#endif
 
 namespace irr
 {
@@ -16,7 +20,7 @@ namespace gui
 class GUIHyperlink : public IGUIElement
 {
 public:
-  GUIHyperlink(IGUIEnvironment* env, core::rect<s32>& rect, IGUIElement* pParent = 0, SColor backColor = SColor(0, 0, 0, 0), SColor textColor = SColor(255, 0, 0, 255), s32 id = -1);
+  GUIHyperlink(IGUIEnvironment*& env, core::rect<s32> rect, IGUIElement*& pParent = 0, SColor backColor = SColor(0, 0, 0, 0), SColor textColor = SColor(255, 0, 0, 255), s32 id = -1);
   ~GUIHyperlink(void);
 
   /*

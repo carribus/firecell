@@ -51,7 +51,7 @@ public:
 
 	void Attach(FCSOCKET s);
 	bool Create(int nType = SOCK_STREAM);
-	void Connect(string strServer, short sPort);
+	void Connect(std::string strServer, short sPort);
 	void Disconnect();
 	bool Listen(short sPort);
 	int Send(FCBYTE* pData, int nLen);
