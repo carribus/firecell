@@ -7,6 +7,35 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		065AC05C100BDE950048C706 /* BankAccount.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC02F100BDE950048C706 /* BankAccount.cpp */; };
+		065AC05D100BDE950048C706 /* ComputerBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC031100BDE950048C706 /* ComputerBase.cpp */; };
+		065AC05E100BDE950048C706 /* FCObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC033100BDE950048C706 /* FCObject.cpp */; };
+		065AC05F100BDE950048C706 /* FCObjectFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC035100BDE950048C706 /* FCObjectFactory.cpp */; };
+		065AC060100BDE950048C706 /* InGameIPAddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC037100BDE950048C706 /* InGameIPAddress.cpp */; };
+		065AC061100BDE950048C706 /* ItemMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC03A100BDE950048C706 /* ItemMemory.cpp */; };
+		065AC062100BDE950048C706 /* ItemOS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC03C100BDE950048C706 /* ItemOS.cpp */; };
+		065AC063100BDE950048C706 /* ItemProcessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC03E100BDE950048C706 /* ItemProcessor.cpp */; };
+		065AC064100BDE950048C706 /* ItemSoftware.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC040100BDE950048C706 /* ItemSoftware.cpp */; };
+		065AC065100BDE950048C706 /* NetworkPorts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC043100BDE950048C706 /* NetworkPorts.cpp */; };
+		065AC066100BDE950048C706 /* PacketExtractor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC046100BDE950048C706 /* PacketExtractor.cpp */; };
+		065AC067100BDE950048C706 /* PEPacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC048100BDE950048C706 /* PEPacket.cpp */; };
+		065AC068100BDE950048C706 /* PEPacketHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC04A100BDE950048C706 /* PEPacketHelper.cpp */; };
+		065AC069100BDE950048C706 /* PThreadCond.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC04F100BDE950048C706 /* PThreadCond.cpp */; };
+		065AC06A100BDE950048C706 /* PThreadMutex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC051100BDE950048C706 /* PThreadMutex.cpp */; };
+		065AC06B100BDE950048C706 /* PThreadRWLock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC053100BDE950048C706 /* PThreadRWLock.cpp */; };
+		065AC06C100BDE950048C706 /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC056100BDE950048C706 /* tinystr.cpp */; };
+		065AC06D100BDE950048C706 /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC058100BDE950048C706 /* tinyxml.cpp */; };
+		065AC06E100BDE950048C706 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC05A100BDE950048C706 /* tinyxmlerror.cpp */; };
+		065AC06F100BDE950048C706 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC05B100BDE950048C706 /* tinyxmlparser.cpp */; };
+		065AC08B100BDEFD0048C706 /* fccutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC076100BDEFD0048C706 /* fccutils.cpp */; };
+		065AC08C100BDEFD0048C706 /* FCServerObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC078100BDEFD0048C706 /* FCServerObj.cpp */; };
+		065AC08D100BDEFD0048C706 /* irrDiag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC07B100BDEFD0048C706 /* irrDiag.cpp */; };
+		065AC08E100BDEFD0048C706 /* irrfontfx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC07D100BDEFD0048C706 /* irrfontfx.cpp */; };
+		065AC08F100BDEFD0048C706 /* irrutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC07F100BDEFD0048C706 /* irrutils.cpp */; };
+		065AC090100BDEFD0048C706 /* ResourceManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC081100BDEFD0048C706 /* ResourceManager.cpp */; };
+		065AC091100BDEFD0048C706 /* BaseSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC086100BDEFD0048C706 /* BaseSocket.cpp */; };
+		065AC0C6100BE2450048C706 /* timelib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC0C4100BE2450048C706 /* timelib.cpp */; };
+		065AC0CA100BE2CA0048C706 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 065AC0C9100BE2CA0048C706 /* IOKit.framework */; };
 		06EDD010100BBFC50043DDBE /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06EDD00F100BBFC50043DDBE /* Carbon.framework */; };
 		06EDD015100BBFD40043DDBE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06EDD014100BBFD40043DDBE /* Cocoa.framework */; };
 		06EDD017100BBFE40043DDBE /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06EDD016100BBFE40043DDBE /* OpenGL.framework */; };
@@ -55,6 +84,70 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		065AC02C100BDE950048C706 /* binstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = binstream.h; path = ../../../common/binstream.h; sourceTree = SOURCE_ROOT; };
+		065AC02D100BDE950048C706 /* fctypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fctypes.h; path = ../../../common/fctypes.h; sourceTree = SOURCE_ROOT; };
+		065AC02F100BDE950048C706 /* BankAccount.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BankAccount.cpp; sourceTree = "<group>"; };
+		065AC030100BDE950048C706 /* BankAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BankAccount.h; sourceTree = "<group>"; };
+		065AC031100BDE950048C706 /* ComputerBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ComputerBase.cpp; sourceTree = "<group>"; };
+		065AC032100BDE950048C706 /* ComputerBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComputerBase.h; sourceTree = "<group>"; };
+		065AC033100BDE950048C706 /* FCObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FCObject.cpp; sourceTree = "<group>"; };
+		065AC034100BDE950048C706 /* FCObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCObject.h; sourceTree = "<group>"; };
+		065AC035100BDE950048C706 /* FCObjectFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FCObjectFactory.cpp; sourceTree = "<group>"; };
+		065AC036100BDE950048C706 /* FCObjectFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCObjectFactory.h; sourceTree = "<group>"; };
+		065AC037100BDE950048C706 /* InGameIPAddress.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InGameIPAddress.cpp; sourceTree = "<group>"; };
+		065AC038100BDE950048C706 /* InGameIPAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InGameIPAddress.h; sourceTree = "<group>"; };
+		065AC039100BDE950048C706 /* Item.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Item.h; sourceTree = "<group>"; };
+		065AC03A100BDE950048C706 /* ItemMemory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ItemMemory.cpp; sourceTree = "<group>"; };
+		065AC03B100BDE950048C706 /* ItemMemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemMemory.h; sourceTree = "<group>"; };
+		065AC03C100BDE950048C706 /* ItemOS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ItemOS.cpp; sourceTree = "<group>"; };
+		065AC03D100BDE950048C706 /* ItemOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemOS.h; sourceTree = "<group>"; };
+		065AC03E100BDE950048C706 /* ItemProcessor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ItemProcessor.cpp; sourceTree = "<group>"; };
+		065AC03F100BDE950048C706 /* ItemProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemProcessor.h; sourceTree = "<group>"; };
+		065AC040100BDE950048C706 /* ItemSoftware.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ItemSoftware.cpp; sourceTree = "<group>"; };
+		065AC041100BDE950048C706 /* ItemSoftware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemSoftware.h; sourceTree = "<group>"; };
+		065AC042100BDE950048C706 /* ItemType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemType.h; sourceTree = "<group>"; };
+		065AC043100BDE950048C706 /* NetworkPorts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NetworkPorts.cpp; sourceTree = "<group>"; };
+		065AC044100BDE950048C706 /* NetworkPorts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkPorts.h; sourceTree = "<group>"; };
+		065AC045100BDE950048C706 /* swtypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = swtypes.h; sourceTree = "<group>"; };
+		065AC046100BDE950048C706 /* PacketExtractor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PacketExtractor.cpp; path = ../../../common/PacketExtractor.cpp; sourceTree = SOURCE_ROOT; };
+		065AC047100BDE950048C706 /* PacketExtractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PacketExtractor.h; path = ../../../common/PacketExtractor.h; sourceTree = SOURCE_ROOT; };
+		065AC048100BDE950048C706 /* PEPacket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PEPacket.cpp; path = ../../../common/PEPacket.cpp; sourceTree = SOURCE_ROOT; };
+		065AC049100BDE950048C706 /* PEPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEPacket.h; path = ../../../common/PEPacket.h; sourceTree = SOURCE_ROOT; };
+		065AC04A100BDE950048C706 /* PEPacketHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PEPacketHelper.cpp; path = ../../../common/PEPacketHelper.cpp; sourceTree = SOURCE_ROOT; };
+		065AC04B100BDE950048C706 /* PEPacketHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEPacketHelper.h; path = ../../../common/PEPacketHelper.h; sourceTree = SOURCE_ROOT; };
+		065AC04D100BDE950048C706 /* fcprotocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fcprotocol.h; sourceTree = "<group>"; };
+		065AC04E100BDE950048C706 /* fcserverprotocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fcserverprotocol.h; sourceTree = "<group>"; };
+		065AC04F100BDE950048C706 /* PThreadCond.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PThreadCond.cpp; path = ../../../common/PThreadCond.cpp; sourceTree = SOURCE_ROOT; };
+		065AC050100BDE950048C706 /* PThreadCond.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PThreadCond.h; path = ../../../common/PThreadCond.h; sourceTree = SOURCE_ROOT; };
+		065AC051100BDE950048C706 /* PThreadMutex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PThreadMutex.cpp; path = ../../../common/PThreadMutex.cpp; sourceTree = SOURCE_ROOT; };
+		065AC052100BDE950048C706 /* PThreadMutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PThreadMutex.h; path = ../../../common/PThreadMutex.h; sourceTree = SOURCE_ROOT; };
+		065AC053100BDE950048C706 /* PThreadRWLock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PThreadRWLock.cpp; path = ../../../common/PThreadRWLock.cpp; sourceTree = SOURCE_ROOT; };
+		065AC054100BDE950048C706 /* PThreadRWLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PThreadRWLock.h; path = ../../../common/PThreadRWLock.h; sourceTree = SOURCE_ROOT; };
+		065AC056100BDE950048C706 /* tinystr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinystr.cpp; sourceTree = "<group>"; };
+		065AC057100BDE950048C706 /* tinystr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinystr.h; sourceTree = "<group>"; };
+		065AC058100BDE950048C706 /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml.cpp; sourceTree = "<group>"; };
+		065AC059100BDE950048C706 /* tinyxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml.h; sourceTree = "<group>"; };
+		065AC05A100BDE950048C706 /* tinyxmlerror.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlerror.cpp; sourceTree = "<group>"; };
+		065AC05B100BDE950048C706 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
+		065AC075100BDEFD0048C706 /* clienttypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clienttypes.h; sourceTree = "<group>"; };
+		065AC076100BDEFD0048C706 /* fccutils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fccutils.cpp; sourceTree = "<group>"; };
+		065AC077100BDEFD0048C706 /* fccutils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fccutils.h; sourceTree = "<group>"; };
+		065AC078100BDEFD0048C706 /* FCServerObj.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FCServerObj.cpp; sourceTree = "<group>"; };
+		065AC079100BDEFD0048C706 /* FCServerObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCServerObj.h; sourceTree = "<group>"; };
+		065AC07B100BDEFD0048C706 /* irrDiag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = irrDiag.cpp; sourceTree = "<group>"; };
+		065AC07C100BDEFD0048C706 /* irrDiag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = irrDiag.h; sourceTree = "<group>"; };
+		065AC07D100BDEFD0048C706 /* irrfontfx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = irrfontfx.cpp; sourceTree = "<group>"; };
+		065AC07E100BDEFD0048C706 /* irrfontfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = irrfontfx.h; sourceTree = "<group>"; };
+		065AC07F100BDEFD0048C706 /* irrutils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = irrutils.cpp; sourceTree = "<group>"; };
+		065AC080100BDEFD0048C706 /* irrutils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = irrutils.h; sourceTree = "<group>"; };
+		065AC081100BDEFD0048C706 /* ResourceManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ResourceManager.cpp; sourceTree = "<group>"; };
+		065AC082100BDEFD0048C706 /* ResourceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResourceManager.h; sourceTree = "<group>"; };
+		065AC084100BDEFD0048C706 /* ClientSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClientSocket.h; sourceTree = "<group>"; };
+		065AC086100BDEFD0048C706 /* BaseSocket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseSocket.cpp; sourceTree = "<group>"; };
+		065AC087100BDEFD0048C706 /* BaseSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseSocket.h; sourceTree = "<group>"; };
+		065AC0C4100BE2450048C706 /* timelib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timelib.cpp; sourceTree = "<group>"; };
+		065AC0C5100BE2450048C706 /* timelib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timelib.h; sourceTree = "<group>"; };
+		065AC0C9100BE2CA0048C706 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		06EDD007100BBE580043DDBE /* FCClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FCClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		06EDD00A100BBE580043DDBE /* FCClient-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FCClient-Info.plist"; sourceTree = "<group>"; };
 		06EDD00F100BBFC50043DDBE /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -160,17 +253,167 @@
 				06EDD015100BBFD40043DDBE /* Cocoa.framework in Frameworks */,
 				06EDD017100BBFE40043DDBE /* OpenGL.framework in Frameworks */,
 				06EDD019100BC0800043DDBE /* libIrrlicht.a in Frameworks */,
+				065AC0CA100BE2CA0048C706 /* IOKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		065AC029100BDE2B0048C706 /* FCClient */ = {
+			isa = PBXGroup;
+			children = (
+				06EDD0A0100BCAC60043DDBE /* Include */,
+				06EDD09F100BCABD0043DDBE /* Source */,
+			);
+			name = FCClient;
+			sourceTree = "<group>";
+		};
+		065AC02B100BDE3F0048C706 /* common */ = {
+			isa = PBXGroup;
+			children = (
+				065AC0C3100BE2450048C706 /* time */,
+				065AC074100BDEFD0048C706 /* common */,
+				065AC02C100BDE950048C706 /* binstream.h */,
+				065AC02D100BDE950048C706 /* fctypes.h */,
+				065AC02E100BDE950048C706 /* game_objects */,
+				065AC046100BDE950048C706 /* PacketExtractor.cpp */,
+				065AC047100BDE950048C706 /* PacketExtractor.h */,
+				065AC048100BDE950048C706 /* PEPacket.cpp */,
+				065AC049100BDE950048C706 /* PEPacket.h */,
+				065AC04A100BDE950048C706 /* PEPacketHelper.cpp */,
+				065AC04B100BDE950048C706 /* PEPacketHelper.h */,
+				065AC04C100BDE950048C706 /* protocol */,
+				065AC04F100BDE950048C706 /* PThreadCond.cpp */,
+				065AC050100BDE950048C706 /* PThreadCond.h */,
+				065AC051100BDE950048C706 /* PThreadMutex.cpp */,
+				065AC052100BDE950048C706 /* PThreadMutex.h */,
+				065AC053100BDE950048C706 /* PThreadRWLock.cpp */,
+				065AC054100BDE950048C706 /* PThreadRWLock.h */,
+				065AC055100BDE950048C706 /* tinyXML */,
+			);
+			name = common;
+			sourceTree = "<group>";
+		};
+		065AC02E100BDE950048C706 /* game_objects */ = {
+			isa = PBXGroup;
+			children = (
+				065AC02F100BDE950048C706 /* BankAccount.cpp */,
+				065AC030100BDE950048C706 /* BankAccount.h */,
+				065AC031100BDE950048C706 /* ComputerBase.cpp */,
+				065AC032100BDE950048C706 /* ComputerBase.h */,
+				065AC033100BDE950048C706 /* FCObject.cpp */,
+				065AC034100BDE950048C706 /* FCObject.h */,
+				065AC035100BDE950048C706 /* FCObjectFactory.cpp */,
+				065AC036100BDE950048C706 /* FCObjectFactory.h */,
+				065AC037100BDE950048C706 /* InGameIPAddress.cpp */,
+				065AC038100BDE950048C706 /* InGameIPAddress.h */,
+				065AC039100BDE950048C706 /* Item.h */,
+				065AC03A100BDE950048C706 /* ItemMemory.cpp */,
+				065AC03B100BDE950048C706 /* ItemMemory.h */,
+				065AC03C100BDE950048C706 /* ItemOS.cpp */,
+				065AC03D100BDE950048C706 /* ItemOS.h */,
+				065AC03E100BDE950048C706 /* ItemProcessor.cpp */,
+				065AC03F100BDE950048C706 /* ItemProcessor.h */,
+				065AC040100BDE950048C706 /* ItemSoftware.cpp */,
+				065AC041100BDE950048C706 /* ItemSoftware.h */,
+				065AC042100BDE950048C706 /* ItemType.h */,
+				065AC043100BDE950048C706 /* NetworkPorts.cpp */,
+				065AC044100BDE950048C706 /* NetworkPorts.h */,
+				065AC045100BDE950048C706 /* swtypes.h */,
+			);
+			name = game_objects;
+			path = ../../../common/game_objects;
+			sourceTree = SOURCE_ROOT;
+		};
+		065AC04C100BDE950048C706 /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				065AC04D100BDE950048C706 /* fcprotocol.h */,
+				065AC04E100BDE950048C706 /* fcserverprotocol.h */,
+			);
+			name = protocol;
+			path = ../../../common/protocol;
+			sourceTree = SOURCE_ROOT;
+		};
+		065AC055100BDE950048C706 /* tinyXML */ = {
+			isa = PBXGroup;
+			children = (
+				065AC056100BDE950048C706 /* tinystr.cpp */,
+				065AC057100BDE950048C706 /* tinystr.h */,
+				065AC058100BDE950048C706 /* tinyxml.cpp */,
+				065AC059100BDE950048C706 /* tinyxml.h */,
+				065AC05A100BDE950048C706 /* tinyxmlerror.cpp */,
+				065AC05B100BDE950048C706 /* tinyxmlparser.cpp */,
+			);
+			name = tinyXML;
+			path = ../../../common/tinyXML;
+			sourceTree = SOURCE_ROOT;
+		};
+		065AC074100BDEFD0048C706 /* common */ = {
+			isa = PBXGroup;
+			children = (
+				065AC075100BDEFD0048C706 /* clienttypes.h */,
+				065AC076100BDEFD0048C706 /* fccutils.cpp */,
+				065AC077100BDEFD0048C706 /* fccutils.h */,
+				065AC078100BDEFD0048C706 /* FCServerObj.cpp */,
+				065AC079100BDEFD0048C706 /* FCServerObj.h */,
+				065AC07A100BDEFD0048C706 /* irrlichtUtil */,
+				065AC081100BDEFD0048C706 /* ResourceManager.cpp */,
+				065AC082100BDEFD0048C706 /* ResourceManager.h */,
+				065AC083100BDEFD0048C706 /* Socket */,
+			);
+			name = common;
+			path = ../../../Clients/common;
+			sourceTree = SOURCE_ROOT;
+		};
+		065AC07A100BDEFD0048C706 /* irrlichtUtil */ = {
+			isa = PBXGroup;
+			children = (
+				065AC07B100BDEFD0048C706 /* irrDiag.cpp */,
+				065AC07C100BDEFD0048C706 /* irrDiag.h */,
+				065AC07D100BDEFD0048C706 /* irrfontfx.cpp */,
+				065AC07E100BDEFD0048C706 /* irrfontfx.h */,
+				065AC07F100BDEFD0048C706 /* irrutils.cpp */,
+				065AC080100BDEFD0048C706 /* irrutils.h */,
+			);
+			path = irrlichtUtil;
+			sourceTree = "<group>";
+		};
+		065AC083100BDEFD0048C706 /* Socket */ = {
+			isa = PBXGroup;
+			children = (
+				065AC084100BDEFD0048C706 /* ClientSocket.h */,
+				065AC085100BDEFD0048C706 /* linux */,
+			);
+			path = Socket;
+			sourceTree = "<group>";
+		};
+		065AC085100BDEFD0048C706 /* linux */ = {
+			isa = PBXGroup;
+			children = (
+				065AC086100BDEFD0048C706 /* BaseSocket.cpp */,
+				065AC087100BDEFD0048C706 /* BaseSocket.h */,
+			);
+			path = linux;
+			sourceTree = "<group>";
+		};
+		065AC0C3100BE2450048C706 /* time */ = {
+			isa = PBXGroup;
+			children = (
+				065AC0C4100BE2450048C706 /* timelib.cpp */,
+				065AC0C5100BE2450048C706 /* timelib.h */,
+			);
+			name = time;
+			path = ../../../common/time;
+			sourceTree = SOURCE_ROOT;
+		};
 		06EDCFF7100BBE2B0043DDBE = {
 			isa = PBXGroup;
 			children = (
-				06EDD0A0100BCAC60043DDBE /* Headers */,
-				06EDD09F100BCABD0043DDBE /* Source */,
+				065AC0C9100BE2CA0048C706 /* IOKit.framework */,
+				065AC02B100BDE3F0048C706 /* common */,
+				065AC029100BDE2B0048C706 /* FCClient */,
 				06EDD01C100BC1450043DDBE /* MainMenu.nib */,
 				06EDD018100BC0800043DDBE /* libIrrlicht.a */,
 				06EDD016100BBFE40043DDBE /* OpenGL.framework */,
@@ -236,7 +479,7 @@
 			name = Source;
 			sourceTree = "<group>";
 		};
-		06EDD0A0100BCAC60043DDBE /* Headers */ = {
+		06EDD0A0100BCAC60043DDBE /* Include */ = {
 			isa = PBXGroup;
 			children = (
 				06EDD180100BCB230043DDBE /* DesktopIcon.h */,
@@ -287,7 +530,7 @@
 				06EDD177100BCB230043DDBE /* clientstrings.h */,
 				06EDD179100BCB230043DDBE /* ConsoleWindow.h */,
 			);
-			name = Headers;
+			name = Include;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -384,6 +627,34 @@
 				06EDD1ED100BCB230043DDBE /* ViewLogicCharacterSelection.cpp in Sources */,
 				06EDD1EE100BCB230043DDBE /* ViewLogicGame.cpp in Sources */,
 				06EDD1EF100BCB230043DDBE /* ViewLogicLoading.cpp in Sources */,
+				065AC05C100BDE950048C706 /* BankAccount.cpp in Sources */,
+				065AC05D100BDE950048C706 /* ComputerBase.cpp in Sources */,
+				065AC05E100BDE950048C706 /* FCObject.cpp in Sources */,
+				065AC05F100BDE950048C706 /* FCObjectFactory.cpp in Sources */,
+				065AC060100BDE950048C706 /* InGameIPAddress.cpp in Sources */,
+				065AC061100BDE950048C706 /* ItemMemory.cpp in Sources */,
+				065AC062100BDE950048C706 /* ItemOS.cpp in Sources */,
+				065AC063100BDE950048C706 /* ItemProcessor.cpp in Sources */,
+				065AC064100BDE950048C706 /* ItemSoftware.cpp in Sources */,
+				065AC065100BDE950048C706 /* NetworkPorts.cpp in Sources */,
+				065AC066100BDE950048C706 /* PacketExtractor.cpp in Sources */,
+				065AC067100BDE950048C706 /* PEPacket.cpp in Sources */,
+				065AC068100BDE950048C706 /* PEPacketHelper.cpp in Sources */,
+				065AC069100BDE950048C706 /* PThreadCond.cpp in Sources */,
+				065AC06A100BDE950048C706 /* PThreadMutex.cpp in Sources */,
+				065AC06B100BDE950048C706 /* PThreadRWLock.cpp in Sources */,
+				065AC06C100BDE950048C706 /* tinystr.cpp in Sources */,
+				065AC06D100BDE950048C706 /* tinyxml.cpp in Sources */,
+				065AC06E100BDE950048C706 /* tinyxmlerror.cpp in Sources */,
+				065AC06F100BDE950048C706 /* tinyxmlparser.cpp in Sources */,
+				065AC08B100BDEFD0048C706 /* fccutils.cpp in Sources */,
+				065AC08C100BDEFD0048C706 /* FCServerObj.cpp in Sources */,
+				065AC08D100BDEFD0048C706 /* irrDiag.cpp in Sources */,
+				065AC08E100BDEFD0048C706 /* irrfontfx.cpp in Sources */,
+				065AC08F100BDEFD0048C706 /* irrutils.cpp in Sources */,
+				065AC090100BDEFD0048C706 /* ResourceManager.cpp in Sources */,
+				065AC091100BDEFD0048C706 /* BaseSocket.cpp in Sources */,
+				065AC0C6100BE2450048C706 /* timelib.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,6 +664,8 @@
 		06EDCFFA100BBE2B0043DDBE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -402,6 +675,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = _FCCLIENT_COMPILE_;
 				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
 				HEADER_SEARCH_PATHS = /usr/local/irrlicht/include;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Debug;
 		};
