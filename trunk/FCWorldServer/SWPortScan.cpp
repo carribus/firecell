@@ -18,7 +18,7 @@ SWPortScan::~SWPortScan(void)
 
 ///////////////////////////////////////////////////////////////////////
 
-bool SWPortScan::Execute(const std::string& cmd, const std::string& args, std::string& result)
+bool SWPortScan::Execute(Player* pPlayer, const std::string& cmd, const std::string& args, std::string& result)
 {
   WorldManager& worldMgr = WorldManager::instance();
   std::vector<std::string>& arguments = getArguments(args);
@@ -31,6 +31,12 @@ bool SWPortScan::Execute(const std::string& cmd, const std::string& args, std::s
     InGameIPAddress ip;
 
     ip.SetIP(ipAddress);
+
+    if ( ip.GetClassA() == 127 && ip.GetClassB() == 0 && ip.GetClassC() == 0 && ip.GetClassD() == 1 )
+    {
+      ip = pPlayer->GetIP();
+    }
+
     if ( worldMgr.GetNetworkObject(ip, dest) )
     {
       switch ( dest.connType )
@@ -70,6 +76,10 @@ bool SWPortScan::Execute(const std::string& cmd, const std::string& args, std::s
       result += ipAddress;
       result += " unreachable.\n\n";
     }
+  }
+  else
+  {
+    result = "Usage:  portscan [ip address]\n\nExample: portscan 127.0.0.1\n\n";
   }
 
   return true;

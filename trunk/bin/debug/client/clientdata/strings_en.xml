@@ -75,5 +75,5 @@
 	<String id="ITEM_SOFTWARE_29">Console</String>
 	<String id="ITEM_SOFTWARE_30">Banking</String>
 	<String id="ITEM_SOFTWARE_31">Online Chat</String>
-  
+	<String id="ITEM_SOFTWARE_32">Port Scanner</String>
 </FCStrings>

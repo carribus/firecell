@@ -1428,6 +1428,7 @@ void FCLogicWorld::OnDBJob_LoadObjectData(DBIResultSet& resultSet, void*& pConte
         pItem->SetCPUCost( resultSet.GetShortValue("cpu_cost", 0) );
         pItem->SetMemCost( resultSet.GetULongValue("mem_cost", 0) );
         pItem->SetCommand( resultSet.GetStringValue("filename", 0) );
+        pItem->SetDesktopIconFlag( resultSet.GetByteValue("desktop_icon_flag", 0) ? true : false );
         pItem->SetLogic( SWLogicFactory::instance().createLogic( pItem->GetSoftwareType() ) );
       }
     }

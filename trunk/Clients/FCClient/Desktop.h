@@ -76,6 +76,15 @@ private:
   void OpenSoftwareManagerWindow();
 
   /*
+   *  Event Handlers
+   */
+  bool OnMouseLButtonDown(irr::SEvent::SMouseInput event);
+  bool OnMouseMoved(irr::SEvent::SMouseInput event);
+  bool OnGUIElementFocused(irr::SEvent::SGUIEvent event);
+  bool OnGUIElementClosed(irr::SEvent::SGUIEvent event);
+  bool OnGUIMenuItemSelected(irr::SEvent::SGUIEvent event);
+
+  /*
    *  Private Data Members
    */
   ViewLogicGame&              m_owner;

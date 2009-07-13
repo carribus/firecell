@@ -12,7 +12,7 @@ public:
   SWPortScan(void);
   virtual ~SWPortScan(void);
 
-  bool Execute(const std::string& cmd, const std::string& args, std::string& result);
+  bool Execute(Player* pPlayer, const std::string& cmd, const std::string& args, std::string& result);
 
 private:
 

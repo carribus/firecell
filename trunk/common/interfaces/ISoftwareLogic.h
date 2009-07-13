@@ -5,9 +5,11 @@
 
 #include <string>
 
+class Player;
+
 struct ISoftwareLogic
 {
-  virtual bool Execute(const std::string& cmd, const std::string& args, std::string& result) = 0;
+  virtual bool Execute(Player* pPlayer, const std::string& cmd, const std::string& args, std::string& result) = 0;
 };
 
 #endif//_FCCLIENT_COMPILE_

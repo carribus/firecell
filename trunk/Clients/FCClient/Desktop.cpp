@@ -106,26 +106,13 @@ bool Desktop::OnEvent(const SEvent& event)
 			{
 			case	EMIE_LMOUSE_PRESSED_DOWN:
 				{
-          // unselect all desktop icons
-					DesktopIconMap::iterator it = m_mapDesktopIcons.begin();
-					DesktopIconMap::iterator limit = m_mapDesktopIcons.end();
-
-					for ( ; it != limit; it++ )
-					{
-						it->second->setSelected(false);
-					}
-					bResult = true;
+          bResult = OnMouseLButtonDown(event.MouseInput);
 				}
 				break;
 
 			case	EMIE_MOUSE_MOVED:
 				{
-          // monitor the mouse and if it goes over the AppBar, give the appBar focus
-					rect<s32> abRect = m_pAppBar->getAbsolutePosition();
-					if ( abRect.isPointInside( position2d<s32>(event.MouseInput.X, event.MouseInput.Y) ) )
-					{
-						Environment->setFocus(m_pAppBar);
-					}
+          bResult = OnMouseMoved(event.MouseInput);
 				}
 				break;
 			}
@@ -138,120 +125,19 @@ bool Desktop::OnEvent(const SEvent& event)
       {
       case  EGET_ELEMENT_FOCUSED:
         {
-          s32 elemID = event.GUIEvent.Caller->getID();
-
-          switch ( elemID )
-          {
-          case  INGAMEAPP_BASE_ID+SWT_APP_FORUM:
-          case  INGAMEAPP_BASE_ID+SWT_APP_NEWS:
-          case  INGAMEAPP_BASE_ID+SWT_APP_EMAIL:
-          case  INGAMEAPP_BASE_ID+SWT_APP_CONSOLE:
-          case  INGAMEAPP_BASE_ID+SWT_APP_BANK:
-          case  INGAMEAPP_BASE_ID+SWT_APP_CHAT:
-//          case  INGAMEAPP_BASE_ID+DOT_HackingTools:
-            {
-              // an application has been activated...
-              OnApplicationActivated( this->GetAppWindowByType(elemID-INGAMEAPP_BASE_ID) );
-            }
-            break;
-
-          default:
-            break;
-          }
+          bResult = OnGUIElementFocused(event.GUIEvent);
         }
         break;
 
 	    case	EGET_ELEMENT_CLOSED:
 		    {
-			    IGUIElement* pElem = event.GUIEvent.Caller;
-			    switch ( pElem->getType() )
-			    {
-			    case	EGUIET_WINDOW:
-				    {
-					    InGameAppWindow* pWnd = NULL;
-
-              m_mutexApps.Lock();
-					    AppWindowVector::iterator it = m_arrApps.begin();
-					    while ( it != m_arrApps.end() )
-					    {
-						    if ( (*it)->GetGUIWindow() == pElem )
-						    {
-                  // get the InGameAppWindow object
-							    pWnd = (*it);
-                  // remove it from the active apps list
-							    m_arrApps.erase(it);
-                  // notify the AppBar that the app has closed
-                  if ( m_pAppBar )
-                    m_pAppBar->setActiveApp(NULL);
-                  // delete the InGameAppWindow Object
-							    delete pWnd;
-                  // set focus back to the desktop
-                  Environment->setFocus(this);
-							    break;
-						    }
-						    it++;
-					    }
-					    m_mutexApps.Unlock();
-				    }
-				    break;
-
-          case  EGUIET_ELEMENT:
-            {
-              FCDialog* pDlg = NULL;
-
-              if ( (pElem == (IGUIElement*)GetUtilityWindow(pElem)) )
-              {
-                CloseUtilityWindow(pElem);
-              }
-            }
-            break;
-          }
+          bResult = OnGUIElementClosed(event.GUIEvent);
         }
         break;
 
 			case	EGET_MENU_ITEM_SELECTED:
 				{
-					IGUIContextMenu* pMenu = (IGUIContextMenu*)event.GUIEvent.Caller;
-					s32 selItem = pMenu->getSelectedItem();
-
-					switch ( pMenu->getItemCommandId(selItem) )
-					{
-          case  MENUITEM_SOFTWAREMGR:   // Software Manager
-            {
-              OpenSoftwareManagerWindow();
-            }
-            break;
-
-          case  MENUITEM_ITEMMGR:       // Item Manager
-            break;
-
-					case	MENUITEM_CHARINFO:			// Character Info
-						{
-						}
-						break;
-
-					case	MENUITEM_SYSTEMINFO:	  // System Info
-						{
-						}
-						break;
-
-					case	MENUITEM_ABOUT:					// About FireCell
-						{
-              Environment->addMessageBox( ResourceManager::instance().GetClientString(STR_ABOUT_CAPTION).c_str(),
-                                          ResourceManager::instance().GetClientString(STR_ABOUT_TEXT).c_str() );
-						}
-						break;
-
-					case	MENUITEM_EXIT:					// Quit FireCell
-						{
-							FCViewEvent e(VE_ClientExit);
-							m_owner.GetContainer()->GetController()->OnViewEvent(e);
-						}
-						break;
-
-					default:
-						break;
-					}
+          bResult = OnGUIMenuItemSelected(event.GUIEvent);
 				}
 				break;
 
@@ -879,10 +765,17 @@ void Desktop::updateIconPositions()
   {
     pIcon = it->second;
     pIcon->moveTo( pos.X, pos.Y );
+    // check if we need to start a new colum of icons
+    if ( pIcon->getAbsolutePosition().LowerRightCorner.Y >= dRect.LowerRightCorner.Y )
+    {
+      pos.X += pIcon->getAbsolutePosition().getWidth();
+      pos.Y = 10 + dRect.UpperLeftCorner.Y;
+      pIcon->moveTo( pos.X, pos.Y );
+    }
 
 		offset.X = 0;
 		offset.Y = pIcon->getAbsolutePosition().getHeight() + ICON_PADDING_Y;
-		
+
 		pos += offset;
   }
 }
@@ -965,4 +858,161 @@ void Desktop::OpenSoftwareManagerWindow()
   {
 		bringToFront( m_pSoftwareMgr );
  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Desktop::OnMouseLButtonDown(irr::SEvent::SMouseInput event)
+{
+  // unselect all desktop icons
+  DesktopIconMap::iterator it = m_mapDesktopIcons.begin();
+  DesktopIconMap::iterator limit = m_mapDesktopIcons.end();
+
+  for ( ; it != limit; it++ )
+  {
+	  it->second->setSelected(false);
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Desktop::OnMouseMoved(irr::SEvent::SMouseInput event)
+{
+  // monitor the mouse and if it goes over the AppBar, give the appBar focus
+	rect<s32> abRect = m_pAppBar->getAbsolutePosition();
+	if ( abRect.isPointInside( position2d<s32>(event.X, event.Y) ) )
+	{
+		Environment->setFocus(m_pAppBar);
+	}
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Desktop::OnGUIElementFocused(irr::SEvent::SGUIEvent event)
+{
+  s32 elemID = event.Caller->getID();
+
+  switch ( elemID )
+  {
+  case  INGAMEAPP_BASE_ID+SWT_APP_FORUM:
+  case  INGAMEAPP_BASE_ID+SWT_APP_NEWS:
+  case  INGAMEAPP_BASE_ID+SWT_APP_EMAIL:
+  case  INGAMEAPP_BASE_ID+SWT_APP_CONSOLE:
+  case  INGAMEAPP_BASE_ID+SWT_APP_BANK:
+  case  INGAMEAPP_BASE_ID+SWT_APP_CHAT:
+  //          case  INGAMEAPP_BASE_ID+DOT_HackingTools:
+    {
+      // an application has been activated...
+      OnApplicationActivated( this->GetAppWindowByType(elemID-INGAMEAPP_BASE_ID) );
+    }
+    break;
+
+  default:
+    break;
+  }
+
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Desktop::OnGUIElementClosed(irr::SEvent::SGUIEvent event)
+{
+  IGUIElement* pElem = event.Caller;
+  switch ( pElem->getType() )
+  {
+  case	EGUIET_WINDOW:
+    {
+      InGameAppWindow* pWnd = NULL;
+
+      m_mutexApps.Lock();
+      AppWindowVector::iterator it = m_arrApps.begin();
+      while ( it != m_arrApps.end() )
+      {
+	      if ( (*it)->GetGUIWindow() == pElem )
+	      {
+          // get the InGameAppWindow object
+		      pWnd = (*it);
+          // remove it from the active apps list
+		      m_arrApps.erase(it);
+          // notify the AppBar that the app has closed
+          if ( m_pAppBar )
+            m_pAppBar->setActiveApp(NULL);
+          // delete the InGameAppWindow Object
+		      delete pWnd;
+          // set focus back to the desktop
+          Environment->setFocus(this);
+		      break;
+	      }
+	      it++;
+      }
+      m_mutexApps.Unlock();
+    }
+    break;
+
+  case  EGUIET_ELEMENT:
+    {
+      FCDialog* pDlg = NULL;
+
+      if ( (pElem == (IGUIElement*)GetUtilityWindow(pElem)) )
+      {
+        CloseUtilityWindow(pElem);
+      }
+    }
+    break;
+  }
+
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Desktop::OnGUIMenuItemSelected(irr::SEvent::SGUIEvent event)
+{
+  IGUIContextMenu* pMenu = (IGUIContextMenu*)event.Caller;
+  s32 selItem = pMenu->getSelectedItem();
+
+  switch ( pMenu->getItemCommandId(selItem) )
+  {
+  case  MENUITEM_SOFTWAREMGR:   // Software Manager
+    {
+      OpenSoftwareManagerWindow();
+    }
+    break;
+
+  case  MENUITEM_ITEMMGR:       // Item Manager
+    break;
+
+  case	MENUITEM_CHARINFO:			// Character Info
+	  {
+	  }
+	  break;
+
+  case	MENUITEM_SYSTEMINFO:	  // System Info
+	  {
+	  }
+	  break;
+
+  case	MENUITEM_ABOUT:					// About FireCell
+	  {
+      Environment->addMessageBox( ResourceManager::instance().GetClientString(STR_ABOUT_CAPTION).c_str(),
+                                  ResourceManager::instance().GetClientString(STR_ABOUT_TEXT).c_str() );
+	  }
+	  break;
+
+  case	MENUITEM_EXIT:					// Quit FireCell
+	  {
+		  FCViewEvent e(VE_ClientExit);
+		  m_owner.GetContainer()->GetController()->OnViewEvent(e);
+	  }
+	  break;
+
+  default:
+	  break;
+  }
+
+  return false;
 }

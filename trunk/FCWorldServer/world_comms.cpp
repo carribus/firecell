@@ -285,6 +285,7 @@ void SendCharacterItemsResponse(Player* pPlayer, ItemManager& itemMgr,  BaseSock
       d->software[index].softwareTypeID = pItem->GetSoftwareType();
       d->software[index].is_service = pItem->IsService();
       d->software[index].scriptID = 0;
+      d->software[index].desktop_icon_flag = pItem->GetDesktopIconFlag();
       d->software[index].itemCount = it->second.count;
     }
     else
