@@ -1,7 +1,7 @@
 #include "FCGUIElementFactory.h"
 #include "GUIHyperlink.h"
 
-GUIHyperlink::GUIHyperlink(IGUIEnvironment*& env, core::rect<s32> rect, IGUIElement*& pParent, SColor backColor, SColor textColor, s32 id)
+GUIHyperlink::GUIHyperlink(IGUIEnvironment*& env, core::rect<s32> rect, IGUIElement* pParent, SColor backColor, SColor textColor, s32 id)
 : IGUIElement((EGUI_ELEMENT_TYPE)FCGUIElementFactory::EGUIET_HYPERLINK, env, pParent, id, rect)
 , m_pEnv(env)
 , m_backColor(backColor)
