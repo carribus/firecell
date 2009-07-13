@@ -51,8 +51,8 @@ void FCServerObj::Login(const char* username, const char* password)
   __FCPKT_LOGIN d;
 
   memset(&d, 0, sizeof(d));
-  strncpy(d.username, username, min( strlen(username), 64 ));
-  strncpy(d.password, password, min( strlen(password), 64 )); 
+  strncpy(d.username, username, MIN( strlen(username), 64 ));
+  strncpy(d.password, password, MIN( strlen(password), 64 )); 
 
   PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_LOGIN, ST_Auth);
   PEPacketHelper::SetPacketData(pkt, &d, sizeof(d));
