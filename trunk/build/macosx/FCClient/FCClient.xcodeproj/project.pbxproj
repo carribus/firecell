@@ -1,0 +1,510 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		06EDD010100BBFC50043DDBE /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06EDD00F100BBFC50043DDBE /* Carbon.framework */; };
+		06EDD015100BBFD40043DDBE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06EDD014100BBFD40043DDBE /* Cocoa.framework */; };
+		06EDD017100BBFE40043DDBE /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06EDD016100BBFE40043DDBE /* OpenGL.framework */; };
+		06EDD019100BC0800043DDBE /* libIrrlicht.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06EDD018100BC0800043DDBE /* libIrrlicht.a */; };
+		06EDD01D100BC1450043DDBE /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 06EDD01C100BC1450043DDBE /* MainMenu.nib */; };
+		06EDD1C8100BCB230043DDBE /* BankingWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD171100BCB230043DDBE /* BankingWindow.cpp */; };
+		06EDD1C9100BCB230043DDBE /* Character.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD173100BCB230043DDBE /* Character.cpp */; };
+		06EDD1CA100BCB230043DDBE /* ConsoleWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD178100BCB230043DDBE /* ConsoleWindow.cpp */; };
+		06EDD1CB100BCB230043DDBE /* Desktop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD17B100BCB230043DDBE /* Desktop.cpp */; };
+		06EDD1CC100BCB230043DDBE /* DesktopAppBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD17D100BCB230043DDBE /* DesktopAppBar.cpp */; };
+		06EDD1CD100BCB230043DDBE /* DesktopIcon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD17F100BCB230043DDBE /* DesktopIcon.cpp */; };
+		06EDD1CE100BCB230043DDBE /* DlgNewCharacter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD181100BCB230043DDBE /* DlgNewCharacter.cpp */; };
+		06EDD1CF100BCB230043DDBE /* DlgNewThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD183100BCB230043DDBE /* DlgNewThread.cpp */; };
+		06EDD1D0100BCB230043DDBE /* FCClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD185100BCB230043DDBE /* FCClient.cpp */; };
+		06EDD1D1100BCB230043DDBE /* FCController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD186100BCB230043DDBE /* FCController.cpp */; };
+		06EDD1D2100BCB230043DDBE /* FCDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD188100BCB230043DDBE /* FCDialog.cpp */; };
+		06EDD1D3100BCB230043DDBE /* FCGUIElementFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD18A100BCB230043DDBE /* FCGUIElementFactory.cpp */; };
+		06EDD1D4100BCB230043DDBE /* FCModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD18C100BCB230043DDBE /* FCModel.cpp */; };
+		06EDD1D5100BCB230043DDBE /* FCModelEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD18E100BCB230043DDBE /* FCModelEvent.cpp */; };
+		06EDD1D6100BCB230043DDBE /* FCView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD190100BCB230043DDBE /* FCView.cpp */; };
+		06EDD1D7100BCB230043DDBE /* FCViewEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD192100BCB230043DDBE /* FCViewEvent.cpp */; };
+		06EDD1D8100BCB230043DDBE /* ForumCategory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD194100BCB230043DDBE /* ForumCategory.cpp */; };
+		06EDD1D9100BCB230043DDBE /* ForumModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD196100BCB230043DDBE /* ForumModel.cpp */; };
+		06EDD1DA100BCB230043DDBE /* ForumThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD198100BCB230043DDBE /* ForumThread.cpp */; };
+		06EDD1DB100BCB230043DDBE /* ForumWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD19A100BCB230043DDBE /* ForumWindow.cpp */; };
+		06EDD1DC100BCB230043DDBE /* GUIBankAuthView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD19C100BCB230043DDBE /* GUIBankAuthView.cpp */; };
+		06EDD1DD100BCB230043DDBE /* GUIBankView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD19E100BCB230043DDBE /* GUIBankView.cpp */; };
+		06EDD1DE100BCB230043DDBE /* GUIConsoleCtrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1A0100BCB230043DDBE /* GUIConsoleCtrl.cpp */; };
+		06EDD1DF100BCB230043DDBE /* GUIFCCharacterItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1A2100BCB230043DDBE /* GUIFCCharacterItem.cpp */; };
+		06EDD1E0100BCB230043DDBE /* GUIForumCatBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1A4100BCB230043DDBE /* GUIForumCatBrowser.cpp */; };
+		06EDD1E1100BCB230043DDBE /* GUIForumPostItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1A6100BCB230043DDBE /* GUIForumPostItem.cpp */; };
+		06EDD1E2100BCB230043DDBE /* GUIForumThreadBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1A8100BCB230043DDBE /* GUIForumThreadBrowser.cpp */; };
+		06EDD1E3100BCB230043DDBE /* GUIForumThreadReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1AA100BCB230043DDBE /* GUIForumThreadReader.cpp */; };
+		06EDD1E4100BCB230043DDBE /* GUIHyperlink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1AC100BCB230043DDBE /* GUIHyperlink.cpp */; };
+		06EDD1E5100BCB230043DDBE /* GUIVUMeter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1AE100BCB230043DDBE /* GUIVUMeter.cpp */; };
+		06EDD1E6100BCB230043DDBE /* InGameAppWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1B2100BCB230043DDBE /* InGameAppWindow.cpp */; };
+		06EDD1E7100BCB230043DDBE /* irrSingleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1B4100BCB230043DDBE /* irrSingleton.cpp */; };
+		06EDD1E8100BCB230043DDBE /* ItemMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1B6100BCB230043DDBE /* ItemMgr.cpp */; };
+		06EDD1E9100BCB230043DDBE /* MissionMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1B9100BCB230043DDBE /* MissionMgr.cpp */; };
+		06EDD1EA100BCB230043DDBE /* Settings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1BC100BCB230043DDBE /* Settings.cpp */; };
+		06EDD1EB100BCB230043DDBE /* SoftwareMgrWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1BE100BCB230043DDBE /* SoftwareMgrWindow.cpp */; };
+		06EDD1EC100BCB230043DDBE /* TextAnimator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1C0100BCB230043DDBE /* TextAnimator.cpp */; };
+		06EDD1ED100BCB230043DDBE /* ViewLogicCharacterSelection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1C2100BCB230043DDBE /* ViewLogicCharacterSelection.cpp */; };
+		06EDD1EE100BCB230043DDBE /* ViewLogicGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1C4100BCB230043DDBE /* ViewLogicGame.cpp */; };
+		06EDD1EF100BCB230043DDBE /* ViewLogicLoading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1C6100BCB230043DDBE /* ViewLogicLoading.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		06EDD007100BBE580043DDBE /* FCClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FCClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		06EDD00A100BBE580043DDBE /* FCClient-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FCClient-Info.plist"; sourceTree = "<group>"; };
+		06EDD00F100BBFC50043DDBE /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		06EDD014100BBFD40043DDBE /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		06EDD016100BBFE40043DDBE /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		06EDD018100BC0800043DDBE /* libIrrlicht.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIrrlicht.a; path = /usr/local/irrlicht/lib/libIrrlicht.a; sourceTree = "<absolute>"; };
+		06EDD01C100BC1450043DDBE /* MainMenu.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = MainMenu.nib; path = "../../../../irrlicht/irrlicht-1.4.2/source/Irrlicht/MacOSX/MainMenu.nib"; sourceTree = SOURCE_ROOT; };
+		06EDD171100BCB230043DDBE /* BankingWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BankingWindow.cpp; path = ../../../Clients/FCClient/BankingWindow.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD172100BCB230043DDBE /* BankingWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BankingWindow.h; path = ../../../Clients/FCClient/BankingWindow.h; sourceTree = SOURCE_ROOT; };
+		06EDD173100BCB230043DDBE /* Character.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Character.cpp; path = ../../../Clients/FCClient/Character.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD174100BCB230043DDBE /* Character.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Character.h; path = ../../../Clients/FCClient/Character.h; sourceTree = SOURCE_ROOT; };
+		06EDD175100BCB230043DDBE /* City.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = City.h; path = ../../../Clients/FCClient/City.h; sourceTree = SOURCE_ROOT; };
+		06EDD176100BCB230043DDBE /* clientdefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = clientdefs.h; path = ../../../Clients/FCClient/clientdefs.h; sourceTree = SOURCE_ROOT; };
+		06EDD177100BCB230043DDBE /* clientstrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = clientstrings.h; path = ../../../Clients/FCClient/clientstrings.h; sourceTree = SOURCE_ROOT; };
+		06EDD178100BCB230043DDBE /* ConsoleWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ConsoleWindow.cpp; path = ../../../Clients/FCClient/ConsoleWindow.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD179100BCB230043DDBE /* ConsoleWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConsoleWindow.h; path = ../../../Clients/FCClient/ConsoleWindow.h; sourceTree = SOURCE_ROOT; };
+		06EDD17A100BCB230043DDBE /* Country.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Country.h; path = ../../../Clients/FCClient/Country.h; sourceTree = SOURCE_ROOT; };
+		06EDD17B100BCB230043DDBE /* Desktop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Desktop.cpp; path = ../../../Clients/FCClient/Desktop.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD17C100BCB230043DDBE /* Desktop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Desktop.h; path = ../../../Clients/FCClient/Desktop.h; sourceTree = SOURCE_ROOT; };
+		06EDD17D100BCB230043DDBE /* DesktopAppBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DesktopAppBar.cpp; path = ../../../Clients/FCClient/DesktopAppBar.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD17E100BCB230043DDBE /* DesktopAppBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DesktopAppBar.h; path = ../../../Clients/FCClient/DesktopAppBar.h; sourceTree = SOURCE_ROOT; };
+		06EDD17F100BCB230043DDBE /* DesktopIcon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DesktopIcon.cpp; path = ../../../Clients/FCClient/DesktopIcon.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD180100BCB230043DDBE /* DesktopIcon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DesktopIcon.h; path = ../../../Clients/FCClient/DesktopIcon.h; sourceTree = SOURCE_ROOT; };
+		06EDD181100BCB230043DDBE /* DlgNewCharacter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DlgNewCharacter.cpp; path = ../../../Clients/FCClient/DlgNewCharacter.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD182100BCB230043DDBE /* DlgNewCharacter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DlgNewCharacter.h; path = ../../../Clients/FCClient/DlgNewCharacter.h; sourceTree = SOURCE_ROOT; };
+		06EDD183100BCB230043DDBE /* DlgNewThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DlgNewThread.cpp; path = ../../../Clients/FCClient/DlgNewThread.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD184100BCB230043DDBE /* DlgNewThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DlgNewThread.h; path = ../../../Clients/FCClient/DlgNewThread.h; sourceTree = SOURCE_ROOT; };
+		06EDD185100BCB230043DDBE /* FCClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FCClient.cpp; path = ../../../Clients/FCClient/FCClient.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD186100BCB230043DDBE /* FCController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FCController.cpp; path = ../../../Clients/FCClient/FCController.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD187100BCB230043DDBE /* FCController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FCController.h; path = ../../../Clients/FCClient/FCController.h; sourceTree = SOURCE_ROOT; };
+		06EDD188100BCB230043DDBE /* FCDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FCDialog.cpp; path = ../../../Clients/FCClient/FCDialog.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD189100BCB230043DDBE /* FCDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FCDialog.h; path = ../../../Clients/FCClient/FCDialog.h; sourceTree = SOURCE_ROOT; };
+		06EDD18A100BCB230043DDBE /* FCGUIElementFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FCGUIElementFactory.cpp; path = ../../../Clients/FCClient/FCGUIElementFactory.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD18B100BCB230043DDBE /* FCGUIElementFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FCGUIElementFactory.h; path = ../../../Clients/FCClient/FCGUIElementFactory.h; sourceTree = SOURCE_ROOT; };
+		06EDD18C100BCB230043DDBE /* FCModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FCModel.cpp; path = ../../../Clients/FCClient/FCModel.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD18D100BCB230043DDBE /* FCModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FCModel.h; path = ../../../Clients/FCClient/FCModel.h; sourceTree = SOURCE_ROOT; };
+		06EDD18E100BCB230043DDBE /* FCModelEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FCModelEvent.cpp; path = ../../../Clients/FCClient/FCModelEvent.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD18F100BCB230043DDBE /* FCModelEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FCModelEvent.h; path = ../../../Clients/FCClient/FCModelEvent.h; sourceTree = SOURCE_ROOT; };
+		06EDD190100BCB230043DDBE /* FCView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FCView.cpp; path = ../../../Clients/FCClient/FCView.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD191100BCB230043DDBE /* FCView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FCView.h; path = ../../../Clients/FCClient/FCView.h; sourceTree = SOURCE_ROOT; };
+		06EDD192100BCB230043DDBE /* FCViewEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FCViewEvent.cpp; path = ../../../Clients/FCClient/FCViewEvent.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD193100BCB230043DDBE /* FCViewEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FCViewEvent.h; path = ../../../Clients/FCClient/FCViewEvent.h; sourceTree = SOURCE_ROOT; };
+		06EDD194100BCB230043DDBE /* ForumCategory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ForumCategory.cpp; path = ../../../Clients/FCClient/ForumCategory.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD195100BCB230043DDBE /* ForumCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ForumCategory.h; path = ../../../Clients/FCClient/ForumCategory.h; sourceTree = SOURCE_ROOT; };
+		06EDD196100BCB230043DDBE /* ForumModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ForumModel.cpp; path = ../../../Clients/FCClient/ForumModel.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD197100BCB230043DDBE /* ForumModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ForumModel.h; path = ../../../Clients/FCClient/ForumModel.h; sourceTree = SOURCE_ROOT; };
+		06EDD198100BCB230043DDBE /* ForumThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ForumThread.cpp; path = ../../../Clients/FCClient/ForumThread.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD199100BCB230043DDBE /* ForumThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ForumThread.h; path = ../../../Clients/FCClient/ForumThread.h; sourceTree = SOURCE_ROOT; };
+		06EDD19A100BCB230043DDBE /* ForumWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ForumWindow.cpp; path = ../../../Clients/FCClient/ForumWindow.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD19B100BCB230043DDBE /* ForumWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ForumWindow.h; path = ../../../Clients/FCClient/ForumWindow.h; sourceTree = SOURCE_ROOT; };
+		06EDD19C100BCB230043DDBE /* GUIBankAuthView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIBankAuthView.cpp; path = ../../../Clients/FCClient/GUIBankAuthView.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD19D100BCB230043DDBE /* GUIBankAuthView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIBankAuthView.h; path = ../../../Clients/FCClient/GUIBankAuthView.h; sourceTree = SOURCE_ROOT; };
+		06EDD19E100BCB230043DDBE /* GUIBankView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIBankView.cpp; path = ../../../Clients/FCClient/GUIBankView.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD19F100BCB230043DDBE /* GUIBankView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIBankView.h; path = ../../../Clients/FCClient/GUIBankView.h; sourceTree = SOURCE_ROOT; };
+		06EDD1A0100BCB230043DDBE /* GUIConsoleCtrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIConsoleCtrl.cpp; path = ../../../Clients/FCClient/GUIConsoleCtrl.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1A1100BCB230043DDBE /* GUIConsoleCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIConsoleCtrl.h; path = ../../../Clients/FCClient/GUIConsoleCtrl.h; sourceTree = SOURCE_ROOT; };
+		06EDD1A2100BCB230043DDBE /* GUIFCCharacterItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIFCCharacterItem.cpp; path = ../../../Clients/FCClient/GUIFCCharacterItem.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1A3100BCB230043DDBE /* GUIFCCharacterItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIFCCharacterItem.h; path = ../../../Clients/FCClient/GUIFCCharacterItem.h; sourceTree = SOURCE_ROOT; };
+		06EDD1A4100BCB230043DDBE /* GUIForumCatBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIForumCatBrowser.cpp; path = ../../../Clients/FCClient/GUIForumCatBrowser.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1A5100BCB230043DDBE /* GUIForumCatBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIForumCatBrowser.h; path = ../../../Clients/FCClient/GUIForumCatBrowser.h; sourceTree = SOURCE_ROOT; };
+		06EDD1A6100BCB230043DDBE /* GUIForumPostItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIForumPostItem.cpp; path = ../../../Clients/FCClient/GUIForumPostItem.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1A7100BCB230043DDBE /* GUIForumPostItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIForumPostItem.h; path = ../../../Clients/FCClient/GUIForumPostItem.h; sourceTree = SOURCE_ROOT; };
+		06EDD1A8100BCB230043DDBE /* GUIForumThreadBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIForumThreadBrowser.cpp; path = ../../../Clients/FCClient/GUIForumThreadBrowser.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1A9100BCB230043DDBE /* GUIForumThreadBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIForumThreadBrowser.h; path = ../../../Clients/FCClient/GUIForumThreadBrowser.h; sourceTree = SOURCE_ROOT; };
+		06EDD1AA100BCB230043DDBE /* GUIForumThreadReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIForumThreadReader.cpp; path = ../../../Clients/FCClient/GUIForumThreadReader.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1AB100BCB230043DDBE /* GUIForumThreadReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIForumThreadReader.h; path = ../../../Clients/FCClient/GUIForumThreadReader.h; sourceTree = SOURCE_ROOT; };
+		06EDD1AC100BCB230043DDBE /* GUIHyperlink.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIHyperlink.cpp; path = ../../../Clients/FCClient/GUIHyperlink.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1AD100BCB230043DDBE /* GUIHyperlink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIHyperlink.h; path = ../../../Clients/FCClient/GUIHyperlink.h; sourceTree = SOURCE_ROOT; };
+		06EDD1AE100BCB230043DDBE /* GUIVUMeter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIVUMeter.cpp; path = ../../../Clients/FCClient/GUIVUMeter.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1AF100BCB230043DDBE /* GUIVUMeter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIVUMeter.h; path = ../../../Clients/FCClient/GUIVUMeter.h; sourceTree = SOURCE_ROOT; };
+		06EDD1B0100BCB230043DDBE /* IDesktop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IDesktop.h; path = ../../../Clients/FCClient/IDesktop.h; sourceTree = SOURCE_ROOT; };
+		06EDD1B1100BCB230043DDBE /* IModelEventSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IModelEventSink.h; path = ../../../Clients/FCClient/IModelEventSink.h; sourceTree = SOURCE_ROOT; };
+		06EDD1B2100BCB230043DDBE /* InGameAppWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = InGameAppWindow.cpp; path = ../../../Clients/FCClient/InGameAppWindow.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1B3100BCB230043DDBE /* InGameAppWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InGameAppWindow.h; path = ../../../Clients/FCClient/InGameAppWindow.h; sourceTree = SOURCE_ROOT; };
+		06EDD1B4100BCB230043DDBE /* irrSingleton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = irrSingleton.cpp; path = ../../../Clients/FCClient/irrSingleton.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1B5100BCB230043DDBE /* irrSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = irrSingleton.h; path = ../../../Clients/FCClient/irrSingleton.h; sourceTree = SOURCE_ROOT; };
+		06EDD1B6100BCB230043DDBE /* ItemMgr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ItemMgr.cpp; path = ../../../Clients/FCClient/ItemMgr.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1B7100BCB230043DDBE /* ItemMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemMgr.h; path = ../../../Clients/FCClient/ItemMgr.h; sourceTree = SOURCE_ROOT; };
+		06EDD1B8100BCB230043DDBE /* IViewLogic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IViewLogic.h; path = ../../../Clients/FCClient/IViewLogic.h; sourceTree = SOURCE_ROOT; };
+		06EDD1B9100BCB230043DDBE /* MissionMgr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MissionMgr.cpp; path = ../../../Clients/FCClient/MissionMgr.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1BA100BCB230043DDBE /* MissionMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MissionMgr.h; path = ../../../Clients/FCClient/MissionMgr.h; sourceTree = SOURCE_ROOT; };
+		06EDD1BB100BCB230043DDBE /* QueueReaderThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QueueReaderThread.h; path = ../../../Clients/FCClient/QueueReaderThread.h; sourceTree = SOURCE_ROOT; };
+		06EDD1BC100BCB230043DDBE /* Settings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Settings.cpp; path = ../../../Clients/FCClient/Settings.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1BD100BCB230043DDBE /* Settings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Settings.h; path = ../../../Clients/FCClient/Settings.h; sourceTree = SOURCE_ROOT; };
+		06EDD1BE100BCB230043DDBE /* SoftwareMgrWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SoftwareMgrWindow.cpp; path = ../../../Clients/FCClient/SoftwareMgrWindow.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1BF100BCB230043DDBE /* SoftwareMgrWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoftwareMgrWindow.h; path = ../../../Clients/FCClient/SoftwareMgrWindow.h; sourceTree = SOURCE_ROOT; };
+		06EDD1C0100BCB230043DDBE /* TextAnimator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TextAnimator.cpp; path = ../../../Clients/FCClient/TextAnimator.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1C1100BCB230043DDBE /* TextAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextAnimator.h; path = ../../../Clients/FCClient/TextAnimator.h; sourceTree = SOURCE_ROOT; };
+		06EDD1C2100BCB230043DDBE /* ViewLogicCharacterSelection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ViewLogicCharacterSelection.cpp; path = ../../../Clients/FCClient/ViewLogicCharacterSelection.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1C3100BCB230043DDBE /* ViewLogicCharacterSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewLogicCharacterSelection.h; path = ../../../Clients/FCClient/ViewLogicCharacterSelection.h; sourceTree = SOURCE_ROOT; };
+		06EDD1C4100BCB230043DDBE /* ViewLogicGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ViewLogicGame.cpp; path = ../../../Clients/FCClient/ViewLogicGame.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1C5100BCB230043DDBE /* ViewLogicGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewLogicGame.h; path = ../../../Clients/FCClient/ViewLogicGame.h; sourceTree = SOURCE_ROOT; };
+		06EDD1C6100BCB230043DDBE /* ViewLogicLoading.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ViewLogicLoading.cpp; path = ../../../Clients/FCClient/ViewLogicLoading.cpp; sourceTree = SOURCE_ROOT; };
+		06EDD1C7100BCB230043DDBE /* ViewLogicLoading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewLogicLoading.h; path = ../../../Clients/FCClient/ViewLogicLoading.h; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		06EDD005100BBE580043DDBE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06EDD010100BBFC50043DDBE /* Carbon.framework in Frameworks */,
+				06EDD015100BBFD40043DDBE /* Cocoa.framework in Frameworks */,
+				06EDD017100BBFE40043DDBE /* OpenGL.framework in Frameworks */,
+				06EDD019100BC0800043DDBE /* libIrrlicht.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		06EDCFF7100BBE2B0043DDBE = {
+			isa = PBXGroup;
+			children = (
+				06EDD0A0100BCAC60043DDBE /* Headers */,
+				06EDD09F100BCABD0043DDBE /* Source */,
+				06EDD01C100BC1450043DDBE /* MainMenu.nib */,
+				06EDD018100BC0800043DDBE /* libIrrlicht.a */,
+				06EDD016100BBFE40043DDBE /* OpenGL.framework */,
+				06EDD014100BBFD40043DDBE /* Cocoa.framework */,
+				06EDD00F100BBFC50043DDBE /* Carbon.framework */,
+				06EDD008100BBE580043DDBE /* Products */,
+				06EDD00A100BBE580043DDBE /* FCClient-Info.plist */,
+			);
+			sourceTree = "<group>";
+		};
+		06EDD008100BBE580043DDBE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				06EDD007100BBE580043DDBE /* FCClient.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		06EDD09F100BCABD0043DDBE /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				06EDD171100BCB230043DDBE /* BankingWindow.cpp */,
+				06EDD173100BCB230043DDBE /* Character.cpp */,
+				06EDD178100BCB230043DDBE /* ConsoleWindow.cpp */,
+				06EDD17B100BCB230043DDBE /* Desktop.cpp */,
+				06EDD17D100BCB230043DDBE /* DesktopAppBar.cpp */,
+				06EDD17F100BCB230043DDBE /* DesktopIcon.cpp */,
+				06EDD181100BCB230043DDBE /* DlgNewCharacter.cpp */,
+				06EDD183100BCB230043DDBE /* DlgNewThread.cpp */,
+				06EDD185100BCB230043DDBE /* FCClient.cpp */,
+				06EDD186100BCB230043DDBE /* FCController.cpp */,
+				06EDD188100BCB230043DDBE /* FCDialog.cpp */,
+				06EDD18A100BCB230043DDBE /* FCGUIElementFactory.cpp */,
+				06EDD18C100BCB230043DDBE /* FCModel.cpp */,
+				06EDD18E100BCB230043DDBE /* FCModelEvent.cpp */,
+				06EDD190100BCB230043DDBE /* FCView.cpp */,
+				06EDD192100BCB230043DDBE /* FCViewEvent.cpp */,
+				06EDD194100BCB230043DDBE /* ForumCategory.cpp */,
+				06EDD196100BCB230043DDBE /* ForumModel.cpp */,
+				06EDD198100BCB230043DDBE /* ForumThread.cpp */,
+				06EDD19A100BCB230043DDBE /* ForumWindow.cpp */,
+				06EDD19C100BCB230043DDBE /* GUIBankAuthView.cpp */,
+				06EDD19E100BCB230043DDBE /* GUIBankView.cpp */,
+				06EDD1A0100BCB230043DDBE /* GUIConsoleCtrl.cpp */,
+				06EDD1A2100BCB230043DDBE /* GUIFCCharacterItem.cpp */,
+				06EDD1A4100BCB230043DDBE /* GUIForumCatBrowser.cpp */,
+				06EDD1A6100BCB230043DDBE /* GUIForumPostItem.cpp */,
+				06EDD1A8100BCB230043DDBE /* GUIForumThreadBrowser.cpp */,
+				06EDD1AA100BCB230043DDBE /* GUIForumThreadReader.cpp */,
+				06EDD1AC100BCB230043DDBE /* GUIHyperlink.cpp */,
+				06EDD1AE100BCB230043DDBE /* GUIVUMeter.cpp */,
+				06EDD1B2100BCB230043DDBE /* InGameAppWindow.cpp */,
+				06EDD1B4100BCB230043DDBE /* irrSingleton.cpp */,
+				06EDD1B6100BCB230043DDBE /* ItemMgr.cpp */,
+				06EDD1B9100BCB230043DDBE /* MissionMgr.cpp */,
+				06EDD1BC100BCB230043DDBE /* Settings.cpp */,
+				06EDD1BE100BCB230043DDBE /* SoftwareMgrWindow.cpp */,
+				06EDD1C0100BCB230043DDBE /* TextAnimator.cpp */,
+				06EDD1C2100BCB230043DDBE /* ViewLogicCharacterSelection.cpp */,
+				06EDD1C4100BCB230043DDBE /* ViewLogicGame.cpp */,
+				06EDD1C6100BCB230043DDBE /* ViewLogicLoading.cpp */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		06EDD0A0100BCAC60043DDBE /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				06EDD180100BCB230043DDBE /* DesktopIcon.h */,
+				06EDD182100BCB230043DDBE /* DlgNewCharacter.h */,
+				06EDD184100BCB230043DDBE /* DlgNewThread.h */,
+				06EDD187100BCB230043DDBE /* FCController.h */,
+				06EDD189100BCB230043DDBE /* FCDialog.h */,
+				06EDD1B0100BCB230043DDBE /* IDesktop.h */,
+				06EDD1B1100BCB230043DDBE /* IModelEventSink.h */,
+				06EDD1B3100BCB230043DDBE /* InGameAppWindow.h */,
+				06EDD1B5100BCB230043DDBE /* irrSingleton.h */,
+				06EDD1B7100BCB230043DDBE /* ItemMgr.h */,
+				06EDD1B8100BCB230043DDBE /* IViewLogic.h */,
+				06EDD1BA100BCB230043DDBE /* MissionMgr.h */,
+				06EDD1BB100BCB230043DDBE /* QueueReaderThread.h */,
+				06EDD1BD100BCB230043DDBE /* Settings.h */,
+				06EDD1BF100BCB230043DDBE /* SoftwareMgrWindow.h */,
+				06EDD1C1100BCB230043DDBE /* TextAnimator.h */,
+				06EDD1C3100BCB230043DDBE /* ViewLogicCharacterSelection.h */,
+				06EDD1C5100BCB230043DDBE /* ViewLogicGame.h */,
+				06EDD1C7100BCB230043DDBE /* ViewLogicLoading.h */,
+				06EDD18B100BCB230043DDBE /* FCGUIElementFactory.h */,
+				06EDD18D100BCB230043DDBE /* FCModel.h */,
+				06EDD18F100BCB230043DDBE /* FCModelEvent.h */,
+				06EDD191100BCB230043DDBE /* FCView.h */,
+				06EDD193100BCB230043DDBE /* FCViewEvent.h */,
+				06EDD195100BCB230043DDBE /* ForumCategory.h */,
+				06EDD197100BCB230043DDBE /* ForumModel.h */,
+				06EDD199100BCB230043DDBE /* ForumThread.h */,
+				06EDD19B100BCB230043DDBE /* ForumWindow.h */,
+				06EDD19D100BCB230043DDBE /* GUIBankAuthView.h */,
+				06EDD19F100BCB230043DDBE /* GUIBankView.h */,
+				06EDD1A1100BCB230043DDBE /* GUIConsoleCtrl.h */,
+				06EDD1A3100BCB230043DDBE /* GUIFCCharacterItem.h */,
+				06EDD1A5100BCB230043DDBE /* GUIForumCatBrowser.h */,
+				06EDD1A7100BCB230043DDBE /* GUIForumPostItem.h */,
+				06EDD1A9100BCB230043DDBE /* GUIForumThreadBrowser.h */,
+				06EDD1AB100BCB230043DDBE /* GUIForumThreadReader.h */,
+				06EDD1AD100BCB230043DDBE /* GUIHyperlink.h */,
+				06EDD1AF100BCB230043DDBE /* GUIVUMeter.h */,
+				06EDD175100BCB230043DDBE /* City.h */,
+				06EDD17A100BCB230043DDBE /* Country.h */,
+				06EDD17C100BCB230043DDBE /* Desktop.h */,
+				06EDD17E100BCB230043DDBE /* DesktopAppBar.h */,
+				06EDD172100BCB230043DDBE /* BankingWindow.h */,
+				06EDD174100BCB230043DDBE /* Character.h */,
+				06EDD176100BCB230043DDBE /* clientdefs.h */,
+				06EDD177100BCB230043DDBE /* clientstrings.h */,
+				06EDD179100BCB230043DDBE /* ConsoleWindow.h */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		06EDD006100BBE580043DDBE /* FCClient */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 06EDD00D100BBE5A0043DDBE /* Build configuration list for PBXNativeTarget "FCClient" */;
+			buildPhases = (
+				06EDD003100BBE580043DDBE /* Resources */,
+				06EDD004100BBE580043DDBE /* Sources */,
+				06EDD005100BBE580043DDBE /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FCClient;
+			productName = FCClient;
+			productReference = 06EDD007100BBE580043DDBE /* FCClient.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		06EDCFF9100BBE2B0043DDBE /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 06EDCFFC100BBE2B0043DDBE /* Build configuration list for PBXProject "FCClient" */;
+			compatibilityVersion = "Xcode 2.4";
+			hasScannedForEncodings = 0;
+			mainGroup = 06EDCFF7100BBE2B0043DDBE;
+			productRefGroup = 06EDD008100BBE580043DDBE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				06EDD006100BBE580043DDBE /* FCClient */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		06EDD003100BBE580043DDBE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06EDD01D100BC1450043DDBE /* MainMenu.nib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		06EDD004100BBE580043DDBE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06EDD1C8100BCB230043DDBE /* BankingWindow.cpp in Sources */,
+				06EDD1C9100BCB230043DDBE /* Character.cpp in Sources */,
+				06EDD1CA100BCB230043DDBE /* ConsoleWindow.cpp in Sources */,
+				06EDD1CB100BCB230043DDBE /* Desktop.cpp in Sources */,
+				06EDD1CC100BCB230043DDBE /* DesktopAppBar.cpp in Sources */,
+				06EDD1CD100BCB230043DDBE /* DesktopIcon.cpp in Sources */,
+				06EDD1CE100BCB230043DDBE /* DlgNewCharacter.cpp in Sources */,
+				06EDD1CF100BCB230043DDBE /* DlgNewThread.cpp in Sources */,
+				06EDD1D0100BCB230043DDBE /* FCClient.cpp in Sources */,
+				06EDD1D1100BCB230043DDBE /* FCController.cpp in Sources */,
+				06EDD1D2100BCB230043DDBE /* FCDialog.cpp in Sources */,
+				06EDD1D3100BCB230043DDBE /* FCGUIElementFactory.cpp in Sources */,
+				06EDD1D4100BCB230043DDBE /* FCModel.cpp in Sources */,
+				06EDD1D5100BCB230043DDBE /* FCModelEvent.cpp in Sources */,
+				06EDD1D6100BCB230043DDBE /* FCView.cpp in Sources */,
+				06EDD1D7100BCB230043DDBE /* FCViewEvent.cpp in Sources */,
+				06EDD1D8100BCB230043DDBE /* ForumCategory.cpp in Sources */,
+				06EDD1D9100BCB230043DDBE /* ForumModel.cpp in Sources */,
+				06EDD1DA100BCB230043DDBE /* ForumThread.cpp in Sources */,
+				06EDD1DB100BCB230043DDBE /* ForumWindow.cpp in Sources */,
+				06EDD1DC100BCB230043DDBE /* GUIBankAuthView.cpp in Sources */,
+				06EDD1DD100BCB230043DDBE /* GUIBankView.cpp in Sources */,
+				06EDD1DE100BCB230043DDBE /* GUIConsoleCtrl.cpp in Sources */,
+				06EDD1DF100BCB230043DDBE /* GUIFCCharacterItem.cpp in Sources */,
+				06EDD1E0100BCB230043DDBE /* GUIForumCatBrowser.cpp in Sources */,
+				06EDD1E1100BCB230043DDBE /* GUIForumPostItem.cpp in Sources */,
+				06EDD1E2100BCB230043DDBE /* GUIForumThreadBrowser.cpp in Sources */,
+				06EDD1E3100BCB230043DDBE /* GUIForumThreadReader.cpp in Sources */,
+				06EDD1E4100BCB230043DDBE /* GUIHyperlink.cpp in Sources */,
+				06EDD1E5100BCB230043DDBE /* GUIVUMeter.cpp in Sources */,
+				06EDD1E6100BCB230043DDBE /* InGameAppWindow.cpp in Sources */,
+				06EDD1E7100BCB230043DDBE /* irrSingleton.cpp in Sources */,
+				06EDD1E8100BCB230043DDBE /* ItemMgr.cpp in Sources */,
+				06EDD1E9100BCB230043DDBE /* MissionMgr.cpp in Sources */,
+				06EDD1EA100BCB230043DDBE /* Settings.cpp in Sources */,
+				06EDD1EB100BCB230043DDBE /* SoftwareMgrWindow.cpp in Sources */,
+				06EDD1EC100BCB230043DDBE /* TextAnimator.cpp in Sources */,
+				06EDD1ED100BCB230043DDBE /* ViewLogicCharacterSelection.cpp in Sources */,
+				06EDD1EE100BCB230043DDBE /* ViewLogicGame.cpp in Sources */,
+				06EDD1EF100BCB230043DDBE /* ViewLogicLoading.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		06EDCFFA100BBE2B0043DDBE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_FAST_MATH = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = _FCCLIENT_COMPILE_;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
+				HEADER_SEARCH_PATHS = /usr/local/irrlicht/include;
+			};
+			name = Debug;
+		};
+		06EDCFFB100BBE2B0043DDBE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = _FCCLIENT_COMPILE_;
+				HEADER_SEARCH_PATHS = /usr/local/irrlicht/include;
+			};
+			name = Release;
+		};
+		06EDD00B100BBE5A0043DDBE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INFOPLIST_FILE = "FCClient-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/irrlicht/lib,
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../common/mysql/lib/debug\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../../common/mysql/lib/opt\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../../common/pthreads-win32/lib\"";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = FCClient;
+			};
+			name = Debug;
+		};
+		06EDD00C100BBE5A0043DDBE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				HEADER_SEARCH_PATHS = "/usr/local/irrlicht/include/**";
+				INFOPLIST_FILE = "FCClient-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/irrlicht/lib,
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../common/mysql/lib/debug\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../../common/mysql/lib/opt\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../../common/pthreads-win32/lib\"";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = FCClient;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		06EDCFFC100BBE2B0043DDBE /* Build configuration list for PBXProject "FCClient" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				06EDCFFA100BBE2B0043DDBE /* Debug */,
+				06EDCFFB100BBE2B0043DDBE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		06EDD00D100BBE5A0043DDBE /* Build configuration list for PBXNativeTarget "FCClient" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				06EDD00B100BBE5A0043DDBE /* Debug */,
+				06EDD00C100BBE5A0043DDBE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 06EDCFF9100BBE2B0043DDBE /* Project object */;
+}
