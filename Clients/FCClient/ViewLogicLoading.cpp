@@ -154,6 +154,8 @@ bool ViewLogicLoading::OnEvent(const SEvent& event)
 							pEdit = (IGUIEditBox*) pWnd->getElementFromId( EDIT_PASSWORD );
 							password = pEdit->getText();
 
+              event.GUIEvent.Caller->setEnabled(false);
+
 							FCViewEventLogin e( username, password );
 							m_pContainer->GetController()->OnViewEvent(e);
 						}

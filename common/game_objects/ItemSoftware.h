@@ -4,6 +4,7 @@
 #include "Item.h"
 #ifndef _FCCLIENT_COMPILE_
 #include "../interfaces/ISoftwareLogic.h"
+class Player;
 #endif
 
 class ItemSoftware : public Item
@@ -13,7 +14,7 @@ public:
   ~ItemSoftware(void);
 
 #ifndef _FCCLIENT_COMPILE_
-  bool Execute(const std::string& cmd, const std::string& args, std::string& result);
+  bool Execute(Player* pPlayer, const std::string& cmd, const std::string& args, std::string& result);
 #endif//
 
   void SetSoftwareType(FCSHORT type)                        { m_swType = type; }
@@ -22,6 +23,7 @@ public:
   void SetMemCost(FCULONG cost)                             { m_memCost = cost; }
 #ifndef _FCCLIENT_COMPILE_
   void SetCommand(std::string cmd)                          { m_command = cmd; }
+  void SetDesktopIconFlag(bool bFlag)                       { m_bDesktopFlag = bFlag; }
   void SetLogic(ISoftwareLogic* pLogic)                     { m_pLogic = pLogic; }
 #endif//
 
@@ -30,6 +32,7 @@ public:
   FCSHORT GetCPUCost()                                      { return m_cpuCost; }
   FCULONG GetMemCost()                                      { return m_memCost; }
 #ifndef _FCCLIENT_COMPILE_
+  bool GetDesktopIconFlag()                                 { return m_bDesktopFlag; }
   std::string GetCommand()                                  { return m_command; }
 #endif
 
@@ -41,6 +44,7 @@ protected:
   FCSHORT m_cpuCost;                //!> CPU Cost of the software
   FCULONG m_memCost;                //!> Memory cost of the software
 #ifndef _FCCLIENT_COMPILE_
+  bool m_bDesktopFlag;              //!> Flag indicating whether the client should show this item on the desktop
   std::string m_command;            //!> The command that this software will respond to from a command line
   ISoftwareLogic* m_pLogic;         //!> Additional logic that may be attached to this item
 #endif//

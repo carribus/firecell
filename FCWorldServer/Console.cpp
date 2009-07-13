@@ -70,7 +70,7 @@ bool Console::executeCommand(std::string cmd, std::string curPath, std::string& 
           if ( bIsCommand )
           {
             cmd = pSoftware->GetCommand();
-            bResult = pSoftware->Execute(cmd, args, result);
+            bResult = pSoftware->Execute(&m_player, cmd, args, result);
           }
         }
       }

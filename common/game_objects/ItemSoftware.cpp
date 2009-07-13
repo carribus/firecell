@@ -27,13 +27,13 @@ ItemSoftware::~ItemSoftware(void)
 ///////////////////////////////////////////////////////////////////////
 
 #ifndef _FCCLIENT_COMPILE_
-bool ItemSoftware::Execute(const std::string& cmd, const std::string& args, std::string& result)
+bool ItemSoftware::Execute(Player* pPlayer, const std::string& cmd, const std::string& args, std::string& result)
 {
   bool bResult = false;
 
   if ( m_pLogic )
   {
-    bResult = m_pLogic->Execute(cmd, args, result);
+    bResult = m_pLogic->Execute(pPlayer, cmd, args, result);
   }
   else
   {
