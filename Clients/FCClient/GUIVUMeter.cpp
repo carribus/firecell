@@ -2,7 +2,7 @@
 #include "FCGUIElementFactory.h"
 #include "GUIVUMeter.h"
 
-GUIVUMeter::GUIVUMeter(IGUIEnvironment*& environment, core::rect<s32> rect, IGUIElement*& pParent, SColor backColor, SColor barColor, s32 id)
+GUIVUMeter::GUIVUMeter(IGUIEnvironment*& environment, core::rect<s32> rect, IGUIElement* pParent, SColor backColor, SColor barColor, s32 id)
 : IGUIElement((EGUI_ELEMENT_TYPE)FCGUIElementFactory::EGUIET_VUMETER, environment, pParent, id, rect)
 , m_backColor(backColor)
 , m_barColor(barColor)

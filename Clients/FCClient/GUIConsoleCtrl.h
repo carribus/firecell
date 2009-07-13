@@ -21,7 +21,7 @@ struct IGUIConsoleEventSink
 class GUIConsoleCtrl : public IGUIElement
 {
 public:
-  GUIConsoleCtrl(IGUIEnvironment*& environment, core::rect<s32> rect, IGUIElement*& pParent = 0, SColor backColor = SColor(255, 0, 0, 0), SColor textColor = SColor(255, 128, 128, 128), s32 id = -1);
+  GUIConsoleCtrl(IGUIEnvironment*& environment, core::rect<s32> rect, IGUIElement* pParent = 0, SColor backColor = SColor(255, 0, 0, 0), SColor textColor = SColor(255, 128, 128, 128), s32 id = -1);
   ~GUIConsoleCtrl(void);
 
   /*
