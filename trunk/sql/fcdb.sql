@@ -79,7 +79,7 @@ CREATE TABLE `fc_characteritems` (
 
 /*Data for the table `fc_characteritems` */
 
-insert  into `fc_characteritems`(`character_id`,`item_id`,`count`) values (1,21,1),(1,22,1),(1,25,1),(1,26,1),(1,27,1),(1,28,1),(1,29,1),(1,30,1),(1,31,1),(1,32,1);
+insert  into `fc_characteritems`(`character_id`,`item_id`,`count`) values (1,21,1),(1,25,1),(1,26,1),(1,27,1),(1,28,1),(1,29,1),(1,30,1),(1,31,1),(1,32,1);
 
 /*Table structure for table `fc_charactermissions` */
 
@@ -111,7 +111,7 @@ CREATE TABLE `fc_characterports` (
 
 /*Data for the table `fc_characterports` */
 
-insert  into `fc_characterports`(`character_id`,`port_number`,`item_id`,`enabled`,`health`) values (1,0,24,1,100),(1,1,23,1,100),(1,2,20,1,100),(1,3,0,0,100),(1,4,0,0,100),(1,5,0,0,100),(1,6,0,0,100),(1,7,0,0,100),(2,0,NULL,0,100),(2,1,NULL,0,100),(2,2,NULL,0,100),(2,3,NULL,0,100),(2,4,NULL,0,100),(2,5,NULL,0,100),(2,6,NULL,0,100),(2,7,NULL,0,100),(3,0,NULL,0,100),(3,1,NULL,0,100),(3,2,NULL,0,100),(3,3,NULL,0,100),(3,4,NULL,0,100),(3,5,NULL,0,100),(3,6,NULL,0,100),(3,7,NULL,0,100);
+insert  into `fc_characterports`(`character_id`,`port_number`,`item_id`,`enabled`,`health`) values (1,0,24,1,100),(1,1,23,1,100),(1,2,20,1,100),(1,3,22,0,100),(1,4,0,0,100),(1,5,0,0,100),(1,6,0,0,100),(1,7,0,0,100),(2,0,NULL,0,100),(2,1,NULL,0,100),(2,2,NULL,0,100),(2,3,NULL,0,100),(2,4,NULL,0,100),(2,5,NULL,0,100),(2,6,NULL,0,100),(2,7,NULL,0,100),(3,0,NULL,0,100),(3,1,NULL,0,100),(3,2,NULL,0,100),(3,3,NULL,0,100),(3,4,NULL,0,100),(3,5,NULL,0,100),(3,6,NULL,0,100),(3,7,NULL,0,100);
 
 /*Table structure for table `fc_characters` */
 
@@ -431,12 +431,13 @@ CREATE TABLE `fc_software` (
   `mem_cost` smallint(5) unsigned NOT NULL COMMENT 'Memory cost when app is running',
   `script_id` int(11) DEFAULT NULL COMMENT 'ID of the script associated with this software (only for user created software)',
   `filename` varchar(32) NOT NULL COMMENT 'filename of the software',
+  `desktop_icon_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'flag indicating whether a desktop icon should be created for the icon',
   PRIMARY KEY (`software_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_software` */
 
-insert  into `fc_software`(`software_id`,`software_type_id`,`is_service`,`cpu_cost`,`mem_cost`,`script_id`,`filename`) values (1,1,1,100,50,NULL,'httpd'),(2,2,1,100,50,NULL,'ftpd'),(3,3,1,100,50,NULL,'sshd'),(4,4,1,100,50,NULL,'bankd'),(5,5,1,100,50,NULL,'fcsqld'),(6,6,1,100,50,NULL,'maild'),(7,7,0,200,20,NULL,'forum'),(8,8,0,100,15,NULL,'news'),(9,9,0,300,50,NULL,'email'),(10,10,0,250,5,NULL,'console'),(11,11,0,600,55,NULL,'bank'),(12,12,0,100,20,NULL,'chat'),(13,13,0,250,75,NULL,'portscan');
+insert  into `fc_software`(`software_id`,`software_type_id`,`is_service`,`cpu_cost`,`mem_cost`,`script_id`,`filename`,`desktop_icon_flag`) values (1,1,1,100,50,NULL,'httpd',0),(2,2,1,100,50,NULL,'ftpd',0),(3,3,1,100,50,NULL,'sshd',0),(4,4,1,100,50,NULL,'bankd',0),(5,5,1,100,50,NULL,'fcsqld',0),(6,6,1,100,50,NULL,'maild',0),(7,7,0,200,20,NULL,'forum',1),(8,8,0,100,15,NULL,'news',1),(9,9,0,300,50,NULL,'email',1),(10,10,0,250,5,NULL,'console',1),(11,11,0,600,55,NULL,'bank',1),(12,12,0,100,20,NULL,'chat',1),(13,13,0,250,75,NULL,'portscan',0);
 
 /*Table structure for table `fc_softwaretypes` */
 
