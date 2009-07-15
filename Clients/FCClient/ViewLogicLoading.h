@@ -51,6 +51,7 @@ public:
 	 *	IEventReceiver implementation
 	 */
 	bool OnEvent(const SEvent& event);
+    bool OnButtonLoginClicked();
 
 	/*
 	 *	Methods

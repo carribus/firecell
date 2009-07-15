@@ -21,6 +21,7 @@ public:
    */
   void draw();
   bool OnEvent(const SEvent& event);
+    bool OnSubmitButtonClicked();
 
 private:
 

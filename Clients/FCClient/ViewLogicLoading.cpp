@@ -143,22 +143,7 @@ bool ViewLogicLoading::OnEvent(const SEvent& event)
 				{
 				case	BUTTON_LOGIN:
 					{
-						wstring username, password;
-
-						IGUIWindow* pWnd = (IGUIWindow*)m_pEnv->getRootGUIElement()->getElementFromId( WINDOW_LOGIN );
-
-						if ( pWnd )
-						{
-							IGUIEditBox* pEdit = (IGUIEditBox*) pWnd->getElementFromId( EDIT_USERNAME );
-							username = pEdit->getText();
-							pEdit = (IGUIEditBox*) pWnd->getElementFromId( EDIT_PASSWORD );
-							password = pEdit->getText();
-
-              event.GUIEvent.Caller->setEnabled(false);
-
-							FCViewEventLogin e( username, password );
-							m_pContainer->GetController()->OnViewEvent(e);
-						}
+            bHandled = OnButtonLoginClicked();
 					}
 					break;
 
@@ -178,8 +163,49 @@ bool ViewLogicLoading::OnEvent(const SEvent& event)
 			break;
 		}
 	}
+  else if ( event.EventType == EET_KEY_INPUT_EVENT )
+  {
+    if ( event.KeyInput.Key == KEY_RETURN )
+    {
+      OnButtonLoginClicked();
+    }
+  }
 
 	return bHandled;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool ViewLogicLoading::OnButtonLoginClicked()
+{
+  wstring username, password;
+
+  IGUIWindow* pWnd = (IGUIWindow*)m_pEnv->getRootGUIElement()->getElementFromId( WINDOW_LOGIN );
+  
+  if ( pWnd && pWnd->isVisible() )
+  {
+	  IGUIEditBox* pEdit = (IGUIEditBox*) pWnd->getElementFromId( EDIT_USERNAME );
+    IGUIButton* pLoginBtn = (IGUIButton*)pWnd->getElementFromId( BUTTON_LOGIN );
+
+    if ( pLoginBtn->isEnabled() )
+    {
+	    username = pEdit->getText();
+	    pEdit = (IGUIEditBox*) pWnd->getElementFromId( EDIT_PASSWORD );
+	    password = pEdit->getText();
+
+      // check if there are values for the passwords
+      if ( username.length() > 0 && password.length() > 0 )
+      {
+        if ( pLoginBtn )
+          pLoginBtn->setEnabled(false);
+
+	      FCViewEventLogin e( username, password );
+	      m_pContainer->GetController()->OnViewEvent(e);
+      }
+    }
+  }
+
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
