@@ -84,15 +84,19 @@ bool GUIBankAuthView::OnEvent(const SEvent& event)
 
           if ( id == 2 )
           {
-            if ( m_pEdtPassword )
-            {
-              std::wstring pw = m_pEdtPassword->getText();
-              if ( m_pOwner )
-                m_pOwner->SendBankAuthentication(pw);
-            }
+            OnSubmitButtonClicked();
           }
         }
         break;
+      }
+    }
+    break;
+
+  case  EET_KEY_INPUT_EVENT:
+    {
+      if ( event.KeyInput.Key == KEY_RETURN )
+      {
+        OnSubmitButtonClicked();
       }
     }
     break;
@@ -102,4 +106,18 @@ bool GUIBankAuthView::OnEvent(const SEvent& event)
   }  
 
   return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool GUIBankAuthView::OnSubmitButtonClicked()
+{
+  if ( m_pEdtPassword )
+  {
+    std::wstring pw = m_pEdtPassword->getText();
+    if ( m_pOwner )
+      m_pOwner->SendBankAuthentication(pw);
+  }
+
+  return true;
 }
