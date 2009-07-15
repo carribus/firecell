@@ -27,6 +27,7 @@
 #include "../common/game_objects/ItemOS.h"
 #include "../common/game_objects/ItemMemory.h"
 #include "../common/game_objects/ItemSoftware.h"
+#include "../common/PThreadRWLock.h"
 
 class ItemManager
 {
@@ -61,12 +62,14 @@ private:
    */
   typedef map<FCULONG, ItemType*> ItemTypeMap;
   ItemTypeMap m_mapItemTypes;
+  PThreadRWLock m_lockItemTypes;
 
   /*
    *  Items
    */
   typedef map<FCULONG, Item*> ItemMap;
   ItemMap m_mapItems;
+  PThreadRWLock m_lockItems;
 };
 
 #endif//_ITEMMANAGER_H_
