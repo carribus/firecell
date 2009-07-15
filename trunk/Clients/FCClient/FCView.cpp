@@ -105,6 +105,8 @@ bool FCView::Initialise(E_DRIVER_TYPE driverType)
 	if ( !m_pDevice )
 		return false;
 
+  m_pDevice->setWindowCaption(L"FireCell");
+
 	m_pDriver = m_pDevice->getVideoDriver();
 	if ( !m_pDriver )
 		return false;

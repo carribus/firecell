@@ -70,7 +70,9 @@ bool ItemManager::AddItemType(FCULONG id, const string& name, const string& dbTa
     pIT->SetID(id);
     pIT->SetName(name);
     pIT->SetDBTable(dbTable);
+    m_lockItemTypes.LockForWrite();
     m_mapItemTypes[id] = pIT;
+    m_lockItemTypes.Unlock();
 
     bResult = true;
   }
@@ -82,11 +84,15 @@ bool ItemManager::AddItemType(FCULONG id, const string& name, const string& dbTa
 
 ItemType* ItemManager::GetItemType(FCULONG id)
 {
+  m_lockItemTypes.LockForRead();
+  ItemType* pType = NULL;
   ItemTypeMap::iterator it = m_mapItemTypes.find(id);
 
   if ( it != m_mapItemTypes.end() )
-    return it->second;
-  return NULL;
+    pType = it->second;
+  m_lockItemTypes.Unlock();
+
+  return pType;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -125,7 +131,9 @@ bool ItemManager::AddItem(FCULONG id, const string& name, FCULONG typeID, FCULON
       pItem->SetObjectID(objID);
       pItem->SetLevels(minLevel, maxLevel);
       pItem->SetNPCValue(npcValue);
+      m_lockItems.LockForWrite();
       m_mapItems[id] = pItem;
+      m_lockItems.Unlock();
 
       bResult = true;
     }
@@ -138,17 +146,22 @@ bool ItemManager::AddItem(FCULONG id, const string& name, FCULONG typeID, FCULON
 
 Item* ItemManager::GetItem(FCULONG id)
 {
+  m_lockItems.LockForRead();
+  Item* pItem = NULL;
   ItemMap::iterator it = m_mapItems.find(id);
 
   if ( it != m_mapItems.end() )
-    return it->second;
-  return NULL;
+    pItem = it->second;
+  m_lockItems.Unlock();
+
+  return pItem;
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void ItemManager::ClearItemTypes()
 {
+  m_lockItemTypes.LockForWrite();
   ItemTypeMap::iterator it = m_mapItemTypes.begin();
 
   while ( it != m_mapItemTypes.end() )
@@ -157,12 +170,14 @@ void ItemManager::ClearItemTypes()
     it++;
   }
   m_mapItemTypes.erase( m_mapItemTypes.begin(), m_mapItemTypes.end() );
+  m_lockItemTypes.Unlock();
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void ItemManager::ClearItems()
 {
+  m_lockItems.LockForWrite();
   ItemMap::iterator it = m_mapItems.begin();
 
   while ( it != m_mapItems.end() )
@@ -171,5 +186,6 @@ void ItemManager::ClearItems()
     it++;
   }
   m_mapItems.erase( m_mapItems.begin(), m_mapItems.end() );
+  m_lockItems.Unlock();
 }
 
