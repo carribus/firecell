@@ -184,6 +184,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\AppletSysMon.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\common\game_objects\BankAccount.cpp"
 				>
 			</File>
@@ -442,6 +446,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\AppletSysMon.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\common\game_objects\BankAccount.h"
 				>
 			</File>
@@ -607,6 +615,10 @@
 			</File>
 			<File
 				RelativePath=".\GUIVUMeter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IAppBarApplet.h"
 				>
 			</File>
 			<File
