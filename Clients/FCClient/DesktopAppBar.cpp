@@ -86,6 +86,7 @@ void DesktopAppBar::draw()
 	drawSystemContext(pVideo);
 	drawActiveAppContext();
 	drawClock(pVideo);
+  drawSystemTrayIcons(pVideo);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -246,6 +247,23 @@ void DesktopAppBar::drawActiveAppContext()
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
+void DesktopAppBar::drawSystemTrayIcons(IVideoDriver* pVideo)
+{
+  core::rect<s32> tRect = AbsoluteRect;
+	AppBarOption& abo = m_appBarOptions[0];
+
+  // setyp the rect for the system tray area
+  tRect.LowerRightCorner.X = m_rectClock.UpperLeftCorner.X;
+  tRect.UpperLeftCorner.X = abo.rect.LowerRightCorner.X+2;
+
+#if 0
+  // draw the background of the valid region for the icons...
+  pVideo->draw2DRectangle( SColor(128,255,0,0), tRect );
+#endif
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
 void DesktopAppBar::drawClock(IVideoDriver* pVideo)
 {
 	SColor shade(128, 0, 0, 0);
@@ -262,6 +280,7 @@ void DesktopAppBar::drawClock(IVideoDriver* pVideo)
 
     // setup the rectangle for the text
     tRect.UpperLeftCorner.X = tRect.LowerRightCorner.X - m_pClockFont->getDimension( ss.str().c_str() ).Width - 30;
+    m_rectClock = tRect;
     // draw a slight darker version of the app bar for the timer
     pVideo->draw2DRectangle( m_colShaderNormal, tRect );
     // draw the text

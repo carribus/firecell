@@ -28,6 +28,7 @@ private:
 
 	void drawSystemContext(IVideoDriver* pVideo);
 	void drawActiveAppContext();
+  void drawSystemTrayIcons(IVideoDriver* pVideo);
 	void drawClock(IVideoDriver* pVideo);
 
 	void addApplicationOptions();
@@ -40,6 +41,7 @@ private:
   IGUIFont*           m_pClockFont;
   InGameAppWindow*    m_pActiveApp;
 	rect<s32>						m_rectSystemCtx;
+  rect<s32>           m_rectClock;
 
 	SColor							m_colShaderNormal;
 	SColor							m_colShaderHilite;
