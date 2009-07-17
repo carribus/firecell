@@ -4,6 +4,10 @@
 #include "../common/irrlichtUtil/irrfontfx.h"
 #include "clientdefs.h"
 #include "clientstrings.h"
+
+// applets
+#include "AppletSysMon.h"
+
 #include "DesktopAppBar.h"
 
 DesktopAppBar::DesktopAppBar(IGUIEnvironment* env, IGUIElement* pParent, s32 id)
@@ -50,6 +54,9 @@ DesktopAppBar::DesktopAppBar(IGUIEnvironment* env, IGUIElement* pParent, s32 id)
 	abo.rect.LowerRightCorner.X = abo.rect.UpperLeftCorner.X + txtExtents.Width + 30;
 	
 	m_appBarOptions.push_back(abo);
+
+  // create the applets
+  m_applets.push_back( new AppletSysMon(this, env) );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -249,12 +256,22 @@ void DesktopAppBar::drawActiveAppContext()
 
 void DesktopAppBar::drawSystemTrayIcons(IVideoDriver* pVideo)
 {
-  core::rect<s32> tRect = AbsoluteRect;
+  core::rect<s32> tRect = AbsoluteRect, aRect;
 	AppBarOption& abo = m_appBarOptions[0];
-
+  AppBarApplets::iterator it = m_applets.begin();
+  AppBarApplets::iterator limit = m_applets.end();
+  
   // setyp the rect for the system tray area
   tRect.LowerRightCorner.X = m_rectClock.UpperLeftCorner.X;
   tRect.UpperLeftCorner.X = abo.rect.LowerRightCorner.X+2;
+
+  for ( ; it != limit; ++it )
+  {
+    (*it)->getAppletIconRect(aRect);
+    tRect.UpperLeftCorner.X = tRect.LowerRightCorner.X - aRect.getWidth();
+    (*it)->drawAppletIcon(tRect);
+    tRect.LowerRightCorner.X = tRect.UpperLeftCorner.X;
+  }
 
 #if 0
   // draw the background of the valid region for the icons...
