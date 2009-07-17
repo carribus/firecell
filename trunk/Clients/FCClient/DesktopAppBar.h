@@ -4,6 +4,7 @@
 #include <vector>
 #include <irrlicht.h>
 #include "InGameAppWindow.h"
+#include "IAppBarApplet.h"
 
 using namespace irr;
 using namespace core;
@@ -56,6 +57,10 @@ private:
 	};
 	typedef vector<AppBarOption> AppBarOptionVector;
 	AppBarOptionVector	m_appBarOptions;
+
+  typedef vector<IAppBarApplet*> AppBarApplets;
+  AppBarApplets m_applets;
+
 };
 
 #endif//_DESKTOPAPPBAR_H_
