@@ -1,29 +1,24 @@
 #ifndef _APPLETSYSMON_H_
 #define _APPLETSYSMON_H_
-#include "IAppBarApplet.h"
 
-class DesktopAppBar;
+#include "AppBarAppletBase.h"
 
-class AppletSysMon : public IAppBarApplet
+class AppletSysMon : public AppBarAppletBase
 {
 public:
   AppletSysMon(DesktopAppBar* pParent, IGUIEnvironment* pEnv);
   ~AppletSysMon(void);
 
-  /*
-   *  IAppBarApplet implementation
-   */
   std::wstring getHoverText();
-  void getAppletIconRect(core::rect<s32>& rect);
-  void drawAppletIcon(core::rect<s32>& rect);
   void onAppletClicked();
   void OnAppletRightClicked();
 
+protected:
+
+  void onAppletHover(bool bHover);
+
 private:
 
-  IGUIEnvironment* m_pEnv;
-  DesktopAppBar* m_pParent;
-  ITexture* m_pIcon;
 
 };
 
