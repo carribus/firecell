@@ -37,6 +37,8 @@ private:
 
 	void showSystemMenu();
 
+  void updateAppletLayout();
+
   u32                 m_height;
 
   IGUIFont*           m_pClockFont;

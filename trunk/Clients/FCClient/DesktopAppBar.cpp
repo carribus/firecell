@@ -57,6 +57,9 @@ DesktopAppBar::DesktopAppBar(IGUIEnvironment* env, IGUIElement* pParent, s32 id)
 
   // create the applets
   m_applets.push_back( new AppletSysMon(this, env) );
+  m_applets.push_back( new AppletSysMon(this, env) );
+
+  updateAppletLayout();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -93,15 +96,15 @@ void DesktopAppBar::draw()
 	drawSystemContext(pVideo);
 	drawActiveAppContext();
 	drawClock(pVideo);
-  drawSystemTrayIcons(pVideo);
+//  drawSystemTrayIcons(pVideo);
+
+  IGUIElement::draw();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
 bool DesktopAppBar::OnEvent(const SEvent& event)
 {
-	bool bHandled = false;
-
 	switch ( event.EventType )
 	{
 	case	EET_GUI_EVENT:
@@ -119,11 +122,11 @@ bool DesktopAppBar::OnEvent(const SEvent& event)
 						it++;
 					}
         }
-        break;
+        return true;
 
       case  EGET_ELEMENT_HOVERED:
         {
-					AppBarOptionVector::iterator it = m_appBarOptions.begin();
+ 					AppBarOptionVector::iterator it = m_appBarOptions.begin();
 
 					while ( it != m_appBarOptions.end() )
 					{
@@ -135,8 +138,29 @@ bool DesktopAppBar::OnEvent(const SEvent& event)
 							it->bHighlight = false;
 						it++;
 					}
+/*
+          if ( !bHandled )
+          {
+            core::rect<s32> aRect;
+            std::wstring hoverText;
+            AppBarApplets::iterator it = m_applets.begin();
+
+            setToolTipText(L"");
+            while ( it != m_applets.end() )
+            {
+              (*it)->getAppletIconRect(aRect);
+              if ( aRect.isPointInside( position2d<s32>(event.MouseInput.X, event.MouseInput.Y) ) )
+              {
+                hoverText = (*it)->getHoverText();
+                setToolTipText(hoverText.c_str());
+                break;
+              }
+              ++it;
+            }
+          }
+*/
         }
-        break;
+        return true;
 
       default:
         break;
@@ -163,13 +187,13 @@ bool DesktopAppBar::OnEvent(const SEvent& event)
 						it++;
 					}
 				}
-				break;
+				return true;
 
 			case	EMIE_LMOUSE_LEFT_UP:
 				{
 					AppBarOptionVector::iterator it = m_appBarOptions.begin();
 
-					while ( it != m_appBarOptions.end() && !bHandled )
+					while ( it != m_appBarOptions.end() ) //&& !bHandled )
 					{
 						if ( it->rect.isPointInside( position2d<s32>(event.MouseInput.X, event.MouseInput.Y) ) )
 						{
@@ -177,7 +201,6 @@ bool DesktopAppBar::OnEvent(const SEvent& event)
 							{
 							case	0:					// the system option
 								showSystemMenu();
-								bHandled = true;
 								break;
 
 							default:
@@ -187,7 +210,7 @@ bool DesktopAppBar::OnEvent(const SEvent& event)
 						it++;
 					}
 				}
-				break;
+				return true;
 
 			default:
 				break;
@@ -199,7 +222,7 @@ bool DesktopAppBar::OnEvent(const SEvent& event)
 		break;
 	}
 
-	return bHandled;
+  return Parent ? Parent->OnEvent(event) : false;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -264,13 +287,13 @@ void DesktopAppBar::drawSystemTrayIcons(IVideoDriver* pVideo)
   // setyp the rect for the system tray area
   tRect.LowerRightCorner.X = m_rectClock.UpperLeftCorner.X;
   tRect.UpperLeftCorner.X = abo.rect.LowerRightCorner.X+2;
+  aRect = tRect;
 
   for ( ; it != limit; ++it )
   {
     (*it)->getAppletIconRect(aRect);
-    tRect.UpperLeftCorner.X = tRect.LowerRightCorner.X - aRect.getWidth();
-    (*it)->drawAppletIcon(tRect);
-    tRect.LowerRightCorner.X = tRect.UpperLeftCorner.X;
+    tRect.LowerRightCorner.X = aRect.UpperLeftCorner.X;
+    (*it)->drawAppletIcon(aRect);
   }
 
 #if 0
@@ -306,6 +329,8 @@ void DesktopAppBar::drawClock(IVideoDriver* pVideo)
     pVideo->draw2DLine( tRect.UpperLeftCorner, core::position2d<s32>( tRect.UpperLeftCorner.X, tRect.LowerRightCorner.Y ), SColor(194, 64, 64, 64) );
     pVideo->draw2DLine( core::position2d<s32>( tRect.UpperLeftCorner.X+1, tRect.UpperLeftCorner.Y), core::position2d<s32>( tRect.UpperLeftCorner.X+1, tRect.LowerRightCorner.Y ), SColor(128, 255, 255, 255) );
   }
+
+  updateAppletLayout();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -376,4 +401,26 @@ void DesktopAppBar::showSystemMenu()
 	r.LowerRightCorner.X += 200;
 	pMenu->setRelativePosition(r);
 	Environment->setFocus(pMenu);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void DesktopAppBar::updateAppletLayout()
+{
+  core::rect<s32> tRect = AbsoluteRect, aRect;
+	AppBarOption& abo = m_appBarOptions[0];
+  AppBarApplets::iterator it = m_applets.begin();
+  AppBarApplets::iterator limit = m_applets.end();
+  
+  // setyp the rect for the system tray area
+  tRect.LowerRightCorner.X = m_rectClock.UpperLeftCorner.X;
+  tRect.UpperLeftCorner.X = abo.rect.LowerRightCorner.X+2;
+  aRect = tRect;
+
+  for ( ; it != limit; ++it )
+  {
+    (*it)->getAppletIconRect(aRect);
+    tRect.LowerRightCorner.X = aRect.UpperLeftCorner.X;
+    aRect = tRect;
+  }
 }

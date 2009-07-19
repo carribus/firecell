@@ -70,6 +70,8 @@ void ViewLogicGame::Create(FCView* pContainer, IrrlichtDevice* pDevice)
   // instantiate the desktop
   if ( !m_pDesktop )
     m_pDesktop = new Desktop(*this, pDevice);
+
+  m_pDevice->setEventReceiver(this);
 }
 
 ///////////////////////////////////////////////////////////////////////

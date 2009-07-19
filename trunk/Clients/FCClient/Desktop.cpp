@@ -52,9 +52,6 @@ Desktop::Desktop(ViewLogicGame& owner, IrrlichtDevice* pDevice)
 
   // create the desktop app bar
   m_pAppBar = new DesktopAppBar(Environment, this);
-
-  // initialise the max icon height and width threshholds
-//	m_iconMax.Height = m_iconMax.Width = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -84,10 +81,6 @@ void Desktop::Draw()
 	m_pDevice->getVideoDriver()->draw2DImage( m_pBackground, 
 																					 core::position2d<s32>(0, 0),
 																					 core::rect<s32>(0, 0, screenDim.Width, screenDim.Height) );
-
-  // draw the app bar
-  if ( m_pAppBar )
-    m_pAppBar->draw();
 
   IGUIElement::draw();
 }
