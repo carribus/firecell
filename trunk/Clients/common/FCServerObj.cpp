@@ -426,6 +426,21 @@ void FCServerObj::SendNetworkPortEnableRequest(FCSHORT portNum, bool bEnable)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCServerObj::SendSoftwareStopped(FCULONG itemID)
+{
+  PEPacket pkt;
+  __FCPKT_SOFTWARE_STOPPED d;
+
+  d.itemID = itemID;
+
+	PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_SOFTWARE_STOPPED, ST_World);
+	PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+	SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCServerObj::SendPacket(PEPacket& pkt)
 {
   FCSHORT msgID = 0;

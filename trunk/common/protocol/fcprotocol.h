@@ -315,6 +315,8 @@ struct __FCPKT_CHARACTER_ITEMS_REQUEST_RESP
 	{
 		FCSHORT softwareTypeID;
 		bool is_service;
+    FCSHORT cpu_cost;
+    FCULONG mem_cost;
 		FCULONG scriptID;
     bool desktop_icon_flag;
     FCULONG itemCount;
@@ -766,6 +768,21 @@ struct __FCPKT_SOFTWARE_NETWORK_PORT_ENABLE_RESP
   FCSHORT portNum;
   bool bEnabled;
   FCSHORT result;
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_SOFTWARE_STOPPED             = 553;
+///////////////////////////////////////////////////////////////////////////////////////////
+struct __FCPKT_SOFTWARE_STOPPED
+{
+  FCULONG itemID;
+};
+
+struct __FCPKT_SOFTWARE_STOPPED_RESP
+{
+  FCULONG itemID;
+  FCSHORT cpuReleased;
+  FCULONG memReleased;
 };
 
 /*

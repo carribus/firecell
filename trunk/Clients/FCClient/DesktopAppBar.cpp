@@ -57,7 +57,6 @@ DesktopAppBar::DesktopAppBar(IGUIEnvironment* env, IGUIElement* pParent, s32 id)
 
   // create the applets
   m_applets.push_back( new AppletSysMon(this, env) );
-  m_applets.push_back( new AppletSysMon(this, env) );
 
   updateAppletLayout();
 }

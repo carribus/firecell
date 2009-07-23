@@ -198,6 +198,7 @@ public:
   void InstallSoftware(FCSHORT portNum, FCULONG itemID);
   void UninstallSoftware(FCSHORT portNum);
   void EnableNetworkPort(FCSHORT portNum, bool bEnable);
+  void SoftwareStopped(FCULONG itemID);
 
   vector<Character>& GetCharacters()                    { return m_characters; }
   std::map<FCULONG, Country>& GetCountries()            { return m_countries; }
@@ -256,6 +257,7 @@ private:
     bool OnResponseSoftwareInstall(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseSoftwareUninstall(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseNetworkPortEnable(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnResponseSoftwareStopped(PEPacket* pPkt, BaseSocket* pSocket);
 
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
 

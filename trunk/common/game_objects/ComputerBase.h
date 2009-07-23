@@ -9,6 +9,7 @@
 #include "ItemMemory.h"
 #include "ItemSoftware.h"
 #include "NetworkPorts.h"
+#include "../PThreadRWLock.h"
 #include "../fctypes.h"
 #include "../fcconstants.h"
 
@@ -34,8 +35,13 @@ public:
   void SetNetworkSpeed(FCUINT speedMBits) { m_networkSpeedMBits = speedMBits; }
 
   size_t AddProcess(ItemSoftware* pSoftware);
+  void RemoveProcess(ItemSoftware* pSoftware);
   FCSHORT GetAvailableCPU();
   FCULONG GetAvailableMemory();
+
+  void LockForRead()                      { m_lock.LockForRead(); }
+  void LockForWrite()                     { m_lock.LockForWrite(); }
+  void Unlock()                           { m_lock.Unlock(); }
 
 private:
 
@@ -51,6 +57,8 @@ private:
   FCULONG         m_usageMem;
 
   std::list<ItemSoftware*>  m_processes;
+
+  PThreadRWLock m_lock;
 };
 
 #endif//_COMPUTERBASE_H_

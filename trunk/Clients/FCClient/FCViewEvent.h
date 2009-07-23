@@ -30,7 +30,8 @@ enum e_FCViewEventType
   /* Software Events */
   VE_InstallSoftware,
   VE_UninstallSoftware,
-  VE_EnablePort
+  VE_EnablePort,
+  VE_AppClosed
 };
 
 /////////////////////////////////////////////////////////////////

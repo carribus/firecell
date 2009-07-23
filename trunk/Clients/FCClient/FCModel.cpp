@@ -503,6 +503,12 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  case  FCMSG_SOFTWARE_STOPPED:
+    {
+      bHandled = OnResponseSoftwareStopped(pPkt, pSocket);
+    }
+    break;
+
   default:
 
     if ( !bHandled )
@@ -783,7 +789,15 @@ bool FCModel::OnResponseCharacterAssetRequest(PEPacket* pPkt, BaseSocket* pSocke
     portnum = ports.addPort();
     ports.installPort(portnum, d.computer.network_ports[i].softwareType, d.computer.network_ports[i].itemID);
     if ( d.computer.network_ports[i].enabled )
+    {
+      ItemMgr::GameItem gi;
+
       ports.enablePort(portnum);
+      if ( m_itemMgr.getItem( d.computer.network_ports[i].itemID, gi ) )
+      {
+        comp.AddProcess( static_cast<ItemSoftware*>(gi.getItem()) );
+      }
+    }
     ports.setPortHealth(portnum, d.computer.network_ports[i].portHealth);
     ports.setPortMaxHealth(portnum, d.computer.network_ports[i].portMaxHealth);
   }
@@ -822,6 +836,8 @@ bool FCModel::OnResponseCharacterItemsRequest(PEPacket* pPkt, BaseSocket* pSocke
 			pSoftware = (ItemSoftware*)pItem;
 			pSoftware->SetSoftwareType( d->software[i].softwareTypeID );
 			pSoftware->IsService( d->software[i].is_service );
+      pSoftware->SetCPUCost( d->software[i].cpu_cost );
+      pSoftware->SetMemCost( d->software[i].mem_cost );
 			m_itemMgr.setItemCount( pItem->GetID(), d->software[i].itemCount );
 
       // if the software is not a service, then notify the desktop that a new program is available.
@@ -894,11 +910,22 @@ bool FCModel::OnResponseGetDesktopOptions(PEPacket* pPkt, BaseSocket* pSocket)
 bool FCModel::OnResponseActivateSoftware(PEPacket* pPkt, BaseSocket* pSocket)
 {
 	__FCPKT_ACTIVATE_SOFTWARE_RESP d;
+  ComputerBase& comp = m_pCharacter->GetComputer();
 	size_t dataLen;
 
 	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
 	pPkt->GetField("data", &d, sizeof(d));
 
+  // update the cpu usage if we are opening the app
+  if ( d.result == ACTIVATERESULT_OK )
+  {
+    ItemMgr::GameItem gi;
+
+    if ( m_itemMgr.getItem( d.itemID, gi ) )
+    {
+      comp.AddProcess( static_cast<ItemSoftware*>(gi.getItem()) );
+    }
+  }
 	// check if we can open the option
 	FireEvent(FCME_OpenApplication, (void*)&d);
 
@@ -1350,6 +1377,24 @@ bool FCModel::OnResponseNetworkPortEnable(PEPacket* pPkt, BaseSocket* pSocket)
 
 ///////////////////////////////////////////////////////////////////////
 
+bool FCModel::OnResponseSoftwareStopped(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_SOFTWARE_STOPPED_RESP d;
+  size_t dataLen = 0;
+  ComputerBase& comp = m_pCharacter->GetComputer();
+  ItemMgr::GameItem gi;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+
+  m_itemMgr.getItem(d.itemID, gi);
+  comp.RemoveProcess( (ItemSoftware*)gi.getItem() );
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCModel::OnError(PEPacket* pPkt, BaseSocket* pSocket)
 {
   if ( !pPkt || !pSocket )
@@ -1702,6 +1747,17 @@ void FCModel::EnableNetworkPort(FCSHORT portNum, bool bEnable)
     return;
 
   m_server.SendNetworkPortEnableRequest(portNum, bEnable);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::SoftwareStopped(FCULONG itemID)
+{
+  if ( !m_pCharacter )
+    return;
+
+  // send a message to the server that the player has shutdown a software item
+  m_server.SendSoftwareStopped(itemID);
 }
 
 ///////////////////////////////////////////////////////////////////////

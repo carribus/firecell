@@ -17,8 +17,9 @@ protected:
 
   void onAppletHover(bool bHover);
 
-private:
+  void draw();
 
+private:
 
 };
 

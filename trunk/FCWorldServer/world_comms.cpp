@@ -284,6 +284,8 @@ void SendCharacterItemsResponse(Player* pPlayer, ItemManager& itemMgr,  BaseSock
 
       d->software[index].softwareTypeID = pItem->GetSoftwareType();
       d->software[index].is_service = pItem->IsService();
+      d->software[index].cpu_cost = pItem->GetCPUCost();
+      d->software[index].mem_cost = pItem->GetMemCost();
       d->software[index].scriptID = 0;
       d->software[index].desktop_icon_flag = pItem->GetDesktopIconFlag();
       d->software[index].itemCount = it->second.count;
@@ -310,6 +312,8 @@ void SendCharacterItemsResponse(Player* pPlayer, ItemManager& itemMgr,  BaseSock
         d->software[index].max_level = pItem->GetMaxLevel();
         d->software[index].npc_value = pItem->GetNPCValue();
         d->software[index].is_service = pItem->IsService();
+        d->software[index].cpu_cost = pItem->GetCPUCost();
+        d->software[index].mem_cost = pItem->GetMemCost();
         d->software[index].scriptID = 0;
         d->software[index].itemCount = 0;
       }
@@ -996,6 +1000,28 @@ void SendNetworkPortEnabledResponse(FCSHORT portNum, bool bEnabled, FCSHORT resu
 
   // send the packet
   PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_SOFTWARE_NETWORK_PORT_ENABLE, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, 
+                                (void*)&d, 
+                                sizeof(d));
+
+  // send response to Client
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void SendSoftwareStoppedResponse(FCULONG itemID, FCSHORT cpuReleased, FCULONG memReleased, BaseSocket* pRouter, FCSOCKET clientSocket)
+{
+  PEPacket* pkt = new PEPacket;
+  __FCPKT_SOFTWARE_STOPPED_RESP d;
+
+  d.itemID = itemID;
+  d.cpuReleased = cpuReleased;
+  d.memReleased = memReleased;
+
+  // send the packet
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_SOFTWARE_STOPPED, ST_None);
   PEPacketHelper::SetPacketData(*pkt, 
                                 (void*)&d, 
                                 sizeof(d));

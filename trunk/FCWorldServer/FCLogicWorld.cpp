@@ -375,6 +375,12 @@ bool FCLogicWorld::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  case  FCMSG_SOFTWARE_STOPPED:
+    {
+      bHandled = OnCommandSoftwareStopped(pPkt, pRouter, clientSock);
+    }
+    break;
+
   /*
    * Inter-service Messages
    */
@@ -640,57 +646,6 @@ bool FCLogicWorld::OnCommandConsoleCommand(PEPacket* pPkt, RouterSocket* pSocket
 
     console.executeCommand(d.command, d.currentDir, result);
 
-/*
-    string cmd, args, result;
-    size_t pos;
-
-    // now we need to know how to execute commands
-    FileSystem& fs = pPlayer->GetComputer().GetFileSystem();
-
-    cmd = d.command;
-    pos = cmd.find_first_of(" ");
-    if ( pos != string::npos )
-    {
-      args = cmd.substr(cmd.find_first_of(" ")+1, cmd.length());
-      cmd.erase(cmd.find_first_of(" "), cmd.length());
-    }
-
-    // attempt to execute the command as a filesystem command
-    bool bHandled = fs.ExecuteCommand(pPlayer, cmd, args, result);
-    // if the filesystem didn't handle it...
-    if ( !bHandled )
-    {
-      Item* pItem = NULL;
-      ItemSoftware* pSoftware = NULL;
-      // check if we can execute one of the software items
-      std::map<FCULONG, Player::PlayerItem> items = pPlayer->GetItems();
-      std::map<FCULONG, Player::PlayerItem>::iterator it = items.begin();
-      std::map<FCULONG, Player::PlayerItem>::iterator limit = items.end();
-
-      for ( ; it != limit; ++it )
-      {
-        pItem = NULL;
-        pSoftware = NULL;
-        if ( it->second.count )
-        {
-          pItem = m_itemMgr.GetItem( it->second.itemID );
-        }
-        if ( pItem && pItem->GetTypeID() == ItemType::Software )
-        {
-          if ( (pSoftware = static_cast<ItemSoftware*>(pItem)) )
-          {
-#error Console Overhaul Requested SIR!
-            // TODO: Either finish this prototype code off, or refactor the console handling into a more manageable structure.
-            // The idea here is to correlate commands to items, so we will probably need additional data for software items,
-            // eg corresponding filename and path, to allow players to run commands in the console, or as seperate apps.
-            // ItemSoftware objects will need to be able to handle different running contexts (i.e. from console or as a windowed app).
-
-          }
-        }
-      }
-      
-    }
-*/
     SendConsoleCommandResult(pPlayer, result, pSocket, clientSocket);
   }
   else
@@ -1153,6 +1108,32 @@ bool FCLogicWorld::OnCommandNetworkPortEnable(PEPacket* pPkt, RouterSocket* pSoc
 
 ///////////////////////////////////////////////////////////////////////
 
+bool FCLogicWorld::OnCommandSoftwareStopped(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
+{
+  __FCPKT_SOFTWARE_STOPPED d;
+  size_t dataLen = 0;
+  Player* pPlayer = NULL;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket(clientSocket)) )
+  {
+    if ( pPlayer->HasItem(d.itemID) )
+    {
+      ItemSoftware* pSoftware = (ItemSoftware*)ItemManager::instance().GetItem(d.itemID);
+      Computer& comp = pPlayer->GetComputer();
+      comp.RemoveProcess(pSoftware);
+
+      SendSoftwareStoppedResponse( d.itemID, pSoftware->GetCPUCost(), pSoftware->GetMemCost(), pSocket, clientSocket );
+    }
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool FCLogicWorld::OnCommandClientDisconnect(PEPacket* pPkt, RouterSocket* pSocket, FCSOCKET clientSocket)
 {
   __FCSPKT_CLIENT_DISCONNECT d;
@@ -1511,6 +1492,8 @@ void FCLogicWorld::OnDBJob_LoadCharacterPorts(DBIResultSet& resultSet, void*& pC
     {
       ports.installPort( portNum, pItem->GetSoftwareType(), item_id );
       ports.enablePort( portNum, enabled?true:false );
+      if ( enabled )
+        comp.AddProcess( pItem );
     }
   }
 
