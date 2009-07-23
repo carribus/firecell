@@ -49,6 +49,8 @@ public:
 
 protected:
 
+  void DrawLog(IGUIFont* pFont);
+  void DrawPrompt(IGUIFont* pFont, core::rect<s32> rectTxt);
   void DrawCaret(const core::rect<s32>& rect);
   bool ProcessKeyInput(const SEvent& event);
 

@@ -33,7 +33,6 @@ GUIConsoleCtrl::~GUIConsoleCtrl(void)
 
 void GUIConsoleCtrl::draw()
 {
-  static u32 lastTick = 0;
   std::wstring line;
   IGUIFont* pFont = Environment->getSkin()->getFont();
 
@@ -53,10 +52,21 @@ void GUIConsoleCtrl::draw()
   Environment->getVideoDriver()->draw2DRectangle( AbsoluteRect, m_backColor, m_backColor, m_backColor, m_backColor );
 
   // draw the text log
+  DrawLog(pFont);
+
+  // call base drawing code to draw children
+  IGUIElement::draw();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void GUIConsoleCtrl::DrawLog(IGUIFont* pFont)
+{
   core::dimension2d<s32> extents;
   core::rect<s32> rectTxt = AbsoluteRect;
   std::vector<std::wstring>::iterator it = m_arrLogLines.begin();
   std::vector<std::wstring>::iterator limit = m_arrLogLines.end();
+
   // calculate which line we should be starting with (drawing top to bottom)
   s32 ndx = (s32)(m_arrLogLines.size()-m_maxVisibleLines);
   if ( ndx >= 0 )
@@ -76,46 +86,53 @@ void GUIConsoleCtrl::draw()
 
   if ( !m_bFreezeConsole )
   {
-    // draw the prompt
-    if ( m_prompt.size() )
-    {
-      extents = pFont->getDimension( m_prompt.c_str() );
-      rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
-      rectTxt.LowerRightCorner.Y = rectTxt.UpperLeftCorner.Y + extents.Height;
-      // draw the text line
-      pFont->draw( m_prompt.c_str(), rectTxt, m_textColor, false, false, &rectTxt );
-    }
+    DrawPrompt(pFont, rectTxt);
+  }
+}
 
-    // if there is any input in the buffer, then draw it
-    if ( m_input.size() )
-    {
-      extents = pFont->getDimension( m_input.c_str() );
-      rectTxt.UpperLeftCorner.X = rectTxt.LowerRightCorner.X;
-      rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
-      pFont->draw( m_input.c_str(), rectTxt, m_textColor, false, false, &rectTxt );
-    }
+///////////////////////////////////////////////////////////////////////
 
-    // draw a caret
-    if ( m_pTimer && Environment->hasFocus(this) )
-    {
-      u32 now = m_pTimer->getTime();
-      if ( now - lastTick > 500 )
-      {
-        // Toggle the caret's visibility
-        m_bCaretVisible ^= true;
-        lastTick = now;
-      }
+void GUIConsoleCtrl::DrawPrompt(IGUIFont* pFont, core::rect<s32> rectTxt)
+{
+  static u32 lastTick = 0;
+  core::dimension2d<s32> extents;
 
-      if ( m_bCaretVisible )
-      {
-        extents = pFont->getDimension( L"_" );
-        DrawCaret( rectTxt );
-      }
-    }
+  // draw the prompt
+  if ( m_prompt.size() )
+  {
+    extents = pFont->getDimension( m_prompt.c_str() );
+    rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
+    rectTxt.LowerRightCorner.Y = rectTxt.UpperLeftCorner.Y + extents.Height;
+    // draw the text line
+    pFont->draw( m_prompt.c_str(), rectTxt, m_textColor, false, false, &rectTxt );
   }
 
-  // call base drawing code to draw children
-  IGUIElement::draw();
+  // if there is any input in the buffer, then draw it
+  if ( m_input.size() )
+  {
+    extents = pFont->getDimension( m_input.c_str() );
+    rectTxt.UpperLeftCorner.X = rectTxt.LowerRightCorner.X;
+    rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
+    pFont->draw( m_input.c_str(), rectTxt, m_textColor, false, false, &rectTxt );
+  }
+
+  // draw a caret
+  if ( m_pTimer && Environment->hasFocus(this) )
+  {
+    u32 now = m_pTimer->getTime();
+    if ( now - lastTick > 500 )
+    {
+      // Toggle the caret's visibility
+      m_bCaretVisible ^= true;
+      lastTick = now;
+    }
+
+    if ( m_bCaretVisible )
+    {
+      extents = pFont->getDimension( L"_" );
+      DrawCaret( rectTxt );
+    }
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -1,4 +1,5 @@
 #include <sstream>
+#include "../common/fccutils.h"
 #include "FCModel.h"
 #include "AppletSysMon.h"
 
@@ -31,7 +32,11 @@ std::wstring AppletSysMon::getHoverText()
   FCULONG memMax = comp.GetMemory().GetMemorySize();
 
   ss.precision(3);
-  ss << L"System Monitor\nCPU: " << (double)(((double)(cpuMax-cpuLeft) / (double)cpuMax) * 100L) << L"%\nMemory: " << memMax-memLeft << L"MB / " << memMax << L"MB";
+  ss << L"System Monitor\nCPU: " << 
+        (double)(((double)(cpuMax-cpuLeft) / (double)cpuMax) * 100L) << 
+        L"%\nMemory: " << 
+        formatCurrencyValue( "", memMax-memLeft ).c_str() << L"MB / " << 
+        formatCurrencyValue( "", memMax ).c_str() << L"MB";
   return ss.str();
 }
 
