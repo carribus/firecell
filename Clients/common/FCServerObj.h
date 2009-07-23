@@ -49,6 +49,7 @@ public:
   void SendInstallSoftwareRequest(FCSHORT portNum, FCULONG itemID);
   void SendUninstallSoftwareRequest(FCSHORT portNum);
   void SendNetworkPortEnableRequest(FCSHORT portNum, bool bEnable);
+  void SendSoftwareStopped(FCULONG itemID);
 
   void SetSocket(BaseSocket* pSock)                             { m_pSock = pSock; }
 

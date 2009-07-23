@@ -206,5 +206,10 @@ void FCController::OnViewEvent(FCViewEvent& event)
       m_pModel->EnableNetworkPort( pEv->getPortNum(), pEv->isEnabled() );
     }
     break;
+
+  case  VE_AppClosed:
+    {
+      m_pModel->SoftwareStopped( (FCULONG) event.GetData() );
+    }
 	}
 }

@@ -242,6 +242,15 @@ void SendSoftwareUninstallResponse(FCSHORT portNum, bool bSuccess, BaseSocket* p
  */
 void SendNetworkPortEnabledResponse(FCSHORT portNum, bool bEnabled, FCSHORT result, BaseSocket* pRouter, FCSOCKET clientSocket);
 
+/**
+ *  @ingroup worldcomms
+ *  @brief This functions sends the result of a player stopped a specific software app. The packet sent is: __FCPKT_SOFTWARE_STOPPED
+ *  @param itemID The ID of the software item that was stopped
+ *  @param cpuReleased The amount of CPU capacity released by stopping the software
+ *  @param memReleased The amount of memory capacity released by stopping the software
+ */
+void SendSoftwareStoppedResponse(FCULONG itemID, FCSHORT cpuReleased, FCULONG memReleased, BaseSocket* pRouter, FCSOCKET clientSocket);
+
 /*************************************************************************************************************** 
  *  MISCELLANEOUS SEND METHODS
  ***************************************************************************************************************/

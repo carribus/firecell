@@ -69,8 +69,23 @@ bool Console::executeCommand(std::string cmd, std::string curPath, std::string& 
             
           if ( bIsCommand )
           {
-            cmd = pSoftware->GetCommand();
-            bResult = pSoftware->Execute(&m_player, cmd, args, result);
+            // check if the computer has capacity to execute this process
+            if ( m_player.GetComputer().GetAvailableCPU() > pSoftware->GetCPUCost() &&
+                 m_player.GetComputer().GetAvailableMemory() > pSoftware->GetMemCost() )
+            {
+              cmd = pSoftware->GetCommand();
+              bResult = pSoftware->Execute(&m_player, cmd, args, result);
+            }
+            else
+            {
+              bResult = true;
+              if ( m_player.GetComputer().GetAvailableCPU() < pSoftware->GetCPUCost() )
+                result = "Not enough processing power to execute.\n\n";
+              else if ( m_player.GetComputer().GetAvailableMemory() < pSoftware->GetMemCost() )
+                result = "Not enough memory to execute.\n\n";
+              else
+                result = "Unknown error occurred.\n\n";
+            }
           }
         }
       }

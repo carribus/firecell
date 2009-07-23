@@ -639,9 +639,23 @@ void Desktop::OnDesktopIconActivated(DesktopIcon* pIcon)
 
     if ( pSoftware )
     {
-	    // fire an event to the controller
-	    FCViewEvent e(VE_DesktopOptionActivated, pSoftware->GetID());
-	    m_owner.GetContainer()->GetController()->OnViewEvent(e);
+      if ( !IsApplicationRunning( pSoftware->GetSoftwareType() ) )
+      {
+	      // fire an event to the controller
+	      FCViewEvent e(VE_DesktopOptionActivated, pSoftware->GetID());
+	      m_owner.GetContainer()->GetController()->OnViewEvent(e);
+      }
+      else
+      {
+			  // The application is already running, bring the window to the top
+			  InGameAppWindow* pWnd = GetAppWindowByType( pSoftware->GetSoftwareType() );
+
+			  if ( pWnd )
+			  {
+				  m_pAppBar->setActiveApp(pWnd);
+				  bringToFront( pWnd->GetGUIWindow() );
+			  }
+      }
     }
   }
 }
@@ -934,6 +948,9 @@ bool Desktop::OnGUIElementClosed(irr::SEvent::SGUIEvent event)
           // notify the AppBar that the app has closed
           if ( m_pAppBar )
             m_pAppBar->setActiveApp(NULL);
+          // notify the model that the app has been closed
+          FCViewEvent e(VE_AppClosed, pWnd->GetOptionID());
+          m_owner.GetContainer()->GetController()->OnViewEvent(e);
           // delete the InGameAppWindow Object
 		      delete pWnd;
           // set focus back to the desktop

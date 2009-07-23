@@ -20,11 +20,30 @@ ComputerBase::~ComputerBase(void)
 
 size_t ComputerBase::AddProcess(ItemSoftware* pSoftware)
 {
-  m_usageCPU += pSoftware->GetCPUCost();
-  m_usageMem += pSoftware->GetMemCost();
+  if ( pSoftware )
+  {
+    LockForWrite();
+    m_usageCPU += pSoftware->GetCPUCost();
+    m_usageMem += pSoftware->GetMemCost();
 
-  m_processes.push_back(pSoftware);
+    m_processes.push_back(pSoftware);
+    Unlock();
+  }
   return m_processes.size();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ComputerBase::RemoveProcess(ItemSoftware* pSoftware)
+{
+  if ( pSoftware )
+  {
+    LockForWrite();
+    m_usageCPU -= pSoftware->GetCPUCost();
+    m_usageMem -= pSoftware->GetMemCost();
+    m_processes.remove(pSoftware);
+    Unlock();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -90,6 +90,21 @@ bool AppBarAppletBase::OnEvent(const SEvent& event)
       }
     }
     break;
+
+  case  EET_MOUSE_INPUT_EVENT:
+    {
+      switch ( event.MouseInput.Event )
+      {
+      case  EMIE_LMOUSE_LEFT_UP:
+        onAppletClicked();
+        return true;
+
+      case  EMIE_RMOUSE_LEFT_UP:
+        OnAppletRightClicked();
+        return true;
+      }
+    }
+    break;
     
   default:
     break;
