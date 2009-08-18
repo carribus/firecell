@@ -34,13 +34,13 @@ public:
   void freezeConsole(bool bFreeze)                              { m_bFreezeConsole = bFreeze; }
   bool isConsoleFrozen()                                        { return m_bFreezeConsole; }
 
-  u32 addTextLine(const std::wstring& line)                     { m_arrLogLines.push_back(line); return (u32)m_arrLogLines.size(); }
+  u32 addTextLine(const std::wstring& line);//                     { m_arrLogLines.push_back(line); return (u32)m_arrLogLines.size(); }
   void setBackgroundColor(SColor col)                           { m_backColor = col; }
   void setTextColor(SColor col)                                 { m_textColor = col; }
   SColor getBackgroundColor()                                   { return m_backColor; }
   SColor getTextColor()                                         { return m_textColor; }
   void setTimer(ITimer* pTimer)                                 { m_pTimer = pTimer; }
-  void setPrompt(const std::wstring& prompt)                    { m_prompt = prompt; }
+  void setPrompt(const std::wstring& prompt);
   void setHistoryLogSize(u32 size);
   u32 getHistoryLogSize()                                       { return m_historySize; }
   void setMaxLogSize(u32 size);
@@ -54,6 +54,19 @@ protected:
   void DrawCaret(const core::rect<s32>& rect);
   bool ProcessKeyInput(const SEvent& event);
 
+  struct stLineMarker
+  {
+    size_t startPos, endPos;
+  };
+
+  void AnalyseLog(std::wstring& src, std::vector<stLineMarker>& targetArray, bool bClearArray = false);
+  void AnalysePrompt();
+  void CreateLineMarker(std::vector<stLineMarker>& targetArray, size_t startPos, size_t endPos);
+  void ClearLineMarkers(std::vector<stLineMarker>& targetArray);
+
+  std::vector<stLineMarker> m_arrLineMarkers;
+  std::vector<stLineMarker> m_arrLineMarkersPrompt;
+
   ITimer*           m_pTimer;
   SColor            m_backColor;
   SColor            m_textColor;
@@ -63,7 +76,8 @@ protected:
   bool              m_bFreezeConsole;
   bool              m_bCaretVisible;
   u32               m_maxLogSize;
-  std::vector<std::wstring>   m_arrLogLines;
+  std::wstring      m_strLog;
+//  std::vector<std::wstring>   m_arrLogLines;
 
   s32               m_fontHeight;
   s32               m_maxVisibleLines;

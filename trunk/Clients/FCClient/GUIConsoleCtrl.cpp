@@ -34,7 +34,7 @@ GUIConsoleCtrl::~GUIConsoleCtrl(void)
 void GUIConsoleCtrl::draw()
 {
   std::wstring line;
-  IGUIFont* pFont = Environment->getSkin()->getFont();
+  IGUIFont* pFont = m_pOverrideFont ? m_pOverrideFont : Environment->getSkin()->getFont();
 
 	if ( m_pOverrideFont )
 		pFont = m_pOverrideFont;
@@ -64,21 +64,38 @@ void GUIConsoleCtrl::DrawLog(IGUIFont* pFont)
 {
   core::dimension2d<s32> extents;
   core::rect<s32> rectTxt = AbsoluteRect;
-  std::vector<std::wstring>::iterator it = m_arrLogLines.begin();
-  std::vector<std::wstring>::iterator limit = m_arrLogLines.end();
+  std::wstring subStr;
+  std::vector<stLineMarker>::iterator it = m_arrLineMarkers.begin();
+  std::vector<stLineMarker>::iterator limit = m_arrLineMarkers.end();
 
   // calculate which line we should be starting with (drawing top to bottom)
-  s32 ndx = (s32)(m_arrLogLines.size()-m_maxVisibleLines);
-  if ( ndx >= 0 )
-    it += m_arrLogLines.size()-(m_maxVisibleLines-1);
-  // start rendering the log
-  for ( ; it != limit; it++ )
+  size_t lmCount = m_arrLineMarkers.size();
+  if ( lmCount > 0 )
   {
-    extents = pFont->getDimension( it->c_str() );
+    s32 ndx = 0;
+    size_t pCount = m_arrLineMarkersPrompt.size();
+    if ( m_maxVisibleLines > (s32)pCount )
+    {
+      ndx = (s32)(lmCount - m_maxVisibleLines + pCount);
+      ndx = ndx > 0 ? ndx : 0;
+    }
+    else
+    {
+      ndx = lmCount;
+    }
+    it += ndx;
+  }
+
+  for ( ; it != limit; ++it )
+  {
+    subStr = m_strLog.substr( it->startPos, it->endPos - it->startPos );
+    extents = pFont->getDimension( subStr.c_str() );
+
     rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
     rectTxt.LowerRightCorner.Y = rectTxt.UpperLeftCorner.Y + extents.Height;
+
 		// draw the text line
-		pFont->draw( it->c_str(), rectTxt, m_textColor, false, false, &rectTxt );
+		pFont->draw( subStr.c_str(), rectTxt, m_textColor, false, false, &rectTxt );
 		// offset the text rect
 		rectTxt.LowerRightCorner += core::position2d<s32>(0, extents.Height);
 		rectTxt.UpperLeftCorner += core::position2d<s32>(0, extents.Height);
@@ -96,7 +113,40 @@ void GUIConsoleCtrl::DrawPrompt(IGUIFont* pFont, core::rect<s32> rectTxt)
 {
   static u32 lastTick = 0;
   core::dimension2d<s32> extents;
+  std::wstring str = m_prompt + m_input, subStr;
 
+  std::vector<stLineMarker>::iterator it = m_arrLineMarkersPrompt.begin();
+  std::vector<stLineMarker>::iterator limit = m_arrLineMarkersPrompt.end();
+
+  s32 ndx = 0;
+  size_t pCount = m_arrLineMarkersPrompt.size();
+  if ( m_maxVisibleLines < (s32)pCount )
+  {
+    ndx = (s32)(pCount - m_maxVisibleLines);
+    it += ndx;
+  }
+
+  rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X;
+  for ( ; it != limit; )
+  {
+    subStr = str.substr( it->startPos, it->endPos - it->startPos );
+    extents = pFont->getDimension( subStr.c_str() );
+
+    rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
+    rectTxt.LowerRightCorner.Y = rectTxt.UpperLeftCorner.Y + extents.Height;
+
+		// draw the text line
+		pFont->draw( subStr.c_str(), rectTxt, m_textColor, false, false, &rectTxt );
+    // get the next linemarker
+    ++it;
+		// offset the text rect
+    if ( it != limit )
+    {
+	    rectTxt.LowerRightCorner += core::position2d<s32>(0, extents.Height);
+	    rectTxt.UpperLeftCorner += core::position2d<s32>(0, extents.Height);
+    }
+  }
+/*
   // draw the prompt
   if ( m_prompt.size() )
   {
@@ -115,7 +165,7 @@ void GUIConsoleCtrl::DrawPrompt(IGUIFont* pFont, core::rect<s32> rectTxt)
     rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
     pFont->draw( m_input.c_str(), rectTxt, m_textColor, false, false, &rectTxt );
   }
-
+*/
   // draw a caret
   if ( m_pTimer && Environment->hasFocus(this) )
   {
@@ -159,6 +209,8 @@ bool GUIConsoleCtrl::OnEvent(const SEvent& event)
               bIgnoreFocus = true;
               Environment->setFocus(this);
               bIgnoreFocus = false;
+              
+              AnalysePrompt();
             }
           }
         }
@@ -179,6 +231,124 @@ bool GUIConsoleCtrl::OnEvent(const SEvent& event)
   }
 
   return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+u32 GUIConsoleCtrl::addTextLine(const std::wstring& line)
+{
+  m_strLog.append(line);
+  m_strLog.append(L"\n");
+  AnalyseLog(m_strLog, m_arrLineMarkers);
+  return 0;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void GUIConsoleCtrl::AnalyseLog(std::wstring& src, std::vector<stLineMarker>& targetArray, bool bClearArray)
+{
+  IGUIFont* pFont = (m_pOverrideFont ? m_pOverrideFont : Environment->getSkin()->getFont());
+  core::rect<s32> rectTxt = AbsoluteRect;
+  core::dimension2di extents;
+  s32 curX = rectTxt.UpperLeftCorner.X, curY = rectTxt.UpperLeftCorner.Y;
+  s32 rectWidth = AbsoluteRect.getWidth(), rectHeight = AbsoluteRect.getHeight();
+  static wchar_t* SEPERATORS = L" ,.-|\\/\n";
+
+  size_t pos = 0, pos2 = 0, lineStartPos = 0;
+  std::wstring subStr;
+
+  if ( bClearArray )
+  {
+    ClearLineMarkers(targetArray);
+  }
+  else if ( targetArray.size() )
+  {
+    stLineMarker lm = targetArray.back();
+    pos2 = lineStartPos = lm.endPos;
+  }
+
+  pos = src.find_first_of(SEPERATORS, pos2);
+
+  while ( pos != src.npos )
+  {
+    // get the word
+    subStr = src.substr(pos2, pos-pos2+1);
+    // calculate the extents of the word text
+    extents = pFont->getDimension(subStr.c_str());
+
+    // check if the word would extend past the right edge of the control
+    if ( curX + extents.Width <= rectTxt.LowerRightCorner.X )
+    {
+      // text fits... move along
+      curX += extents.Width;
+      pos2 = pos+1;
+    }
+    else
+    {
+      if ( lineStartPos == pos2 )
+      {
+        // check if we have an edge case. This could be caused by a reallly long word being entered without breaks across one visible line.
+        // in this case, we need to force a break at the first letter that will not overflow
+        while ( curX + extents.Width > rectTxt.LowerRightCorner.X )
+        {
+          subStr.erase( subStr.size()-1, 1 );
+          pos--;
+          extents = pFont->getDimension(subStr.c_str());
+        }
+        pos2 = pos;
+      }
+      // create the 'next line marker'
+      CreateLineMarker(targetArray, lineStartPos, pos2);
+      lineStartPos = pos2;
+      // move to the next line
+      curY += extents.Height;
+      curX = rectTxt.UpperLeftCorner.X;
+    }
+
+    // get the next word
+    pos = src.find_first_of(SEPERATORS, pos2);
+  }
+
+  // clear out the trailing 'seperator' that we added to simplify the algorithm
+  if ( src.size() && src.find_first_of(SEPERATORS, src.size()-1) == src.size()-1 )
+    src.erase( src.size()-1, 1 );
+
+  if ( pos == m_strLog.npos && lineStartPos < src.size() )
+  {
+    CreateLineMarker( targetArray, lineStartPos, src.size() );
+  }
+  else
+  {
+    // check if there is any residual text for the next line
+    if ( pos2 == src.size() && curX != rectTxt.UpperLeftCorner.X && lineStartPos < pos2 )
+      CreateLineMarker( targetArray, lineStartPos, pos2 );
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void GUIConsoleCtrl::AnalysePrompt()
+{
+  std::wstring str = m_prompt + m_input + L" ";
+  AnalyseLog(str, m_arrLineMarkersPrompt, true);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void GUIConsoleCtrl::CreateLineMarker(std::vector<stLineMarker>& targetArray, size_t startPos, size_t endPos)
+{
+  stLineMarker lm;
+
+  lm.startPos = startPos;
+  lm.endPos = endPos;
+  targetArray.push_back(lm);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void GUIConsoleCtrl::ClearLineMarkers(std::vector<stLineMarker>& targetArray)
+{
+  targetArray.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -231,7 +401,9 @@ bool GUIConsoleCtrl::ProcessKeyInput(const SEvent& event)
   case  KEY_DELETE:   // delete the character to the right of the caret
     {
       if ( m_posInput < m_input.size() )
+      {
         m_input.erase( m_posInput, 1 );
+      }
 
       bResult = true;
     }
@@ -270,7 +442,7 @@ bool GUIConsoleCtrl::ProcessKeyInput(const SEvent& event)
 
   case  KEY_DOWN:   // move forward through the history log of inputs
     {
-      if ( m_historyIndex == m_arrHistory.size()-1 )
+      if ( m_historyIndex >= m_arrHistory.size()-1 )
         m_historyIndex = 0;
       else
         m_historyIndex++;
@@ -287,7 +459,9 @@ bool GUIConsoleCtrl::ProcessKeyInput(const SEvent& event)
   case  KEY_BACK: // erase the character to the left of the caret
     {
       if ( m_posInput )
+      {
         m_input.erase( --m_posInput, 1 );
+      }
 
       bResult = true;
     }
@@ -328,7 +502,20 @@ bool GUIConsoleCtrl::ProcessKeyInput(const SEvent& event)
     break;
   }
 
+  {
+    std::wstring str = m_prompt + m_input + L" ";
+    AnalysePrompt();
+  }
+
   return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void GUIConsoleCtrl::setPrompt(const std::wstring& prompt)
+{
+  m_prompt = prompt;
+  AnalysePrompt();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -350,8 +537,14 @@ void GUIConsoleCtrl::setHistoryLogSize(u32 size)
 void GUIConsoleCtrl::setMaxLogSize(u32 size)
 {
   m_maxLogSize = size;
+  while ( m_arrLineMarkers.size() > size )
+  {
+    m_arrLineMarkers.erase( m_arrLineMarkers.begin() );
+  }
+/*
   while ( m_arrLogLines.size() > size )
   {
     m_arrLogLines.erase( m_arrHistory.begin() );
   }
+*/
 }
