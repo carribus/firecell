@@ -38,11 +38,11 @@ string FileSystemActionHandler::Action_FileListing(FileSystem* pFS, const string
       if ( curDir.parent )
       {
         ss.setf(ios::left, ios::adjustfield);
-        ss.width(32);
+        ss.width(24);
         ss << "..";
         ss.width(8);
         ss << "<Dir>";
-        ss.width(16);
+        ss.width(12);
         ss << "--r--r--r" << std::endl;
       }
 
@@ -50,11 +50,11 @@ string FileSystemActionHandler::Action_FileListing(FileSystem* pFS, const string
       {
         f = files[i];
         ss.setf(ios::left, ios::adjustfield);
-        ss.width(32);
+        ss.width(24);
         ss << f.filename;
         ss.width(8);
         ss << ( f.filetype == FileSystem::File::FT_Directory ? "<Dir>" : "     " );
-        ss.width(16);
+        ss.width(12);
         ss << ( f.is_mutable ? "--r--r--r" : "wrxwrxwrx" ) << std::endl;
       }
 
