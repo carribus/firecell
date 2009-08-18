@@ -146,26 +146,7 @@ void GUIConsoleCtrl::DrawPrompt(IGUIFont* pFont, core::rect<s32> rectTxt)
 	    rectTxt.UpperLeftCorner += core::position2d<s32>(0, extents.Height);
     }
   }
-/*
-  // draw the prompt
-  if ( m_prompt.size() )
-  {
-    extents = pFont->getDimension( m_prompt.c_str() );
-    rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
-    rectTxt.LowerRightCorner.Y = rectTxt.UpperLeftCorner.Y + extents.Height;
-    // draw the text line
-    pFont->draw( m_prompt.c_str(), rectTxt, m_textColor, false, false, &rectTxt );
-  }
 
-  // if there is any input in the buffer, then draw it
-  if ( m_input.size() )
-  {
-    extents = pFont->getDimension( m_input.c_str() );
-    rectTxt.UpperLeftCorner.X = rectTxt.LowerRightCorner.X;
-    rectTxt.LowerRightCorner.X = rectTxt.UpperLeftCorner.X + extents.Width;
-    pFont->draw( m_input.c_str(), rectTxt, m_textColor, false, false, &rectTxt );
-  }
-*/
   // draw a caret
   if ( m_pTimer && Environment->hasFocus(this) )
   {
