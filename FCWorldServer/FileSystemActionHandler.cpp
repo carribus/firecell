@@ -98,11 +98,11 @@ string FileSystemActionHandler::Action_ChangeDirectory(FileSystem* pFS, const st
     }
 
     if ( !pFS->SetCurrentDir(newDir) )
-      result = "No such directory found.";
+      result = "No such directory found.\n";
   }
   else
   {
-    result = "No filesystem associated with request.";
+    result = "No filesystem associated with request.\n";
   }
 
   return result;

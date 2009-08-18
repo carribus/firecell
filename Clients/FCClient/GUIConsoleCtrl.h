@@ -46,6 +46,7 @@ public:
   void setMaxLogSize(u32 size);
   u32 getMaxLogSize()                                           { return m_maxLogSize; }
 	void setOverrideFont(IGUIFont* pFont)													{ m_pOverrideFont = pFont; }
+  std::wstring getLog()                                         { return m_strLog; }
 
 protected:
 

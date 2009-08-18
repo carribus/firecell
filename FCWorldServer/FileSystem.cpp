@@ -273,7 +273,7 @@ bool FileSystem::SetCurrentDir(string path)
     pos = path.find_first_of(m_dirSeperator, lastPos);
   }
 
-  if ( pDir )
+  if ( pDir && pDir->filetype == File::FT_Directory )
   {
     m_currentPath = tempPath;
     m_pCurrentDir = pDir;

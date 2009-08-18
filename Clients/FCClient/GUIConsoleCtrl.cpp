@@ -276,35 +276,43 @@ void GUIConsoleCtrl::AnalyseLog(std::wstring& src, std::vector<stLineMarker>& ta
     // calculate the extents of the word text
     extents = pFont->getDimension(subStr.c_str());
 
-    // check if the word would extend past the right edge of the control
-    if ( curX + extents.Width <= rectTxt.LowerRightCorner.X )
+    if ( extents.Width > 0 )
     {
-      // text fits... move along
-      curX += extents.Width;
-      pos2 = pos+1;
+      // check if the word would extend past the right edge of the control
+      if ( curX + extents.Width <= rectTxt.LowerRightCorner.X )
+      {
+        // text fits... move along
+        curX += extents.Width;
+        pos2 = pos+1;
+      }
+      else
+      {
+        if ( lineStartPos == pos2 )
+        {
+          // check if we have an edge case. This could be caused by a reallly long word being entered without breaks across one visible line.
+          // in this case, we need to force a break at the first letter that will not overflow
+          while ( curX + extents.Width > rectTxt.LowerRightCorner.X )
+          {
+            subStr.erase( subStr.size()-1, 1 );
+            pos--;
+            extents = pFont->getDimension(subStr.c_str());
+          }
+          pos2 = pos;
+        }
+        // create the 'next line marker'
+        CreateLineMarker(targetArray, lineStartPos, pos2);
+        lineStartPos = pos2;
+        // move to the next line
+        curY += extents.Height;
+        curX = rectTxt.UpperLeftCorner.X;
+      }
     }
     else
     {
-      if ( lineStartPos == pos2 )
-      {
-        // check if we have an edge case. This could be caused by a reallly long word being entered without breaks across one visible line.
-        // in this case, we need to force a break at the first letter that will not overflow
-        while ( curX + extents.Width > rectTxt.LowerRightCorner.X )
-        {
-          subStr.erase( subStr.size()-1, 1 );
-          pos--;
-          extents = pFont->getDimension(subStr.c_str());
-        }
-        pos2 = pos;
-      }
-      // create the 'next line marker'
-      CreateLineMarker(targetArray, lineStartPos, pos2);
+      CreateLineMarker( targetArray, lineStartPos, pos2 );
       lineStartPos = pos2;
-      // move to the next line
-      curY += extents.Height;
-      curX = rectTxt.UpperLeftCorner.X;
+      pos2++;
     }
-
     // get the next word
     pos = src.find_first_of(SEPERATORS, pos2);
   }
