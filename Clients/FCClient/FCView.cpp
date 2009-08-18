@@ -95,6 +95,10 @@ bool FCView::Initialise(E_DRIVER_TYPE driverType)
 		  }
 	  }
   }
+  else
+  {
+    vRes = uRes;
+  }
 
 	// release the NULL device since we no longer need it
 	pDev->closeDevice();
