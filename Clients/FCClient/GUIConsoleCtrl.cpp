@@ -541,10 +541,4 @@ void GUIConsoleCtrl::setMaxLogSize(u32 size)
   {
     m_arrLineMarkers.erase( m_arrLineMarkers.begin() );
   }
-/*
-  while ( m_arrLogLines.size() > size )
-  {
-    m_arrLogLines.erase( m_arrHistory.begin() );
-  }
-*/
 }
