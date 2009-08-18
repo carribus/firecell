@@ -1,7 +1,7 @@
 <FCClient>
 	<Settings>
 		<Fullscreen useFullScreen="0" />
-		<Resolution width="1280" height="1024" depth="32" />
+		<Resolution width="1280" height="800" depth="32" />
 		<Server address="127.0.0.1" port="6666" />
 		<ConnectAttempts count="4" />
 	</Settings>
