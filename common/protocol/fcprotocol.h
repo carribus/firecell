@@ -35,6 +35,7 @@ const FCBYTE      FCPKT_RESPONSE = 2;
 const FCBYTE      FCPKT_ERROR = 3;
 
 #include "fcserverprotocol.h"
+#include "fcchatprotocol.h"
 
 /*
   

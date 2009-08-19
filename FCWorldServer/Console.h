@@ -12,6 +12,7 @@ public:
   ~Console(void);
 
   bool executeCommand(std::string cmd, std::string curPath, std::string& result);
+  ItemSoftware* getSoftwareForCommand(std::string cmd, bool bCaseSensitive);
 
 private:
 

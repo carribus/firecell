@@ -440,6 +440,9 @@ string FCLogicRouter::GetServiceTypeString(ServiceType type)
   case  ST_World:
     ret = "World";
     break;
+
+  case  ST_Chat:
+    ret = "Chat";
   }
 
   return ret;
@@ -597,13 +600,6 @@ void* FCLogicRouter::thrdSocketMonitor(void* pData)
     else
     {
       pThis->m_condQueuedData.WaitForSignal();
-/*
-#ifdef _WIN32
-      Sleep(50);
-#else
-      usleep(50000);
-#endif
-*/
     }
   }
 
