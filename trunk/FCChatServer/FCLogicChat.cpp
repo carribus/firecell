@@ -21,6 +21,7 @@
 #include "../common/protocol/fcprotocol.h"
 #include "../common/PEPacket.h"
 #include "../common/PEPacketHelper.h"
+#include "PlayerManager.h"
 #include "FCLogicChat.h"
 
 FCLogicChat::FCLogicChat(void)
@@ -67,12 +68,19 @@ int FCLogicChat::Start()
     {
       return -1;
     }
-/*
+
     // register the DB Job Handlers
-    RegisterDBHandler(DBQ_LOAD_ACCOUNT, OnDBJob_LoadAccount);
-    RegisterDBHandler(DBQ_LOAD_CHARACTER_INFO, OnDBJob_LoadCharacterInfo);
-    RegisterDBHandler(DBQ_LOGIN_CHARACTER, OnDBJob_LoginCharacter);
-*/
+    RegisterDBHandler(DBQ_LOAD_CHAT_ROOMS, OnDBJob_LoadChatRooms);
+
+    // load the chat server data
+    DYNLOG_ADDLOG("Loading Chat Rooms...");
+
+    DBJobContext* pCtx = new DBJobContext;
+    pCtx->pThis = this;
+    GetDatabase().ExecuteJob(DBQ_LOAD_CHAT_ROOMS, (void*)pCtx);
+
+    // we want to pause here until the item data required data is loaded
+    m_condSync.WaitForSignal();
   }
 
   // connect to the router(s) that we were configured to connect to
@@ -89,6 +97,8 @@ int FCLogicChat::Stop()
   return 0;
 }
 
+///////////////////////////////////////////////////////////////////////
+
 bool FCLogicChat::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
 {
   RouterSocket* pRouter = (RouterSocket*) pSocket;
@@ -100,8 +110,66 @@ bool FCLogicChat::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
   pPkt->GetField("target",  &clientSocket, sizeof(FCSOCKET));
 
   // switch statement on msgID
+  switch ( msgID )
+  {
+  case  FCSMSG_CHARACTER_LOGGEDIN:
+    {
+      bHandled = OnCommandCharacterLoggedIn(pPkt, pRouter, clientSocket);
+    }
+    break;
+
+  case  FCMSG_CHAT_LIST_ROOMS:
+    {
+      bHandled = OnCommandChatListRooms(pPkt, pRouter, clientSocket);
+    }
+    break;
+
+  default:
+    break;
+  }
 
   return bHandled;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicChat::OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  __FCSPKT_CHARACTER_LOGGEDIN d;
+  size_t dataLen = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  // create the player's character
+  Player* pPlayer = PlayerManager::instance().CreatePlayer(d.account_id, d.character_id, d.name, d.xp, d.level, d.fame_scale, d.country_id, d.city_id, d.clientSocket);
+
+  // if we fail to create or locate an existing player object, then something went terribly wrong...
+  // we need to notify the player of the problem, as well as the auth service
+  if ( pPlayer )
+  {
+    // set the router socket to the player
+    pPlayer->SetRouterSocket(pRouter);
+  }
+  else
+  {
+    DYNLOG_ADDLOG( DYNLOG_FORMAT( "Failed to create/find player id %ld", d.character_id ) );
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicChat::OnCommandChatListRooms(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  __FCPKT_CHAT_LIST_ROOMS d;
+  size_t dataLen = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -132,4 +200,39 @@ bool FCLogicChat::OnError(PEPacket* pPkt, BaseSocket* pSocket)
   pPkt->GetField("target",  &clientSocket, sizeof(FCSOCKET));
 
   return bHandled;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCLogicChat::OnDBJob_LoadChatRooms(DBIResultSet& resultSet, void*& pContext)
+{
+  DBJobContext* pCtx = (DBJobContext*)pContext;
+  RouterSocket* pSock = pCtx->pRouter;
+  FCLogicChat* pThis = pCtx->pThis;
+
+  if ( !pThis )
+    return;
+
+  size_t rowCount = resultSet.GetRowCount();
+
+  DYNLOG_ADDLOG( DYNLOG_FORMAT("%ld Chat Rooms loaded", rowCount));
+
+  for ( size_t i = 0; i < rowCount; i++ )
+  {
+    FCULONG id = resultSet.GetULongValue( "chatroom_id", i );
+    string name = resultSet.GetStringValue( "chatroom_name", i );
+    string topic = resultSet.GetStringValue( "chatroom_topic", i );
+    FCBYTE isPrivate = resultSet.GetByteValue( "is_private", i );
+    string password = resultSet.GetStringValue( "password", i );
+    FCULONG minLevel = resultSet.GetULongValue( "min_character_level", i );
+    FCULONG minAccType = resultSet.GetULongValue( "min_account_type", i );
+    FCBYTE isOfficial = resultSet.GetByteValue( "is_official", i );
+
+    // create the chatroom object
+  }
+
+  delete pCtx;
+  pContext = NULL;
+
+  pThis->m_condSync.Signal();
 }

@@ -30,12 +30,12 @@
 #include "Computer.h"
 #include "Console.h"
 #include "Mission.h"
-#include "../common/game_objects/FCObject.h"
 #include "../common/game_objects/InGameIPAddress.h"
+#include "../common/game_objects/PlayerBase.h"
 
 using namespace std;
 
-class Player : public FCObject
+class Player : public PlayerBase
              , public IEventSource
              , public IEventTarget
 {
@@ -55,7 +55,7 @@ public:
 	};
 
   Player(void);
-  Player(FCULONG accountID, FCULONG id, string name, string email, FCULONG xp, FCULONG level, FCINT fameScale, FCULONG cityID, FCULONG countryID, InGameIPAddress* ip);
+  Player(FCULONG accountID, FCULONG id, string name, string email, FCULONG xp, FCULONG level, FCINT fameScale, FCULONG cityID, FCULONG countryID, InGameIPAddress* ip = NULL);
   ~Player(void);
 
   /*
@@ -103,33 +103,11 @@ public:
   /*
 	 *	Accessor/Mutators
 	 */
-  FCULONG GetAccountID() const            { return m_accountID; }
-  FCULONG GetID() const                   { return m_id; }
-  string GetName() const                  { return m_name; }
-  string GetEmail() const                 { return m_email; }
-  FCULONG GetXP() const                   { return m_xp; }
-  FCULONG GetLevel() const                { return m_level; }
-  FCINT GetFameScale() const              { return m_fameScale; }
-  FCULONG GetCityID() const               { return m_cityID; }
-  FCULONG GetCountryID() const            { return m_countryID; }
   Computer& GetComputer()                 { return *m_computer; }
   Console& GetConsole()                   { return *m_console; }
   InGameIPAddress& GetIP()                { return m_ip; }
-  FCSOCKET GetClientSocket() const        { return m_clientSocket; }
-	BaseSocket* GetRouterSocket()						{ return m_pRouterSocket; }
 
-  void SetAccountID(FCULONG id)           { m_accountID = id; }
-  void SetID(FCULONG id)                  { m_id = id; }
-  void SetName(string name)               { m_name = name; }
-  void SetEmail(string email)             { m_email = email; }
-  void SetXP(FCULONG xp)                  { m_xp = xp; }
-  void SetLevel(FCULONG level)            { m_level = level; }
-  void SetFameScale(FCINT scale)          { m_fameScale = scale; }
-  void SetCityID(FCULONG id)              { m_cityID = id; }
-  void SetCountryID(FCULONG id)           { m_countryID = id; }
   void SetIP(InGameIPAddress& ip)         { m_ip = ip; }
-  void SetClientSocket(FCSOCKET sock)     { m_clientSocket = sock; }
-	void SetRouterSocket(BaseSocket* pSock)	{ m_pRouterSocket = pSock; }
 
 private:
 
@@ -144,20 +122,9 @@ private:
   /*
    *  Private Members
    */
-  FCULONG m_accountID;
-  FCULONG m_id;
-  string m_name;
-  string m_email;
-  FCULONG m_xp;
-  FCULONG m_level;
-  FCINT m_fameScale;
-  FCULONG m_cityID;
-  FCULONG m_countryID;
   Computer* m_computer;
   Console* m_console;
   InGameIPAddress m_ip;
-  FCSOCKET m_clientSocket;
-	BaseSocket* m_pRouterSocket;
 
   IEventSystem* m_pEventSystem;
 

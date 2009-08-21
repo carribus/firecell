@@ -17,33 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef _PLAYERMANAGER_H_
-#define _PLAYERMANAGER_H_
+#ifndef _PLAYER_H_
+#define _PLAYER_H_
 
 #include <map>
-#include "../common/game_objects/PlayerManagerBase.h"
-#include "Player.h"
+#include <string>
+#include <vector>
+#include "../common/fctypes.h"
+#include "../common/PThreadRWLock.h"
+#include "../Clients/common/Socket/ClientSocket.h"
+#include "../common/game_objects/PlayerBase.h"
 
-class PlayerManager : public PlayerManagerBase< Player >
+using namespace std;
+
+class Player : public PlayerBase
 {
-  typedef PlayerManagerBase< Player > _super;
-
-  PlayerManager();
-  ~PlayerManager(void);
 public:
 
-  static PlayerManager& instance();
-  static void destroy();
-
-  Player* CreatePlayer(FCULONG accountID, FCULONG id, string name, FCULONG xp, FCULONG level, FCINT fame_scale, FCULONG country_id, FCULONG city_id, FCSOCKET clientSocket);
-
-  void SetEventSystem(IEventSystem* pES)                { m_pEventSystem = pES; }
+  Player(void);
+  Player(FCULONG accountID, FCULONG id, string name, string email, FCULONG xp, FCULONG level, FCINT fameScale, FCULONG cityID, FCULONG countryID);
+  ~Player(void);
 
 private:
 
-  static PlayerManager* m_pThis;
-
-  IEventSystem* m_pEventSystem;
 };
 
-#endif//_PLAYERMANAGER_H_
+#endif//_PLAYER_H_

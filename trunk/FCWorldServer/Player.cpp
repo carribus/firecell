@@ -29,16 +29,7 @@ DEFINE_EVENT(Player, LoggedIn);
 DEFINE_EVENT(Player, LoggedOut);
 
 Player::Player(void)
-: FCObject(Player::EVTSYS_ObjectType)
-, m_accountID(0)
-, m_id(0)
-, m_xp(0)
-, m_level(0)
-, m_fameScale(0)
-, m_cityID(0)
-, m_countryID(0)
-, m_clientSocket(0)
-, m_pRouterSocket(NULL)
+: PlayerBase(Player::EVTSYS_ObjectType)
 , m_pEventSystem(NULL)
 {
   createComputer();
@@ -47,18 +38,7 @@ Player::Player(void)
 ///////////////////////////////////////////////////////////////////////
 
 Player::Player(FCULONG accountID, FCULONG id, string name, string email, FCULONG xp, FCULONG level, FCINT fameScale, FCULONG cityID, FCULONG countryID, InGameIPAddress* ip)
-: FCObject("Player")
-, m_accountID(accountID)
-, m_id(id)
-, m_name(name)
-, m_email(email)
-, m_xp(xp)
-, m_level(level)
-, m_fameScale(fameScale)
-, m_cityID(cityID)
-, m_countryID(countryID)
-, m_clientSocket(0)
-, m_pRouterSocket(NULL)
+: PlayerBase(accountID, id, name, email, xp, level, fameScale, cityID, countryID, EVTSYS_ObjectType)
 , m_pEventSystem(NULL)
 {
   createComputer();
