@@ -49,10 +49,22 @@ public:
 private:
 
   bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
+    bool OnCommandChatListRooms(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
 
   bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
 
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
+
+  /*
+   *  DB Job Handlers
+   */
+  static void OnDBJob_LoadChatRooms(DBIResultSet& resultSet, void*& pContext);
+
+  /*
+   *  Private members
+   */
+  PThreadCond           m_condSync;
 };
 
 #endif//_FCLOGICCHAT_H_

@@ -37,13 +37,9 @@ public:
 
   Player* CreatePlayer(FCULONG accountID, FCULONG id, string name, FCULONG xp, FCULONG level, FCINT fame_scale, FCULONG country_id, FCULONG city_id, FCSOCKET clientSocket);
 
-  void SetEventSystem(IEventSystem* pES)                { m_pEventSystem = pES; }
-
 private:
 
   static PlayerManager* m_pThis;
-
-  IEventSystem* m_pEventSystem;
 };
 
 #endif//_PLAYERMANAGER_H_

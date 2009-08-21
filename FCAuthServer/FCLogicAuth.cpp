@@ -528,7 +528,7 @@ void FCLogicAuth::OnDBJob_LoginCharacter(DBIResultSet& resultSet, void*& pContex
 
     if ( bLoggedIn )
     {
-      // notify the world service of the character selection
+      // notify the world and chat service of the character selection
       __FCSPKT_CHARACTER_LOGGEDIN d2;
       ServiceType target = ST_World;
 
@@ -544,8 +544,14 @@ void FCLogicAuth::OnDBJob_LoginCharacter(DBIResultSet& resultSet, void*& pContex
 
       PEPacketHelper::CreatePacket( pkt, FCPKT_COMMAND, FCSMSG_CHARACTER_LOGGEDIN );
       PEPacketHelper::SetPacketData( pkt, (void*)&d2, sizeof(d2) );
+      // send to the world service
       pkt.SetFieldValue("target", (void*)&target);
       pSock->Send(&pkt);
+      // send to the chat service
+      target = ST_Chat;
+      pkt.SetFieldValue("target", (void*)&target);
+      pSock->Send(&pkt);
+
     }
   }  
 

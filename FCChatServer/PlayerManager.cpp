@@ -25,7 +25,6 @@ PlayerManager* PlayerManager::m_pThis = NULL;
 ///////////////////////////////////////////////////////////////////////
 
 PlayerManager::PlayerManager()
-: m_pEventSystem(NULL)
 {
 }
 
@@ -61,20 +60,12 @@ void PlayerManager::destroy()
 
 Player* PlayerManager::CreatePlayer(FCULONG accountID, FCULONG id, string name, FCULONG xp, FCULONG level, FCINT fame_scale, FCULONG country_id, FCULONG city_id, FCSOCKET clientSocket)
 {
+
   Player* pPlayer = _super::CreatePlayer(accountID, id, name, xp, level, fame_scale, country_id, city_id, clientSocket);
 
   if ( pPlayer )
   {
-    // configure the player's network ports (8 ports by default)
-    for ( int i = 0; i < 8; i++ )
-    {
-      pPlayer->GetComputer().GetNetworkPorts().addPort();
-      pPlayer->GetComputer().GetNetworkPorts().setPortMaxHealth(i, 100);
-      pPlayer->GetComputer().GetNetworkPorts().setPortHealth(i, (rand() % 100) + 1);
-    }
-
-    // register the object with the eventing system
-    pPlayer->RegisterForEvents(m_pEventSystem);
+    // player created
   }
   else
   {

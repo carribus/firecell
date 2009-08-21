@@ -92,4 +92,9 @@
 ////////////////////////////////////////
 #define DBQ_SAVE_FORUM_POST                             "save_forum_post"
 
+////////////////////////////////////////
+// CHAT SERVER QUERIES
+////////////////////////////////////////
+#define DBQ_LOAD_CHAT_ROOMS                             "load_chat_rooms"
+
 #endif//_FCQUERIES_H_

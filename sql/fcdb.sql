@@ -79,7 +79,7 @@ CREATE TABLE `fc_characteritems` (
 
 /*Data for the table `fc_characteritems` */
 
-insert  into `fc_characteritems`(`character_id`,`item_id`,`count`) values (1,21,1),(1,25,1),(1,26,1),(1,27,1),(1,28,1),(1,29,1),(1,30,1),(1,31,1),(1,32,1);
+insert  into `fc_characteritems`(`character_id`,`item_id`,`count`) values (1,21,1),(1,22,1),(1,25,1),(1,26,1),(1,27,1),(1,28,1),(1,29,1),(1,30,1),(1,31,1),(1,32,1);
 
 /*Table structure for table `fc_charactermissions` */
 
@@ -96,6 +96,8 @@ CREATE TABLE `fc_charactermissions` (
 
 /*Data for the table `fc_charactermissions` */
 
+insert  into `fc_charactermissions`(`character_id`,`mission_id`,`success_count`,`failure_count`,`complete`) values (1,1,3,0,'1'),(1,2,63,0,'1'),(1,3,20,0,'1'),(1,4,65,0,'1');
+
 /*Table structure for table `fc_characterports` */
 
 DROP TABLE IF EXISTS `fc_characterports`;
@@ -111,7 +113,7 @@ CREATE TABLE `fc_characterports` (
 
 /*Data for the table `fc_characterports` */
 
-insert  into `fc_characterports`(`character_id`,`port_number`,`item_id`,`enabled`,`health`) values (1,0,24,1,100),(1,1,23,1,100),(1,2,20,1,100),(1,3,22,0,100),(1,4,0,0,100),(1,5,0,0,100),(1,6,0,0,100),(1,7,0,0,100),(2,0,NULL,0,100),(2,1,NULL,0,100),(2,2,NULL,0,100),(2,3,NULL,0,100),(2,4,NULL,0,100),(2,5,NULL,0,100),(2,6,NULL,0,100),(2,7,NULL,0,100),(3,0,NULL,0,100),(3,1,NULL,0,100),(3,2,NULL,0,100),(3,3,NULL,0,100),(3,4,NULL,0,100),(3,5,NULL,0,100),(3,6,NULL,0,100),(3,7,NULL,0,100);
+insert  into `fc_characterports`(`character_id`,`port_number`,`item_id`,`enabled`,`health`) values (1,0,24,1,100),(1,1,23,1,100),(1,2,20,1,100),(1,3,0,0,100),(1,4,0,0,100),(1,5,0,0,100),(1,6,0,0,100),(1,7,0,0,100),(2,0,NULL,0,100),(2,1,NULL,0,100),(2,2,NULL,0,100),(2,3,NULL,0,100),(2,4,NULL,0,100),(2,5,NULL,0,100),(2,6,NULL,0,100),(2,7,NULL,0,100),(3,0,NULL,0,100),(3,1,NULL,0,100),(3,2,NULL,0,100),(3,3,NULL,0,100),(3,4,NULL,0,100),(3,5,NULL,0,100),(3,6,NULL,0,100),(3,7,NULL,0,100);
 
 /*Table structure for table `fc_characters` */
 
@@ -133,6 +135,26 @@ CREATE TABLE `fc_characters` (
 /*Data for the table `fc_characters` */
 
 insert  into `fc_characters`(`character_id`,`account_id`,`name`,`xp`,`level`,`fame_scale`,`country_id`,`city_id`,`is_logged_in`) values (1,1,'FireCell_GM',0,1,0,1,1,0),(2,1,'TestCharacter',0,1,0,2,2,0),(3,2,'TestUserCharacter',0,1,0,3,3,0);
+
+/*Table structure for table `fc_chatrooms` */
+
+DROP TABLE IF EXISTS `fc_chatrooms`;
+
+CREATE TABLE `fc_chatrooms` (
+  `chatroom_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id of the chat room',
+  `chatroom_name` varchar(32) NOT NULL COMMENT 'name of the chat room',
+  `chatroom_topic` varchar(255) DEFAULT NULL COMMENT 'topic of the chat',
+  `is_private` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'is the room private?',
+  `password` varchar(32) DEFAULT NULL COMMENT 'password for the room',
+  `min_character_level` int(11) NOT NULL DEFAULT '0' COMMENT 'minimum character level to see the room',
+  `min_account_type` int(11) DEFAULT '1' COMMENT 'minimum account type to see the room',
+  `is_official` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'flag to indicate an official channel',
+  PRIMARY KEY (`chatroom_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+/*Data for the table `fc_chatrooms` */
+
+insert  into `fc_chatrooms`(`chatroom_id`,`chatroom_name`,`chatroom_topic`,`is_private`,`password`,`min_character_level`,`min_account_type`,`is_official`) values (1,'Beginners','Come and ask your beginner questions here',0,NULL,0,1,1),(2,'Bug Reports','Found a bug? Tell us about it!',0,NULL,0,1,1),(3,'GM Central','Private GM Channel',1,'GM',0,2,1),(4,'The Hangout','Come and chill with us!',0,NULL,0,1,0);
 
 /*Table structure for table `fc_cities` */
 
@@ -437,7 +459,7 @@ CREATE TABLE `fc_software` (
 
 /*Data for the table `fc_software` */
 
-insert  into `fc_software`(`software_id`,`software_type_id`,`is_service`,`cpu_cost`,`mem_cost`,`script_id`,`filename`,`desktop_icon_flag`) values (1,1,1,100,50,NULL,'httpd',0),(2,2,1,100,50,NULL,'ftpd',0),(3,3,1,100,50,NULL,'sshd',0),(4,4,1,100,50,NULL,'bankd',0),(5,5,1,100,50,NULL,'fcsqld',0),(6,6,1,100,50,NULL,'maild',0),(7,7,0,200,20,NULL,'forum',1),(8,8,0,100,15,NULL,'news',1),(9,9,0,300,50,NULL,'email',1),(10,10,0,250,5,NULL,'console',1),(11,11,0,600,55,NULL,'bank',1),(12,12,0,100,20,NULL,'chat',1),(13,13,0,250,75,NULL,'portscan',0);
+insert  into `fc_software`(`software_id`,`software_type_id`,`is_service`,`cpu_cost`,`mem_cost`,`script_id`,`filename`,`desktop_icon_flag`) values (1,1,1,100,50,NULL,'httpd',0),(2,2,1,100,50,NULL,'ftpd',0),(3,3,1,100,50,NULL,'sshd',0),(4,4,1,100,50,NULL,'bankd',0),(5,5,1,100,50,NULL,'fcsqld',0),(6,6,1,100,50,NULL,'maild',0),(7,7,0,350,20,NULL,'forum',1),(8,8,0,100,15,NULL,'news',1),(9,9,0,300,50,NULL,'email',1),(10,10,0,250,5,NULL,'console',1),(11,11,0,450,55,NULL,'bank',1),(12,12,0,100,20,NULL,'chat',1),(13,13,0,350,100,NULL,'portscan',0);
 
 /*Table structure for table `fc_softwaretypes` */
 

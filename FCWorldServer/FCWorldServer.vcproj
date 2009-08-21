@@ -312,6 +312,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\common\game_objects\PlayerBase.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\PlayerManager.cpp"
 				>
 			</File>
@@ -546,7 +550,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\common\game_objects\PlayerBase.h"
+				>
+			</File>
+			<File
 				RelativePath=".\PlayerManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\common\game_objects\PlayerManagerBase.h"
 				>
 			</File>
 			<File
