@@ -32,7 +32,7 @@ bool SWPortScan::Execute(Player* pPlayer, const std::string& cmd, const std::str
 
     ip.SetIP(ipAddress);
 
-    if ( ip.GetClassA() == 127 && ip.GetClassB() == 0 && ip.GetClassC() == 0 && ip.GetClassD() == 1 )
+    if ( isLocalIP(ip) )
     {
       ip = pPlayer->GetIP();
     }
@@ -213,16 +213,3 @@ std::string SWPortScan::getPortDetails(Player* pPlayer)
   return result;
 }
 
-///////////////////////////////////////////////////////////////////////
-
-std::vector<std::string> SWPortScan::getArguments(const std::string& args)
-{
-  std::istringstream iss(args);
-  std::string arg;
-  std::vector<std::string> arguments;
-
-  while ( iss >> arg )
-    arguments.push_back(arg);
-
-  return arguments;
-}

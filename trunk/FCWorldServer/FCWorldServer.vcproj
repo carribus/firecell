@@ -292,7 +292,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\PacketDispatcher.cpp"
+				RelativePath="..\common\PacketDispatcher.cpp"
 				>
 			</File>
 			<File
@@ -340,11 +340,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SWLogicBase.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SWLogicFactory.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\SWPortScan.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SWWebHack.cpp"
 				>
 			</File>
 			<File
@@ -530,7 +538,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\PacketDispatcher.h"
+				RelativePath="..\common\PacketDispatcher.h"
 				>
 			</File>
 			<File
@@ -582,6 +590,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SWLogicBase.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SWLogicFactory.h"
 				>
 			</File>
@@ -591,6 +603,10 @@
 			</File>
 			<File
 				RelativePath="..\common\game_objects\swtypes.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SWWebHack.h"
 				>
 			</File>
 			<File

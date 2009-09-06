@@ -38,7 +38,23 @@ const FCSHORT FCMSG_CHAT_LIST_ROOMS                 = CHATMSG_ID(1);
  */
 struct __FCPKT_CHAT_LIST_ROOMS
 {
-  FCUINT    clientSocket;
+  FCULONG character_id;
+};
+
+struct __FCPKT_CHAT_LIST_ROOMS_RESP
+{
+  FCULONG numRooms;
+  typedef struct
+  {
+    FCULONG id;
+    char name[32];
+    char topic[255];
+    bool is_private;
+    char password[32];
+    FCULONG min_char_level;
+    bool is_official;
+  } ChatRoom;
+  ChatRoom rooms[1];
 };
 
 #endif//_FCCHATPROTOCOL_H_

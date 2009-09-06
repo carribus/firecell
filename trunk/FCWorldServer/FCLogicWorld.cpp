@@ -27,7 +27,7 @@
 #include "EventWithDisposableData.h"
 #include "Forum.h"
 #include "ForumCategory.h"
-#include "PacketDispatcher.h"
+#include "../common/PacketDispatcher.h"
 #include "PlayerManager.h"
 #include "SWLogicFactory.h"
 #include "world_comms.h"

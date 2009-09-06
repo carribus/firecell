@@ -96,7 +96,7 @@ CREATE TABLE `fc_charactermissions` (
 
 /*Data for the table `fc_charactermissions` */
 
-insert  into `fc_charactermissions`(`character_id`,`mission_id`,`success_count`,`failure_count`,`complete`) values (1,1,3,0,'1'),(1,2,63,0,'1'),(1,3,20,0,'1'),(1,4,65,0,'1');
+insert  into `fc_charactermissions`(`character_id`,`mission_id`,`success_count`,`failure_count`,`complete`) values (1,1,3,0,'1'),(1,2,64,0,'1'),(1,3,20,0,'1'),(1,4,67,0,'1');
 
 /*Table structure for table `fc_characterports` */
 
@@ -455,11 +455,11 @@ CREATE TABLE `fc_software` (
   `filename` varchar(32) NOT NULL COMMENT 'filename of the software',
   `desktop_icon_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'flag indicating whether a desktop icon should be created for the icon',
   PRIMARY KEY (`software_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_software` */
 
-insert  into `fc_software`(`software_id`,`software_type_id`,`is_service`,`cpu_cost`,`mem_cost`,`script_id`,`filename`,`desktop_icon_flag`) values (1,1,1,100,50,NULL,'httpd',0),(2,2,1,100,50,NULL,'ftpd',0),(3,3,1,100,50,NULL,'sshd',0),(4,4,1,100,50,NULL,'bankd',0),(5,5,1,100,50,NULL,'fcsqld',0),(6,6,1,100,50,NULL,'maild',0),(7,7,0,350,20,NULL,'forum',1),(8,8,0,100,15,NULL,'news',1),(9,9,0,300,50,NULL,'email',1),(10,10,0,250,5,NULL,'console',1),(11,11,0,450,55,NULL,'bank',1),(12,12,0,100,20,NULL,'chat',1),(13,13,0,350,100,NULL,'portscan',0);
+insert  into `fc_software`(`software_id`,`software_type_id`,`is_service`,`cpu_cost`,`mem_cost`,`script_id`,`filename`,`desktop_icon_flag`) values (1,1,1,100,50,NULL,'httpd',0),(2,2,1,100,50,NULL,'ftpd',0),(3,3,1,100,50,NULL,'sshd',0),(4,4,1,100,50,NULL,'bankd',0),(5,5,1,100,50,NULL,'fcsqld',0),(6,6,1,100,50,NULL,'maild',0),(7,7,0,350,20,NULL,'forum',1),(8,8,0,100,15,NULL,'news',1),(9,9,0,300,50,NULL,'email',1),(10,10,0,250,5,NULL,'console',1),(11,11,0,450,55,NULL,'bank',1),(12,12,0,100,20,NULL,'chat',1),(13,13,0,350,100,NULL,'portscan',0),(14,14,0,350,100,NULL,'webhack',0);
 
 /*Table structure for table `fc_softwaretypes` */
 
@@ -470,11 +470,11 @@ CREATE TABLE `fc_softwaretypes` (
   `name` varchar(128) NOT NULL COMMENT 'Name of the software type',
   `identifier` varchar(32) NOT NULL COMMENT 'Identifier used in source code',
   PRIMARY KEY (`software_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 
 /*Data for the table `fc_softwaretypes` */
 
-insert  into `fc_softwaretypes`(`software_type_id`,`name`,`identifier`) values (1,'Web Service','SWT_HTTPSERVER'),(2,'FTP Service','SWT_FTPSERVER'),(3,'Secure Shell Service','SWT_SSHSERVER'),(4,'Banking Service','SWT_BANKSERVER'),(5,'Database Service','SWT_DBSERVER'),(6,'Mail Service','SWT_MAILSERVER'),(7,'Forum App','SWT_APP_FORUM'),(8,'News App','SWT_APP_NEWS'),(9,'Email App','SWT_APP_EMAIL'),(10,'Console App','SWT_APP_CONSOLE'),(11,'Banking App','SWT_APP_BANK'),(12,'Chat App','SWT_APP_CHAT'),(13,'Port Scan App','SWT_APP_PORTSCAN');
+insert  into `fc_softwaretypes`(`software_type_id`,`name`,`identifier`) values (1,'Web Service','SWT_HTTPSERVER'),(2,'FTP Service','SWT_FTPSERVER'),(3,'Secure Shell Service','SWT_SSHSERVER'),(4,'Banking Service','SWT_BANKSERVER'),(5,'Database Service','SWT_DBSERVER'),(6,'Mail Service','SWT_MAILSERVER'),(7,'Forum App','SWT_APP_FORUM'),(8,'News App','SWT_APP_NEWS'),(9,'Email App','SWT_APP_EMAIL'),(10,'Console App','SWT_APP_CONSOLE'),(11,'Banking App','SWT_APP_BANK'),(12,'Chat App','SWT_APP_CHAT'),(13,'Port Scan App','SWT_APP_PORTSCAN'),(14,'WebHack App','SWT_APP_WEBHACK');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

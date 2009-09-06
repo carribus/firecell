@@ -4,11 +4,11 @@
 #include <list>
 #include <map>
 #include <vector>
-#include "../common/fctypes.h"
-#include "../common/PEPacket.h"
-#include "../common/PThreadRWLock.h"
-#include "../common/PThreadCond.h"
-#include "../common/threading.h"
+#include "fctypes.h"
+#include "PEPacket.h"
+#include "PThreadRWLock.h"
+#include "PThreadCond.h"
+#include "threading.h"
 #include "../Clients/common/Socket/ClientSocket.h"
 
 #define QueuePacket(pkt, sock)  PacketDispatcher::instance().queuePacket( (pkt), (sock) )
