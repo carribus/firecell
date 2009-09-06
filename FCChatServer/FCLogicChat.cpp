@@ -21,6 +21,7 @@
 #include "../common/protocol/fcprotocol.h"
 #include "../common/PEPacket.h"
 #include "../common/PEPacketHelper.h"
+#include "chat_comms.h"
 #include "PlayerManager.h"
 #include "FCLogicChat.h"
 
@@ -165,9 +166,18 @@ bool FCLogicChat::OnCommandChatListRooms(PEPacket* pPkt, RouterSocket* pRouter, 
 {
   __FCPKT_CHAT_LIST_ROOMS d;
   size_t dataLen = 0;
+  Player* pPlayer = NULL;
 
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
+
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket(clientSocket)) )
+  {
+    vector< ChatRoom > chatRooms;
+    size_t numRooms = m_chatRoomMgr.getChatRoomsForPlayer(chatRooms, pPlayer);
+
+    SendChatRoomList(chatRooms, pRouter, clientSocket);
+  }
 
   return true;
 }
@@ -209,6 +219,7 @@ void FCLogicChat::OnDBJob_LoadChatRooms(DBIResultSet& resultSet, void*& pContext
   DBJobContext* pCtx = (DBJobContext*)pContext;
   RouterSocket* pSock = pCtx->pRouter;
   FCLogicChat* pThis = pCtx->pThis;
+  ChatRoom* pRoom = NULL;
 
   if ( !pThis )
     return;
@@ -229,6 +240,11 @@ void FCLogicChat::OnDBJob_LoadChatRooms(DBIResultSet& resultSet, void*& pContext
     FCBYTE isOfficial = resultSet.GetByteValue( "is_official", i );
 
     // create the chatroom object
+    if ( (pRoom = pThis->m_chatRoomMgr.CreateChatRoom(id, name, (isPrivate?true:false), minLevel, minAccType, (isOfficial?true:false))) )
+    {
+      pRoom->setTopic(topic);
+      pRoom->setPassword(password);
+    }
   }
 
   delete pCtx;

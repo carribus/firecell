@@ -181,6 +181,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\chat_comms.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ChatRoom.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ChatRoomManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\common\CmdLineInfo.cpp"
 				>
 			</File>
@@ -198,6 +210,10 @@
 			</File>
 			<File
 				RelativePath="..\common\inifile.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\common\PacketDispatcher.cpp"
 				>
 			</File>
 			<File
@@ -229,6 +245,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\common\PThreadRWLock.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\common\ServiceLogicBase.cpp"
 				>
 			</File>
@@ -247,6 +267,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\chat_comms.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ChatRoom.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ChatRoomManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\common\CmdLineInfo.h"
 				>
 			</File>
@@ -260,6 +292,10 @@
 			</File>
 			<File
 				RelativePath="..\common\inifile.h"
+				>
+			</File>
+			<File
+				RelativePath="..\common\PacketDispatcher.h"
 				>
 			</File>
 			<File
@@ -292,6 +328,10 @@
 			</File>
 			<File
 				RelativePath="..\common\PThreadCond.h"
+				>
+			</File>
+			<File
+				RelativePath="..\common\PThreadRWLock.h"
 				>
 			</File>
 			<File

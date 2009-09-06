@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="FCClient.Console"
 	ProjectGUID="{FDE3C80C-0C1D-41A6-BAF5-F75C16B91C2A}"
+	RootNamespace="FCClient.Console"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -201,6 +202,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ModChat.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ModConsole.cpp"
 				>
 			</File>
@@ -256,6 +261,10 @@
 			</File>
 			<File
 				RelativePath=".\ModBank.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ModChat.h"
 				>
 			</File>
 			<File

@@ -4,9 +4,9 @@
 #include <vector>
 #include "Company.h"
 #include "Player.h"
-#include "../common/interfaces/ISoftwareLogic.h"
+#include "SWLogicBase.h"
 
-class SWPortScan : public ISoftwareLogic
+class SWPortScan : public SWLogicBase
 {
 public:
   SWPortScan(void);
@@ -18,8 +18,6 @@ private:
 
   std::string getPortDetails(Company* pCompany);
   std::string getPortDetails(Player* pPlayer);
-  std::vector<std::string> getArguments(const std::string& args);
-
 };
 
 #endif//_SWPORTSCAN_H_

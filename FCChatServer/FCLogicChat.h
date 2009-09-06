@@ -24,6 +24,7 @@
 #include <map>
 #include <queue>
 #include "../common/ServiceLogicBase.h"
+#include "ChatRoomManager.h"
 
 class FCLogicChat : public ServiceLogicBase
 {
@@ -65,6 +66,8 @@ private:
    *  Private members
    */
   PThreadCond           m_condSync;
+
+  ChatRoomManager       m_chatRoomMgr;
 };
 
 #endif//_FCLOGICCHAT_H_

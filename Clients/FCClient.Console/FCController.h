@@ -33,6 +33,7 @@
 #include "ModConsole.h"
 #include "ModForum.h"
 #include "ModBank.h"
+#include "ModChat.h"
 
 using namespace std;
 
@@ -134,6 +135,7 @@ private:
   ModConsole              m_modConsole;
   ModForum                m_modForum;
   ModBank                 m_modBank;
+  ModChat                 m_modChat;
 };
 
 #endif//_FCCONTROLLER_H_

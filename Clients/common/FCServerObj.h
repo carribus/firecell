@@ -51,6 +51,9 @@ public:
   void SendNetworkPortEnableRequest(FCSHORT portNum, bool bEnable);
   void SendSoftwareStopped(FCULONG itemID);
 
+  // chat commands
+  void RequestChatRoomList(FCULONG character_id);
+
   void SetSocket(BaseSocket* pSock)                             { m_pSock = pSock; }
 
 private:
