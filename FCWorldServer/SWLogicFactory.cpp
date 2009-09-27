@@ -1,5 +1,6 @@
 #include "../common/game_objects/swtypes.h"
 #include "SWPortScan.h"
+#include "SWWebHack.h"
 #include "SWLogicFactory.h"
 
 SWLogicFactory* SWLogicFactory::m_pThis = NULL;
@@ -49,6 +50,10 @@ ISoftwareLogic* SWLogicFactory::createLogic(FCSHORT logicType)
   {
   case  SWT_APP_PORTSCAN:
     pObj = new SWPortScan;
+    break;
+
+  case  SWT_APP_WEBHACK:
+    pObj = new SWWebHack;
     break;
 
   default:
