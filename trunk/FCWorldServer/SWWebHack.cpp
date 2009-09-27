@@ -49,6 +49,8 @@ bool SWWebHack::Execute(Player* pPlayer, const std::string& cmd, const std::stri
         }
       }
     }
+
+    result = ss.str();
   }
 
   return true;
