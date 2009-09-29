@@ -3,5 +3,5 @@ cd server
 start fcserver /a
 start fcauthserver /a
 start fcworldserver /a
-start fcchatserver /a
+@rem start fcchatserver /a
 cd ..

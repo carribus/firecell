@@ -42,6 +42,12 @@ public:
 
   bool AddApplication(ItemSoftware* pSoftware);
   bool OpenApplication(FCULONG itemID, FCSHORT cpuCost, FCULONG memCost);
+    bool OpenApplicationForum(FCULONG appID);
+    bool OpenApplicationNews(FCULONG appID);
+    bool OpenApplicationEmail(FCULONG appID);
+    bool OpenApplicationConsole(FCULONG appID);
+    bool OpenApplicationBank(FCULONG appID);
+    bool OpenApplicationChat(FCULONG appID);
 	bool IsApplicationRunning(FCUINT appType);
 
   void ShowError(const wchar_t* caption, const wchar_t* text, bool bModal = true, int flags = EMBF_OK);
