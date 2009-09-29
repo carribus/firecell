@@ -208,6 +208,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ChatWindow.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\common\game_objects\ComputerBase.cpp"
 				>
 			</File>
@@ -305,6 +309,10 @@
 			</File>
 			<File
 				RelativePath=".\GUIBankView.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GUIChatPane.cpp"
 				>
 			</File>
 			<File
@@ -474,6 +482,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ChatWindow.h"
+				>
+			</File>
+			<File
 				RelativePath=".\City.h"
 				>
 			</File>
@@ -591,6 +603,10 @@
 			</File>
 			<File
 				RelativePath=".\GUIBankView.h"
+				>
+			</File>
+			<File
+				RelativePath=".\GUIChatPane.h"
 				>
 			</File>
 			<File

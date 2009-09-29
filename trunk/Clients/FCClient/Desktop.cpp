@@ -13,6 +13,7 @@
 #include "ForumWindow.h"
 #include "ConsoleWindow.h"
 #include "BankingWindow.h"
+#include "ChatWindow.h"
 
 #define ICON_PADDING_X						0
 #define ICON_PADDING_Y						30
@@ -294,78 +295,37 @@ bool Desktop::OpenApplication(FCULONG itemID, FCSHORT cpuCost, FCULONG memCost)
       {
       case  SWT_APP_FORUM:
         {
-          ForumWindow* pForum = new ForumWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
-
-          if ( pForum )
-          {
-					  m_mutexApps.Lock();
-            if ( pForum->Create( INGAMEAPP_BASE_ID+SWT_APP_FORUM, itemID, ResourceManager::instance().GetClientString( STR_APP_FORUM_CAPTION ) ) )
-            {
-              addChild( pForum->GetGUIWindow() );
-              m_arrApps.push_back(pForum);
-              if ( m_pAppBar )
-                m_pAppBar->setActiveApp( pForum );
-            }
-					  m_mutexApps.Unlock();
-          }
+          bResult = OpenApplicationForum(itemID);
         }
         break;
 
       case  SWT_APP_NEWS:
         {
-          m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening News!", L"This will be the news browser app window");
+          bResult = OpenApplicationNews(itemID);
         }
         break;
 
       case  SWT_APP_EMAIL:
         {
-          m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Email!", L"This will be the email app window");
+          bResult = OpenApplicationEmail(itemID);
         }
         break;
 
 		  case	 SWT_APP_CONSOLE:
 			  {
-					ConsoleWindow* pConsole = new ConsoleWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
-
-          if ( pConsole )
-          {
-					  m_mutexApps.Lock();
-            if ( pConsole->Create(INGAMEAPP_BASE_ID+SWT_APP_CONSOLE, itemID, ResourceManager::instance().GetClientString(STR_APP_CONSOLE_CAPTION) ) )
-					  {
-              addChild( pConsole->GetGUIWindow() );
-						  m_arrApps.push_back(pConsole);
-              if ( m_pAppBar )
-                m_pAppBar->setActiveApp( pConsole );
-					  }
-					  m_mutexApps.Unlock();
-          }
+          bResult = OpenApplicationConsole(itemID);
 			  }
 			  break;
 
       case  SWT_APP_BANK:
         {
-          BankingWindow* pBank = new BankingWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
-
-          if ( pBank )
-          {
-            m_mutexApps.Lock();
-            if ( pBank->Create(INGAMEAPP_BASE_ID+SWT_APP_BANK, itemID, ResourceManager::instance().GetClientString(STR_APP_BANK_CAPTION) ) )
-            {
-              addChild( pBank->GetGUIWindow() );
-						  m_arrApps.push_back(pBank);
-              if ( m_pAppBar )
-                m_pAppBar->setActiveApp( pBank );
-            }
-            m_mutexApps.Unlock();
-          }
-
-//          m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Bank!", L"This will be the banking app window");
+          bResult = OpenApplicationBank(itemID);
         }
         break;
 
       case  SWT_APP_CHAT:
         {
-          m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Chat!", L"This will be the chatting app window");
+          bResult = OpenApplicationChat(itemID);
         }
         break;
 /*
@@ -392,6 +352,122 @@ bool Desktop::OpenApplication(FCULONG itemID, FCSHORT cpuCost, FCULONG memCost)
 			}
 		}
   }
+
+  return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Desktop::OpenApplicationForum(FCULONG appID)
+{
+  bool bResult = false;
+  ForumWindow* pForum = new ForumWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
+
+  if ( pForum )
+  {
+	  m_mutexApps.Lock();
+    if ( pForum->Create( INGAMEAPP_BASE_ID+SWT_APP_FORUM, appID, ResourceManager::instance().GetClientString( STR_APP_FORUM_CAPTION ) ) )
+    {
+      addChild( pForum->GetGUIWindow() );
+      m_arrApps.push_back(pForum);
+      if ( m_pAppBar )
+        m_pAppBar->setActiveApp( pForum );
+      bResult = true;
+    }
+	  m_mutexApps.Unlock();
+  }
+
+  return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Desktop::OpenApplicationNews(FCULONG appID)
+{
+  m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening News!", L"This will be the news browser app window");
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Desktop::OpenApplicationEmail(FCULONG appID)
+{
+  m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Email!", L"This will be the email app window");
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Desktop::OpenApplicationConsole(FCULONG appID)
+{
+  bool bResult = false;
+  ConsoleWindow* pConsole = new ConsoleWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
+
+  if ( pConsole )
+  {
+    m_mutexApps.Lock();
+    if ( pConsole->Create(INGAMEAPP_BASE_ID+SWT_APP_CONSOLE, appID, ResourceManager::instance().GetClientString(STR_APP_CONSOLE_CAPTION) ) )
+    {
+      addChild( pConsole->GetGUIWindow() );
+	    m_arrApps.push_back(pConsole);
+      if ( m_pAppBar )
+        m_pAppBar->setActiveApp( pConsole );
+      bResult = true;
+    }
+    m_mutexApps.Unlock();
+  }
+
+  return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Desktop::OpenApplicationBank(FCULONG appID)
+{
+  bool bResult = false;
+  BankingWindow* pBank = new BankingWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
+
+  if ( pBank )
+  {
+    m_mutexApps.Lock();
+    if ( pBank->Create(INGAMEAPP_BASE_ID+SWT_APP_BANK, appID, ResourceManager::instance().GetClientString(STR_APP_BANK_CAPTION) ) )
+    {
+      addChild( pBank->GetGUIWindow() );
+	    m_arrApps.push_back(pBank);
+      if ( m_pAppBar )
+        m_pAppBar->setActiveApp( pBank );
+      bResult = true;
+    }
+    m_mutexApps.Unlock();
+  }
+
+  return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Desktop::OpenApplicationChat(FCULONG appID)
+{
+  bool bResult = false;
+  ChatWindow* pChat = new ChatWindow(this, m_owner.GetContainer()->GetController(), m_pDevice);
+
+  if ( pChat )
+  {
+    m_mutexApps.Lock();
+    if ( pChat->Create(INGAMEAPP_BASE_ID+SWT_APP_CHAT, appID, ResourceManager::instance().GetClientString(STR_APP_CHAT_CAPTION) ) )
+    {
+      addChild( pChat->GetGUIWindow() );
+	    m_arrApps.push_back(pChat);
+      if ( m_pAppBar )
+        m_pAppBar->setActiveApp( pChat );
+      bResult = true;
+    }
+    m_mutexApps.Unlock();
+  }
+  else
+    m_pDevice->getGUIEnvironment()->addMessageBox(L"Opening Chat!", L"This will be the chatting app window");
 
   return bResult;
 }
