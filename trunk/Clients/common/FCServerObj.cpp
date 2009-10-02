@@ -441,6 +441,21 @@ void FCServerObj::SendSoftwareStopped(FCULONG itemID)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCServerObj::RequestChatConnect(FCULONG character_id)
+{
+  PEPacket pkt;
+  __FCPKT_CHAT_CONNECT d;
+
+  d.character_id = character_id;
+
+	PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_CHAT_CONNECT, ST_Chat);
+	PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+	SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void FCServerObj::RequestChatRoomList(FCULONG character_id)
 {
   PEPacket pkt;

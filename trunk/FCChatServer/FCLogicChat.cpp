@@ -119,6 +119,12 @@ bool FCLogicChat::OnCommand(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  case  FCMSG_CHAT_CONNECT:
+    {
+      bHandled = OnCommandChatConnect(pPkt, pRouter, clientSocket);
+    }
+    break;
+
   case  FCMSG_CHAT_LIST_ROOMS:
     {
       bHandled = OnCommandChatListRooms(pPkt, pRouter, clientSocket);
@@ -155,6 +161,26 @@ bool FCLogicChat::OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRout
   else
   {
     DYNLOG_ADDLOG( DYNLOG_FORMAT( "Failed to create/find player id %ld", d.character_id ) );
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCLogicChat::OnCommandChatConnect(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket)
+{
+  __FCPKT_CHAT_CONNECT d;
+  size_t dataLen = 0;
+  Player* pPlayer = NULL;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", (void*)&d, dataLen);
+
+  if ( (pPlayer = PlayerManager::instance().GetPlayerByClientSocket(clientSocket)) )
+  {
+    e_ChatConnectStatus e = CanPlayerConnect(pPlayer);
+    SendChatConnectResponse(e, pRouter, clientSocket);
   }
 
   return true;
@@ -210,6 +236,15 @@ bool FCLogicChat::OnError(PEPacket* pPkt, BaseSocket* pSocket)
   pPkt->GetField("target",  &clientSocket, sizeof(FCSOCKET));
 
   return bHandled;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+e_ChatConnectStatus FCLogicChat::CanPlayerConnect(Player* pPlayer)
+{
+  e_ChatConnectStatus res = ChatConnectOK;
+
+  return res;
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -4,7 +4,6 @@
 #include <map>
 #include <string>
 #include <irrlicht.h>
-#include "FCModel.h"
 #include "GUIChatPane.h"
 #include "InGameAppWindow.h"
 
@@ -23,6 +22,8 @@ public:
 
 private:
 
+  void RequestChatServerConnect();
+
   IGUITab* createTab(std::wstring label);
 
   /*
@@ -30,8 +31,6 @@ private:
    */
   IrrlichtDevice*         m_pDevice;
   IGUITabControl*         m_pTabCtrl;
-
-//  ChatModel*              m_pModel;
 };
 
 #endif//_CHATWINDOW_H_

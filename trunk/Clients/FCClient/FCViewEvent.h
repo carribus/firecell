@@ -25,6 +25,9 @@ enum e_FCViewEventType
   /* Bank Events */
   VE_BankConnect,
   VE_BankAuthenticate,
+  /* Chat Events */
+  VE_ChatConnect,
+  VE_ChatListChannels,
 	/* Mission Events */
 	VE_MissionAccepted,
   /* Software Events */

@@ -192,6 +192,8 @@ public:
   /* Banking methods */
   void BankConnect();
   void BankAuthenticate(std::wstring str);
+  /* Chat Methods */
+  void ChatConnect();
 	/* Mission methods */
 	void MissionAccept(FCULONG mission_id);
   /* Software methods */

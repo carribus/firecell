@@ -51,11 +51,14 @@ private:
 
   bool OnCommand(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
+    bool OnCommandChatConnect(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
     bool OnCommandChatListRooms(PEPacket* pPkt, RouterSocket* pRouter, FCSOCKET clientSocket);
 
   bool OnResponse(PEPacket* pPkt, BaseSocket* pSocket);
 
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
+
+  e_ChatConnectStatus CanPlayerConnect(Player* pPlayer);
 
   /*
    *  DB Job Handlers

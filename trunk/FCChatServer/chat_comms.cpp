@@ -5,6 +5,23 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void SendChatConnectResponse(e_ChatConnectStatus e, BaseSocket* pRouter, FCSOCKET clientSocket)
+{
+  PEPacket* pkt = new PEPacket;
+  __FCPKT_CHAT_CONNECT_RESP d;
+
+  d.result = e;
+
+  PEPacketHelper::CreatePacket(*pkt, FCPKT_RESPONSE, FCMSG_CHAT_CONNECT, ST_None);
+  PEPacketHelper::SetPacketData(*pkt, (void*)&d, sizeof(__FCPKT_CHAT_CONNECT_RESP));
+
+  // send notification to Client
+  pkt->SetFieldValue("target", (void*)&clientSocket);
+  QueuePacket(pkt, pRouter);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void SendChatRoomList(vector< ChatRoom >& chatRooms, BaseSocket* pRouter, FCSOCKET clientSocket)
 {
   PEPacket* pkt = new PEPacket;

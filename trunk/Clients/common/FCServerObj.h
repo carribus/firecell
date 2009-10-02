@@ -52,6 +52,7 @@ public:
   void SendSoftwareStopped(FCULONG itemID);
 
   // chat commands
+  void RequestChatConnect(FCULONG character_id);
   void RequestChatRoomList(FCULONG character_id);
 
   void SetSocket(BaseSocket* pSock)                             { m_pSock = pSock; }

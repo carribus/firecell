@@ -25,6 +25,7 @@
 #include "../common/ResourceManager.h"
 #include "Settings.h"
 #include "ForumModel.h"
+#include "ChatModel.h"
 #include "FCModel.h"
 
 FCModel* FCModel::m_pThis = NULL;
@@ -1710,6 +1711,14 @@ void FCModel::BankAuthenticate(std::wstring str)
 	sprintf(pw, "%S", str.c_str());
 
   m_server.SendBankingPassword(pw, str.length());
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::ChatConnect()
+{
+  ChatModel::instance().initialise();
+  m_server.RequestChatConnect(m_pCharacter->GetID());
 }
 
 ///////////////////////////////////////////////////////////////////////
