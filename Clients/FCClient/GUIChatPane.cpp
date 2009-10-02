@@ -15,10 +15,6 @@ GUIChatPane::GUIChatPane(IGUIEnvironment* environment, core::rect<s32>& rect, IG
   r.LowerRightCorner.Y -= 24;
   if ( (m_pChatLog = environment->addStaticText(L"", r, true, true, this, -1, true)) )
   {
-    static int i = 0;
-    std::wstringstream ss;
-    ss << L"Tab " << ++i;
-    m_pChatLog->setText( ss.str().c_str() );
     m_pChatLog->setBackgroundColor(backColor);
     m_pChatLog->setOverrideColor(textColor);
   }

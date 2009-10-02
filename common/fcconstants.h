@@ -23,6 +23,17 @@ enum e_LoginStatus
   LoginSuccess = 1,
   LoginAccountLoggedInAlready = 2
 };
+
+/**
+ *  \brief  Status result of a 'connection attempt' to the chat server
+ */
+enum e_ChatConnectStatus
+{
+  ChatConnectOK = 0,
+  ChatConnectChatServerDown,
+  ChatConnectChatRevoked
+};
+
 /**
  *  \brief Desktop Option types available to the player in the client
  */

@@ -30,7 +30,24 @@
  */
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-const FCSHORT FCMSG_CHAT_LIST_ROOMS                 = CHATMSG_ID(1);
+const FCSHORT FCMSG_CHAT_CONNECT                    = CHATMSG_ID(1);
+///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  @brief Packet sent from client to chat server to 'simulate' a connection and fetch the MOTD
+ *  @ingroup fcprotocol
+ */
+struct __FCPKT_CHAT_CONNECT
+{
+  FCULONG character_id;
+};
+
+struct __FCPKT_CHAT_CONNECT_RESP
+{
+  e_ChatConnectStatus result;
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
+const FCSHORT FCMSG_CHAT_LIST_ROOMS                 = CHATMSG_ID(2);
 ///////////////////////////////////////////////////////////////////////////////////////////
 /**
  *  @brief Packet sent from Client to Chat server requesting a list of available chat rooms

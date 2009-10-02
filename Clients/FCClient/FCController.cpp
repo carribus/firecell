@@ -181,6 +181,19 @@ void FCController::OnViewEvent(FCViewEvent& event)
     }
     break;
 
+  //
+  // Chat Events
+  case  VE_ChatConnect:
+    {
+      m_pModel->ChatConnect();
+    }
+    break;
+
+  case  VE_ChatListChannels:
+    {
+    }
+    break;
+
 	//
 	// Mission Events
 	case	VE_MissionAccepted:

@@ -1,6 +1,7 @@
 #include "../common/ResourceManager.h"
 #include "clientstrings.h"
 #include "../common/clienttypes.h"
+#include "ChatModel.h"
 #include "FCController.h"
 #include "FCViewEvent.h"
 #include "ChatWindow.h"
@@ -9,7 +10,6 @@ ChatWindow::ChatWindow(IDesktop* pDesktop, FCController* pController, IrrlichtDe
 : InGameAppWindow(pDesktop, pController, pDevice->getGUIEnvironment())
 , m_pDevice(pDevice)
 , m_pTabCtrl(NULL)
-//, m_pModel(NULL)
 {
   m_appName = ResourceManager::instance().GetClientString(STR_APP_CHAT_CAPTION);
 }
@@ -47,12 +47,22 @@ bool ChatWindow::Create(s32 AppElemID, FCUINT optionID, std::wstring caption)
     m_pTabCtrl->setTabHeight(22);
     m_pTabCtrl->setTabVerticalAlignment( EGUIA_LOWERRIGHT );
     createTab(L"Server");
-    createTab(L"Channel List");
-
   }
- 
+
+  // At this point, we want to 'connect' to the chat server
+  RequestChatServerConnect();
 
   return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ChatWindow::RequestChatServerConnect()
+{
+  FCViewEvent e(VE_ChatConnect);
+  
+  SetWaitingForResponse(true);
+  m_pController->OnViewEvent(e);
 }
 
 ///////////////////////////////////////////////////////////////////////
