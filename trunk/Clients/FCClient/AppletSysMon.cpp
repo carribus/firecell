@@ -78,8 +78,8 @@ void AppletSysMon::draw()
   memRect.LowerRightCorner.X = memRect.UpperLeftCorner.X + (memRect.getWidth()/2);
   cpuRect.UpperLeftCorner.X = memRect.LowerRightCorner.X;
 
-  memRect.UpperLeftCorner.Y = memRect.LowerRightCorner.Y - ( (double)memRect.getHeight() * ((double)((memMax-memLeft) / (double)memMax) ) );
-  cpuRect.UpperLeftCorner.Y = cpuRect.LowerRightCorner.Y - ( (double)cpuRect.getHeight() * ((double)((cpuMax-cpuLeft) / (double)cpuMax) ) );
+  memRect.UpperLeftCorner.Y = memRect.LowerRightCorner.Y - (s32)( (double)memRect.getHeight() * ((double)((memMax-memLeft) / (double)memMax) ) );
+  cpuRect.UpperLeftCorner.Y = cpuRect.LowerRightCorner.Y - (s32)( (double)cpuRect.getHeight() * ((double)((cpuMax-cpuLeft) / (double)cpuMax) ) );
 
   pVideo->draw2DRectangle( SColor(128, 255, 0, 0), memRect, &AbsoluteClippingRect );
   pVideo->draw2DRectangle( SColor(128, 0, 0, 255), cpuRect, &AbsoluteClippingRect );
