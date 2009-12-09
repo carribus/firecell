@@ -261,6 +261,8 @@ private:
     bool OnResponseNetworkPortEnable(PEPacket* pPkt, BaseSocket* pSocket);
     bool OnResponseSoftwareStopped(PEPacket* pPkt, BaseSocket* pSocket);
 
+    bool OnResponseChatConnect(PEPacket* pPkt, BaseSocket* pSocket);
+
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
 
 	std::string ParseMissionString(std::string source);

@@ -510,6 +510,15 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  /*
+   *  Chat Server responses
+   */
+  case  FCMSG_CHAT_CONNECT:
+    {
+      bHandled = OnResponseChatConnect(pPkt, pSocket);
+    }
+    break;
+
   default:
 
     if ( !bHandled )
@@ -1390,6 +1399,31 @@ bool FCModel::OnResponseSoftwareStopped(PEPacket* pPkt, BaseSocket* pSocket)
 
   m_itemMgr.getItem(d.itemID, gi);
   comp.RemoveProcess( (ItemSoftware*)gi.getItem() );
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseChatConnect(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_CHAT_CONNECT_RESP d;
+  size_t dataLen = 0;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  pPkt->GetField("data", &d, dataLen);
+
+  switch ( d.result )
+  {
+  case  ChatConnectOK:
+    break;
+
+  case  ChatConnectChatRevoked:
+    break;
+
+  case  ChatConnectChatServerDown:
+    break;
+  }
 
   return true;
 }
