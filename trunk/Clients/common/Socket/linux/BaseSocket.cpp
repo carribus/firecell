@@ -30,10 +30,14 @@ BaseSocket::BaseSocket(void)
 {
 }
 
+///////////////////////////////////////////////////////////////////////
+
 BaseSocket::~BaseSocket(void)
 {
   Disconnect();
 }
+
+///////////////////////////////////////////////////////////////////////
 
 void BaseSocket::Attach(FCSOCKET s)
 {
@@ -53,6 +57,8 @@ void BaseSocket::Attach(FCSOCKET s)
     // failed to start the thread
   }
 }
+
+///////////////////////////////////////////////////////////////////////
 
 bool BaseSocket::Create(int nType)
 {
@@ -74,6 +80,8 @@ bool BaseSocket::Create(int nType)
   return true;
 }
 
+///////////////////////////////////////////////////////////////////////
+
 void BaseSocket::Connect(string strServer, short sPort)
 {
   if ( !m_socket )
@@ -93,6 +101,8 @@ void BaseSocket::Connect(string strServer, short sPort)
 	}
 }
 
+///////////////////////////////////////////////////////////////////////
+
 void BaseSocket::Disconnect()
 {
   if ( !m_socket )
@@ -102,6 +112,8 @@ void BaseSocket::Disconnect()
   close(m_socket);
   m_socket = 0;
 }
+
+///////////////////////////////////////////////////////////////////////
 
 bool BaseSocket::Listen(short sPort)
 {
@@ -118,6 +130,8 @@ bool BaseSocket::Listen(short sPort)
 	return true;
 }
 
+///////////////////////////////////////////////////////////////////////
+
 int BaseSocket::Send(FCBYTE* pData, int nLen)
 {
   int nBytesSent = 0, nTotalSent = 0;
@@ -133,6 +147,8 @@ int BaseSocket::Send(FCBYTE* pData, int nLen)
   return nTotalSent;
 }
 
+///////////////////////////////////////////////////////////////////////
+
 int BaseSocket::Send(PEPacket* pkt)
 {
   size_t dataLen = 0;
@@ -141,6 +157,8 @@ int BaseSocket::Send(PEPacket* pkt)
   pkt->GetDataBlock( pData, dataLen );
   return Send( (FCBYTE*)pData, (FCUINT)dataLen );
 }
+
+///////////////////////////////////////////////////////////////////////
 
 void BaseSocket::OnAccept(int nErrorCode)
 {
@@ -159,11 +177,15 @@ void BaseSocket::OnAccept(int nErrorCode)
   }
 }
 
+///////////////////////////////////////////////////////////////////////
+
 void BaseSocket::OnConnect(int nErrorCode)
 {
   if ( m_pSink )
     m_pSink->OnConnected(this, nErrorCode);
 }
+
+///////////////////////////////////////////////////////////////////////
 
 void BaseSocket::OnDataReceived(int nErrorCode)
 {
@@ -172,9 +194,20 @@ void BaseSocket::OnDataReceived(int nErrorCode)
 
 	nBytesRead = recv(m_socket, buffer, sizeof(buffer), 0);
 
-	if ( m_pSink )
-		m_pSink->OnDataReceived(this, (FCBYTE*)buffer, nBytesRead);
+  if ( nBytesRead > 0 )
+  {
+    if ( m_pSink )
+      m_pSink->OnDataReceived(this, (FCBYTE*)buffer, nBytesRead);
+  }
+  else
+  {
+    Disconnect();
+    if ( m_pSink )
+      m_pSink->OnDisconnected(this, nErrorCode);
+  }
 }
+
+///////////////////////////////////////////////////////////////////////
 
 void BaseSocket::OnDisconnect(int nErrorCode)
 {
@@ -182,17 +215,23 @@ void BaseSocket::OnDisconnect(int nErrorCode)
 		m_pSink->OnDisconnected(this, nErrorCode);
 }
 
+///////////////////////////////////////////////////////////////////////
+
 void* BaseSocket::thrdSocket(void* pParam)
 {
   BaseSocket* pThis = (BaseSocket*) pParam;
   fd_set fds;
+  timeval tv;
+  
+  memset(&tv, 0, sizeof(timeval));
 
   pThis->m_bRun = true;
+  FD_ZERO( &fds );
 
   while ( pThis->m_bRun )
   {
     FD_SET( pThis->m_socket, &fds );
-    if ( select( pThis->m_socket+1, &fds, NULL, NULL, /*&tv*/ NULL) == -1 )
+    if ( select( pThis->m_socket+1, &fds, NULL, NULL, &tv) == -1 )
     {
       // something in the select broke
       break;
