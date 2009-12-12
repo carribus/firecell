@@ -30,6 +30,16 @@ using namespace io;
 
 using namespace std;
 
+#ifdef _IRR_WINDOWS_
+  #define charW char16
+  #define IrrXMLReaderW IrrXMLReaderUTF16
+  #define createIrrXMLReaderW createIrrXMLReaderUTF16
+#else
+  #define charW char32
+  #define IrrXMLReaderW IrrXMLReaderUTF32
+  #define createIrrXMLReaderW createIrrXMLReaderUTF32
+#endif//_IRR_WINDOWS
+
 class ResourceManager
 {
   ResourceManager(void);
@@ -55,7 +65,7 @@ public:
 
 private:
 
-	void ParseClientStrings(IrrXMLReaderUTF16* pXML);
+	void ParseClientStrings(IrrXMLReaderW* pXML);
   void ParseMissionStrings(IrrXMLReader* pXML);
     void ParseMissionNode(IrrXMLReader* pXML);
 

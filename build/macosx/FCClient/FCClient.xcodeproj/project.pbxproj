@@ -36,6 +36,8 @@
 		065AC091100BDEFD0048C706 /* BaseSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC086100BDEFD0048C706 /* BaseSocket.cpp */; };
 		065AC0C6100BE2450048C706 /* timelib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC0C4100BE2450048C706 /* timelib.cpp */; };
 		065AC0CA100BE2CA0048C706 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 065AC0C9100BE2CA0048C706 /* IOKit.framework */; };
+		065AC159101C42EB0048C706 /* AppBarAppletBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC154101C42EB0048C706 /* AppBarAppletBase.cpp */; };
+		065AC15A101C42EB0048C706 /* AppletSysMon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 065AC156101C42EB0048C706 /* AppletSysMon.cpp */; };
 		06EDD010100BBFC50043DDBE /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06EDD00F100BBFC50043DDBE /* Carbon.framework */; };
 		06EDD015100BBFD40043DDBE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06EDD014100BBFD40043DDBE /* Cocoa.framework */; };
 		06EDD017100BBFE40043DDBE /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06EDD016100BBFE40043DDBE /* OpenGL.framework */; };
@@ -81,6 +83,9 @@
 		06EDD1ED100BCB230043DDBE /* ViewLogicCharacterSelection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1C2100BCB230043DDBE /* ViewLogicCharacterSelection.cpp */; };
 		06EDD1EE100BCB230043DDBE /* ViewLogicGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1C4100BCB230043DDBE /* ViewLogicGame.cpp */; };
 		06EDD1EF100BCB230043DDBE /* ViewLogicLoading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06EDD1C6100BCB230043DDBE /* ViewLogicLoading.cpp */; };
+		06F65F1A10D3D55600820AAA /* ChatModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06F65F1410D3D55600820AAA /* ChatModel.cpp */; };
+		06F65F1B10D3D55600820AAA /* ChatWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06F65F1610D3D55600820AAA /* ChatWindow.cpp */; };
+		06F65F1C10D3D55600820AAA /* GUIChatPane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06F65F1810D3D55600820AAA /* GUIChatPane.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -148,6 +153,11 @@
 		065AC0C4100BE2450048C706 /* timelib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timelib.cpp; sourceTree = "<group>"; };
 		065AC0C5100BE2450048C706 /* timelib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timelib.h; sourceTree = "<group>"; };
 		065AC0C9100BE2CA0048C706 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		065AC154101C42EB0048C706 /* AppBarAppletBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AppBarAppletBase.cpp; path = ../../../Clients/FCClient/AppBarAppletBase.cpp; sourceTree = SOURCE_ROOT; };
+		065AC155101C42EB0048C706 /* AppBarAppletBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppBarAppletBase.h; path = ../../../Clients/FCClient/AppBarAppletBase.h; sourceTree = SOURCE_ROOT; };
+		065AC156101C42EB0048C706 /* AppletSysMon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AppletSysMon.cpp; path = ../../../Clients/FCClient/AppletSysMon.cpp; sourceTree = SOURCE_ROOT; };
+		065AC157101C42EB0048C706 /* AppletSysMon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppletSysMon.h; path = ../../../Clients/FCClient/AppletSysMon.h; sourceTree = SOURCE_ROOT; };
+		065AC158101C42EB0048C706 /* IAppBarApplet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IAppBarApplet.h; path = ../../../Clients/FCClient/IAppBarApplet.h; sourceTree = SOURCE_ROOT; };
 		06EDD007100BBE580043DDBE /* FCClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FCClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		06EDD00A100BBE580043DDBE /* FCClient-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FCClient-Info.plist"; sourceTree = "<group>"; };
 		06EDD00F100BBFC50043DDBE /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -242,6 +252,12 @@
 		06EDD1C5100BCB230043DDBE /* ViewLogicGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewLogicGame.h; path = ../../../Clients/FCClient/ViewLogicGame.h; sourceTree = SOURCE_ROOT; };
 		06EDD1C6100BCB230043DDBE /* ViewLogicLoading.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ViewLogicLoading.cpp; path = ../../../Clients/FCClient/ViewLogicLoading.cpp; sourceTree = SOURCE_ROOT; };
 		06EDD1C7100BCB230043DDBE /* ViewLogicLoading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewLogicLoading.h; path = ../../../Clients/FCClient/ViewLogicLoading.h; sourceTree = SOURCE_ROOT; };
+		06F65F1410D3D55600820AAA /* ChatModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ChatModel.cpp; path = ../../../Clients/FCClient/ChatModel.cpp; sourceTree = SOURCE_ROOT; };
+		06F65F1510D3D55600820AAA /* ChatModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChatModel.h; path = ../../../Clients/FCClient/ChatModel.h; sourceTree = SOURCE_ROOT; };
+		06F65F1610D3D55600820AAA /* ChatWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ChatWindow.cpp; path = ../../../Clients/FCClient/ChatWindow.cpp; sourceTree = SOURCE_ROOT; };
+		06F65F1710D3D55600820AAA /* ChatWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChatWindow.h; path = ../../../Clients/FCClient/ChatWindow.h; sourceTree = SOURCE_ROOT; };
+		06F65F1810D3D55600820AAA /* GUIChatPane.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIChatPane.cpp; path = ../../../Clients/FCClient/GUIChatPane.cpp; sourceTree = SOURCE_ROOT; };
+		06F65F1910D3D55600820AAA /* GUIChatPane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIChatPane.h; path = ../../../Clients/FCClient/GUIChatPane.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -435,6 +451,11 @@
 		06EDD09F100BCABD0043DDBE /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				06F65F1410D3D55600820AAA /* ChatModel.cpp */,
+				06F65F1610D3D55600820AAA /* ChatWindow.cpp */,
+				06F65F1810D3D55600820AAA /* GUIChatPane.cpp */,
+				065AC154101C42EB0048C706 /* AppBarAppletBase.cpp */,
+				065AC156101C42EB0048C706 /* AppletSysMon.cpp */,
 				06EDD171100BCB230043DDBE /* BankingWindow.cpp */,
 				06EDD173100BCB230043DDBE /* Character.cpp */,
 				06EDD178100BCB230043DDBE /* ConsoleWindow.cpp */,
@@ -482,6 +503,12 @@
 		06EDD0A0100BCAC60043DDBE /* Include */ = {
 			isa = PBXGroup;
 			children = (
+				06F65F1510D3D55600820AAA /* ChatModel.h */,
+				06F65F1710D3D55600820AAA /* ChatWindow.h */,
+				06F65F1910D3D55600820AAA /* GUIChatPane.h */,
+				065AC155101C42EB0048C706 /* AppBarAppletBase.h */,
+				065AC157101C42EB0048C706 /* AppletSysMon.h */,
+				065AC158101C42EB0048C706 /* IAppBarApplet.h */,
 				06EDD180100BCB230043DDBE /* DesktopIcon.h */,
 				06EDD182100BCB230043DDBE /* DlgNewCharacter.h */,
 				06EDD184100BCB230043DDBE /* DlgNewThread.h */,
@@ -655,6 +682,11 @@
 				065AC090100BDEFD0048C706 /* ResourceManager.cpp in Sources */,
 				065AC091100BDEFD0048C706 /* BaseSocket.cpp in Sources */,
 				065AC0C6100BE2450048C706 /* timelib.cpp in Sources */,
+				065AC159101C42EB0048C706 /* AppBarAppletBase.cpp in Sources */,
+				065AC15A101C42EB0048C706 /* AppletSysMon.cpp in Sources */,
+				06F65F1A10D3D55600820AAA /* ChatModel.cpp in Sources */,
+				06F65F1B10D3D55600820AAA /* ChatWindow.cpp in Sources */,
+				06F65F1C10D3D55600820AAA /* GUIChatPane.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -40,7 +40,7 @@ int main(int argc, char** argv)
   FCModel&			model = FCModel::instance();
 	FCController	controller;
 	FCView				view;
-
+  
   // Load the client settings
 	if ( !Settings::instance().LoadSettings("./clientdata/settings.xml") )
 	{

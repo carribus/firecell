@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "ResourceManager.h"
+#include <iostream>
 
 ResourceManager* ResourceManager::m_pThis = NULL;
 
@@ -61,7 +62,7 @@ int ResourceManager::LoadClientStrings(string string_file)
 	if ( string_file.empty() )
 		return -1;
 
-	IrrXMLReaderUTF16* pXML = createIrrXMLReaderUTF16(string_file.c_str());
+	IrrXMLReaderW* pXML = createIrrXMLReaderW(string_file.c_str());
 
 	if ( pXML )
 	{
@@ -136,12 +137,12 @@ std::string ResourceManager::GetMissionString(FCULONG mission_id, E_MISSIONSTRIN
 
 ///////////////////////////////////////////////////////////////////////
 
-void ResourceManager::ParseClientStrings(IrrXMLReaderUTF16* pXML)
+void ResourceManager::ParseClientStrings(IrrXMLReaderW* pXML)
 {
 	if ( !pXML )
 		return;
 
-	wstring elemName, stringID, stringText;
+  std::wstring elemName, stringID, stringText;
 
 	while ( pXML->read() )
 	{
@@ -156,7 +157,7 @@ void ResourceManager::ParseClientStrings(IrrXMLReaderUTF16* pXML)
 				else if ( elemName == L"String" )
 				{
 					// get the ID of the string
-					stringID = (wchar_t*)pXML->getAttributeValue((char16*)L"id");
+					stringID = (wchar_t*)pXML->getAttributeValue((charW*)L"id");
 				}
 			}
 			break;
