@@ -30,7 +30,7 @@ using namespace io;
 
 using namespace std;
 
-#ifdef _IRR_WINDOWS_
+#ifdef _WIN32
   #define charW char16
   #define IrrXMLReaderW IrrXMLReaderUTF16
   #define createIrrXMLReaderW createIrrXMLReaderUTF16
