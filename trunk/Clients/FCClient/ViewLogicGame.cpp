@@ -281,6 +281,11 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
       m_pDesktop->OnSoftwareEvent(event);
       break;
 
+    case  FCME_Chat_ConnectSuccess:
+    case  FCME_Chat_ConnectFailed:
+      m_pDesktop->OnChatEvent(event);
+      break;
+
 		case	FCME_XP_Gained:
 			{
 				std::wstringstream ss;

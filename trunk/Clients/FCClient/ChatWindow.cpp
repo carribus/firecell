@@ -47,12 +47,22 @@ bool ChatWindow::Create(s32 AppElemID, FCUINT optionID, std::wstring caption)
     m_pTabCtrl->setTabHeight(22);
     m_pTabCtrl->setTabVerticalAlignment( EGUIA_LOWERRIGHT );
     createTab(L"Server");
+    createTab(L"Channels");
   }
 
   // At this point, we want to 'connect' to the chat server
+  addToServerLog(L"Connecting to chat server...\n");
   RequestChatServerConnect();
 
   return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ChatWindow::OnChatConnected()
+{
+  addToServerLog(L"Connected to chat server!\n");
+  RequestChatRoomList();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -61,6 +71,16 @@ void ChatWindow::RequestChatServerConnect()
 {
   FCViewEvent e(VE_ChatConnect);
   
+  SetWaitingForResponse(true);
+  m_pController->OnViewEvent(e);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ChatWindow::RequestChatRoomList()
+{
+  FCViewEvent e(VE_ChatListChannels);
+
   SetWaitingForResponse(true);
   m_pController->OnViewEvent(e);
 }
@@ -82,8 +102,24 @@ IGUITab* ChatWindow::createTab(std::wstring label)
     rect.UpperLeftCorner.Y -= rect.UpperLeftCorner.Y;
 
     pTab = m_pTabCtrl->addTab(label.c_str());
-    new GUIChatPane( m_pDevice->getGUIEnvironment(), rect, pTab );
+    m_panes.push_back( new GUIChatPane( m_pDevice->getGUIEnvironment(), rect, pTab ) );
   }
 
   return pTab;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ChatWindow::addToServerLog(std::wstring str)
+{
+  GUIChatPane* pPane = m_panes.at(0);    // get the server tab
+  IGUITab* pTab = NULL;
+
+  if ( pPane )
+  {
+    if ( (pTab = static_cast<IGUITab*>(pPane->getParent())) )
+    {
+      pPane->addLogItem(str.c_str());
+    }
+  }
 }

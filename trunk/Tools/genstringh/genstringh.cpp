@@ -59,7 +59,7 @@ void write_h_header(ofstream& f, string& src_filename)
 void write_h_stringdef(ofstream& f, string& string_id)
 {
 	size_t len = string_id.length();
-	f << "#define STR_" << string_id;
+	f << "#define STR_" << string_id << "\t";
 	for ( size_t i = len; i < DEFNAME_LENGTH; i++ )
 		f << " ";
 	f << "L\"" << string_id << "\"\n";

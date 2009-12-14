@@ -58,6 +58,7 @@ public:
 	bool OnMissionEvent(FCModelEvent& event);
   bool OnBankEvent(FCModelEvent& event);
   bool OnSoftwareEvent(FCModelEvent& event);
+  bool OnChatEvent(FCModelEvent& event);
 
   /*
    *  IDesktop implementation

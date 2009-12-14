@@ -194,6 +194,7 @@ public:
   void BankAuthenticate(std::wstring str);
   /* Chat Methods */
   void ChatConnect();
+  void ChatGetChannelList();
 	/* Mission methods */
 	void MissionAccept(FCULONG mission_id);
   /* Software methods */
@@ -262,6 +263,7 @@ private:
     bool OnResponseSoftwareStopped(PEPacket* pPkt, BaseSocket* pSocket);
 
     bool OnResponseChatConnect(PEPacket* pPkt, BaseSocket* pSocket);
+    bool OnResponseChatListChannels(PEPacket* pPkt, BaseSocket* pSocket);
 
   bool OnError(PEPacket* pPkt, BaseSocket* pSocket);
 
