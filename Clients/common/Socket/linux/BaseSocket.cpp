@@ -201,9 +201,8 @@ void BaseSocket::OnDataReceived(int nErrorCode)
   }
   else
   {
-    Disconnect();
     if ( m_pSink )
-      m_pSink->OnDisconnected(this, nErrorCode);
+      m_pSink->OnConnected(this, -1);
   }
 }
 

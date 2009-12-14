@@ -90,7 +90,7 @@ int CDaemon::ISRV_Run(void* pData)
     setsid();
 
     // execute the harnessed service logic here...
-    m_thrd = pthread_create(&m_thrd, NULL, CDaemon::ThreadFunction, (void*)this);
+    m_thrd = reinterpret_cast<pthread_t>( pthread_create(&m_thrd, NULL, CDaemon::ThreadFunction, (void*)this) );
     if ( m_thrd != 0 )
     {
       // an error occurred....
