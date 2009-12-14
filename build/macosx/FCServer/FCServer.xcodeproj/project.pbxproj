@@ -1,0 +1,381 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 44;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		06BB211E10D5BBA90054DD3D /* DynLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB210D10D5BBA90054DD3D /* DynLog.cpp */; };
+		06BB211F10D5BBA90054DD3D /* DynLogConsoleWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB210F10D5BBA90054DD3D /* DynLogConsoleWriter.cpp */; };
+		06BB212010D5BBA90054DD3D /* DynLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB211110D5BBA90054DD3D /* DynLogger.cpp */; };
+		06BB212110D5BBA90054DD3D /* DynLogItemBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB211310D5BBA90054DD3D /* DynLogItemBase.cpp */; };
+		06BB212210D5BBA90054DD3D /* DynLogNullWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB211510D5BBA90054DD3D /* DynLogNullWriter.cpp */; };
+		06BB212310D5BBA90054DD3D /* DynLogStringItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB211710D5BBA90054DD3D /* DynLogStringItem.cpp */; };
+		06BB212510D5BBA90054DD3D /* DynLogTextfileWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB211A10D5BBA90054DD3D /* DynLogTextfileWriter.cpp */; };
+		06BB213510D5BC0D0054DD3D /* CmdLineInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB212710D5BC0D0054DD3D /* CmdLineInfo.cpp */; };
+		06BB213610D5BC0D0054DD3D /* inifile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB212B10D5BC0D0054DD3D /* inifile.cpp */; };
+		06BB213710D5BC0D0054DD3D /* PacketExtractor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB212D10D5BC0D0054DD3D /* PacketExtractor.cpp */; };
+		06BB213810D5BC0D0054DD3D /* PEPacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB212F10D5BC0D0054DD3D /* PEPacket.cpp */; };
+		06BB213910D5BC0D0054DD3D /* PEPacketHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB213110D5BC0D0054DD3D /* PEPacketHelper.cpp */; };
+		06BB213A10D5BC0D0054DD3D /* PThreadCond.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB213310D5BC0D0054DD3D /* PThreadCond.cpp */; };
+		06BB214510D5BC770054DD3D /* Daemon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB214010D5BC770054DD3D /* Daemon.cpp */; };
+		06BB214A10D5BCA60054DD3D /* ClientSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB214810D5BCA60054DD3D /* ClientSocket.cpp */; };
+		06BB215210D5BCC00054DD3D /* BSDSocketServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB214D10D5BCC00054DD3D /* BSDSocketServer.cpp */; };
+		06BB215810D5BCF70054DD3D /* FCLogicRouter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB215510D5BCF70054DD3D /* FCLogicRouter.cpp */; };
+		06BB215910D5BCF70054DD3D /* FCServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06BB215710D5BCF70054DD3D /* FCServer.cpp */; };
+		8DD76FB00486AB0100D96B5E /* FCServer.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6A0FF2C0290799A04C91782 /* FCServer.1 */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76FAF0486AB0100D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				8DD76FB00486AB0100D96B5E /* FCServer.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		06BB210D10D5BBA90054DD3D /* DynLog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DynLog.cpp; sourceTree = "<group>"; };
+		06BB210E10D5BBA90054DD3D /* DynLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DynLog.h; sourceTree = "<group>"; };
+		06BB210F10D5BBA90054DD3D /* DynLogConsoleWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DynLogConsoleWriter.cpp; sourceTree = "<group>"; };
+		06BB211010D5BBA90054DD3D /* DynLogConsoleWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DynLogConsoleWriter.h; sourceTree = "<group>"; };
+		06BB211110D5BBA90054DD3D /* DynLogger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DynLogger.cpp; sourceTree = "<group>"; };
+		06BB211210D5BBA90054DD3D /* DynLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DynLogger.h; sourceTree = "<group>"; };
+		06BB211310D5BBA90054DD3D /* DynLogItemBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DynLogItemBase.cpp; sourceTree = "<group>"; };
+		06BB211410D5BBA90054DD3D /* DynLogItemBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DynLogItemBase.h; sourceTree = "<group>"; };
+		06BB211510D5BBA90054DD3D /* DynLogNullWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DynLogNullWriter.cpp; sourceTree = "<group>"; };
+		06BB211610D5BBA90054DD3D /* DynLogNullWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DynLogNullWriter.h; sourceTree = "<group>"; };
+		06BB211710D5BBA90054DD3D /* DynLogStringItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DynLogStringItem.cpp; sourceTree = "<group>"; };
+		06BB211810D5BBA90054DD3D /* DynLogStringItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DynLogStringItem.h; sourceTree = "<group>"; };
+		06BB211A10D5BBA90054DD3D /* DynLogTextfileWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DynLogTextfileWriter.cpp; sourceTree = "<group>"; };
+		06BB211B10D5BBA90054DD3D /* DynLogTextfileWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DynLogTextfileWriter.h; sourceTree = "<group>"; };
+		06BB211C10D5BBA90054DD3D /* IDynLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDynLog.h; sourceTree = "<group>"; };
+		06BB211D10D5BBA90054DD3D /* RefCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefCounter.h; sourceTree = "<group>"; };
+		06BB212610D5BC0D0054DD3D /* binstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = binstream.h; path = ../../../common/binstream.h; sourceTree = SOURCE_ROOT; };
+		06BB212710D5BC0D0054DD3D /* CmdLineInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CmdLineInfo.cpp; path = ../../../common/CmdLineInfo.cpp; sourceTree = SOURCE_ROOT; };
+		06BB212810D5BC0D0054DD3D /* CmdLineInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CmdLineInfo.h; path = ../../../common/CmdLineInfo.h; sourceTree = SOURCE_ROOT; };
+		06BB212910D5BC0D0054DD3D /* fcfuncs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fcfuncs.h; path = ../../../common/fcfuncs.h; sourceTree = SOURCE_ROOT; };
+		06BB212A10D5BC0D0054DD3D /* fctypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fctypes.h; path = ../../../common/fctypes.h; sourceTree = SOURCE_ROOT; };
+		06BB212B10D5BC0D0054DD3D /* inifile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = inifile.cpp; path = ../../../common/inifile.cpp; sourceTree = SOURCE_ROOT; };
+		06BB212C10D5BC0D0054DD3D /* inifile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = inifile.h; path = ../../../common/inifile.h; sourceTree = SOURCE_ROOT; };
+		06BB212D10D5BC0D0054DD3D /* PacketExtractor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PacketExtractor.cpp; path = ../../../common/PacketExtractor.cpp; sourceTree = SOURCE_ROOT; };
+		06BB212E10D5BC0D0054DD3D /* PacketExtractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PacketExtractor.h; path = ../../../common/PacketExtractor.h; sourceTree = SOURCE_ROOT; };
+		06BB212F10D5BC0D0054DD3D /* PEPacket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PEPacket.cpp; path = ../../../common/PEPacket.cpp; sourceTree = SOURCE_ROOT; };
+		06BB213010D5BC0D0054DD3D /* PEPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEPacket.h; path = ../../../common/PEPacket.h; sourceTree = SOURCE_ROOT; };
+		06BB213110D5BC0D0054DD3D /* PEPacketHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PEPacketHelper.cpp; path = ../../../common/PEPacketHelper.cpp; sourceTree = SOURCE_ROOT; };
+		06BB213210D5BC0D0054DD3D /* PEPacketHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEPacketHelper.h; path = ../../../common/PEPacketHelper.h; sourceTree = SOURCE_ROOT; };
+		06BB213310D5BC0D0054DD3D /* PThreadCond.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PThreadCond.cpp; path = ../../../common/PThreadCond.cpp; sourceTree = SOURCE_ROOT; };
+		06BB213410D5BC0D0054DD3D /* PThreadCond.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PThreadCond.h; path = ../../../common/PThreadCond.h; sourceTree = SOURCE_ROOT; };
+		06BB213B10D5BC540054DD3D /* IService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IService.h; path = ../../../common/interfaces/IService.h; sourceTree = SOURCE_ROOT; };
+		06BB213C10D5BC540054DD3D /* IServiceLogic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IServiceLogic.h; path = ../../../common/interfaces/IServiceLogic.h; sourceTree = SOURCE_ROOT; };
+		06BB213D10D5BC540054DD3D /* ISocketServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ISocketServer.h; path = ../../../common/interfaces/ISocketServer.h; sourceTree = SOURCE_ROOT; };
+		06BB214010D5BC770054DD3D /* Daemon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Daemon.cpp; sourceTree = "<group>"; };
+		06BB214110D5BC770054DD3D /* Daemon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Daemon.h; sourceTree = "<group>"; };
+		06BB214810D5BCA60054DD3D /* ClientSocket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ClientSocket.cpp; sourceTree = "<group>"; };
+		06BB214910D5BCA60054DD3D /* ClientSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClientSocket.h; sourceTree = "<group>"; };
+		06BB214D10D5BCC00054DD3D /* BSDSocketServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BSDSocketServer.cpp; sourceTree = "<group>"; };
+		06BB214E10D5BCC00054DD3D /* BSDSocketServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSDSocketServer.h; sourceTree = "<group>"; };
+		06BB215410D5BCDE0054DD3D /* DataMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataMgr.h; path = ../../../common/collections/DataMgr.h; sourceTree = SOURCE_ROOT; };
+		06BB215510D5BCF70054DD3D /* FCLogicRouter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FCLogicRouter.cpp; path = ../../../FCServer/FCLogicRouter.cpp; sourceTree = SOURCE_ROOT; };
+		06BB215610D5BCF70054DD3D /* FCLogicRouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FCLogicRouter.h; path = ../../../FCServer/FCLogicRouter.h; sourceTree = SOURCE_ROOT; };
+		06BB215710D5BCF70054DD3D /* FCServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FCServer.cpp; path = ../../../FCServer/FCServer.cpp; sourceTree = SOURCE_ROOT; };
+		8DD76FB20486AB0100D96B5E /* FCServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FCServer; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6A0FF2C0290799A04C91782 /* FCServer.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = FCServer.1; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76FAD0486AB0100D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		06BB210C10D5BBA90054DD3D /* Logging */ = {
+			isa = PBXGroup;
+			children = (
+				06BB210D10D5BBA90054DD3D /* DynLog.cpp */,
+				06BB210E10D5BBA90054DD3D /* DynLog.h */,
+				06BB210F10D5BBA90054DD3D /* DynLogConsoleWriter.cpp */,
+				06BB211010D5BBA90054DD3D /* DynLogConsoleWriter.h */,
+				06BB211110D5BBA90054DD3D /* DynLogger.cpp */,
+				06BB211210D5BBA90054DD3D /* DynLogger.h */,
+				06BB211310D5BBA90054DD3D /* DynLogItemBase.cpp */,
+				06BB211410D5BBA90054DD3D /* DynLogItemBase.h */,
+				06BB211510D5BBA90054DD3D /* DynLogNullWriter.cpp */,
+				06BB211610D5BBA90054DD3D /* DynLogNullWriter.h */,
+				06BB211710D5BBA90054DD3D /* DynLogStringItem.cpp */,
+				06BB211810D5BBA90054DD3D /* DynLogStringItem.h */,
+				06BB211A10D5BBA90054DD3D /* DynLogTextfileWriter.cpp */,
+				06BB211B10D5BBA90054DD3D /* DynLogTextfileWriter.h */,
+				06BB211C10D5BBA90054DD3D /* IDynLog.h */,
+				06BB211D10D5BBA90054DD3D /* RefCounter.h */,
+			);
+			name = Logging;
+			path = ../../../common/Logging;
+			sourceTree = SOURCE_ROOT;
+		};
+		06BB213E10D5BC770054DD3D /* daemon */ = {
+			isa = PBXGroup;
+			children = (
+				06BB213F10D5BC770054DD3D /* linux */,
+			);
+			name = daemon;
+			path = ../../../common/daemon;
+			sourceTree = SOURCE_ROOT;
+		};
+		06BB213F10D5BC770054DD3D /* linux */ = {
+			isa = PBXGroup;
+			children = (
+				06BB214010D5BC770054DD3D /* Daemon.cpp */,
+				06BB214110D5BC770054DD3D /* Daemon.h */,
+			);
+			path = linux;
+			sourceTree = "<group>";
+		};
+		06BB214710D5BCA60054DD3D /* socket */ = {
+			isa = PBXGroup;
+			children = (
+				06BB214810D5BCA60054DD3D /* ClientSocket.cpp */,
+				06BB214910D5BCA60054DD3D /* ClientSocket.h */,
+			);
+			name = socket;
+			path = ../../../common/socket;
+			sourceTree = SOURCE_ROOT;
+		};
+		06BB214B10D5BCC00054DD3D /* sockserver */ = {
+			isa = PBXGroup;
+			children = (
+				06BB214C10D5BCC00054DD3D /* linux */,
+			);
+			name = sockserver;
+			path = ../../../common/sockserver;
+			sourceTree = SOURCE_ROOT;
+		};
+		06BB214C10D5BCC00054DD3D /* linux */ = {
+			isa = PBXGroup;
+			children = (
+				06BB214D10D5BCC00054DD3D /* BSDSocketServer.cpp */,
+				06BB214E10D5BCC00054DD3D /* BSDSocketServer.h */,
+			);
+			path = linux;
+			sourceTree = "<group>";
+		};
+		06BB218010D5BE670054DD3D /* common */ = {
+			isa = PBXGroup;
+			children = (
+				06BB213B10D5BC540054DD3D /* IService.h */,
+				06BB213C10D5BC540054DD3D /* IServiceLogic.h */,
+				06BB213D10D5BC540054DD3D /* ISocketServer.h */,
+				06BB212610D5BC0D0054DD3D /* binstream.h */,
+				06BB212710D5BC0D0054DD3D /* CmdLineInfo.cpp */,
+				06BB212810D5BC0D0054DD3D /* CmdLineInfo.h */,
+				06BB212910D5BC0D0054DD3D /* fcfuncs.h */,
+				06BB212A10D5BC0D0054DD3D /* fctypes.h */,
+				06BB212B10D5BC0D0054DD3D /* inifile.cpp */,
+				06BB212C10D5BC0D0054DD3D /* inifile.h */,
+				06BB212D10D5BC0D0054DD3D /* PacketExtractor.cpp */,
+				06BB212E10D5BC0D0054DD3D /* PacketExtractor.h */,
+				06BB212F10D5BC0D0054DD3D /* PEPacket.cpp */,
+				06BB213010D5BC0D0054DD3D /* PEPacket.h */,
+				06BB213110D5BC0D0054DD3D /* PEPacketHelper.cpp */,
+				06BB213210D5BC0D0054DD3D /* PEPacketHelper.h */,
+				06BB213310D5BC0D0054DD3D /* PThreadCond.cpp */,
+				06BB213410D5BC0D0054DD3D /* PThreadCond.h */,
+			);
+			name = common;
+			sourceTree = "<group>";
+		};
+		08FB7794FE84155DC02AAC07 /* FCServer */ = {
+			isa = PBXGroup;
+			children = (
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6A0FF2B0290797F04C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = FCServer;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				06BB218010D5BE670054DD3D /* common */,
+				06BB215510D5BCF70054DD3D /* FCLogicRouter.cpp */,
+				06BB215610D5BCF70054DD3D /* FCLogicRouter.h */,
+				06BB215710D5BCF70054DD3D /* FCServer.cpp */,
+				06BB215410D5BCDE0054DD3D /* DataMgr.h */,
+				06BB214B10D5BCC00054DD3D /* sockserver */,
+				06BB214710D5BCA60054DD3D /* socket */,
+				06BB213E10D5BC770054DD3D /* daemon */,
+				06BB210C10D5BBA90054DD3D /* Logging */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76FB20486AB0100D96B5E /* FCServer */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6A0FF2B0290797F04C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				C6A0FF2C0290799A04C91782 /* FCServer.1 */,
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8DD76FA90486AB0100D96B5E /* FCServer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB928508733DD80010E9CD /* Build configuration list for PBXNativeTarget "FCServer" */;
+			buildPhases = (
+				8DD76FAB0486AB0100D96B5E /* Sources */,
+				8DD76FAD0486AB0100D96B5E /* Frameworks */,
+				8DD76FAF0486AB0100D96B5E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FCServer;
+			productInstallPath = "$(HOME)/bin";
+			productName = FCServer;
+			productReference = 8DD76FB20486AB0100D96B5E /* FCServer */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "FCServer" */;
+			compatibilityVersion = "Xcode 3.0";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* FCServer */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8DD76FA90486AB0100D96B5E /* FCServer */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76FAB0486AB0100D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06BB211E10D5BBA90054DD3D /* DynLog.cpp in Sources */,
+				06BB211F10D5BBA90054DD3D /* DynLogConsoleWriter.cpp in Sources */,
+				06BB212010D5BBA90054DD3D /* DynLogger.cpp in Sources */,
+				06BB212110D5BBA90054DD3D /* DynLogItemBase.cpp in Sources */,
+				06BB212210D5BBA90054DD3D /* DynLogNullWriter.cpp in Sources */,
+				06BB212310D5BBA90054DD3D /* DynLogStringItem.cpp in Sources */,
+				06BB212510D5BBA90054DD3D /* DynLogTextfileWriter.cpp in Sources */,
+				06BB213510D5BC0D0054DD3D /* CmdLineInfo.cpp in Sources */,
+				06BB213610D5BC0D0054DD3D /* inifile.cpp in Sources */,
+				06BB213710D5BC0D0054DD3D /* PacketExtractor.cpp in Sources */,
+				06BB213810D5BC0D0054DD3D /* PEPacket.cpp in Sources */,
+				06BB213910D5BC0D0054DD3D /* PEPacketHelper.cpp in Sources */,
+				06BB213A10D5BC0D0054DD3D /* PThreadCond.cpp in Sources */,
+				06BB214510D5BC770054DD3D /* Daemon.cpp in Sources */,
+				06BB214A10D5BCA60054DD3D /* ClientSocket.cpp in Sources */,
+				06BB215210D5BCC00054DD3D /* BSDSocketServer.cpp in Sources */,
+				06BB215810D5BCF70054DD3D /* FCLogicRouter.cpp in Sources */,
+				06BB215910D5BCF70054DD3D /* FCServer.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB928608733DD80010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = FCServer;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		1DEB928708733DD80010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = FCServer;
+			};
+			name = Release;
+		};
+		1DEB928A08733DD80010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SYMROOT = ../bin;
+			};
+			name = Debug;
+		};
+		1DEB928B08733DD80010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB928508733DD80010E9CD /* Build configuration list for PBXNativeTarget "FCServer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB928608733DD80010E9CD /* Debug */,
+				1DEB928708733DD80010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "FCServer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB928A08733DD80010E9CD /* Debug */,
+				1DEB928B08733DD80010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
