@@ -191,6 +191,7 @@ void FCController::OnViewEvent(FCViewEvent& event)
 
   case  VE_ChatListChannels:
     {
+      m_pModel->ChatGetChannelList();
     }
     break;
 

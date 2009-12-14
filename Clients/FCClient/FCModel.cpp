@@ -519,6 +519,12 @@ bool FCModel::OnResponse(PEPacket* pPkt, BaseSocket* pSocket)
     }
     break;
 
+  case  FCMSG_CHAT_LIST_ROOMS:
+    {
+      bHandled = OnResponseChatListChannels(pPkt, pSocket);
+    }
+    break;
+
   default:
 
     if ( !bHandled )
@@ -1416,14 +1422,41 @@ bool FCModel::OnResponseChatConnect(PEPacket* pPkt, BaseSocket* pSocket)
   switch ( d.result )
   {
   case  ChatConnectOK:
+    FireEvent(FCME_Chat_ConnectSuccess, NULL);
     break;
 
   case  ChatConnectChatRevoked:
+  case  ChatConnectChatServerDown:
+    FireEvent(FCME_Chat_ConnectFailed, (void*)d.result);
     break;
 
-  case  ChatConnectChatServerDown:
+  default:
     break;
   }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCModel::OnResponseChatListChannels(PEPacket* pPkt, BaseSocket* pSocket)
+{
+  __FCPKT_CHAT_LIST_ROOMS_RESP* d;
+  size_t dataLen;
+
+  pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+  d = (__FCPKT_CHAT_LIST_ROOMS_RESP*) new FCBYTE[ dataLen ];
+  pPkt->GetField("data", d, dataLen);
+
+  for ( FCULONG i = 0; i < d->numRooms; i++ )
+  {
+    // TODO: you left off here - you need to update the ChatModel to reflect the list of channels
+
+    // fire the event
+    FireEvent(FCME_Chat_ChannelListUpdated, NULL);
+  }
+
+  delete [] (FCBYTE*)d;
 
   return true;
 }
@@ -1753,6 +1786,13 @@ void FCModel::ChatConnect()
 {
   ChatModel::instance().initialise();
   m_server.RequestChatConnect(m_pCharacter->GetID());
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCModel::ChatGetChannelList()
+{
+  m_server.RequestChatRoomList(m_pCharacter->GetID());
 }
 
 ///////////////////////////////////////////////////////////////////////

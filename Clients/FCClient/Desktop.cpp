@@ -519,7 +519,7 @@ bool Desktop::OnGUIEvent(SEvent::SGUIEvent event)
 bool Desktop::OnConsoleEvent(FCModelEvent& event)
 {
   bool bResult = true;
-  ConsoleWindow* pWnd = (ConsoleWindow*)GetAppWindowByType(SWT_APP_CONSOLE);
+  ConsoleWindow* pWnd = static_cast<ConsoleWindow*>(GetAppWindowByType(SWT_APP_CONSOLE));
 
   if ( pWnd )
   {
@@ -562,7 +562,7 @@ bool Desktop::OnConsoleEvent(FCModelEvent& event)
 bool Desktop::OnForumEvent(FCModelEvent& event)
 {
 	bool bResult = true;
-	ForumWindow* pWnd = (ForumWindow*) GetAppWindowByType( SWT_APP_FORUM );
+	ForumWindow* pWnd = static_cast<ForumWindow*>( GetAppWindowByType( SWT_APP_FORUM ) );
 
 	if ( pWnd )
 	{
@@ -617,7 +617,7 @@ bool Desktop::OnMissionEvent(FCModelEvent& event)
 bool Desktop::OnBankEvent(FCModelEvent& event)
 {
   bool bResult = false;
-	BankingWindow* pWnd = (BankingWindow*) GetAppWindowByType( SWT_APP_BANK );
+	BankingWindow* pWnd = static_cast<BankingWindow*>( GetAppWindowByType( SWT_APP_BANK ) );
 
   if ( pWnd )
   {
@@ -682,6 +682,51 @@ bool Desktop::OnSoftwareEvent(FCModelEvent& event)
 
     case  FCME_Software_NetworkPortStatusChangeFail:
       m_pSoftwareMgr->Update();
+      break;
+    }
+  }
+
+  return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool Desktop::OnChatEvent(FCModelEvent& event)
+{
+  bool bResult = false;
+	ChatWindow* pWnd = static_cast<ChatWindow*>( GetAppWindowByType( SWT_APP_CHAT ) );
+
+  if ( pWnd )
+  {
+    switch ( event.GetType() )
+    {
+    case  FCME_Chat_ConnectSuccess:
+      {
+        pWnd->OnChatConnected();
+      }
+      break;
+
+    case  FCME_Chat_ConnectFailed:
+      {
+        std::wstring strError = ResourceManager::instance().GetClientString(STR_CHAT_MSGBOX_ERROR_UNAVAILABLE_PREAMBLE);
+
+        switch ( event.GetData() )
+        {
+        case  ChatConnectChatRevoked:
+          strError += ResourceManager::instance().GetClientString(STR_CHAT_MSGBOX_ERROR_UNAVAILABLE_CHATREVOKED);
+          break;
+
+        case  ChatConnectChatServerDown:
+          strError += ResourceManager::instance().GetClientString(STR_CHAT_MSGBOX_ERROR_UNAVAILABLE_SERVERDOWN);
+          break;
+        }
+        
+        m_pDevice->getGUIEnvironment()->addMessageBox( ResourceManager::instance().GetClientString(STR_CHAT_MSGBOX_ERROR_TITLE).c_str(), 
+                                                       strError.c_str());
+      }
+      break;
+
+    default:
       break;
     }
   }

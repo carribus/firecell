@@ -61,7 +61,11 @@
 	<String id="MISSION_NEWMISSION">New Mission Accepted:</String>
 	<String id="MISSION_CONGRATULATIONS">Congratulations!</String>
 	<String id="MISSION_COMPLETE">You have completed the mission:</String>
-  
+  <!-- CHAT STRINGS -->
+  <String id="CHAT_MSGBOX_ERROR_TITLE">Online Chat Error</String>
+  <String id="CHAT_MSGBOX_ERROR_UNAVAILABLE_PREAMBLE">Online Chat is not available to you due to the following reason:</String>
+  <String id="CHAT_MSGBOX_ERROR_UNAVAILABLE_CHATREVOKED">Your chat has been revoked by a system administrator</String>
+  <String id="CHAT_MSGBOX_ERROR_UNAVAILABLE_SERVERDOWN">The chat server is currently down</String>
   
 	<!-- ITEMS -->
 	<!-- SOFTWARE -->

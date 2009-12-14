@@ -52,6 +52,9 @@ bool SWWebHack::Execute(Player* pPlayer, const std::string& cmd, const std::stri
 
     result = ss.str();
   }
-
+  else
+  {
+    result = "Usage:  webhack [ip address]\n\nExample: webhack 127.0.0.1\n\n";
+  }
   return true;
 }

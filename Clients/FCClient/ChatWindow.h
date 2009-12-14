@@ -2,6 +2,7 @@
 #define _CHATWINDOW_H_
 
 #include <map>
+#include <vector>
 #include <string>
 #include <irrlicht.h>
 #include "GUIChatPane.h"
@@ -20,17 +21,22 @@ public:
 
   bool Create(s32 AppElemID, FCUINT optionID, std::wstring caption);
 
+  void OnChatConnected();
+
 private:
 
   void RequestChatServerConnect();
+  void RequestChatRoomList();
 
   IGUITab* createTab(std::wstring label);
+  void addToServerLog(std::wstring str);
 
   /*
    *  Private Members
    */
   IrrlichtDevice*         m_pDevice;
   IGUITabControl*         m_pTabCtrl;
+  std::vector< GUIChatPane* > m_panes;
 };
 
 #endif//_CHATWINDOW_H_

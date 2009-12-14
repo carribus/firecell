@@ -30,6 +30,10 @@ enum e_FCEventType
   FCME_Software_SoftwareUninstallFail,
   FCME_Software_NetworkPortStatusChangeSuccess,
   FCME_Software_NetworkPortStatusChangeFail,
+  /* Chat Events */
+  FCME_Chat_ConnectSuccess,
+  FCME_Chat_ConnectFailed,
+  FCME_Chat_ChannelListUpdated,
 	/* XP Event */
 	FCME_XP_Gained
 };
