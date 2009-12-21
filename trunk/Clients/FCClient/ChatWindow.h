@@ -2,7 +2,6 @@
 #define _CHATWINDOW_H_
 
 #include <map>
-#include <vector>
 #include <string>
 #include <irrlicht.h>
 #include "GUIChatPane.h"
@@ -29,14 +28,16 @@ private:
   void RequestChatRoomList();
 
   IGUITab* createTab(std::wstring label);
-  void addToServerLog(std::wstring str);
+  void addToChatLog(std::wstring pane, std::wstring str);
 
   /*
    *  Private Members
    */
+  typedef std::map< std::wstring, GUIChatPane* > ChatPaneMap;
+
   IrrlichtDevice*         m_pDevice;
   IGUITabControl*         m_pTabCtrl;
-  std::vector< GUIChatPane* > m_panes;
+  ChatPaneMap             m_panes;
 };
 
 #endif//_CHATWINDOW_H_

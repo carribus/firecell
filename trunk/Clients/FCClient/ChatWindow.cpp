@@ -51,7 +51,7 @@ bool ChatWindow::Create(s32 AppElemID, FCUINT optionID, std::wstring caption)
   }
 
   // At this point, we want to 'connect' to the chat server
-  addToServerLog(L"Connecting to chat server...\n");
+  addToChatLog(L"Server", L"Connecting to chat server...\n");
   RequestChatServerConnect();
 
   return bResult;
@@ -61,7 +61,7 @@ bool ChatWindow::Create(s32 AppElemID, FCUINT optionID, std::wstring caption)
 
 void ChatWindow::OnChatConnected()
 {
-  addToServerLog(L"Connected to chat server!\n");
+  addToChatLog(L"Server", L"Connected to chat server!\n");
   RequestChatRoomList();
 }
 
@@ -102,7 +102,8 @@ IGUITab* ChatWindow::createTab(std::wstring label)
     rect.UpperLeftCorner.Y -= rect.UpperLeftCorner.Y;
 
     pTab = m_pTabCtrl->addTab(label.c_str());
-    m_panes.push_back( new GUIChatPane( m_pDevice->getGUIEnvironment(), rect, pTab ) );
+//    m_panes.push_back( new GUIChatPane( m_pDevice->getGUIEnvironment(), rect, pTab ) );
+    m_panes[label] = new GUIChatPane( m_pDevice->getGUIEnvironment(), rect, pTab );
   }
 
   return pTab;
@@ -110,16 +111,20 @@ IGUITab* ChatWindow::createTab(std::wstring label)
 
 ///////////////////////////////////////////////////////////////////////
 
-void ChatWindow::addToServerLog(std::wstring str)
+void ChatWindow::addToChatLog(std::wstring pane, std::wstring str)
 {
-  GUIChatPane* pPane = m_panes.at(0);    // get the server tab
+  ChatPaneMap::iterator it = m_panes.find(pane);
+  GUIChatPane* pPane = NULL;
   IGUITab* pTab = NULL;
 
-  if ( pPane )
+  if ( it != m_panes.end() )
   {
-    if ( (pTab = static_cast<IGUITab*>(pPane->getParent())) )
+    pPane = (*it).second;
+    if ( pPane )
     {
-      pPane->addLogItem(str.c_str());
+      pTab = static_cast<IGUITab*>(pPane->getParent());
+      if ( pTab )
+        pPane->addLogItem(str.c_str());
     }
   }
 }
