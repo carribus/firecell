@@ -67,7 +67,7 @@ struct __FCPKT_CHAT_LIST_ROOMS_RESP
     char name[32];
     char topic[255];
     bool is_private;
-    char password[32];
+    bool hasPassword;
     FCULONG min_char_level;
     bool is_official;
   } ChatRoom;

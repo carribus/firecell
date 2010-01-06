@@ -208,6 +208,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ChatChannel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ChatModel.cpp"
 				>
 			</File>
@@ -483,6 +487,10 @@
 			</File>
 			<File
 				RelativePath=".\Character.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ChatChannel.h"
 				>
 			</File>
 			<File

@@ -43,8 +43,8 @@ void SendChatRoomList(vector< ChatRoom >& chatRooms, BaseSocket* pRouter, FCSOCK
     d->rooms[index].is_official = it->isOfficial();
     d->rooms[index].is_private = it->isPrivate();
     d->rooms[index].min_char_level = it->getMinCharLevel();
+    d->rooms[index].hasPassword = !it->getPassword().empty();
     strcpy( d->rooms[index].name, it->getName().c_str() );
-    strcpy( d->rooms[index].password, it->getPassword().c_str() );
     strcpy( d->rooms[index].topic, it->getTopic().c_str() );
   }
 
