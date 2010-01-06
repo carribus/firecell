@@ -1443,6 +1443,7 @@ bool FCModel::OnResponseChatListChannels(PEPacket* pPkt, BaseSocket* pSocket)
 {
   __FCPKT_CHAT_LIST_ROOMS_RESP* d;
   size_t dataLen;
+  ChatModel& cm = ChatModel::instance();
 
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   d = (__FCPKT_CHAT_LIST_ROOMS_RESP*) new FCBYTE[ dataLen ];
@@ -1451,10 +1452,11 @@ bool FCModel::OnResponseChatListChannels(PEPacket* pPkt, BaseSocket* pSocket)
   for ( FCULONG i = 0; i < d->numRooms; i++ )
   {
     // TODO: you left off here - you need to update the ChatModel to reflect the list of channels
-
-    // fire the event
-    FireEvent(FCME_Chat_ChannelListUpdated, NULL);
+    cm.updateChannel(d->rooms[i].id, d->rooms[i].name, d->rooms[i].topic, d->rooms[i].hasPassword, d->rooms[i].is_private, d->rooms[i].min_char_level, d->rooms[i].is_official);
   }
+
+  // fire the event
+  FireEvent(FCME_Chat_ChannelListUpdated, NULL);
 
   delete [] (FCBYTE*)d;
 

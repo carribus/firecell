@@ -102,7 +102,6 @@ IGUITab* ChatWindow::createTab(std::wstring label)
     rect.UpperLeftCorner.Y -= rect.UpperLeftCorner.Y;
 
     pTab = m_pTabCtrl->addTab(label.c_str());
-//    m_panes.push_back( new GUIChatPane( m_pDevice->getGUIEnvironment(), rect, pTab ) );
     m_panes[label] = new GUIChatPane( m_pDevice->getGUIEnvironment(), rect, pTab );
   }
 
