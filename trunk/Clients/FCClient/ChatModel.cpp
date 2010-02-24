@@ -68,6 +68,20 @@ bool ChatModel::updateChannel(FCULONG id, const char* name, const char* topic, b
 
 ///////////////////////////////////////////////////////////////////////
 
+FCUINT ChatModel::getChannelCount()
+{
+  return (FCUINT)m_mapChannels.size();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+const ChatModel::ChannelMap& ChatModel::getChannelMap()
+{
+  return m_mapChannels;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void ChatModel::deleteAllChannels()
 {
   ChannelMap::iterator it = m_mapChannels.begin();

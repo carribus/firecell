@@ -283,6 +283,7 @@ bool ViewLogicGame::OnModelEvent(FCModelEvent event)
 
     case  FCME_Chat_ConnectSuccess:
     case  FCME_Chat_ConnectFailed:
+    case  FCME_Chat_ChannelListUpdated:
       m_pDesktop->OnChatEvent(event);
       break;
 
