@@ -16,6 +16,7 @@ class ChatModel
   ~ChatModel(void);
 
 public:
+  typedef std::map< FCULONG, ChatChannel* > ChannelMap;
 
 	/**
 	 *	@brief Get access to the singleton instance of the ChatModel
@@ -24,12 +25,13 @@ public:
 
   void initialise();
   bool updateChannel(FCULONG id, const char* name, const char* topic, bool hasPassword, bool is_private, FCULONG min_char_level, bool is_official);
+  FCUINT getChannelCount();
+  const ChannelMap& getChannelMap();
 
 private:
 
   void deleteAllChannels();
 
-  typedef std::map< FCULONG, ChatChannel* > ChannelMap;
   ChannelMap m_mapChannels;
   PThreadMutex m_mutexChannels;
 };

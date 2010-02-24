@@ -726,6 +726,12 @@ bool Desktop::OnChatEvent(FCModelEvent& event)
       }
       break;
 
+    case  FCME_Chat_ChannelListUpdated:
+      {
+        pWnd->OnChatChannelsUpdated();
+      }
+      break;
+
     default:
       break;
     }

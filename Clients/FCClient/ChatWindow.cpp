@@ -1,3 +1,4 @@
+#include <sstream>
 #include "../common/ResourceManager.h"
 #include "clientstrings.h"
 #include "../common/clienttypes.h"
@@ -62,7 +63,31 @@ bool ChatWindow::Create(s32 AppElemID, FCUINT optionID, std::wstring caption)
 void ChatWindow::OnChatConnected()
 {
   addToChatLog(L"Server", L"Connected to chat server!\n");
+  addToChatLog(L"Server", L"Requesting available channels...\n");
   RequestChatRoomList();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ChatWindow::OnChatChannelsUpdated()
+{
+  std::wstringstream ss;
+  ChatModel& cm = ChatModel::instance();
+
+  ss << cm.getChannelCount() << L" channels found\n";
+  addToChatLog(L"Server", ss.str());
+
+  // iterate over the channel map
+  const ChatModel::ChannelMap& channels = cm.getChannelMap();
+  ChatModel::ChannelMap::const_iterator it = channels.begin();
+  ChatModel::ChannelMap::const_iterator limit = channels.end();
+
+  for ( ; it != limit; ++it )
+  {
+    ss.str(L"");
+    ss << it->second->getName().c_str() << "\n";
+    addToChatLog(L"Channels", ss.str());
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////

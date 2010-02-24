@@ -21,6 +21,7 @@ public:
   bool Create(s32 AppElemID, FCUINT optionID, std::wstring caption);
 
   void OnChatConnected();
+  void OnChatChannelsUpdated();
 
 private:
 
