@@ -10,6 +10,7 @@
 #include "DesktopIcon.h"
 #include "InGameAppWindow.h"
 #include "SoftwareMgrWindow.h"
+#include "ItemMgrWindow.h"
 
 using namespace irr;
 using namespace video;
@@ -81,6 +82,7 @@ private:
   void CloseUtilityWindow(IGUIElement* pWnd);
 
   void OpenSoftwareManagerWindow();
+  void OpenItemManagerWindow();
 
   /*
    *  Event Handlers
@@ -123,6 +125,7 @@ private:
    *  Arbitrary utility windows
    */
   SoftwareMgrWindow*          m_pSoftwareMgr;
+  ItemMgrWindow*              m_pItemMgr;
 };
 
 #endif//_DESKTOP_H_

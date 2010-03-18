@@ -3,7 +3,8 @@
 #include "FCDialog.h"
 
 FCDialog::FCDialog(IGUIEnvironment* env, IGUIElement* pParent, wchar_t* caption, bool bModal, s32 id, core::rect<s32> rect)
-: IGUIElement(EGUIET_ELEMENT, env, pParent ? pParent : env->getRootGUIElement(), id, rect)
+//: IGUIElement(EGUIET_ELEMENT, env, pParent ? pParent : env->getRootGUIElement(), id, rect)
+: IGUIWindow(env, pParent ? pParent : env->getRootGUIElement(), id, rect)
 , m_pEnv(env)
 , m_bModal(bModal)
 , Dragging(false)
@@ -112,11 +113,18 @@ bool FCDialog::OnEvent(const SEvent& event)
 						Environment->setFocus(this);
 					return false;
 				case EGET_ELEMENT_FOCUS_LOST:
-					// only children are allowed the focus
-					if (!(isMyChild(event.GUIEvent.Element) || event.GUIEvent.Element == this))
-					{
-						return true;
-					}
+          if ( m_bModal )
+          {
+					  // only children are allowed the focus
+					  if (!(isMyChild(event.GUIEvent.Element) || event.GUIEvent.Element == this))
+					  {
+						  return true;
+					  }
+					  else
+					  {
+						  return IGUIElement::OnEvent(event);
+					  }
+          }
 					else
 					{
 						return IGUIElement::OnEvent(event);
@@ -250,6 +258,7 @@ bool FCDialog::OnEvent(const SEvent& event)
 				case EMIE_LMOUSE_PRESSED_DOWN:
 					if ( isPointInside( position2d<s32>( event.MouseInput.X, event.MouseInput.Y ) ) )
 					{
+            getParent()->bringToFront(this);
 						DragStart.X = event.MouseInput.X;
 						DragStart.Y = event.MouseInput.Y;
 						Dragging = true;

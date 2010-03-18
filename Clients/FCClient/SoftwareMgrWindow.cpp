@@ -149,35 +149,7 @@ bool SoftwareMgrWindow::OnCheckboxChanged(s32 id, IGUICheckBox* pBtn)
     FCViewEventEnableNetworkPort e(portNum, bEnabled);
     m_pController->OnViewEvent(e);
   }
-/*
-  FCSHORT res;
-  bool bEnabled = ports.isPortEnabled(portNum);
 
-  bEnabled ^= true;
-  res = ports.enablePort(portNum, bEnabled);
-  switch ( res )
-  {
-  case  NPE_NO_SERVICE_ASSIGNED:
-  case  NPE_NO_SOFTWARETYPE:
-    bEnabled = false;
-    ports.enablePort(portNum, bEnabled);
-    ((IGUICheckBox*)getElementFromId(id))->setChecked( bEnabled );
-    break;
-
-
-  case  NPE_OK:
-    {
-      ((IGUICheckBox*)getElementFromId(id))->setChecked( bEnabled );
-      if ( m_pController )
-      {
-        // notify the server that the player has just enabled/disabled a port
-        FCViewEventEnableNetworkPort e(portNum, bEnabled);
-        m_pController->OnViewEvent(e);
-      }
-    }
-    break;
-  }
-*/
   return true;
 }
 
