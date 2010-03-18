@@ -94,7 +94,7 @@ className::FormElement className::m_arrFormElements[] = \
  *  \brief  This object was designed to serve as a 'real' dialog class for irrLicht GUI development. 
  *          It supports modal operation, as well as cancel/complete callbacks
  */
-class FCDialog : public IGUIElement
+class FCDialog : public IGUIWindow //IGUIElement
 {
 	typedef void(*DLG_CALLBACK)(void*);
 
@@ -109,6 +109,18 @@ public:
 //	bool loadGUI(const char* filename);
 	virtual void draw();
   virtual bool OnEvent(const SEvent& event);
+
+  void setModal(bool bModal = true)                                                   { m_bModal = bModal; }
+
+
+	//! Returns pointer to the close button
+	IGUIButton* getCloseButton() const { return NULL; }
+
+	//! Returns pointer to the minimize button
+	IGUIButton* getMinimizeButton() const { return NULL; }
+
+	//! Returns pointer to the maximize button
+  IGUIButton* getMaximizeButton() const { return NULL; }
 
 protected:
 

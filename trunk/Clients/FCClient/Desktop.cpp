@@ -29,6 +29,7 @@ Desktop::Desktop(ViewLogicGame& owner, IrrlichtDevice* pDevice)
 , m_pFontCourier(NULL)
 , m_mutexApps(true)
 , m_pSoftwareMgr(NULL)
+, m_pItemMgr(NULL)
 {
 #ifdef _DEBUG
   setDebugName("Desktop");
@@ -199,82 +200,6 @@ bool Desktop::AddApplication(ItemSoftware* pSoftware)
 
   updateIconPositions();
 
-/*
-	std::map<FCUINT, FCModel::DesktopOption> mapOptions = pModel->GetDesktopOptions();
-	std::map<FCUINT, FCModel::DesktopOption>::iterator it = mapOptions.begin();
-	std::map<FCUINT, FCModel::DesktopOption>::iterator limit = mapOptions.end();
-  core::dimension2d<s32> iconMax;
-  core::rect<s32> iRect;
-  wstringstream ss;
-	std::string iconFilename;
-  DesktopIcon* pIcon = NULL;
-
-	for ( ; it != limit; it++ )
-  {
-    // get the text into a wchar_t format
-  	ss << it->second.name;
-    // create the desktop icon element
-    pIcon = new DesktopIcon(this, Environment, this, ss.str().c_str(), it->second.optionID+DESKTOPICON_BASE_ID);
-    ss.str(L"");
-    if ( pIcon )
-    {
-      // set the application type that this icon represents
-      pIcon->setType( it->second.type );
-      // set the font
-      pIcon->setFont(m_pFontCourier);
-			// determine which graphic file the icon should be using
-			switch ( it->second.type )
-			{
-			case	DOT_Forum:
-				iconFilename = "./clientdata/gfx/icons/web_normal.png";
-				break;
-
-			case	DOT_News:
-				iconFilename = "./clientdata/gfx/icons/web_normal.png";
-				break;
-
-			case	DOT_Email:
-				iconFilename = "./clientdata/gfx/icons/web_normal.png";
-				break;
-
-			case	DOT_Console:
-				iconFilename = "./clientdata/gfx/icons/web_normal.png";
-				break;
-
-			case	DOT_Bank:
-				iconFilename = "./clientdata/gfx/icons/web_normal.png";
-				break;
-
-			case	DOT_Chat:
-				iconFilename = "./clientdata/gfx/icons/web_normal.png";
-				break;
-
-			case	DOT_HackingTools:
-				iconFilename = "./clientdata/gfx/icons/web_normal.png";
-				break;
-			}
-      pIcon->setIcon(iconFilename);
-      iRect = pIcon->getAbsolutePosition();
-
-			if ( iRect.getWidth() > iconMax.Width )
-				iconMax.Width = iRect.getWidth();
-			if ( iRect.getHeight() > iconMax.Height )
-				iconMax.Height = iRect.getHeight();
-
-      m_mapDesktopIcons[ it->second.optionID ] = pIcon;
-    }
-	}
-
-  // make all icons the same size
-  for ( DesktopIconMap::iterator it2 = m_mapDesktopIcons.begin(); it2 != m_mapDesktopIcons.end(); it2++ )
-  {
-    pIcon = it2->second;
-    pIcon->setWidth( iconMax.Width );
-    pIcon->setHeight( iconMax.Height );
-  }
-
-  updateIconPositions();
-*/
   return true;
 }
 
@@ -996,6 +921,24 @@ void Desktop::OpenSoftwareManagerWindow()
 
 ///////////////////////////////////////////////////////////////////////
 
+void Desktop::OpenItemManagerWindow()
+{
+  if ( !m_pItemMgr )
+  {
+    if ( (m_pItemMgr = new ItemMgrWindow( this, FCModel::instance(), m_pDevice->getGUIEnvironment(), (wchar_t*)ResourceManager::instance().GetClientString( STR_APP_APPBAR_SYSTEM_MENU_ITEMMGR ).c_str(), this, MENUITEM_ITEMMGR)) )
+    {
+      m_pItemMgr->setController( m_owner.GetContainer()->GetController() );
+      addChild( m_pItemMgr );
+    }
+  }
+  else
+  {
+    bringToFront( m_pItemMgr );
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
 bool Desktop::OnMouseLButtonDown(irr::SEvent::SMouseInput event)
 {
   // unselect all desktop icons
@@ -1045,6 +988,8 @@ bool Desktop::OnGUIElementFocused(irr::SEvent::SGUIEvent event)
     break;
 
   default:
+    {
+    }
     break;
   }
 
@@ -1121,6 +1066,9 @@ bool Desktop::OnGUIMenuItemSelected(irr::SEvent::SGUIEvent event)
     break;
 
   case  MENUITEM_ITEMMGR:       // Item Manager
+    {
+      OpenItemManagerWindow();
+    }
     break;
 
   case	MENUITEM_CHARINFO:			// Character Info
