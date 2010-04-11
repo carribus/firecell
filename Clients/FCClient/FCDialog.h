@@ -94,7 +94,7 @@ className::FormElement className::m_arrFormElements[] = \
  *  \brief  This object was designed to serve as a 'real' dialog class for irrLicht GUI development. 
  *          It supports modal operation, as well as cancel/complete callbacks
  */
-class FCDialog : public IGUIWindow //IGUIElement
+class FCDialog : public IGUIElement
 {
 	typedef void(*DLG_CALLBACK)(void*);
 

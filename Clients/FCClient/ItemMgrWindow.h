@@ -22,6 +22,8 @@ protected:
 	static void OnOK(void* pCtx);
 	static void OnCancel(void* pCtx);
 
+  void UpdateUIFromModel();
+
 private:
   /*
    *  Private Members

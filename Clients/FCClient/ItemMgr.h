@@ -44,10 +44,13 @@ public:
 
 	Item* addItem(FCULONG id, const std::string& name, FCULONG typeID, FCSHORT minLevel, FCSHORT maxLevel, FCULONG npcValue);
   bool getItem(FCULONG id, GameItem& item);
+  FCULONG getItems(std::vector<GameItem>& items);
   FCULONG getItemCount()                                        { return (FCULONG)m_mapItems.size(); }
   FCULONG getServices(std::vector<GameItem>& items);
 	void setItemCount(FCULONG id, FCULONG count);
 	void clear();
+  void lock();
+  void unlock();
 
 private:
 

@@ -3,8 +3,8 @@
 #include "FCDialog.h"
 
 FCDialog::FCDialog(IGUIEnvironment* env, IGUIElement* pParent, wchar_t* caption, bool bModal, s32 id, core::rect<s32> rect)
-//: IGUIElement(EGUIET_ELEMENT, env, pParent ? pParent : env->getRootGUIElement(), id, rect)
-: IGUIWindow(env, pParent ? pParent : env->getRootGUIElement(), id, rect)
+: IGUIElement(EGUIET_ELEMENT, env, pParent ? pParent : env->getRootGUIElement(), id, rect)
+//: IGUIWindow(env, pParent ? pParent : env->getRootGUIElement(), id, rect)
 , m_pEnv(env)
 , m_bModal(bModal)
 , Dragging(false)
