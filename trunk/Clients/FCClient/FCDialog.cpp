@@ -92,7 +92,7 @@ void FCDialog::draw()
 			font->draw(Text.c_str(), rect, skin->getColor(EGDC_ACTIVE_CAPTION), false, true, cl);
 	}
 
-	IGUIElement::draw();
+  IGUIElement::draw();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
