@@ -81,6 +81,27 @@ bool ItemMgr::getItem(FCULONG id, ItemMgr::GameItem& item)
 
 //////////////////////////////////////////////////////////////////////////////
 
+FCULONG ItemMgr::getItems(std::vector<GameItem>& items)
+{
+  lock();
+
+  ItemMap::iterator it = m_mapItems.begin();
+  ItemMap::iterator limit = m_mapItems.end();
+  GameItem item;
+
+  for ( ; it != limit; ++it )
+  {
+    item = it->second;
+    items.push_back(item);
+  }
+
+  unlock();
+
+  return (FCULONG)items.size();
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 FCULONG ItemMgr::getServices(std::vector<GameItem>& items)
 {
   m_lock.Lock();
@@ -129,5 +150,19 @@ void ItemMgr::clear()
 {
   m_lock.Lock();
 	m_mapItems.erase( m_mapItems.begin(), m_mapItems.end() );
+  m_lock.Unlock();
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void ItemMgr::lock()
+{
+  m_lock.Lock();
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void ItemMgr::unlock()
+{
   m_lock.Unlock();
 }

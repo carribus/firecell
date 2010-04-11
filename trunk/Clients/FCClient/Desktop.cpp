@@ -869,7 +869,10 @@ FCDialog* Desktop::GetUtilityWindow(IGUIElement* pWnd)
   if ( !pWnd )
     return NULL;
 
-  FCDialog* windows[] = { m_pSoftwareMgr };
+  FCDialog* windows[] = { 
+                          m_pSoftwareMgr, 
+                          m_pItemMgr 
+                        };
   int limit = sizeof(windows) / sizeof(FCDialog*);
 
   for ( int i = 0; i < limit; i++ )
@@ -889,7 +892,10 @@ FCDialog* Desktop::GetUtilityWindow(IGUIElement* pWnd)
 void Desktop::CloseUtilityWindow(IGUIElement* pWnd)
 {
   // this is a trick that allows me to set the class pointer of the utility to window using a generic for loop on the window[] array
-  FCDialog** windows[] = { (FCDialog**)&m_pSoftwareMgr };
+  FCDialog** windows[] = { 
+                            (FCDialog**)&m_pSoftwareMgr, 
+                            (FCDialog**)&m_pItemMgr,
+                         };
   int limit = sizeof(windows) / sizeof(FCDialog*);
 
   for ( int i = 0; i < limit; i++ )
