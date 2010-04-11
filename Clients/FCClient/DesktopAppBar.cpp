@@ -22,7 +22,7 @@ DesktopAppBar::DesktopAppBar(IGUIEnvironment* env, IGUIElement* pParent, s32 id)
   setDebugName("DesktopAppBar");
 #endif//_DEBUG
 
-  core::dimension2d<s32> screenSize = env->getVideoDriver()->getScreenSize();
+  core::dimension2d<s32> screenSize = (env->getVideoDriver()->getScreenSize());
   if ( getParent() )
   {
     screenSize.Width = getParent()->getAbsolutePosition().getWidth();
