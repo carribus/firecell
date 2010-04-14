@@ -14,10 +14,13 @@ public:
 
 protected:
 
+  void renderGrid(u32 gapX = 10, u32 gapY = 10);
+
   bool OnMouseEvent(const SEvent::SMouseInput event);
     bool OnRButtonDown(s32 X, s32 Y);
 
   bool OnGUIEvent(const SEvent::SGUIEvent event);
+    bool OnMenuItemSelected(s32 selectedItem, IGUIContextMenu* pMenu);
 
 private:
 
@@ -25,6 +28,9 @@ private:
   IVideoDriver*         m_pDriver;
   IGUIEnvironment*      m_pEnv;
   SColor                m_colBackground;
+  position2d<s32>       m_lastClickPos;
+  bool                  m_bDrawGrid;
+  bool                  m_bSnapToGrid;
 };
 
 #endif//_IRRDESIGNERVIEW_H_

@@ -7,6 +7,8 @@ irrDesignerView::irrDesignerView(void)
 : m_pDev(NULL)
 , m_pDriver(NULL)
 , m_pEnv(NULL)
+, m_bDrawGrid(true)
+, m_bSnapToGrid(true)
 {
 }
 
@@ -58,12 +60,27 @@ u32 irrDesignerView::exec()
   {
     m_pDriver->beginScene(true, true, m_colBackground);
 
+    if ( m_bDrawGrid )
+      renderGrid();
     m_pEnv->drawAll();
 
     m_pDriver->endScene();
   }
 
   return 0;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void irrDesignerView::renderGrid(u32 gapX, u32 gapY)
+{
+  dimension2d<s32> screenDim = m_pDriver->getScreenSize();
+
+  for ( s32 i = gapX; i < screenDim.Width; i += gapX )
+    m_pDriver->draw2DLine( position2d<s32>(i, 0), position2d<s32>(i, screenDim.Height), SColor(32, 255, 255, 255) );
+
+  for ( s32 i = gapY; i < screenDim.Height; i += gapY )
+    m_pDriver->draw2DLine( position2d<s32>(0, i), position2d<s32>(screenDim.Width, i), SColor(32, 255, 255, 255) );
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -125,6 +142,8 @@ bool irrDesignerView::OnRButtonDown(s32 X, s32 Y)
   s32 elemCount = 0;
   std::wstringstream str;
 
+  m_lastClickPos = position2d<s32>(X, Y);
+
   itemIx = pMenu->addItem(L"Create Object", -1, true, true);
   menuStack.push_back(pMenu);
   if ( (pMenu = pMenu->getSubMenu(itemIx)) )
@@ -180,7 +199,7 @@ bool irrDesignerView::OnGUIEvent(const SEvent::SGUIEvent event)
   {
   case  EGET_MENU_ITEM_SELECTED:
     {
-      IGUIContextMenu* pMenu = (IGUIContextMenu*)event.GUIEvent.Caller;
+      IGUIContextMenu* pMenu = (IGUIContextMenu*)event.Caller;
       s32 selItem = pMenu->getSelectedItem();
       bResult = OnMenuItemSelected(selItem, pMenu);
     }
@@ -197,5 +216,22 @@ bool irrDesignerView::OnGUIEvent(const SEvent::SGUIEvent event)
 
 bool irrDesignerView::OnMenuItemSelected(s32 selectedItem, IGUIContextMenu* pMenu)
 {
+  // at the moment, we assume that the only option available to create objects...
+  s32 factoryIx = pMenu->getID();
+  IGUIElementFactory* pFactory = m_pEnv->getGUIElementFactory(factoryIx);
+  std::wstringstream ss;
+
+  if ( pFactory )
+  {
+    IGUIElement* pNewElem = pFactory->addGUIElement( pFactory->getCreateableGUIElementType(selectedItem), m_pEnv->getRootGUIElement() );
+    
+    if ( pNewElem )
+    {
+      pNewElem->setRelativePosition( rect<s32>( m_lastClickPos.X, m_lastClickPos.Y, m_lastClickPos.X + 100, m_lastClickPos.Y + 50 ) );
+      ss << pFactory->getCreateableGUIElementTypeName( selectedItem );
+      pNewElem->setText( ss.str().c_str() );
+    }
+  }
+
   return true;
 }
