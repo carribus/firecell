@@ -15,7 +15,9 @@ public:
 protected:
 
   bool OnMouseEvent(const SEvent::SMouseInput event);
-  bool OnRButtonDown(s32 X, s32 Y);
+    bool OnRButtonDown(s32 X, s32 Y);
+
+  bool OnGUIEvent(const SEvent::SGUIEvent event);
 
 private:
 
