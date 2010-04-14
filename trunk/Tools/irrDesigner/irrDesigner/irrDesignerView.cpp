@@ -227,6 +227,7 @@ bool irrDesignerView::OnMenuItemSelected(s32 selectedItem, IGUIContextMenu* pMen
     
     if ( pNewElem )
     {
+      // TODO: Instead of creating the actual selected element, we need to create an instance of ElementContainer. It must then contain an instance of the object we selected to create
       pNewElem->setRelativePosition( rect<s32>( m_lastClickPos.X, m_lastClickPos.Y, m_lastClickPos.X + 100, m_lastClickPos.Y + 50 ) );
       ss << pFactory->getCreateableGUIElementTypeName( selectedItem );
       pNewElem->setText( ss.str().c_str() );
