@@ -79,6 +79,10 @@ bool irrDesignerView::OnEvent(const SEvent& event)
     bResult = OnMouseEvent(event.MouseInput);
     break;
 
+  case  EET_GUI_EVENT:
+    bResult = OnGUIEvent(event.GUIEvent);
+    break;
+
   default:
     break;
   }
@@ -163,5 +167,35 @@ bool irrDesignerView::OnRButtonDown(s32 X, s32 Y)
   OutputDebugStringA(s.c_str());
 #endif//_DEBUG
 
+  return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+bool irrDesignerView::OnGUIEvent(const SEvent::SGUIEvent event)
+{
+  bool bResult = false;
+
+  switch ( event.EventType )
+  {
+  case  EGET_MENU_ITEM_SELECTED:
+    {
+      IGUIContextMenu* pMenu = (IGUIContextMenu*)event.GUIEvent.Caller;
+      s32 selItem = pMenu->getSelectedItem();
+      bResult = OnMenuItemSelected(selItem, pMenu);
+    }
+    break;
+
+  default:
+    break;
+  }
+
+  return bResult;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+bool irrDesignerView::OnMenuItemSelected(s32 selectedItem, IGUIContextMenu* pMenu)
+{
   return true;
 }
