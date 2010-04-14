@@ -7,6 +7,10 @@
 #include "ItemMgr.h"
 #include "ItemMgrWindow.h"
 
+#ifdef _DEBUG
+#include "../common/irrlichtUtil/irrDiag.h"
+#endif//_DEBUG
+
 DECLARE_FORM_ELEMENTS(ItemMgrWindow)
   FORM_ELEMENT("listBox"			, 1							, 10			, 40			, 300			, 200			, L"")
 /*
@@ -29,7 +33,14 @@ ItemMgrWindow::ItemMgrWindow(IDesktop* pDesktop, FCModel& model, IGUIEnvironment
 , m_pDesktop(pDesktop)
 , m_pController(NULL)
 {
-  createFormElements();
+//  createFormElements();
+
+  pEnv->loadGUI("./clientdata/ui/guiTest.xml", this);
+#ifdef _DEBUG
+  irrDiag diag;
+  std::string dump = diag.dumpElementTree(m_pEnv->getRootGUIElement());
+  OutputDebugString( dump.c_str() );
+#endif//_DEBUG
 
   FCDialog::setSuccessCallback(OnOK, this);
 
