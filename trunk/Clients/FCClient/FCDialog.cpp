@@ -12,6 +12,7 @@ FCDialog::FCDialog(IGUIEnvironment* env, IGUIElement* pParent, wchar_t* caption,
 , m_fpCancelCallback(NULL)
 , m_pSuccessCtx(NULL)
 , m_pCancelCtx(NULL)
+, m_CloseButton(NULL)
 {
 #ifdef _DEBUG
   setDebugName("FCDialog");
@@ -25,7 +26,7 @@ FCDialog::FCDialog(IGUIEnvironment* env, IGUIElement* pParent, wchar_t* caption,
 		sprites = skin->getSpriteBank();
 		color = skin->getColor(EGDC_WINDOW_SYMBOL);
 	}
-
+/*
 	s32 buttonw = Environment->getSkin()->getSize(EGDS_WINDOW_BUTTON_WIDTH);
 	s32 posx = RelativeRect.getWidth() - buttonw - 4;
 
@@ -41,7 +42,7 @@ FCDialog::FCDialog(IGUIEnvironment* env, IGUIElement* pParent, wchar_t* caption,
 	}
 	m_CloseButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
 	m_CloseButton->grab();
-
+*/
 	Text = caption;
 
   Environment->setFocus(this);
