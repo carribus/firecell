@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include <deque>
+#include "ElementContainer.h"
 #include "irrDiag.h"
 #include "irrDesignerView.h"
 
@@ -9,6 +10,7 @@ irrDesignerView::irrDesignerView(void)
 , m_pEnv(NULL)
 , m_bDrawGrid(true)
 , m_bSnapToGrid(true)
+, m_bDragging(false)
 {
 }
 
@@ -43,6 +45,10 @@ bool irrDesignerView::create(s32 width, s32 height, SColor background)
     }
 
     m_colBackground = background;
+
+    irrSingleton::instance().setDevice(m_pDev);
+    irrSingleton::instance().setTimer(m_pDev->getTimer());
+
     bResult = true;
   }
 
@@ -62,7 +68,11 @@ u32 irrDesignerView::exec()
 
     if ( m_bDrawGrid )
       renderGrid();
+
     m_pEnv->drawAll();
+
+    if ( m_rectRubberBand.getWidth() > 0 && m_rectRubberBand.getHeight() > 0 )
+      m_pDriver->draw2DRectangle( SColor(64, 196, 196, 255), m_rectRubberBand );
 
     m_pDriver->endScene();
   }
@@ -115,12 +125,23 @@ bool irrDesignerView::OnMouseEvent(const SEvent::SMouseInput event)
 
   switch ( event.Event )
   {
+  case  EMIE_LMOUSE_PRESSED_DOWN:
+    OutputDebugString(L"LMOUSE DOWN\n");
+    bResult = OnLMouseDown(event.X, event.Y);
+    break;
+
+  case  EMIE_LMOUSE_LEFT_UP:
+    OutputDebugString(L"LMOUSE UP\n");
+    bResult = OnLMouseUp(event.X, event.Y);
+    break;
+
   case  EMIE_RMOUSE_LEFT_UP:
     bResult = OnRButtonDown(event.X, event.Y);
     break;
 
-  case  EMIE_LMOUSE_PRESSED_DOWN:
-    OutputDebugString(L"LMOUSE DOWN\n");
+  case  EMIE_MOUSE_MOVED:
+    OutputDebugString(L"MOUSEMOVE\n");
+    bResult = OnMouseMoved(event.X, event.Y);
     break;
 
   default:
@@ -128,6 +149,29 @@ bool irrDesignerView::OnMouseEvent(const SEvent::SMouseInput event)
   }
 
   return bResult;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+#error Need to sort out the problem with clicking the context menu vs clicking in general :(
+
+bool irrDesignerView::OnLMouseDown(s32 X, s32 Y)
+{
+  m_lastClickPos = position2d<s32>(X, Y);
+  m_bDragging = true;
+  OutputDebugString(L"Dragging = TRUE\n");
+  return k;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+bool irrDesignerView::OnLMouseUp(s32 X, s32 Y)
+{
+  m_lastClickPos = position2d<s32>(-1, -1);
+  m_bDragging = false;
+  m_rectRubberBand.UpperLeftCorner.X = m_rectRubberBand.UpperLeftCorner.Y =
+    m_rectRubberBand.LowerRightCorner.X = m_rectRubberBand.LowerRightCorner.Y = -1;
+  OutputDebugString(L"Dragging = FALSE\n");
+  return false;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -191,6 +235,22 @@ bool irrDesignerView::OnRButtonDown(s32 X, s32 Y)
 
 //////////////////////////////////////////////////////////////////////////////
 
+bool irrDesignerView::OnMouseMoved(s32 X, s32 Y)
+{
+  rect<s32> r(m_lastClickPos.X, m_lastClickPos.Y, X, Y);
+  if ( m_bDragging && (m_lastClickPos.X != -1 || m_lastClickPos.Y != -1) )
+  {
+    OutputDebugString(L"Rubberbanding\n");
+    r.repair();
+    // draw a rubber band
+    m_rectRubberBand = r;
+  }
+
+  return false;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 bool irrDesignerView::OnGUIEvent(const SEvent::SGUIEvent event)
 {
   bool bResult = false;
@@ -223,16 +283,19 @@ bool irrDesignerView::OnMenuItemSelected(s32 selectedItem, IGUIContextMenu* pMen
 
   if ( pFactory )
   {
-    IGUIElement* pNewElem = pFactory->addGUIElement( pFactory->getCreateableGUIElementType(selectedItem), m_pEnv->getRootGUIElement() );
+    // TODO: Instead of creating the actual selected element, we need to create an instance of ElementContainer. It must then contain an instance of the object we selected to create
+    ElementContainer* pContainer = new ElementContainer(m_pEnv, m_pEnv->getRootGUIElement(), -1, rect<s32>(m_lastClickPos.X, m_lastClickPos.Y, m_lastClickPos.X + 100, m_lastClickPos.Y + 50 ) );
+    IGUIElement* pNewElem = pFactory->addGUIElement( pFactory->getCreateableGUIElementType(selectedItem) );
     
     if ( pNewElem )
     {
-      // TODO: Instead of creating the actual selected element, we need to create an instance of ElementContainer. It must then contain an instance of the object we selected to create
-      pNewElem->setRelativePosition( rect<s32>( m_lastClickPos.X, m_lastClickPos.Y, m_lastClickPos.X + 100, m_lastClickPos.Y + 50 ) );
       ss << pFactory->getCreateableGUIElementTypeName( selectedItem );
-      pNewElem->setText( ss.str().c_str() );
+      pContainer->setObject(pNewElem, ss.str().c_str());
     }
   }
 
   return true;
 }
+
+//////////////////////////////////////////////////////////////////////////////
+
