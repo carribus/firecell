@@ -16,6 +16,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "genswtypesh", "Tools\genswt
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FCChatServer", "FCChatServer\FCChatServer.vcproj", "{5A4D1494-E295-41FE-9B8B-ECC25A4741D3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FCClient_Qt", "Clients\FCClient_Qt\FCClient_Qt.vcproj", "{895113E3-F2D5-4BE2-993B-46A3C21B4E5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -54,6 +56,10 @@ Global
 		{5A4D1494-E295-41FE-9B8B-ECC25A4741D3}.Debug|Win32.Build.0 = Debug|Win32
 		{5A4D1494-E295-41FE-9B8B-ECC25A4741D3}.Release|Win32.ActiveCfg = Release|Win32
 		{5A4D1494-E295-41FE-9B8B-ECC25A4741D3}.Release|Win32.Build.0 = Release|Win32
+		{895113E3-F2D5-4BE2-993B-46A3C21B4E5C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{895113E3-F2D5-4BE2-993B-46A3C21B4E5C}.Debug|Win32.Build.0 = Debug|Win32
+		{895113E3-F2D5-4BE2-993B-46A3C21B4E5C}.Release|Win32.ActiveCfg = Release|Win32
+		{895113E3-F2D5-4BE2-993B-46A3C21B4E5C}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
