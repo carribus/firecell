@@ -1,6 +1,6 @@
 /*
-    FireCell Server - The server code for the firecell multiplayer game
-    Copyright (C) 2008  Peter M. Mares
+    FireCell Qt Client - The Qt client code for the firecell multiplayer game
+    Copyright (C) 2008-2010  Peter M. Mares
 
 		Contact: carribus@gmail.com
 

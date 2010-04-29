@@ -17,38 +17,37 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef FCCLIENT_QT_H
-#define FCCLIENT_QT_H
-
-#include <QtGui/QMainWindow>
-#include "ui_fcmainwindow.h"
+#ifndef _FCAPP_H_
+#define _FCAPP_H_
+#include <QApplication>
 #include "FCModel.h"
-#include "ViewBase.h"
+#include "FCNet.h"
+#include "fcmainwindow.h"
 
-class FCMainWindow : public QMainWindow
+class FCApp : public QApplication
 {
   Q_OBJECT
 
 public:
-  FCMainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
-  ~FCMainWindow();
+  FCApp(int& argc, char** argv);
+  ~FCApp(void);
+
+  bool initialise();
+
+  FCModel& model()          { return *m_model; }
+  FCNet& network()          { return *m_net; }
 
 protected slots:
 
-  void onModelStateChanged(FCModel::e_ModelState newState, FCModel::e_ModelState oldState);
-
-protected:
-  void resizeEvent(QResizeEvent* event);
-//  void paintEvent(QPaintEvent* event);
-
+  void bootUp();
 
 private:
 
-  bool switchView(ViewBase* pNewView);
+  bool createMainWindow();
 
-  Ui::FCMainWindow      ui;
-  ViewBase*             m_currentView;
-//  QPixmap m_background;
+  FCModel*            m_model;
+  FCNet*              m_net;
+  FCMainWindow*       m_mainWindow;
 };
 
-#endif // FCCLIENT_QT_H
+#endif//_FCAPP_H_
