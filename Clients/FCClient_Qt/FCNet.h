@@ -17,38 +17,42 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef FCCLIENT_QT_H
-#define FCCLIENT_QT_H
+#ifndef _FCNET_H_
+#define _FCNET_H_
+#include <QObject>
+#include <QTcpSocket>
 
-#include <QtGui/QMainWindow>
-#include "ui_fcmainwindow.h"
-#include "FCModel.h"
-#include "ViewBase.h"
-
-class FCMainWindow : public QMainWindow
+class FCNet : public QObject
 {
   Q_OBJECT
 
 public:
-  FCMainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
-  ~FCMainWindow();
+  FCNet(QObject* parent = 0);
+  ~FCNet(void);
+
+  void connectToGame(const QString& hostname, quint16 port, quint16 maxRetries = 0);
+  quint16 getRetryAttemptsLeft()              { return m_retriesLeft; }
+
+signals:
+  void connectAttemptStarted(QString hostName, quint16 port);
+  void connected(QString hostName, quint16 port);
+  void disconnected();
+  void socketError(QAbstractSocket::SocketError socketError);
+
 
 protected slots:
 
-  void onModelStateChanged(FCModel::e_ModelState newState, FCModel::e_ModelState oldState);
-
-protected:
-  void resizeEvent(QResizeEvent* event);
-//  void paintEvent(QPaintEvent* event);
-
+  void onConnected();
+  void onDisconnected();
+  void onError(QAbstractSocket::SocketError sockError);
+  void onHostFound();
 
 private:
 
-  bool switchView(ViewBase* pNewView);
-
-  Ui::FCMainWindow      ui;
-  ViewBase*             m_currentView;
-//  QPixmap m_background;
+  QTcpSocket*         m_sock;
+  quint16             m_retriesLeft;
+  QString             m_hostName;
+  quint16             m_port;
 };
 
-#endif // FCCLIENT_QT_H
+#endif//_FCNET_H_

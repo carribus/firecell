@@ -17,38 +17,37 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef FCCLIENT_QT_H
-#define FCCLIENT_QT_H
+#ifndef _VIEWLOADING_H_
+#define _VIEWLOADING_H_
 
-#include <QtGui/QMainWindow>
-#include "ui_fcmainwindow.h"
-#include "FCModel.h"
+#include <QWidget>
+#include <QAbstractSocket>
+#include "ui_ViewLoading.h"
 #include "ViewBase.h"
 
-class FCMainWindow : public QMainWindow
+class ViewLoading : public ViewBase
 {
   Q_OBJECT
 
 public:
-  FCMainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
-  ~FCMainWindow();
+  ViewLoading(QWidget* parent);
+  ~ViewLoading(void);
+
+  /*
+   * ViewBase implementation
+   */
+  void setupView();
 
 protected slots:
 
-  void onModelStateChanged(FCModel::e_ModelState newState, FCModel::e_ModelState oldState);
-
-protected:
-  void resizeEvent(QResizeEvent* event);
-//  void paintEvent(QPaintEvent* event);
-
+  void onConnectAttemptStarted(QString hostname, quint16 port);
+  void onConnected(QString hostName, quint16 port);
+  void onSocketError(QAbstractSocket::SocketError socketError);
 
 private:
 
-  bool switchView(ViewBase* pNewView);
+  Ui::ViewLoading ui;
 
-  Ui::FCMainWindow      ui;
-  ViewBase*             m_currentView;
-//  QPixmap m_background;
 };
 
-#endif // FCCLIENT_QT_H
+#endif//_VIEWLOADING_H_
