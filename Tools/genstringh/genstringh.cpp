@@ -29,6 +29,8 @@ using namespace io;
 
 #define DEFNAME_LENGTH	35
 
+bool g_ExportWideStrings = false;
+
 void print_title()
 {
 	printf("FireCell Client String header file generator\n\n");
@@ -36,7 +38,9 @@ void print_title()
 
 void print_usage()
 {
-	printf("usage: genstringh <source string xml file> <target .h file>\n\n"); 
+	printf("usage: genstringh [options] <source string xml file> <target .h file>\n\n"); 
+  printf("Options:\n");
+  printf("\t-wide\t- export the strings as wide character strings\n\n");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +66,11 @@ void write_h_stringdef(ofstream& f, string& string_id)
 	f << "#define STR_" << string_id << "\t";
 	for ( size_t i = len; i < DEFNAME_LENGTH; i++ )
 		f << " ";
-	f << "L\"" << string_id << "\"\n";
+  if ( g_ExportWideStrings )
+    f << "L\"";
+  else 
+    f << "\"";
+	f << string_id << "\"\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -80,8 +88,22 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
+  string option;
 	string src_file = cmdLine.GetArg(1);
 	string target_file = cmdLine.GetArg(2);
+
+  if ( src_file[0] == '-' )
+  {
+    option = src_file;
+    src_file = cmdLine.GetArg(2);
+    target_file = cmdLine.GetArg(3);
+
+    if ( option == "-wide" )
+    {
+      g_ExportWideStrings= true;
+      printf("[CONFIG] Exporting wide strings\n");
+    }
+  }
 
 	pXML = createIrrXMLReader( src_file.c_str() );
 

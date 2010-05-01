@@ -22,7 +22,8 @@
 
 #include <QtGui/QMainWindow>
 #include "ui_fcmainwindow.h"
-#include "FCModel.h"
+#include "fcclient_consts.h"
+#include "FCApp.h"
 #include "ViewBase.h"
 
 class FCMainWindow : public QMainWindow
@@ -33,9 +34,16 @@ public:
   FCMainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
   ~FCMainWindow();
 
+signals:
+  /*
+   * This signal is here to enforce a sequence of handling this event. Views should connect to this signal and NOT the signal from FCModel
+   */
+//  void modelStateChanged(FCModel::e_ModelState newState, FCModel::e_ModelState oldState);
+
 protected slots:
 
-  void onModelStateChanged(FCModel::e_ModelState newState, FCModel::e_ModelState oldState);
+  void onAppStateChanged(FCApp::StateInfo state, FCApp::StateInfo oldState);
+//  void onModelStateChanged(FCModel::e_ModelState newState, FCModel::e_ModelState oldState);
 
 protected:
   void resizeEvent(QResizeEvent* event);

@@ -20,9 +20,8 @@
 #ifndef _VIEWLOADING_H_
 #define _VIEWLOADING_H_
 
-#include <QWidget>
-#include <QAbstractSocket>
 #include "ui_ViewLoading.h"
+#include "FCApp.h"
 #include "ViewBase.h"
 
 class ViewLoading : public ViewBase
@@ -40,11 +39,15 @@ public:
 
 protected slots:
 
+  void onAppStateChanged(FCApp::StateInfo state, FCApp::StateInfo oldState);
   void onConnectAttemptStarted(QString hostname, quint16 port);
   void onConnected(QString hostName, quint16 port);
   void onSocketError(QAbstractSocket::SocketError socketError);
 
 private:
+
+  void addLogItem(QString item);
+  void handleSubStateChange(FCApp::StateInfo state);
 
   Ui::ViewLoading ui;
 
