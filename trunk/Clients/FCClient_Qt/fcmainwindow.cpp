@@ -17,9 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <QPainter>
-#include <QDebug>
+#include "StdAfx.h"
 #include "fcmainwindow.h"
+#include "ResourceManager.h"
 #include "ViewLoading.h"
 
 FCMainWindow::FCMainWindow(QWidget *parent, Qt::WFlags flags)
@@ -44,28 +44,96 @@ FCMainWindow::~FCMainWindow()
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCMainWindow::onModelStateChanged(FCModel::e_ModelState newState, FCModel::e_ModelState oldState)
+void FCMainWindow::onAppStateChanged(FCApp::StateInfo state, FCApp::StateInfo oldState)
 {
-  switch ( newState )
+  if ( state.state != oldState.state )
   {
-  case  FCModel::LoadingState:
-    switchView( new ViewLoading(this) );
-    break;
-  case  FCModel::ConnectingState:
-    break;
-  case  FCModel::LoginState:
-    break;
-  case  FCModel::CharacterSelectionState:
-    break;
-  case  FCModel::PlayingState:
-    break;
-  case  FCModel::ShuttingDownState:
-    break;
-  default:
-    break;
+    switch (state.state)
+    {
+    case  AppStateLoading:
+      switchView( new ViewLoading(this) );
+      break;
+
+    case  AppStateConnecting:
+      break;
+
+    case  AppStateLogin:
+      break;
+
+    case  AppStateCharacterSelection:
+      // switch the view to the character selection view
+      break;
+
+    case  AppStatePlaying:
+      // switch the view to the game view
+      break;
+
+    case  AppStateShuttingDown:
+      break;
+
+    default:
+      break;
+    }
   }
 }
 
+///////////////////////////////////////////////////////////////////////
+/*
+void FCMainWindow::onModelStateChanged(FCModel::e_ModelState newState, FCModel::e_ModelState oldState)
+{
+  if ( newState != oldState )
+  {
+    switch ( newState )
+    {
+    case  FCModel::LoadingState:
+      break;
+    case  FCModel::ConnectingState:
+      break;
+    case  FCModel::LoginState:
+      break;
+    case  FCModel::CharacterSelectionState:
+      break;
+    case  FCModel::PlayingState:
+      break;
+    case  FCModel::ShuttingDownState:
+      break;
+    default:
+      break;
+    }
+  }
+  else
+  {
+    // NOTE: I don't think I'll ever use this particular code path... so it may be removed in future.
+
+    // if the main state did not change, then perhaps the sub-state did
+    FCModel::StateInfo stateInfo = static_cast<FCApp*>(qApp)->model().GetState();
+
+    if ( m_currentView )
+    {
+      switch ( stateInfo.state )
+      {
+			case  FCModel::LoadingState:
+			case  FCModel::ConnectingState:
+				break;
+
+			case  FCModel::LoginState:
+				break;
+
+			case	FCModel::CharacterSelectionState:
+				break;
+
+			case  FCModel::PlayingState:
+				break;
+
+			case  FCModel::ShuttingDownState:
+				break;
+      }
+    }
+  }
+
+  emit modelStateChanged(newState, oldState);
+}
+*/
 ///////////////////////////////////////////////////////////////////////
 
 void FCMainWindow::resizeEvent(QResizeEvent* event)

@@ -19,35 +19,58 @@
 */
 #ifndef _FCAPP_H_
 #define _FCAPP_H_
-#include <QApplication>
-#include "FCModel.h"
+
+#include "fcclient_consts.h"
 #include "FCNet.h"
-#include "fcmainwindow.h"
+
+class FCMainWindow;
+class FCModel;
 
 class FCApp : public QApplication
 {
   Q_OBJECT
 
 public:
+
   FCApp(int& argc, char** argv);
   ~FCApp(void);
 
   bool initialise();
 
-  FCModel& model()          { return *m_model; }
-  FCNet& network()          { return *m_net; }
+  FCModel& model()            { return *m_model; }
+  FCNet& network()            { return *m_net; }
+  FCMainWindow* mainWindow()  { return m_mainWindow; }
+
+  /*
+   *  StateInfo structure that is passed in appStateChanged() signal
+   */
+	struct StateInfo
+	{
+		e_AppState state;
+		FCSHORT stateStep;
+	};
+
+signals:
+  void appStateChanged(FCApp::StateInfo state, FCApp::StateInfo);
 
 protected slots:
 
   void bootUp();
 
+  void onConnectAttemptStarted(QString hostname, quint16 port);
+  void onConnected(QString hostName, quint16 port);
+  void onSocketError(QAbstractSocket::SocketError socketError);
+
 private:
 
+  void setState(e_AppState state);
+  void setStateStep(FCSHORT stateStep);
   bool createMainWindow();
 
   FCModel*            m_model;
   FCNet*              m_net;
   FCMainWindow*       m_mainWindow;
+  StateInfo           m_state;
 };
 
 #endif//_FCAPP_H_

@@ -2,6 +2,7 @@
 #define _FCMODEL_H_
 
 #include <QObject>
+#include "../../common/fctypes.h"
 
 class FCModel : public QObject
 {
@@ -25,16 +26,17 @@ public:
 
   FCModel(QObject* parent = 0);
   ~FCModel(void);
-
+/*
 	void setState(e_ModelState newState);
+  void SetStateStep(FCSHORT stateStep);
+//	StateInfo GetState()														{ return m_state; }
   
 signals:
 
   void modelStateChanged(FCModel::e_ModelState newState, FCModel::e_ModelState oldState);
-
+*/
 private:
 
-  e_ModelState            m_state;
 };
 
 #endif//_FCMODEL_H_

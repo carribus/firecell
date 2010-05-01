@@ -17,9 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <QString>
+#include "StdAfx.h"
+#include "clientstrings.h"
 #include "ViewLoading.h"
 #include "FCApp.h"
+#include "fcmainwindow.h"
 #include "FCModel.h"
 #include "FCNet.h"
 
@@ -41,10 +43,42 @@ void ViewLoading::setupView()
 {
   FCModel& model = static_cast<FCApp*>(qApp)->model();
   FCNet& net = static_cast<FCApp*>(qApp)->network();
+  FCMainWindow* wnd = static_cast<FCApp*>(qApp)->mainWindow();
 
+  // connect to the model
+  connect( qApp, SIGNAL(appStateChanged(FCApp::StateInfo, FCApp::StateInfo)), SLOT(onAppStateChanged(FCApp::StateInfo, FCApp::StateInfo)) );
+/*
+  // connect to the network signals
   connect( &net, SIGNAL(connectAttemptStarted(QString, quint16)), SLOT(onConnectAttemptStarted(QString, quint16)) );
   connect( &net, SIGNAL(connected(QString, quint16)), SLOT(onConnected(QString, quint16)) );
   connect( &net, SIGNAL(socketError(QAbstractSocket::SocketError)), SLOT(onSocketError(QAbstractSocket::SocketError)) );
+*/
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewLoading::onAppStateChanged(FCApp::StateInfo state, FCApp::StateInfo oldState)
+{
+  if ( state.state != oldState.state )
+  {
+    switch ( state.state )
+    {
+    case  AppStateLoading:
+      break;
+
+    case  AppStateConnecting:
+      addLogItem( ResourceManager::instance().getClientString( STR_LOAD_SEPERATOR ) );
+      break;
+
+    case  AppStateLogin:
+      // show the login dialog
+      break;
+    }
+  }
+  else
+  {
+    handleSubStateChange(state);
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -53,16 +87,15 @@ void ViewLoading::onConnectAttemptStarted(QString hostname, quint16 port)
 {
   QString item;
 
-  item = QString("Connecting to %1:%2").arg(hostname).arg(port);
-  ui.listWidget->addItem(item);
+  item = ResourceManager::instance().getClientString( STR_CONNECT_SERVER );
+  addLogItem(item);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void ViewLoading::onConnected(QString hostName, quint16 port)
 {
-  QString item("Connected");
-  ui.listWidget->addItem(item);
+  addLogItem(ResourceManager::instance().getClientString(STR_CONNECT_OK));
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -78,5 +111,69 @@ void ViewLoading::onSocketError(QAbstractSocket::SocketError socketError)
     item += "retrying";
   else
     item += "terminating!";
-  ui.listWidget->addItem(item);
+  addLogItem(item);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewLoading::addLogItem(QString item)
+{
+  QString t = ui.txtLog->text();
+  t += item;
+  ui.txtLog->setText(t);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewLoading::handleSubStateChange(FCApp::StateInfo state)
+{
+  switch ( state.state )
+  {
+  case  AppStateLoading:
+    {
+      switch ( state.stateStep )
+      {
+      case  AppState_Loading_Text:
+        addLogItem(ResourceManager::instance().getClientString( STR_LOAD_START ));
+        addLogItem( ResourceManager::instance().getClientString( STR_LOAD_TEXT ) );
+        break;
+
+      case  AppState_Loading_Graphics:
+        addLogItem( ResourceManager::instance().getClientString( STR_LOAD_GFX ) );
+        break;
+
+      case  AppState_Loading_Sounds:
+        addLogItem( ResourceManager::instance().getClientString( STR_LOAD_AUDIO ) );
+        break;
+      }
+    }
+    break;
+
+  case  AppStateConnecting:
+    {
+      switch ( state.stateStep )
+      {
+      case  AppState_Connecting_Connecting:
+        addLogItem( ResourceManager::instance().getClientString( STR_CONNECT_SERVER ) );
+        break;
+
+      case  AppState_Connecting_Retry:
+        addLogItem( ResourceManager::instance().getClientString( STR_CONNECT_FAIL_RETRY ) );
+        break;
+
+      case  AppState_Connecting_Connected:
+        addLogItem( ResourceManager::instance().getClientString( STR_CONNECT_OK ) );
+        break;
+
+      case  AppState_Connecting_FinalFail:
+        addLogItem( ResourceManager::instance().getClientString( STR_CONNECT_FINAL_FAIL ) );
+        break;
+      }
+    }
+    break;
+
+  case  AppStateLogin:
+    break;
+
+  }
 }
