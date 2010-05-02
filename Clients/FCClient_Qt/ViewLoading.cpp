@@ -23,12 +23,18 @@
 #include "FCApp.h"
 #include "fcmainwindow.h"
 #include "FCModel.h"
+#include "FCPlayerModel.h"
 #include "FCNet.h"
+#include "DlgLogin.h"
 
 ViewLoading::ViewLoading(QWidget* parent)
 : ViewBase(parent)
 {
   ui.setupUi(this);
+
+  const FCPlayerModel* pPlayerModel = FCAPP->playerModel();
+  QObject::connect(this, SIGNAL(Login(QString, QString)), pPlayerModel, SLOT(onLogin(QString, QString)));
+  QObject::connect(FCAPP, SIGNAL(serverInfoReceived(unsigned char, unsigned char)), this, SLOT(onServerInfoReceived(unsigned char, unsigned char)));
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -41,9 +47,9 @@ ViewLoading::~ViewLoading(void)
 
 void ViewLoading::setupView()
 {
-  FCModel& model = static_cast<FCApp*>(qApp)->model();
-  FCNet& net = static_cast<FCApp*>(qApp)->network();
-  FCMainWindow* wnd = static_cast<FCApp*>(qApp)->mainWindow();
+  FCModel& model = FCAPP->model();
+  FCNet& net = FCAPP->network();
+  FCMainWindow* wnd = FCAPP->mainWindow();
 
   // connect to the model
   connect( qApp, SIGNAL(appStateChanged(FCApp::StateInfo, FCApp::StateInfo)), SLOT(onAppStateChanged(FCApp::StateInfo, FCApp::StateInfo)) );
@@ -71,7 +77,9 @@ void ViewLoading::onAppStateChanged(FCApp::StateInfo state, FCApp::StateInfo old
       break;
 
     case  AppStateLogin:
-      // show the login dialog
+      {
+        openLoginDialog();
+      }
       break;
     }
   }
@@ -102,15 +110,25 @@ void ViewLoading::onConnected(QString hostName, quint16 port)
 
 void ViewLoading::onSocketError(QAbstractSocket::SocketError socketError)
 {
-  FCModel& model = static_cast<FCApp*>(qApp)->model();
-  FCNet& net = static_cast<FCApp*>(qApp)->network();
+  FCModel& model = FCAPP->model();
+  FCNet& net = FCAPP->network();
 
-  QString item("Failed to connect... ");
+  QString item;
   
   if ( net.getRetryAttemptsLeft() > 0 )
-    item += "retrying";
+    item  = ResourceManager::instance().getClientString(STR_CONNECT_FAIL_RETRY);
   else
-    item += "terminating!";
+    item  = ResourceManager::instance().getClientString(STR_CONNECT_FINAL_FAIL);
+  addLogItem(item);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewLoading::onServerInfoReceived(unsigned char verMajor, unsigned char verMinor)
+{
+  QString item(" v%1.%2\n");
+
+  item = item.arg(verMajor).arg(verMinor);
   addLogItem(item);
 }
 
@@ -165,6 +183,10 @@ void ViewLoading::handleSubStateChange(FCApp::StateInfo state)
         addLogItem( ResourceManager::instance().getClientString( STR_CONNECT_OK ) );
         break;
 
+      case  AppState_Connecting_FetchingInfo:
+        addLogItem( ResourceManager::instance().getClientString( STR_CONNECT_FETCHING_SERVER_INFO ) );
+        break;
+
       case  AppState_Connecting_FinalFail:
         addLogItem( ResourceManager::instance().getClientString( STR_CONNECT_FINAL_FAIL ) );
         break;
@@ -173,7 +195,44 @@ void ViewLoading::handleSubStateChange(FCApp::StateInfo state)
     break;
 
   case  AppStateLogin:
+    {
+      switch ( state.stateStep )
+      {
+      case  AppState_Login_LoginFailed:
+        addLogItem( ResourceManager::instance().getClientString( STR_LOGIN_FAILED ) );
+        openLoginDialog();
+        break;
+
+      case  AppState_Login_LoginFailed_AccountInUse:
+        addLogItem( ResourceManager::instance().getClientString( STR_LOGIN_FAILED_ACCOUNT_IN_USE ) );
+        break;
+
+      case  AppState_Login_LoginSucceeded:
+        addLogItem( ResourceManager::instance().getClientString( STR_LOGIN_SUCCESSFUL ) );
+        break;
+      }
+    }
     break;
 
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewLoading::openLoginDialog()
+{
+  // Allow the user to attempt to login. Cancelling the login will quit the client
+  DlgLogin* pLogin = new DlgLogin(this);
+
+  int nResult = pLogin->exec();
+  if ( nResult == QDialog::Accepted)
+  {
+    addLogItem( ResourceManager::instance().getClientString( STR_LOGIN_ATTEMPTING ) );
+    emit Login( pLogin->getUsername(), pLogin->getPassword() );
+  }
+  else
+  {
+    // we need to shutdown
+    FCAPP->quit();
   }
 }

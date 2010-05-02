@@ -9,6 +9,7 @@
 	<String id="CONNECT_OK">OK\n</String>
 	<String id="CONNECT_FAIL_RETRY">Failed\nRetrying...\n</String>
 	<String id="CONNECT_FINAL_FAIL">Failed\n</String>
+	<String id="CONNECT_FETCHING_SERVER_INFO">Fetching Server Info...</String>
 	<!-- ABOUT FIRECELL STRINGS -->
 	<String id="ABOUT_CAPTION">About FireCell</String>
 	<String id="ABOUT_TEXT">Developed by: Peter Mares\n\nFireCell is an open source MMO licenced under the GPL3.</String>
@@ -20,6 +21,10 @@
 	<String id="LOGINWND_PASSWORD">Password :</String>
 	<String id="LOGINWND_LOGINBUTTON">Login to FireCell</String>
 	<String id="LOGINWND_EXITBUTTON">Exit</String>
+	<String id="LOGIN_ATTEMPTING">Attempting to login... </String>
+	<String id="LOGIN_SUCCESSFUL">Succeeded\n</String>
+	<String id="LOGIN_FAILED">Failed\n</String>
+	<String id="LOGIN_FAILED_ACCOUNT_IN_USE">Failed - Account already in use</String>	
 	<!-- CHARACTER SELECTION SCREEN -->
 	<String id="CHARSEL_HEADER">Select a character</String>
 	<String id="CHARSEL_NEWCHAR">New Character</String>

@@ -25,6 +25,9 @@
 
 class FCMainWindow;
 class FCModel;
+class FCPlayerModel;
+
+#define FCAPP static_cast<FCApp*>(qApp)
 
 class FCApp : public QApplication
 {
@@ -37,9 +40,10 @@ public:
 
   bool initialise();
 
-  FCModel& model()            { return *m_model; }
-  FCNet& network()            { return *m_net; }
-  FCMainWindow* mainWindow()  { return m_mainWindow; }
+  FCModel& model()                        { return *m_model; }
+  const FCPlayerModel* playerModel()      { return m_playerModel; }
+  FCNet& network()                        { return *m_net; }
+  FCMainWindow* mainWindow()              { return m_mainWindow; }
 
   /*
    *  StateInfo structure that is passed in appStateChanged() signal
@@ -53,6 +57,8 @@ public:
 signals:
   void appStateChanged(FCApp::StateInfo state, FCApp::StateInfo);
 
+  void serverInfoReceived(unsigned char verMajor, unsigned char verMinor);
+
 protected slots:
 
   void bootUp();
@@ -61,16 +67,38 @@ protected slots:
   void onConnected(QString hostName, quint16 port);
   void onSocketError(QAbstractSocket::SocketError socketError);
 
+  void onGamePacketReceived(PEPacket* pPkt);
+
 private:
+
+  void onCommand(PEPacket* pPkt);
+  void onResponse(PEPacket* pPkt);
+    bool onResponseServerInfo(PEPacket* pPkt);
+    bool onResponseLogin(PEPacket* pPkt);
+    bool onResponseGetCharacters(PEPacket* pPkt);
+  void onError(PEPacket* pPkt);
 
   void setState(e_AppState state);
   void setStateStep(FCSHORT stateStep);
   bool createMainWindow();
 
+  template <class TTargetStruct>
+  void getPacketData(PEPacket* pPkt, TTargetStruct& target)
+  {
+    size_t dataLen;
+
+    pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+    pPkt->GetField("data", &target, dataLen);
+  }
+
   FCModel*            m_model;
+  FCPlayerModel*      m_playerModel;
   FCNet*              m_net;
   FCMainWindow*       m_mainWindow;
   StateInfo           m_state;
+
+  unsigned char       m_serverVerMajor,
+                      m_serverVerMinor;
 };
 
 #endif//_FCAPP_H_

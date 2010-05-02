@@ -18,6 +18,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "StdAfx.h"
+#include "../../common/protocol/fcprotocol.h"
+#include "../../common/time/timelib.h"
+#include "../../common/PEPacketHelper.h"
 #include "FCNet.h"
 #include <QHostAddress>
 
@@ -32,6 +35,9 @@ FCNet::FCNet(QObject* parent)
   connect( m_sock, SIGNAL(disconnected()),                              SLOT(onDisconnected()) );
   connect( m_sock, SIGNAL(error(QAbstractSocket::SocketError)),         SLOT(onError(QAbstractSocket::SocketError)) );
   connect( m_sock, SIGNAL(hostFound()),                                 SLOT(onHostFound()) );
+  connect( m_sock, SIGNAL(readyRead()),                                 SLOT(onDataReceived()) );
+
+	m_extractor.Prepare( __FCPACKET_DEF );
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -50,6 +56,51 @@ void FCNet::connectToGame(const QString& hostname, quint16 port, quint16 maxRetr
   m_port = port;
   m_retriesLeft = maxRetries;
   m_sock->connectToHost(hostname, port);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCNet::requestServerInfo()
+{
+  PEPacket pkt;
+  int nVal;
+
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_INFO_SERVER);
+  nVal = 0;
+  PEPacketHelper::SetPacketData(pkt, &nVal, 1);
+  
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCNet::sendLogin(QString username, QString password)
+{
+  PEPacket pkt;
+  __FCPKT_LOGIN d;
+
+  memset(&d, 0, sizeof(d));
+  strncpy(d.username, username.toLatin1(), MIN( username.length(), 64 ));
+  strncpy(d.password, password.toLatin1(), MIN( password.length(), 64 )); 
+
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_LOGIN, ST_Auth);
+  PEPacketHelper::SetPacketData(pkt, &d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCNet::requestCharacterInfo()
+{
+  PEPacket pkt;
+  int nVal;
+
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_GETCHARACTERS, ST_Auth);
+  nVal = 0;
+  PEPacketHelper::SetPacketData(pkt, &nVal, 1);
+  
+  SendPacket(pkt);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -88,4 +139,68 @@ void FCNet::onError(QAbstractSocket::SocketError sockError)
 void FCNet::onHostFound()
 {
   qDebug() << "FCNet::onHostFound()";
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCNet::onDataReceived()
+{
+  PEPacket* pPkt = NULL;
+  size_t offset = 0;
+//  DataQueueItem dqi;
+
+  // NOTE: This is probably not going to work if there are tons of packets coming in OR if we receive a partial packet...
+  //       I think a partial packet will be lost with this mechanism.
+  m_inBuffer.append( m_sock->readAll() );
+
+  while ( (pPkt = m_extractor.Extract(m_inBuffer.data(), offset, (size_t)m_inBuffer.length())) )
+  {
+    // pass the packet on for processing
+    emit gamePacketReceived(pPkt);
+
+    // trash the 'read data' from the buffer
+    if ( offset )
+      m_inBuffer.remove(0, offset);
+
+/*
+    dqi.pSocket = pSocket;
+    dqi.pPkt = pPkt;
+    dqi.type = DataQueueItem::DQI_DataIn;
+
+		m_mutexDataIn.Lock();
+    m_qDataIn.push(dqi);
+    m_mutexDataIn.Unlock();
+*/
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCNet::SendPacket(PEPacket& pkt)
+{
+  FCSHORT msgID = 0;
+  FCBYTE pktType = 0;
+  char* pData = NULL;
+  size_t blockLen = 0;
+  int nRet = 0;
+
+  pkt.GetField("msg", &msgID, sizeof(FCSHORT));  
+  pkt.GetField("type", &pktType, sizeof(FCBYTE));
+  pkt.GetDataBlock(pData, blockLen);
+
+  m_sock->write( pData, blockLen );
+//  nRet = m_pSock->Send((FCBYTE*)pData, (int)blockLen);
+
+  SetLatencyAnchor(pktType, msgID );
+
+  return (nRet == blockLen);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCNet::SetLatencyAnchor(FCBYTE pktType, FCSHORT msgID)
+{
+  m_latencyAnchor.pktType = pktType;
+  m_latencyAnchor.msgID = msgID;
+  m_latencyAnchor.timestamp = tl_getTime();
 }

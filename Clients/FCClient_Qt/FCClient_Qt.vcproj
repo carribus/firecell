@@ -19,6 +19,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			>
 			<Tool
@@ -39,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=".\GeneratedFiles;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\qtmain;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtMultimedia;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtWebKit;."
-				PreprocessorDefinitions="UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_THREAD_SUPPORT,QT_NO_DEBUG,NDEBUG,QT_CORE_LIB,QT_GUI_LIB,QT_MULTIMEDIA_LIB,QT_XML_LIB,QT_NETWORK_LIB,QT_WEBKIT_LIB"
+				PreprocessorDefinitions="_USE_STDAFX_H_,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_THREAD_SUPPORT,QT_NO_DEBUG,NDEBUG,QT_CORE_LIB,QT_GUI_LIB,QT_MULTIMEDIA_LIB,QT_XML_LIB,QT_NETWORK_LIB,QT_WEBKIT_LIB"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="false"
 				DebugInformationFormat="0"
@@ -108,10 +109,10 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\GeneratedFiles;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\qtmain;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtMultimedia;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtWebKit;."
-				PreprocessorDefinitions="UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_THREAD_SUPPORT,QT_CORE_LIB,QT_GUI_LIB,QT_MULTIMEDIA_LIB,QT_XML_LIB,QT_NETWORK_LIB,QT_WEBKIT_LIB"
+				PreprocessorDefinitions="_USE_STDAFX_H_,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_THREAD_SUPPORT,QT_CORE_LIB,QT_GUI_LIB,QT_MULTIMEDIA_LIB,QT_XML_LIB,QT_NETWORK_LIB,QT_WEBKIT_LIB"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="false"
-				UsePrecompiledHeader="1"
+				UsePrecompiledHeader="0"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -163,6 +164,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\DlgLogin.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FCApp.cpp"
 				>
 			</File>
@@ -179,7 +184,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FCPlayerModel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\main.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\PacketExtractor.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\PEPacket.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\PEPacketHelper.cpp"
 				>
 			</File>
 			<File
@@ -211,6 +232,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\common\time\timelib.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ViewBase.cpp"
 				>
 			</File>
@@ -229,7 +254,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FCApp.h"
+				RelativePath=".\DlgLogin.h"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -237,7 +262,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputFileName)..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_NO_DEBUG -DQT_THREAD_SUPPORT -DQT_WEBKIT_LIB -DQT_XML_LIB -DUNICODE -DWIN32 -I&quot;$(QTDIR)\include\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;.\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;.\GeneratedFiles\.&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_USE_STDAFX_H_ -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_WEBKIT_LIB  -I&quot;.\GeneratedFiles\.&quot; -I&quot;$(QTDIR)\include\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;.\.&quot; &quot;.\DlgLogin.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>
@@ -248,7 +273,33 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputFileName)..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_THREAD_SUPPORT -DQT_WEBKIT_LIB -DQT_XML_LIB -DUNICODE -DWIN32 -I&quot;$(QTDIR)\include\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;.\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;.\GeneratedFiles\.&quot; &quot;-fStdAfx.h&quot; &quot;-f..\..\FCApp.h&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_USE_STDAFX_H_ -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_WEBKIT_LIB  -I&quot;.\GeneratedFiles\.&quot; -I&quot;$(QTDIR)\include\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;.\.&quot; &quot;.\DlgLogin.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; &quot;-fStdAfx.h&quot; &quot;-f..\..\DlgLogin.h&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\FCApp.h"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputFileName)..."
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_USE_STDAFX_H_ -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_WEBKIT_LIB  -I&quot;.\GeneratedFiles\.&quot; -I&quot;$(QTDIR)\include\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;.\.&quot; &quot;.\FCApp.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputFileName)..."
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_USE_STDAFX_H_ -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_WEBKIT_LIB  -I&quot;.\GeneratedFiles\.&quot; -I&quot;$(QTDIR)\include\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;.\.&quot; &quot;.\FCApp.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; &quot;-fStdAfx.h&quot; &quot;-f..\..\FCApp.h&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>
@@ -267,7 +318,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputFileName)..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_NO_DEBUG -DQT_THREAD_SUPPORT -DQT_WEBKIT_LIB -DQT_XML_LIB -DUNICODE -DWIN32 -I&quot;$(QTDIR)\include\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;.\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;.\GeneratedFiles\.&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_USE_STDAFX_H_ -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_WEBKIT_LIB  -I&quot;.\GeneratedFiles\.&quot; -I&quot;$(QTDIR)\include\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;.\.&quot; &quot;.\fcmainwindow.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>
@@ -278,7 +329,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputFileName)..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_THREAD_SUPPORT -DQT_WEBKIT_LIB -DQT_XML_LIB -DUNICODE -DWIN32 -I&quot;$(QTDIR)\include\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;.\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;.\GeneratedFiles\.&quot; &quot;-fStdAfx.h&quot; &quot;-f..\..\fcmainwindow.h&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_USE_STDAFX_H_ -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_WEBKIT_LIB  -I&quot;.\GeneratedFiles\.&quot; -I&quot;$(QTDIR)\include\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;.\.&quot; &quot;.\fcmainwindow.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; &quot;-fStdAfx.h&quot; &quot;-f..\..\fcmainwindow.h&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>
@@ -293,7 +344,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputFileName)..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_NO_DEBUG -DQT_THREAD_SUPPORT -DQT_WEBKIT_LIB -DQT_XML_LIB -DUNICODE -DWIN32 -I&quot;$(QTDIR)\include\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;.\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;.\GeneratedFiles\.&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_USE_STDAFX_H_ -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_WEBKIT_LIB  -I&quot;.\GeneratedFiles\.&quot; -I&quot;$(QTDIR)\include\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;.\.&quot; &quot;.\FCModel.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>
@@ -304,7 +355,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputFileName)..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_THREAD_SUPPORT -DQT_WEBKIT_LIB -DQT_XML_LIB -DUNICODE -DWIN32 -I&quot;$(QTDIR)\include\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;.\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;.\GeneratedFiles\.&quot; &quot;-fStdAfx.h&quot; &quot;-f..\..\FCModel.h&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_USE_STDAFX_H_ -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_WEBKIT_LIB  -I&quot;.\GeneratedFiles\.&quot; -I&quot;$(QTDIR)\include\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;.\.&quot; &quot;.\FCModel.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; &quot;-fStdAfx.h&quot; &quot;-f..\..\FCModel.h&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>
@@ -319,7 +370,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputFileName)..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_NO_DEBUG -DQT_THREAD_SUPPORT -DQT_WEBKIT_LIB -DQT_XML_LIB -DUNICODE -DWIN32 -I&quot;$(QTDIR)\include\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;.\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;.\GeneratedFiles\.&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_USE_STDAFX_H_ -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_WEBKIT_LIB  -I&quot;.\GeneratedFiles\.&quot; -I&quot;$(QTDIR)\include\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;.\.&quot; &quot;.\FCNet.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>
@@ -330,11 +381,49 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputFileName)..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_THREAD_SUPPORT -DQT_WEBKIT_LIB -DQT_XML_LIB -DUNICODE -DWIN32 -I&quot;$(QTDIR)\include\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;.\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;.\GeneratedFiles\.&quot; &quot;-fStdAfx.h&quot; &quot;-f..\..\FCNet.h&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_USE_STDAFX_H_ -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_WEBKIT_LIB  -I&quot;.\GeneratedFiles\.&quot; -I&quot;$(QTDIR)\include\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;.\.&quot; &quot;.\FCNet.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; &quot;-fStdAfx.h&quot; &quot;-f..\..\FCNet.h&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\FCPlayerModel.h"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputFileName)..."
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_USE_STDAFX_H_ -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_WEBKIT_LIB  -I&quot;.\GeneratedFiles\.&quot; -I&quot;$(QTDIR)\include\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;.\.&quot; &quot;.\FCPlayerModel.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputFileName)..."
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_USE_STDAFX_H_ -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_WEBKIT_LIB  -I&quot;.\GeneratedFiles\.&quot; -I&quot;$(QTDIR)\include\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;.\.&quot; &quot;.\FCPlayerModel.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; &quot;-fStdAfx.h&quot; &quot;-f..\..\FCPlayerModel.h&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\common\PacketExtractor.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\PEPacket.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\PEPacketHelper.h"
+				>
 			</File>
 			<File
 				RelativePath=".\ResourceManager.h"
@@ -371,6 +460,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\common\time\timelib.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ViewBase.h"
 				>
 				<FileConfiguration
@@ -379,7 +472,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputFileName)..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_NO_DEBUG -DQT_THREAD_SUPPORT -DQT_WEBKIT_LIB -DQT_XML_LIB -DUNICODE -DWIN32 -I&quot;$(QTDIR)\include\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;.\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;.\GeneratedFiles\.&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_USE_STDAFX_H_ -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_WEBKIT_LIB  -I&quot;.\GeneratedFiles\.&quot; -I&quot;$(QTDIR)\include\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;.\.&quot; &quot;.\ViewBase.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>
@@ -390,7 +483,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputFileName)..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_THREAD_SUPPORT -DQT_WEBKIT_LIB -DQT_XML_LIB -DUNICODE -DWIN32 -I&quot;$(QTDIR)\include\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;.\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;.\GeneratedFiles\.&quot; &quot;-fStdAfx.h&quot; &quot;-f..\..\ViewBase.h&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_USE_STDAFX_H_ -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_WEBKIT_LIB  -I&quot;.\GeneratedFiles\.&quot; -I&quot;$(QTDIR)\include\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;.\.&quot; &quot;.\ViewBase.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; &quot;-fStdAfx.h&quot; &quot;-f..\..\ViewBase.h&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>
@@ -405,7 +498,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputFileName)..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_NO_DEBUG -DQT_THREAD_SUPPORT -DQT_WEBKIT_LIB -DQT_XML_LIB -DUNICODE -DWIN32 -I&quot;$(QTDIR)\include\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;.\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;.\GeneratedFiles\.&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_USE_STDAFX_H_ -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_WEBKIT_LIB  -I&quot;.\GeneratedFiles\.&quot; -I&quot;$(QTDIR)\include\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;.\.&quot; &quot;.\ViewLoading.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>
@@ -416,7 +509,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputFileName)..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_THREAD_SUPPORT -DQT_WEBKIT_LIB -DQT_XML_LIB -DUNICODE -DWIN32 -I&quot;$(QTDIR)\include\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;.\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;.\GeneratedFiles\.&quot; &quot;-fStdAfx.h&quot; &quot;-f..\..\ViewLoading.h&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_USE_STDAFX_H_ -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_WEBKIT_LIB  -I&quot;.\GeneratedFiles\.&quot; -I&quot;$(QTDIR)\include\.&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)\.&quot; -I&quot;$(QTDIR)\include\qtmain\.&quot; -I&quot;$(QTDIR)\include\QtCore\.&quot; -I&quot;$(QTDIR)\include\QtGui\.&quot; -I&quot;$(QTDIR)\include\QtMultimedia\.&quot; -I&quot;$(QTDIR)\include\QtXml\.&quot; -I&quot;$(QTDIR)\include\QtNetwork\.&quot; -I&quot;$(QTDIR)\include\QtWebKit\.&quot; -I&quot;.\.&quot; &quot;.\ViewLoading.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; &quot;-fStdAfx.h&quot; &quot;-f..\..\ViewLoading.h&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>
@@ -428,6 +521,32 @@
 			Filter="ui"
 			UniqueIdentifier="{99349809-55BA-4b9d-BF79-8FDBB0286EB3}"
 			>
+			<File
+				RelativePath=".\ui\DlgLogin.ui"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputFileName)..."
+						CommandLine="&quot;$(QTDIR)\bin\uic.exe&quot; -o &quot;.\GeneratedFiles\ui_$(InputName).h&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="$(QTDIR)\bin\uic.exe"
+						Outputs="&quot;.\GeneratedFiles\ui_$(InputName).h&quot;"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputFileName)..."
+						CommandLine="&quot;$(QTDIR)\bin\uic.exe&quot; -o &quot;.\GeneratedFiles\ui_$(InputName).h&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="$(QTDIR)\bin\uic.exe"
+						Outputs="&quot;.\GeneratedFiles\ui_$(InputName).h&quot;"
+					/>
+				</FileConfiguration>
+			</File>
 			<File
 				RelativePath=".\ui\fcmainwindow.ui"
 				>
@@ -521,6 +640,10 @@
 			SourceControlFiles="false"
 			>
 			<File
+				RelativePath=".\GeneratedFiles\ui_DlgLogin.h"
+				>
+			</File>
+			<File
 				RelativePath=".\GeneratedFiles\ui_fcmainwindow.h"
 				>
 			</File>
@@ -533,6 +656,18 @@
 				Filter="cpp;moc"
 				SourceControlFiles="false"
 				>
+				<File
+					RelativePath=".\GeneratedFiles\Release\moc_DlgLogin.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
 				<File
 					RelativePath=".\GeneratedFiles\Release\moc_FCApp.cpp"
 					>
@@ -582,6 +717,18 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\GeneratedFiles\Release\moc_FCPlayerModel.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath=".\GeneratedFiles\Release\moc_ViewBase.cpp"
 					>
 					<FileConfiguration
@@ -611,6 +758,18 @@
 				Filter="cpp;moc"
 				SourceControlFiles="false"
 				>
+				<File
+					RelativePath=".\GeneratedFiles\Debug\moc_DlgLogin.cpp"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
 				<File
 					RelativePath=".\GeneratedFiles\Debug\moc_FCApp.cpp"
 					>
@@ -649,6 +808,18 @@
 				</File>
 				<File
 					RelativePath=".\GeneratedFiles\Debug\moc_FCNet.cpp"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\GeneratedFiles\Debug\moc_FCPlayerModel.cpp"
 					>
 					<FileConfiguration
 						Name="Release|Win32"

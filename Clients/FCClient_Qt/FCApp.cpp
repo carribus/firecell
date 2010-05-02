@@ -18,10 +18,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "StdAfx.h"
+#include "../../common/protocol/fcprotocol.h"
 #include "Settings.h"
 #include "ResourceManager.h"
 #include "fcmainwindow.h"
 #include "FCModel.h"
+#include "FCPlayerModel.h"
 #include "FCApp.h"
 
 FCApp::FCApp(int& argc, char** argv)
@@ -48,12 +50,13 @@ bool FCApp::initialise()
 
   // create the model and network objects
   m_model = new FCModel(this);
+  m_playerModel = new FCPlayerModel(this);
   m_net = new FCNet(this);
 
   connect( m_net, SIGNAL(connectAttemptStarted(QString, quint16)), SLOT(onConnectAttemptStarted(QString, quint16)) );
   connect( m_net, SIGNAL(connected(QString, quint16)), SLOT(onConnected(QString, quint16)) );
   connect( m_net, SIGNAL(socketError(QAbstractSocket::SocketError)), SLOT(onSocketError(QAbstractSocket::SocketError)) );
-
+  connect (m_net, SIGNAL(gamePacketReceived(PEPacket*)), SLOT(onGamePacketReceived(PEPacket*)) );
 
   // load the app settings
   Settings& settings = Settings::instance();
@@ -109,6 +112,8 @@ void FCApp::onConnectAttemptStarted(QString hostname, quint16 port)
 void FCApp::onConnected(QString hostName, quint16 port)
 {
   setStateStep( AppState_Connecting_Connected );
+  m_net->requestServerInfo();
+  setStateStep( AppState_Connecting_FetchingInfo );
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -119,6 +124,144 @@ void FCApp::onSocketError(QAbstractSocket::SocketError socketError)
     setStateStep( AppState_Connecting_Retry );
   else
     setStateStep( AppState_Connecting_FinalFail );
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCApp::onGamePacketReceived(PEPacket* pPkt)
+{
+  FCBYTE type;
+  
+  pPkt->GetField("type", &type, sizeof(FCBYTE));
+  switch ( type )
+  {
+  case  FCPKT_COMMAND:
+    onCommand(pPkt);
+    break;
+
+  case  FCPKT_RESPONSE:
+    onResponse(pPkt);
+    break;
+
+  case  FCPKT_ERROR:
+    onError(pPkt);
+    break;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCApp::onCommand(PEPacket* pPkt)
+{
+  if ( !pPkt )
+    return;
+
+  bool bHandled = false;
+  FCSHORT msgID;
+
+  pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCApp::onResponse(PEPacket* pPkt)
+{
+  if ( !pPkt )
+    return;
+
+  bool bHandled = false;
+  FCSHORT msgID;
+
+  pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
+
+  switch ( msgID )
+  {
+  case  FCMSG_INFO_SERVER:
+    {
+      bHandled = onResponseServerInfo(pPkt);
+    }
+    break;
+
+  case  FCMSG_LOGIN:
+    {
+      bHandled = onResponseLogin(pPkt);
+    }
+    break;
+
+  case  FCMSG_GETCHARACTERS:
+    {
+      bHandled = onResponseGetCharacters(pPkt);
+    }
+    break;
+
+  default:
+    qDebug() << "FCApp::onResponse -- Unknown Response message (" << msgID << ")";
+    break;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCApp::onResponseServerInfo(PEPacket* pPkt)
+{
+  if ( m_state.state <= AppStateLogin )
+  {
+    __FCPKT_INFO_SERVER d;
+
+    getPacketData<__FCPKT_INFO_SERVER>(pPkt, d);
+
+    emit serverInfoReceived(d.verMajor, d.verMinor);
+
+    setState( AppStateLogin );
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCApp::onResponseLogin(PEPacket* pPkt)
+{
+  __FCPKT_LOGIN_RESP d;
+
+  getPacketData<__FCPKT_LOGIN_RESP>(pPkt, d);
+  if ( d.loginStatus == LoginSuccess )
+  {
+    setStateStep( AppState_Login_LoginSucceeded );
+    m_net->requestCharacterInfo();
+  }
+  else
+  {
+    setStateStep( AppState_Login_LoginFailed );
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool FCApp::onResponseGetCharacters(PEPacket* pPkt)
+{
+  __FCPKT_CHARACTER_LIST d;
+
+  getPacketData<__FCPKT_CHARACTER_LIST>(pPkt, d);
+
+  setState(AppStateCharacterSelection);
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCApp::onError(PEPacket* pPkt)
+{
+  if ( !pPkt )
+    return;
+
+  bool bHandled = false;
+  FCSHORT msgID;
+
+  pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
 }
 
 ///////////////////////////////////////////////////////////////////////
