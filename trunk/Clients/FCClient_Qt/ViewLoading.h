@@ -39,14 +39,11 @@ public:
 
 signals:
 
-  void Login(QString username, QString password);
+  void attemptLogin(QString username, QString password);
 
 protected slots:
 
   void onAppStateChanged(FCApp::StateInfo state, FCApp::StateInfo oldState);
-  void onConnectAttemptStarted(QString hostname, quint16 port);
-  void onConnected(QString hostName, quint16 port);
-  void onSocketError(QAbstractSocket::SocketError socketError);
   void onServerInfoReceived(unsigned char verMajor, unsigned char verMinor);
 
 private:

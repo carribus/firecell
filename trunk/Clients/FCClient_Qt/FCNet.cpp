@@ -25,7 +25,8 @@
 #include <QHostAddress>
 
 FCNet::FCNet(QObject* parent)
-: QObject(parent)
+//: QObject(parent)
+: QThread(parent)
 , m_sock(NULL)
 , m_retriesLeft(0)
 {
@@ -38,6 +39,8 @@ FCNet::FCNet(QObject* parent)
   connect( m_sock, SIGNAL(readyRead()),                                 SLOT(onDataReceived()) );
 
 	m_extractor.Prepare( __FCPACKET_DEF );
+
+  memset(&m_latencyAnchor, 0, sizeof(LatencyAnchor));
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -56,6 +59,19 @@ void FCNet::connectToGame(const QString& hostname, quint16 port, quint16 maxRetr
   m_port = port;
   m_retriesLeft = maxRetries;
   m_sock->connectToHost(hostname, port);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+FCULONG FCNet::GetLatency(FCBYTE pktType, FCSHORT msgID)
+{
+  if ( msgID == m_latencyAnchor.msgID &&
+       pktType != m_latencyAnchor.pktType )
+  {
+    return (tl_getTime() - m_latencyAnchor.timestamp);
+  }
+
+  return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -189,7 +205,6 @@ bool FCNet::SendPacket(PEPacket& pkt)
   pkt.GetDataBlock(pData, blockLen);
 
   m_sock->write( pData, blockLen );
-//  nRet = m_pSock->Send((FCBYTE*)pData, (int)blockLen);
 
   SetLatencyAnchor(pktType, msgID );
 

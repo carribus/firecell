@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QObject>
 #include <QPainter>
+#include <QReadWriteLock>
 #include <QString>
 #include <QWidget>
 #include <QXmlStreamReader>

@@ -24,7 +24,6 @@
 #include "fcmainwindow.h"
 #include "FCModel.h"
 #include "FCPlayerModel.h"
-#include "FCNet.h"
 #include "DlgLogin.h"
 
 ViewLoading::ViewLoading(QWidget* parent)
@@ -33,7 +32,7 @@ ViewLoading::ViewLoading(QWidget* parent)
   ui.setupUi(this);
 
   const FCPlayerModel* pPlayerModel = FCAPP->playerModel();
-  QObject::connect(this, SIGNAL(Login(QString, QString)), pPlayerModel, SLOT(onLogin(QString, QString)));
+  QObject::connect(this, SIGNAL(attemptLogin(QString, QString)), pPlayerModel, SLOT(onLogin(QString, QString)));
   QObject::connect(FCAPP, SIGNAL(serverInfoReceived(unsigned char, unsigned char)), this, SLOT(onServerInfoReceived(unsigned char, unsigned char)));
 }
 
@@ -53,12 +52,6 @@ void ViewLoading::setupView()
 
   // connect to the model
   connect( qApp, SIGNAL(appStateChanged(FCApp::StateInfo, FCApp::StateInfo)), SLOT(onAppStateChanged(FCApp::StateInfo, FCApp::StateInfo)) );
-/*
-  // connect to the network signals
-  connect( &net, SIGNAL(connectAttemptStarted(QString, quint16)), SLOT(onConnectAttemptStarted(QString, quint16)) );
-  connect( &net, SIGNAL(connected(QString, quint16)), SLOT(onConnected(QString, quint16)) );
-  connect( &net, SIGNAL(socketError(QAbstractSocket::SocketError)), SLOT(onSocketError(QAbstractSocket::SocketError)) );
-*/
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -87,39 +80,6 @@ void ViewLoading::onAppStateChanged(FCApp::StateInfo state, FCApp::StateInfo old
   {
     handleSubStateChange(state);
   }
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void ViewLoading::onConnectAttemptStarted(QString hostname, quint16 port)
-{
-  QString item;
-
-  item = ResourceManager::instance().getClientString( STR_CONNECT_SERVER );
-  addLogItem(item);
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void ViewLoading::onConnected(QString hostName, quint16 port)
-{
-  addLogItem(ResourceManager::instance().getClientString(STR_CONNECT_OK));
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void ViewLoading::onSocketError(QAbstractSocket::SocketError socketError)
-{
-  FCModel& model = FCAPP->model();
-  FCNet& net = FCAPP->network();
-
-  QString item;
-  
-  if ( net.getRetryAttemptsLeft() > 0 )
-    item  = ResourceManager::instance().getClientString(STR_CONNECT_FAIL_RETRY);
-  else
-    item  = ResourceManager::instance().getClientString(STR_CONNECT_FINAL_FAIL);
-  addLogItem(item);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -228,7 +188,7 @@ void ViewLoading::openLoginDialog()
   if ( nResult == QDialog::Accepted)
   {
     addLogItem( ResourceManager::instance().getClientString( STR_LOGIN_ATTEMPTING ) );
-    emit Login( pLogin->getUsername(), pLogin->getPassword() );
+    emit attemptLogin( pLogin->getUsername(), pLogin->getPassword() );
   }
   else
   {
