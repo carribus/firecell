@@ -20,7 +20,10 @@
 #ifndef _FCNET_H_
 #define _FCNET_H_
 #include <QObject>
+#include <QByteArray>
 #include <QTcpSocket>
+#include "../../common/PEPacket.h"
+#include "../../common/PacketExtractor.h"
 
 class FCNet : public QObject
 {
@@ -33,12 +36,20 @@ public:
   void connectToGame(const QString& hostname, quint16 port, quint16 maxRetries = 0);
   quint16 getRetryAttemptsLeft()              { return m_retriesLeft; }
 
+  // Latency function
+  FCULONG GetLatency(FCBYTE pktType, FCSHORT msgID);
+
+  void requestServerInfo();
+  void sendLogin(QString username, QString password);
+  void requestCharacterInfo();
+
 signals:
   void connectAttemptStarted(QString hostName, quint16 port);
   void connected(QString hostName, quint16 port);
   void disconnected();
   void socketError(QAbstractSocket::SocketError socketError);
 
+  void gamePacketReceived(PEPacket* pkt);
 
 protected slots:
 
@@ -46,13 +57,29 @@ protected slots:
   void onDisconnected();
   void onError(QAbstractSocket::SocketError sockError);
   void onHostFound();
+  void onDataReceived();
 
 private:
+
+  bool SendPacket(PEPacket& pkt);
+  void SetLatencyAnchor(FCBYTE pktType, FCSHORT msgID);
+
 
   QTcpSocket*         m_sock;
   quint16             m_retriesLeft;
   QString             m_hostName;
   quint16             m_port;
+
+  QByteArray          m_inBuffer;
+
+  PacketExtractor     m_extractor;
+
+  struct LatencyAnchor
+  {
+    FCBYTE pktType;
+    FCSHORT msgID;
+    FCULONG timestamp;
+  }                   m_latencyAnchor;
 };
 
 #endif//_FCNET_H_

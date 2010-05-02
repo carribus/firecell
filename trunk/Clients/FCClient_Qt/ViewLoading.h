@@ -37,17 +37,23 @@ public:
    */
   void setupView();
 
+signals:
+
+  void Login(QString username, QString password);
+
 protected slots:
 
   void onAppStateChanged(FCApp::StateInfo state, FCApp::StateInfo oldState);
   void onConnectAttemptStarted(QString hostname, quint16 port);
   void onConnected(QString hostName, quint16 port);
   void onSocketError(QAbstractSocket::SocketError socketError);
+  void onServerInfoReceived(unsigned char verMajor, unsigned char verMinor);
 
 private:
 
   void addLogItem(QString item);
   void handleSubStateChange(FCApp::StateInfo state);
+  void openLoginDialog();
 
   Ui::ViewLoading ui;
 

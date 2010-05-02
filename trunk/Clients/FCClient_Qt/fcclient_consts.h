@@ -34,6 +34,7 @@ enum e_AppStateConnecting
   AppState_Connecting_None,
   AppState_Connecting_Connecting,
   AppState_Connecting_Connected,
+  AppState_Connecting_FetchingInfo,
   AppState_Connecting_Retry,
   AppState_Connecting_FinalFail
 };

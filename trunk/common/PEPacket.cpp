@@ -17,6 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#ifdef _USE_STDAFX_H_
+#include "StdAfx.h"
+#endif//_USE_STDAFX_H_
 #include <cstring>
 #include <cstdlib>
 #include "PEPacket.h"
