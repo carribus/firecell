@@ -21,17 +21,23 @@
 #define _FCNET_H_
 #include <QObject>
 #include <QByteArray>
+#include <QThread>
 #include <QTcpSocket>
 #include "../../common/PEPacket.h"
 #include "../../common/PacketExtractor.h"
 
-class FCNet : public QObject
+class FCNet : public QThread
 {
   Q_OBJECT
 
 public:
   FCNet(QObject* parent = 0);
   ~FCNet(void);
+
+  void run()
+  {
+    exec();
+  }
 
   void connectToGame(const QString& hostname, quint16 port, quint16 maxRetries = 0);
   quint16 getRetryAttemptsLeft()              { return m_retriesLeft; }

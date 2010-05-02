@@ -52,6 +52,7 @@ bool FCApp::initialise()
   m_model = new FCModel(this);
   m_playerModel = new FCPlayerModel(this);
   m_net = new FCNet(this);
+  m_net->start(QThread::NormalPriority);
 
   connect( m_net, SIGNAL(connectAttemptStarted(QString, quint16)), SLOT(onConnectAttemptStarted(QString, quint16)) );
   connect( m_net, SIGNAL(connected(QString, quint16)), SLOT(onConnected(QString, quint16)) );
@@ -85,12 +86,15 @@ void FCApp::bootUp()
 
   m_mainWindow->show();
 
+  // load mission strings
   setStateStep( AppState_Loading_Text );
   rm.loadMissionStrings("./clientdata/missions/missions_en.xml");
 
+  // step through predefined states
   setStateStep( AppState_Loading_Graphics );
   setStateStep( AppState_Loading_Sounds );
 
+  // attempt to connect to the game server
   setState(AppStateConnecting);
   QString hostName = settings.GetValue("FCClient/Settings/Server", "address");
   quint16 port = settings.GetValue("FCClient/Settings/Server", "port").toShort();
@@ -131,8 +135,14 @@ void FCApp::onSocketError(QAbstractSocket::SocketError socketError)
 void FCApp::onGamePacketReceived(PEPacket* pPkt)
 {
   FCBYTE type;
+  FCSHORT msgID;
   
   pPkt->GetField("type", &type, sizeof(FCBYTE));
+  pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
+
+  unsigned long latency = m_net->GetLatency( type, msgID );
+  qDebug() << "Latency: " << latency << "ms";
+
   switch ( type )
   {
   case  FCPKT_COMMAND:
@@ -173,6 +183,9 @@ void FCApp::onResponse(PEPacket* pPkt)
   FCSHORT msgID;
 
   pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
+
+  unsigned long latency = m_net->GetLatency( FCPKT_RESPONSE, msgID );
+  qDebug() << "Latency: " << latency << "ms";
 
   switch ( msgID )
   {
@@ -245,6 +258,19 @@ bool FCApp::onResponseGetCharacters(PEPacket* pPkt)
   __FCPKT_CHARACTER_LIST d;
 
   getPacketData<__FCPKT_CHARACTER_LIST>(pPkt, d);
+
+  for ( FCBYTE i = 0; i < d.numCharacters; i++ )
+  {
+    Character c(d.characters[i].character_id, d.characters[i].name);
+
+    c.SetCityID(d.characters[i].city_id);
+    c.SetCountryID(d.characters[i].country_id);
+    c.SetFameScale(d.characters[i].fame_scale);
+    c.SetLevel(d.characters[i].level);
+    c.SetXP(d.characters[i].xp);
+
+    m_playerModel->addCharacter(c);
+  }
 
   setState(AppStateCharacterSelection);
 

@@ -21,6 +21,7 @@
 #include "fcmainwindow.h"
 #include "ResourceManager.h"
 #include "ViewLoading.h"
+#include "ViewCharSelection.h"
 
 FCMainWindow::FCMainWindow(QWidget *parent, Qt::WFlags flags)
 : QMainWindow(parent, flags)
@@ -62,6 +63,7 @@ void FCMainWindow::onAppStateChanged(FCApp::StateInfo state, FCApp::StateInfo ol
 
     case  AppStateCharacterSelection:
       // switch the view to the character selection view
+      switchView( new ViewCharSelection(this) );
       break;
 
     case  AppStatePlaying:
