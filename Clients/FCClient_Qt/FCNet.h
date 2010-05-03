@@ -23,6 +23,7 @@
 #include <QByteArray>
 #include <QThread>
 #include <QTcpSocket>
+#include "../../common/fctypes.h"
 #include "../../common/PEPacket.h"
 #include "../../common/PacketExtractor.h"
 
@@ -48,6 +49,9 @@ public:
   void requestServerInfo();
   void sendLogin(QString username, QString password);
   void requestCharacterInfo();
+  void sendCharacterSelection(size_t character_id);
+  void requestCharacterItems(size_t character_id);
+  void requestCharacterAssets(size_t character_id);
 
 signals:
   void connectAttemptStarted(QString hostName, quint16 port);

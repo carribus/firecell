@@ -1,7 +1,7 @@
 /*
  * FireCell String Definition file
  *
- * Do not modify this file. It was generated from [client\clientdata\strings_en.xml] by genstringh
+ * Do not modify this file. It was generated from [..\..\bin\debug\client\clientdata\strings_en.xml] by genstringh
  */
 
 /*

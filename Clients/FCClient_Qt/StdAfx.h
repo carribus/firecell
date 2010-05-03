@@ -14,6 +14,7 @@
 #include <QWidget>
 #include <QXmlStreamReader>
 
+#include "../../common/fctypes.h"
 #include "fcclient_consts.h"
 #include "ResourceManager.h"
 #include "Settings.h"

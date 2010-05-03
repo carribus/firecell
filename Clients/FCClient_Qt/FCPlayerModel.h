@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QVector>
 #include "dataobjects/Character.h"
+#include "ItemMgr.h"
 
 class FCPlayerModel : public QObject
 {
@@ -13,16 +14,27 @@ public:
   FCPlayerModel(QObject *parent);
   ~FCPlayerModel();
 
-  int addCharacter(Character& character);
+  int addCharacter(Character* character);
+  Character* getCharacter(int nIndex);
+  bool selectCharacter(FCUINT characterID);
+  int characterCount()                            { return m_characters.size(); }
+  Character* getCurrentCharacter()                { return m_currentChar; }
+
+  Item* addItem();
+  ItemMgr& itemMgr()                              { return m_itemMgr; }
 
 protected slots:
   
   void onLogin(QString username, QString password);
+  void onCharacterSelected(FCUINT charID);
 
 private:
 
-  std::vector<Character>        m_characters;
+  std::vector<Character*>       m_characters;
   QReadWriteLock                m_lockChars;
+  Character*                    m_currentChar;
+
+  ItemMgr                       m_itemMgr;
 };
 
 #endif // PLAYERMODEL_H
