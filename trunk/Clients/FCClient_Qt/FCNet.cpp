@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "StdAfx.h"
+#include "../../common/fctypes.h"
 #include "../../common/protocol/fcprotocol.h"
 #include "../../common/time/timelib.h"
 #include "../../common/PEPacketHelper.h"
@@ -25,7 +26,6 @@
 #include <QHostAddress>
 
 FCNet::FCNet(QObject* parent)
-//: QObject(parent)
 : QThread(parent)
 , m_sock(NULL)
 , m_retriesLeft(0)
@@ -116,6 +116,48 @@ void FCNet::requestCharacterInfo()
   nVal = 0;
   PEPacketHelper::SetPacketData(pkt, &nVal, 1);
   
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCNet::sendCharacterSelection(size_t character_id)
+{
+  PEPacket pkt;
+  __FCPKT_SELECT_CHARACTER d;
+
+  d.character_id = (FCUINT)character_id;
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_SELECT_CHARACTER, ST_Auth);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCNet::requestCharacterItems(size_t character_id)
+{
+	PEPacket pkt;
+	__FCPKT_CHARACTER_ITEMS_REQUEST d;
+
+	d.character_id = (unsigned int)character_id;
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_CHARACTER_ITEMS_REQUEST, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCNet::requestCharacterAssets(size_t character_id)
+{
+  PEPacket pkt;
+  __FCPKT_CHARACTER_ASSET_REQUEST d;
+
+  d.character_id = (FCUINT)character_id;
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_CHARACTER_ASSET_REQUEST, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
   SendPacket(pkt);
 }
 

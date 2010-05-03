@@ -2,6 +2,11 @@
 	<Settings>
 		<Fullscreen useFullScreen="0" />
 		<Resolution width="1280" height="800" depth="32" />
+	<!--
+		<Fullscreen useFullScreen="1" />
+		<Resolution width="1920" height="1200" depth="32" />
+	-->
+	
 		<Server address="127.0.0.1" port="6666" />
 		<ConnectAttempts count="4" />
 	</Settings>

@@ -26,6 +26,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Generate clientstrings.h"
+				CommandLine="..\..\bin\debug\tools\genstringh -wide ..\..\bin\debug\client\clientdata\strings_en.xml .\clientstrings.h"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"

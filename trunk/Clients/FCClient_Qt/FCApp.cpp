@@ -31,6 +31,7 @@ FCApp::FCApp(int& argc, char** argv)
 , m_model(NULL)
 , m_net(NULL)
 , m_mainWindow(NULL)
+, m_pktHandler(NULL)
 {
   m_state.state = AppStateNone;
   m_state.stateStep = 0;
@@ -40,6 +41,14 @@ FCApp::FCApp(int& argc, char** argv)
 
 FCApp::~FCApp(void)
 {
+  if ( m_model )
+    delete m_model;
+  if ( m_playerModel )
+    delete m_playerModel;
+  if ( m_net )
+    delete m_net;
+  if ( m_pktHandler )
+    delete m_pktHandler;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -54,10 +63,15 @@ bool FCApp::initialise()
   m_net = new FCNet(this);
   m_net->start(QThread::NormalPriority);
 
+  // create the packet handler object
+  m_pktHandler = new PacketHandler(this);
+
   connect( m_net, SIGNAL(connectAttemptStarted(QString, quint16)), SLOT(onConnectAttemptStarted(QString, quint16)) );
   connect( m_net, SIGNAL(connected(QString, quint16)), SLOT(onConnected(QString, quint16)) );
   connect( m_net, SIGNAL(socketError(QAbstractSocket::SocketError)), SLOT(onSocketError(QAbstractSocket::SocketError)) );
-  connect (m_net, SIGNAL(gamePacketReceived(PEPacket*)), SLOT(onGamePacketReceived(PEPacket*)) );
+  connect( m_net, SIGNAL(gamePacketReceived(PEPacket*)), SLOT(onGamePacketReceived(PEPacket*)) );
+
+  connect( m_pktHandler, SIGNAL(serverInfoReceived(unsigned char, unsigned char)), SIGNAL(serverInfoReceived(unsigned char, unsigned char)) );
 
   // load the app settings
   Settings& settings = Settings::instance();
@@ -84,7 +98,10 @@ void FCApp::bootUp()
 
   setState( AppStateLoading );
 
-  m_mainWindow->show();
+  if ( settings.GetValue("FCClient/Settings/Fullscreen", "useFullScreen").toInt() )
+    m_mainWindow->showFullScreen();
+  else
+    m_mainWindow->show();
 
   // load mission strings
   setStateStep( AppState_Loading_Text );
@@ -140,160 +157,40 @@ void FCApp::onGamePacketReceived(PEPacket* pPkt)
   pPkt->GetField("type", &type, sizeof(FCBYTE));
   pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
 
-  unsigned long latency = m_net->GetLatency( type, msgID );
+  unsigned long latency = m_net->GetLatency( FCPKT_RESPONSE, msgID );
   qDebug() << "Latency: " << latency << "ms";
 
   switch ( type )
   {
   case  FCPKT_COMMAND:
-    onCommand(pPkt);
+    m_pktHandler->onCommand(pPkt);
     break;
 
   case  FCPKT_RESPONSE:
-    onResponse(pPkt);
+    m_pktHandler->onResponse(pPkt);
     break;
 
   case  FCPKT_ERROR:
-    onError(pPkt);
+    m_pktHandler->onError(pPkt);
     break;
   }
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCApp::onCommand(PEPacket* pPkt)
+FCApp::StateInfo FCApp::getState()
 {
-  if ( !pPkt )
-    return;
+  QMutexLocker l(&m_stateLock);
 
-  bool bHandled = false;
-  FCSHORT msgID;
-
-  pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void FCApp::onResponse(PEPacket* pPkt)
-{
-  if ( !pPkt )
-    return;
-
-  bool bHandled = false;
-  FCSHORT msgID;
-
-  pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
-
-  unsigned long latency = m_net->GetLatency( FCPKT_RESPONSE, msgID );
-  qDebug() << "Latency: " << latency << "ms";
-
-  switch ( msgID )
-  {
-  case  FCMSG_INFO_SERVER:
-    {
-      bHandled = onResponseServerInfo(pPkt);
-    }
-    break;
-
-  case  FCMSG_LOGIN:
-    {
-      bHandled = onResponseLogin(pPkt);
-    }
-    break;
-
-  case  FCMSG_GETCHARACTERS:
-    {
-      bHandled = onResponseGetCharacters(pPkt);
-    }
-    break;
-
-  default:
-    qDebug() << "FCApp::onResponse -- Unknown Response message (" << msgID << ")";
-    break;
-  }
-}
-
-///////////////////////////////////////////////////////////////////////
-
-bool FCApp::onResponseServerInfo(PEPacket* pPkt)
-{
-  if ( m_state.state <= AppStateLogin )
-  {
-    __FCPKT_INFO_SERVER d;
-
-    getPacketData<__FCPKT_INFO_SERVER>(pPkt, d);
-
-    emit serverInfoReceived(d.verMajor, d.verMinor);
-
-    setState( AppStateLogin );
-  }
-
-  return true;
-}
-
-///////////////////////////////////////////////////////////////////////
-
-bool FCApp::onResponseLogin(PEPacket* pPkt)
-{
-  __FCPKT_LOGIN_RESP d;
-
-  getPacketData<__FCPKT_LOGIN_RESP>(pPkt, d);
-  if ( d.loginStatus == LoginSuccess )
-  {
-    setStateStep( AppState_Login_LoginSucceeded );
-    m_net->requestCharacterInfo();
-  }
-  else
-  {
-    setStateStep( AppState_Login_LoginFailed );
-  }
-
-  return true;
-}
-
-///////////////////////////////////////////////////////////////////////
-
-bool FCApp::onResponseGetCharacters(PEPacket* pPkt)
-{
-  __FCPKT_CHARACTER_LIST d;
-
-  getPacketData<__FCPKT_CHARACTER_LIST>(pPkt, d);
-
-  for ( FCBYTE i = 0; i < d.numCharacters; i++ )
-  {
-    Character c(d.characters[i].character_id, d.characters[i].name);
-
-    c.SetCityID(d.characters[i].city_id);
-    c.SetCountryID(d.characters[i].country_id);
-    c.SetFameScale(d.characters[i].fame_scale);
-    c.SetLevel(d.characters[i].level);
-    c.SetXP(d.characters[i].xp);
-
-    m_playerModel->addCharacter(c);
-  }
-
-  setState(AppStateCharacterSelection);
-
-  return true;
-}
-
-///////////////////////////////////////////////////////////////////////
-
-void FCApp::onError(PEPacket* pPkt)
-{
-  if ( !pPkt )
-    return;
-
-  bool bHandled = false;
-  FCSHORT msgID;
-
-  pPkt->GetField("msg", &msgID, sizeof(FCSHORT));
+  return m_state;
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void FCApp::setState(e_AppState state)
 {
+  QMutexLocker l(&m_stateLock);
+
   StateInfo oldState = m_state;
   m_state.state = state;
   m_state.stateStep = 0;
@@ -305,6 +202,8 @@ void FCApp::setState(e_AppState state)
 
 void FCApp::setStateStep(FCSHORT stateStep)
 {
+  QMutexLocker l(&m_stateLock);
+
   StateInfo oldState = m_state;
   m_state.stateStep = stateStep;
 
@@ -338,7 +237,7 @@ bool FCApp::createMainWindow()
 
     // connect the main window slots up as required
     connect( this, SIGNAL(appStateChanged(FCApp::StateInfo, FCApp::StateInfo)), m_mainWindow, SLOT(onAppStateChanged(FCApp::StateInfo, FCApp::StateInfo)) );
-    connect( m_model, SIGNAL(modelStateChanged(FCModel::e_ModelState, FCModel::e_ModelState)), m_mainWindow, SLOT(onModelStateChanged(FCModel::e_ModelState, FCModel::e_ModelState)) );
+//    connect( m_model, SIGNAL(modelStateChanged(FCModel::e_ModelState, FCModel::e_ModelState)), m_mainWindow, SLOT(onModelStateChanged(FCModel::e_ModelState, FCModel::e_ModelState)) );
   }
 
   return (m_mainWindow != NULL);
