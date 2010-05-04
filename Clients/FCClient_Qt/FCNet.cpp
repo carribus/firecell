@@ -186,7 +186,7 @@ void FCNet::onError(QAbstractSocket::SocketError sockError)
   m_retriesLeft--;
   emit socketError(sockError);
 
-  if ( m_retriesLeft )
+  if ( m_retriesLeft > 0 )
   {
     connectToGame(m_hostName, m_port, m_retriesLeft);
   }

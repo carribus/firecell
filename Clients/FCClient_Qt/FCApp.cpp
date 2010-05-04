@@ -144,7 +144,17 @@ void FCApp::onSocketError(QAbstractSocket::SocketError socketError)
   if ( m_net->getRetryAttemptsLeft() > 0 )
     setStateStep( AppState_Connecting_Retry );
   else
+  {
     setStateStep( AppState_Connecting_FinalFail );
+
+    QMessageBox* msgBox = new QMessageBox(m_mainWindow);
+
+    msgBox->setWindowTitle("Server connection failed");
+    msgBox->setText("FireCell failed to connect to the game server.\n\nExiting...");
+    msgBox->exec();
+
+    quit();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////

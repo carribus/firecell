@@ -92,8 +92,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				Description="Generate clientstrings.h"
-				CommandLine="..\..\bin\debug\tools\genstringh ..\..\bin\debug\client\clientdata\strings_en.xml .\clientstrings.h"
+				Description=""
+				CommandLine=""
 				ExcludedFromBuild="true"
 			/>
 			<Tool
