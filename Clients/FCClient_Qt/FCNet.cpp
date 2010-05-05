@@ -38,7 +38,7 @@ FCNet::FCNet(QObject* parent)
   connect( m_sock, SIGNAL(hostFound()),                                 SLOT(onHostFound()) );
   connect( m_sock, SIGNAL(readyRead()),                                 SLOT(onDataReceived()) );
 
-	m_extractor.Prepare( __FCPACKET_DEF );
+  m_extractor.Prepare( __FCPACKET_DEF );
 
   memset(&m_latencyAnchor, 0, sizeof(LatencyAnchor));
 }
@@ -240,13 +240,13 @@ bool FCNet::SendPacket(PEPacket& pkt)
   FCBYTE pktType = 0;
   char* pData = NULL;
   size_t blockLen = 0;
-  int nRet = 0;
+  size_t nRet = 0;
 
   pkt.GetField("msg", &msgID, sizeof(FCSHORT));  
   pkt.GetField("type", &pktType, sizeof(FCBYTE));
   pkt.GetDataBlock(pData, blockLen);
 
-  m_sock->write( pData, blockLen );
+  nRet = m_sock->write( pData, blockLen );
 
   SetLatencyAnchor(pktType, msgID );
 

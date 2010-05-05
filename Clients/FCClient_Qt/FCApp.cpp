@@ -55,7 +55,7 @@ FCApp::~FCApp(void)
 
 bool FCApp::initialise()
 {
-  bool bResult = true;
+  Settings& settings = Settings::instance();
 
   // create the model and network objects
   m_model = new FCModel(this);
@@ -74,19 +74,19 @@ bool FCApp::initialise()
   connect( m_pktHandler, SIGNAL(serverInfoReceived(unsigned char, unsigned char)), SIGNAL(serverInfoReceived(unsigned char, unsigned char)) );
 
   // load the app settings
-  Settings& settings = Settings::instance();
+  settings.LoadSettings(getResourceFolder() + "settings.xml");
   settings.LoadSettings(getResourceFolder() + "settings.xml");
 
-  return (m_model && m_net); //bResult;
+  return (m_model && m_net);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 QString FCApp::getResourceFolder()
 {
-#if defined(Q_WS_WIN32)
+#if defined(Q_OS_WIN32)
   return "./clientdata/";
-#elif defined(Q_WS_MAC)
+#elif defined(Q_OS_MAC)
   return "../Resources/clientdata/";
 #endif
 }
@@ -136,6 +136,8 @@ void FCApp::bootUp()
 
 void FCApp::onConnectAttemptStarted(QString hostname, quint16 port)
 {
+  Q_UNUSED(hostname);
+  Q_UNUSED(port);
   setStateStep( AppState_Connecting_Connecting );
 }
 
@@ -143,6 +145,8 @@ void FCApp::onConnectAttemptStarted(QString hostname, quint16 port)
 
 void FCApp::onConnected(QString hostName, quint16 port)
 {
+  Q_UNUSED(hostName);
+  Q_UNUSED(port);
   setStateStep( AppState_Connecting_Connected );
   m_net->requestServerInfo();
   setStateStep( AppState_Connecting_FetchingInfo );
@@ -152,6 +156,7 @@ void FCApp::onConnected(QString hostName, quint16 port)
 
 void FCApp::onSocketError(QAbstractSocket::SocketError socketError)
 {
+  Q_UNUSED(socketError);
   if ( m_net->getRetryAttemptsLeft() > 0 )
     setStateStep( AppState_Connecting_Retry );
   else
@@ -223,8 +228,6 @@ void FCApp::setState(e_AppState state)
 
 void FCApp::setStateStep(FCSHORT stateStep)
 {
-  QMutexLocker l(&m_stateLock);
-
   StateInfo oldState = m_state;
   m_state.stateStep = stateStep;
 
@@ -260,6 +263,5 @@ bool FCApp::createMainWindow()
     connect( this, SIGNAL(appStateChanged(FCApp::StateInfo, FCApp::StateInfo)), m_mainWindow, SLOT(onAppStateChanged(FCApp::StateInfo, FCApp::StateInfo)) );
 //    connect( m_model, SIGNAL(modelStateChanged(FCModel::e_ModelState, FCModel::e_ModelState)), m_mainWindow, SLOT(onModelStateChanged(FCModel::e_ModelState, FCModel::e_ModelState)) );
   }
-
   return (m_mainWindow != NULL);
 }
