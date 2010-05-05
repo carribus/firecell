@@ -1,4 +1,5 @@
 #include "CharacterSelectionWidget.h"
+#include "FCApp.h"
 
 CharacterSelectionWidget::CharacterSelectionWidget(QWidget *parent)
 : QWidget(parent)
@@ -6,7 +7,7 @@ CharacterSelectionWidget::CharacterSelectionWidget(QWidget *parent)
 {
   ui.setupUi(this);
 
-  QPixmap pixmap("./clientdata/gfx/default_avatar.png");
+  QPixmap pixmap(FCAPP->getResourceFolder() + "gfx/default_avatar.png");
   ui.lblAvatar->setPixmap(pixmap);
 
   connect( ui.btnPlay, SIGNAL(clicked()), SLOT(onPlayClicked()) );

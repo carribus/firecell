@@ -75,9 +75,20 @@ bool FCApp::initialise()
 
   // load the app settings
   Settings& settings = Settings::instance();
-  settings.LoadSettings("./clientdata/settings.xml");
+  settings.LoadSettings(getResourceFolder() + "settings.xml");
 
   return (m_model && m_net); //bResult;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+QString FCApp::getResourceFolder()
+{
+#if defined(Q_WS_WIN32)
+  return "./clientdata/";
+#elif defined(Q_WS_MAC)
+  return "../Resources/clientdata/";
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -94,7 +105,7 @@ void FCApp::bootUp()
   }
 
   ResourceManager& rm = ResourceManager::instance();
-  rm.loadClientStrings("./clientdata/strings_en.xml");
+  rm.loadClientStrings(getResourceFolder() + "strings_en.xml");
 
   setState( AppStateLoading );
 
@@ -105,7 +116,7 @@ void FCApp::bootUp()
 
   // load mission strings
   setStateStep( AppState_Loading_Text );
-  rm.loadMissionStrings("./clientdata/missions/missions_en.xml");
+  rm.loadMissionStrings(getResourceFolder() + "missions/missions_en.xml");
 
   // step through predefined states
   setStateStep( AppState_Loading_Graphics );

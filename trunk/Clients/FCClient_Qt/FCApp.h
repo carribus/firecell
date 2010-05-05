@@ -43,6 +43,8 @@ public:
 
   bool initialise();
 
+  QString getResourceFolder();
+
   FCModel& model()                        { return *m_model; }
   FCPlayerModel* playerModel()            { return m_playerModel; }
   FCNet& network()                        { return *m_net; }
