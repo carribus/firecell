@@ -52,6 +52,7 @@ public:
   void sendCharacterSelection(size_t character_id);
   void requestCharacterItems(size_t character_id);
   void requestCharacterAssets(size_t character_id);
+  void requestCharacterMissions(size_t character_id);
 
 signals:
   void connectAttemptStarted(QString hostName, quint16 port);

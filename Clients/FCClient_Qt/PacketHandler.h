@@ -22,6 +22,7 @@ public:
     bool onResponseSelectCharacter(PEPacket* pPkt);
     bool onResponseCharacterItemsRequest(PEPacket* pPkt);
     bool onResponseCharacterAssetsRequest(PEPacket* pPkt);
+    bool onResponseCharacterMissionsRequest(PEPacket* pPkt);
 
   void onError(PEPacket* pPkt);
 
@@ -38,6 +39,16 @@ private:
 
     pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
     pPkt->GetField("data", &target, dataLen);
+  }
+
+  template <class TTargetStruct>
+  void getDynamicPacketData(PEPacket* pPkt, TTargetStruct* pTarget)
+  {
+    size_t dataLen;
+
+    pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
+    pTarget = (TTargetStruct*) new FCBYTE[ dataLen ];
+    pPkt->GetField("data", pTarget, dataLen);
   }
 
   FCApp*          m_pApp;
