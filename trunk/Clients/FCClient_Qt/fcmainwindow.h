@@ -49,7 +49,6 @@ protected:
   void resizeEvent(QResizeEvent* event);
 //  void paintEvent(QPaintEvent* event);
 
-
 private:
 
   bool switchView(ViewBase* pNewView);
