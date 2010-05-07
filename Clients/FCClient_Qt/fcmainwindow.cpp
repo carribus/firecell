@@ -22,6 +22,7 @@
 #include "ResourceManager.h"
 #include "ViewLoading.h"
 #include "ViewCharSelection.h"
+#include "ViewGame.h"
 
 FCMainWindow::FCMainWindow(QWidget *parent, Qt::WFlags flags)
 : QMainWindow(parent, flags)
@@ -68,6 +69,7 @@ void FCMainWindow::onAppStateChanged(FCApp::StateInfo state, FCApp::StateInfo ol
 
     case  AppStatePlaying:
       // switch the view to the game view
+      switchView( new ViewGame(this) );
       break;
 
     case  AppStateShuttingDown:

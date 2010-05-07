@@ -215,6 +215,9 @@ bool PacketHandler::onResponseCharacterItemsRequest(PEPacket* pPkt)
 
   getDynamicPacketData<__FCPKT_CHARACTER_ITEMS_REQUEST_RESP>(pPkt, d);
 
+  if ( !d )
+    return false;
+
 	for (FCULONG i = 0; i < d->itemCount; i++ )
 	{
 		pItem = itemMgr.addItem( d->software[i].item_id,
@@ -334,6 +337,9 @@ bool PacketHandler::onResponseCharacterMissionsRequest(PEPacket* pPkt)
   }
 
   delete [] (FCBYTE*)d;
+
+  // update the state of the model
+  FCAPP->setState( AppStatePlaying );
 
   return true;
 }

@@ -43,7 +43,7 @@ private:
   }
 
   template <class TTargetStruct>
-  void getDynamicPacketData(PEPacket* pPkt, TTargetStruct* pTarget)
+  void getDynamicPacketData(PEPacket* pPkt, TTargetStruct*& pTarget)
   {
     size_t dataLen;
 
