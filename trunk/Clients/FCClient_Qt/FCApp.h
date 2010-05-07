@@ -86,6 +86,8 @@ private:
   FCPlayerModel*      m_playerModel;
   FCNet*              m_net;
   FCMainWindow*       m_mainWindow;
+  FCMissionMgr        m_missionMgr;
+
   StateInfo           m_state;
   QMutex              m_stateLock;
   PacketHandler*      m_pktHandler;

@@ -95,6 +95,12 @@ void PacketHandler::onResponse(PEPacket* pPkt)
     }
     break;
 
+  case  FCMSG_CHARACTER_MISSIONS_REQUEST:
+    {
+      bHandled = onResponseCharacterMissionsRequest(pPkt);
+    }
+    break;
+
   default:
     qDebug() << "PacketHandler::onResponse -- Unknown Response message (" << msgID << ")";
     break;
@@ -198,17 +204,14 @@ bool PacketHandler::onResponseSelectCharacter(PEPacket* pPkt)
 
 bool PacketHandler::onResponseCharacterItemsRequest(PEPacket* pPkt)
 {
-	__FCPKT_CHARACTER_ITEMS_REQUEST_RESP* d;
-	size_t dataLen;
+	__FCPKT_CHARACTER_ITEMS_REQUEST_RESP* d = NULL;
 	Item* pItem = NULL;
 	ItemSoftware* pSoftware = NULL;
   ItemMgr& itemMgr = m_pApp->playerModel()->itemMgr();
 
 	m_pApp->setState( AppStatePlaying );
 
-	pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
-	d = (__FCPKT_CHARACTER_ITEMS_REQUEST_RESP*) new FCBYTE[ dataLen ];
-	pPkt->GetField("data", d, dataLen);
+  getDynamicPacketData<__FCPKT_CHARACTER_ITEMS_REQUEST_RESP>(pPkt, d);
 
 	for (FCULONG i = 0; i < d->itemCount; i++ )
 	{
@@ -251,6 +254,84 @@ bool PacketHandler::onResponseCharacterItemsRequest(PEPacket* pPkt)
 
 bool PacketHandler::onResponseCharacterAssetsRequest(PEPacket* pPkt)
 {
+  if ( !FCAPP->playerModel()->getCurrentCharacter() )
+    return false;
+
+  __FCPKT_CHARACTER_ASSET_REQUEST_RESP d;
+  Character* pCharacter = FCAPP->playerModel()->getCurrentCharacter();
+  InGameIPAddress& ip = pCharacter->GetIP();
+  ComputerBase& comp = pCharacter->GetComputer();
+
+  getPacketData<__FCPKT_CHARACTER_ASSET_REQUEST_RESP>(pPkt, d);
+
+  // set the player's IP address
+  ip.SetIP( d.ip_address.a, d.ip_address.b, d.ip_address.c, d.ip_address.d );
+  
+  // update the player's computer details
+  comp.SetID(d.computer.id);
+  comp.SetName(d.computer.name);
+  comp.SetHDDSize(d.computer.hddSize);
+  comp.SetNetworkSpeed(d.computer.networkSpeed);
+
+  // update the player's processor details
+  comp.GetProcessor().SetItemInfo( d.computer.processor.item_id, d.computer.processor.name, d.computer.processor.itemtype_id,
+                                   d.computer.processor.min_level, d.computer.processor.max_level, d.computer.processor.npc_value );
+  comp.GetProcessor().SetCoreCount( d.computer.processor.core_count );
+  comp.GetProcessor().SetCoreSpeed( d.computer.processor.core_speed );
+
+  // update the player's OS details
+  comp.GetOS().SetItemInfo( d.computer.os.item_id, d.computer.os.name, d.computer.os.itemtype_id,
+                            d.computer.os.min_level, d.computer.os.max_level, d.computer.os.npc_value );
+  comp.GetOS().SetKernelID( d.computer.os.kernel_id );
+  comp.GetOS().SetKernelName( d.computer.os.kernel_name );
+
+  // update the player's memory details
+  comp.GetMemory().SetItemInfo( d.computer.memory.item_id, d.computer.memory.name, d.computer.memory.itemtype_id,
+                                d.computer.memory.min_level, d.computer.memory.max_level, d.computer.memory.npc_value );
+  comp.GetMemory().SetMemorySize( d.computer.memory.mem_size );
+
+  // update the player's network port details
+  NetworkPorts& ports = comp.GetNetworkPorts();
+  FCSHORT portnum;
+  for ( int i = 0; i < d.computer.availablePorts; i++ )
+  {
+    portnum = ports.addPort();
+    ports.installPort(portnum, d.computer.network_ports[i].softwareType, d.computer.network_ports[i].itemID);
+    if ( d.computer.network_ports[i].enabled )
+    {
+      ItemMgr::GameItem gi;
+
+      ports.enablePort(portnum);
+      if ( m_itemMgr.getItem( d.computer.network_ports[i].itemID, gi ) )
+      {
+        comp.AddProcess( static_cast<ItemSoftware*>(gi.getItem()) );
+      }
+    }
+    ports.setPortHealth(portnum, d.computer.network_ports[i].portHealth);
+    ports.setPortMaxHealth(portnum, d.computer.network_ports[i].portMaxHealth);
+  }
+
+  m_pApp->network().requestCharacterMissions( m_pApp->playerModel()->getCurrentCharacter()->GetID() );
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool PacketHandler::onResponseCharacterMissionsRequest(PEPacket* pPkt)
+{
+  __FCPKT_CHARACTER_MISSIONS_REQUEST_RESP* d = NULL;
+
+
+  getDynamicPacketData<__FCPKT_CHARACTER_MISSIONS_REQUEST_RESP>(pPkt, d);
+
+  for ( FCULONG i = 0; i < d->numMissions; i++ )
+  {
+    m_missionMgr.addMission( d->missions[i].mission_id, d->missions[i].success_count, d->missions[i].failure_count, d->missions[i].completed, d->missions[i].parent_id );
+  }
+
+  delete [] (FCBYTE*)d;
+
   return true;
 }
 

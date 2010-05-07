@@ -163,6 +163,20 @@ void FCNet::requestCharacterAssets(size_t character_id)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCNet::requestCharacterMissions(size_t character_id)
+{
+	PEPacket pkt;
+	__FCPKT_CHARACTER_MISSIONS_REQUEST d;
+
+	d.character_id = (unsigned int)character_id;
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_CHARACTER_MISSIONS_REQUEST, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void FCNet::onConnected()
 {
   qDebug() << "Connection established!\n\thost: " << m_sock->peerAddress().toString() << "\n\tport: " << m_sock->peerPort();
