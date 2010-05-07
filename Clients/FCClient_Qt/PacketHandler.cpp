@@ -26,6 +26,8 @@
 #include "../../common/game_objects/ItemType.h"
 #include "FCApp.h"
 #include "FCPlayerModel.h"
+#include "ItemMgr.h"
+#include "FCMissionMgr.h"
 
 PacketHandler::PacketHandler(FCApp* pApp)
 : m_pApp(pApp)
@@ -261,6 +263,7 @@ bool PacketHandler::onResponseCharacterAssetsRequest(PEPacket* pPkt)
   Character* pCharacter = FCAPP->playerModel()->getCurrentCharacter();
   InGameIPAddress& ip = pCharacter->GetIP();
   ComputerBase& comp = pCharacter->GetComputer();
+  ItemMgr& itemMgr = FCAPP->playerModel()->itemMgr();
 
   getPacketData<__FCPKT_CHARACTER_ASSET_REQUEST_RESP>(pPkt, d);
 
@@ -302,7 +305,7 @@ bool PacketHandler::onResponseCharacterAssetsRequest(PEPacket* pPkt)
       ItemMgr::GameItem gi;
 
       ports.enablePort(portnum);
-      if ( m_itemMgr.getItem( d.computer.network_ports[i].itemID, gi ) )
+      if ( itemMgr.getItem( d.computer.network_ports[i].itemID, gi ) )
       {
         comp.AddProcess( static_cast<ItemSoftware*>(gi.getItem()) );
       }
@@ -321,13 +324,13 @@ bool PacketHandler::onResponseCharacterAssetsRequest(PEPacket* pPkt)
 bool PacketHandler::onResponseCharacterMissionsRequest(PEPacket* pPkt)
 {
   __FCPKT_CHARACTER_MISSIONS_REQUEST_RESP* d = NULL;
-
+  FCMissionMgr& missionMgr = FCAPP->missionMgr();
 
   getDynamicPacketData<__FCPKT_CHARACTER_MISSIONS_REQUEST_RESP>(pPkt, d);
 
   for ( FCULONG i = 0; i < d->numMissions; i++ )
   {
-    m_missionMgr.addMission( d->missions[i].mission_id, d->missions[i].success_count, d->missions[i].failure_count, d->missions[i].completed, d->missions[i].parent_id );
+    missionMgr.addMission( d->missions[i].mission_id, d->missions[i].success_count, d->missions[i].failure_count, d->missions[i].completed, d->missions[i].parent_id );
   }
 
   delete [] (FCBYTE*)d;

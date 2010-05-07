@@ -1,18 +1,18 @@
-#include "MissionMgr.h"
+#include "FCMissionMgr.h"
 
-MissionMgr::MissionMgr(void)
+FCMissionMgr::FCMissionMgr(void)
 {
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-MissionMgr::~MissionMgr(void)
+FCMissionMgr::~FCMissionMgr(void)
 {
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-bool MissionMgr::addMission(FCULONG mission_id, FCSHORT successCount, FCSHORT failureCount, bool bCompleted, FCULONG parent_mission_id)
+bool FCMissionMgr::addMission(FCULONG mission_id, FCSHORT successCount, FCSHORT failureCount, bool bCompleted, FCULONG parent_mission_id)
 {
   _Mission m;
 
@@ -39,7 +39,7 @@ bool MissionMgr::addMission(FCULONG mission_id, FCSHORT successCount, FCSHORT fa
 
 ///////////////////////////////////////////////////////////////////////
 
-bool MissionMgr::completeMission(FCULONG mission_id)
+bool FCMissionMgr::completeMission(FCULONG mission_id)
 {
 	_Mission* pMission = getMission(mission_id);
 
@@ -53,7 +53,7 @@ bool MissionMgr::completeMission(FCULONG mission_id)
 
 ///////////////////////////////////////////////////////////////////////
 
-bool MissionMgr::removeMission(FCULONG mission_id)
+bool FCMissionMgr::removeMission(FCULONG mission_id)
 {
 	std::list<_Mission>::iterator it = m_missions.begin();
   std::list<_Mission>::iterator limit = m_missions.end();
@@ -72,7 +72,7 @@ bool MissionMgr::removeMission(FCULONG mission_id)
 
 ///////////////////////////////////////////////////////////////////////
 
-bool MissionMgr::isMissionAccepted(FCULONG mission_id)
+bool FCMissionMgr::isMissionAccepted(FCULONG mission_id)
 {
 	std::list<_Mission>::iterator it = m_missions.begin();
   std::list<_Mission>::iterator limit = m_missions.end();
@@ -90,7 +90,7 @@ bool MissionMgr::isMissionAccepted(FCULONG mission_id)
 
 ///////////////////////////////////////////////////////////////////////
 
-bool MissionMgr::isMissionComplete(FCULONG mission_id)
+bool FCMissionMgr::isMissionComplete(FCULONG mission_id)
 {
 	std::list<_Mission>::iterator it = m_missions.begin();
   std::list<_Mission>::iterator limit = m_missions.end();
@@ -108,7 +108,7 @@ bool MissionMgr::isMissionComplete(FCULONG mission_id)
 
 ///////////////////////////////////////////////////////////////////////
 
-FCSHORT MissionMgr::getMissionSuccessCount(FCULONG mission_id)
+FCSHORT FCMissionMgr::getMissionSuccessCount(FCULONG mission_id)
 {
   FCSHORT ret = 0;
   _Mission* pMission = getMission(mission_id);
@@ -123,7 +123,7 @@ FCSHORT MissionMgr::getMissionSuccessCount(FCULONG mission_id)
 
 ///////////////////////////////////////////////////////////////////////
 
-FCSHORT MissionMgr::getMissionFailureCount(FCULONG mission_id)
+FCSHORT FCMissionMgr::getMissionFailureCount(FCULONG mission_id)
 {
   FCSHORT ret = 0;
   _Mission* pMission = getMission(mission_id);
@@ -138,7 +138,7 @@ FCSHORT MissionMgr::getMissionFailureCount(FCULONG mission_id)
 
 ///////////////////////////////////////////////////////////////////////
 
-MissionMgr::_Mission* MissionMgr::getMission(FCULONG mission_id)
+FCMissionMgr::_Mission* FCMissionMgr::getMission(FCULONG mission_id)
 {
   std::list<_Mission>::iterator it = m_missions.begin();
   std::list<_Mission>::iterator limit = m_missions.end();

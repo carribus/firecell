@@ -1,14 +1,14 @@
-#ifndef _MISSIONMGR_H_
-#define _MISSIONMGR_H_
+#ifndef _FCMISSIONMGR_H_
+#define _FCMISSIONMGR_H_
 
 #include "../../common/fctypes.h"
 #include <list>
 
-class MissionMgr
+class FCMissionMgr
 {
 public:
-  MissionMgr(void);
-  ~MissionMgr(void);
+  FCMissionMgr(void);
+  ~FCMissionMgr(void);
 
   bool addMission(FCULONG mission_id, FCSHORT successCount = 0, FCSHORT failureCount = 0, bool bCompleted = false, FCULONG parent_mission_id = 0);
 	bool completeMission(FCULONG mission_id);
@@ -35,4 +35,4 @@ private:
   std::list<_Mission> m_missions;
 };
 
-#endif//_MISSIONMGR_H_
+#endif//_FCMISSIONMGR_H_
