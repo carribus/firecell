@@ -29,6 +29,7 @@
 class FCMainWindow;
 class FCModel;
 class FCPlayerModel;
+class FCMissionMgr;
 
 #define FCAPP static_cast<FCApp*>(qApp)
 
@@ -48,6 +49,7 @@ public:
   FCModel& model()                        { return *m_model; }
   FCPlayerModel* playerModel()            { return m_playerModel; }
   FCNet& network()                        { return *m_net; }
+  FCMissionMgr& missionMgr()              { return *m_missionMgr; }
   FCMainWindow* mainWindow()              { return m_mainWindow; }
 
   /*
@@ -86,7 +88,7 @@ private:
   FCPlayerModel*      m_playerModel;
   FCNet*              m_net;
   FCMainWindow*       m_mainWindow;
-  FCMissionMgr        m_missionMgr;
+  FCMissionMgr*       m_missionMgr;
 
   StateInfo           m_state;
   QMutex              m_stateLock;

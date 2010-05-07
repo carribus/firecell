@@ -25,6 +25,7 @@
 #include "FCModel.h"
 #include "FCPlayerModel.h"
 #include "FCApp.h"
+#include "FCMissionMgr.h"
 
 FCApp::FCApp(int& argc, char** argv)
 : QApplication(argc, argv)
@@ -62,6 +63,7 @@ bool FCApp::initialise()
   m_playerModel = new FCPlayerModel(this);
   m_net = new FCNet(this);
   m_net->start(QThread::NormalPriority);
+  m_missionMgr = new FCMissionMgr;
 
   // create the packet handler object
   m_pktHandler = new PacketHandler(this);

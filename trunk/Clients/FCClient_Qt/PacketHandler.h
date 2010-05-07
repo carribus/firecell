@@ -2,6 +2,7 @@
 #define _PACKETHANDLER_H_
 
 #include <QObject>
+#include "../../common/fctypes.h"
 #include "../../common/PEPacket.h"
 class FCApp;
 
