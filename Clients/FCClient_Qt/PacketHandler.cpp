@@ -211,8 +211,6 @@ bool PacketHandler::onResponseCharacterItemsRequest(PEPacket* pPkt)
 	ItemSoftware* pSoftware = NULL;
   ItemMgr& itemMgr = m_pApp->playerModel()->itemMgr();
 
-	m_pApp->setState( AppStatePlaying );
-
   getDynamicPacketData<__FCPKT_CHARACTER_ITEMS_REQUEST_RESP>(pPkt, d);
 
   if ( !d )

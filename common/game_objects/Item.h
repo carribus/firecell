@@ -34,7 +34,7 @@ public:
   }
 
   void SetItemInfo(FCULONG id, 
-                   const std::string& name, 
+                   const std::string name, 
                    FCULONG typeID, 
 #ifndef _FCCLIENT_COMPILE_
                    FCULONG objID, 
