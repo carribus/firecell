@@ -12,7 +12,7 @@ TARGET = FCClient_Qt
 DESTDIR = ../../bin/debug/client
 QT += core gui multimedia network xml webkit qtmain
 CONFIG += debug
-DEFINES += _USE_STDAFX_H_ QT_LARGEFILE_SUPPORT QT_MULTIMEDIA_LIB QT_XML_LIB QT_NETWORK_LIB QT_WEBKIT_LIB
+DEFINES += _FCCLIENT_COMPILE_,_USE_STDAFX_H_ QT_LARGEFILE_SUPPORT QT_MULTIMEDIA_LIB QT_XML_LIB QT_NETWORK_LIB QT_WEBKIT_LIB
 INCLUDEPATH += ./GeneratedFiles \
     ./GeneratedFiles/Debug \
     . \

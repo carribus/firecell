@@ -29,7 +29,7 @@ ViewGame::ViewGame(QWidget* parent)
   setAttribute(Qt::WA_OpaquePaintEvent);
   if ( !m_background.load(FCAPP->getResourceFolder() + "desktop.jpg") )
   {
-    qDebug() << "Failed to load desktop.jpg";
+    qDebug() << "Failed to load " + FCAPP->getResourceFolder() + "desktop.jpg";
   }
 }
 
@@ -53,5 +53,8 @@ void ViewGame::paintEvent(QPaintEvent* event)
   QRectF dest(0.0, 0.0, width(), height());
   QRectF source(0.0, 0.0, m_background.width(), m_background.height());
 
-  painter.drawPixmap(dest, m_background, source);
+  if ( !m_background.data_ptr() )
+    painter.fillRect( dest, QColor( 0, 0, 0 ) );
+  else
+    painter.drawPixmap(dest, m_background, source);
 }
