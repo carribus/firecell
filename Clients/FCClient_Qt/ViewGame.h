@@ -21,6 +21,7 @@
 #define _VIEWGAME_H_
 
 #include "ViewBase.h"
+#include "desktopappbar.h"
 
 class ViewGame : public ViewBase
 {
@@ -36,10 +37,12 @@ public:
 protected:
 
   void paintEvent(QPaintEvent* event);
+  void resizeEvent(QResizeEvent* event);
 
 private:
 
   QPixmap         m_background;
+  DesktopAppBar*  m_appBar;
 };
 
 #endif//_VIEWGAME_H_

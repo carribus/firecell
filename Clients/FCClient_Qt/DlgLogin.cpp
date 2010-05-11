@@ -19,11 +19,13 @@
 */
 #include "StdAfx.h"
 #include "DlgLogin.h"
+#include "clientstrings.h"
 
 DlgLogin::DlgLogin(QWidget *parent)
 : QDialog(parent)
 {
   ui.setupUi(this);
+  this->setWindowTitle( ResourceManager::instance().getClientString(STR_LOGINWND_CAPTION));
 }
 
 ///////////////////////////////////////////////////////////////////////

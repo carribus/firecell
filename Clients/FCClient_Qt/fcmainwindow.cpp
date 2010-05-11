@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "StdAfx.h"
+#include "clientstrings.h"
 #include "fcmainwindow.h"
 #include "ResourceManager.h"
 #include "ViewLoading.h"
@@ -29,12 +30,6 @@ FCMainWindow::FCMainWindow(QWidget *parent, Qt::WFlags flags)
 , m_currentView(NULL)
 {
   ui.setupUi(this);
-/*
-  setAttribute(Qt::WA_OpaquePaintEvent);
-  m_background.load("./clientdata/desktop.jpg");
-
-  installEventFilter(this);
-*/
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -53,6 +48,7 @@ void FCMainWindow::onAppStateChanged(FCApp::StateInfo state, FCApp::StateInfo ol
     switch (state.state)
     {
     case  AppStateLoading:
+      setWindowTitle(ResourceManager::instance().getClientString( STR_MAINWINDOW_TITLE ));
       switchView( new ViewLoading(this) );
       break;
 
