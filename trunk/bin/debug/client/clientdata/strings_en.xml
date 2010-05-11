@@ -1,5 +1,6 @@
 <FCStrings lang="en">
 	<!-- STARTUP STRINGS -->
+  <String id="MAINWINDOW_TITLE">FireCell</String>
 	<String id="LOAD_SEPERATOR">------------------------\n</String>
 	<String id="LOAD_START">FireCell initializing...\n</String>
 	<String id="LOAD_TEXT">Loading Textual data...\n</String>
