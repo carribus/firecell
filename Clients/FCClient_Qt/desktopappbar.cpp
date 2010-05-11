@@ -20,11 +20,33 @@
 #ifdef _USE_STDAFX_H_
   #include "StdAfx.h"
 #endif//_USE_STDAFX_H_
+#include <QFont>
 #include <QPainter>
+#include "clientstrings.h"
 #include "desktopappbar.h"
+#include "ResourceManager.h"
 
 DesktopAppBar::DesktopAppBar(QWidget *parent) : QWidget(parent)
 {
+  // create the default AppBar System Menu Item
+	AppBarOption abo;
+
+  abo.id = 0;
+	abo.bAppOption = false;
+	abo.bHighlight = false;
+	abo.str = ResourceManager::instance().getClientString( STR_APP_APPBAR_SYSTEM );
+	abo.rect = geometry();
+//	dimension2d<s32> txtExtents = pFont->getDimension( abo.str.c_str() );
+//	abo.rect.LowerRightCorner.X = abo.rect.UpperLeftCorner.X + txtExtents.Width + 30;
+	
+	m_appBarOptions.push_back(abo);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void DesktopAppBar::addMenuItem(QString itemText)
+{
+
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -2,6 +2,8 @@
 #define DESKTOPAPPBAR_H
 
 #include <QWidget>
+#include "../../common/fctypes.h"
+#include <vector>
 
 class DesktopAppBar : public QWidget
 {
@@ -9,6 +11,8 @@ class DesktopAppBar : public QWidget
 
 public:
   DesktopAppBar(QWidget *parent = 0);
+
+  void addMenuItem(QString itemText);
 
 signals:
 
@@ -22,7 +26,17 @@ protected:
 
 private:
 
-
+  QFont     m_fontItems;
+  struct AppBarOption
+	{
+		FCULONG id;
+		bool bAppOption;
+		bool bHighlight;
+		QRectF rect;
+		QString str;
+	};
+  typedef std::vector<AppBarOption> AppBarOptionVector;
+	AppBarOptionVector	m_appBarOptions;
 };
 
 #endif // DESKTOPAPPBAR_H

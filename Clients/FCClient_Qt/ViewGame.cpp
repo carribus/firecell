@@ -21,6 +21,7 @@
   #include "stdafx.h"
 #endif//_USE_STDAFX_H_
 #include <QPainter>
+#include "clientstrings.h"
 #include "ViewGame.h"
 #include "FCApp.h"
 
@@ -47,6 +48,7 @@ ViewGame::~ViewGame(void)
 
 void ViewGame::setupView()
 {
+  // create the app bar
   m_appBar = new DesktopAppBar(this);
   m_appBar->setGeometry(0, 0, width(), APPBAR_HEIGHT);
   m_appBar->show();
