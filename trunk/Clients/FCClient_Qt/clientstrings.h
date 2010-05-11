@@ -1,13 +1,14 @@
 /*
  * FireCell String Definition file
  *
- * Do not modify this file. It was generated from [..\..\bin\debug\client\clientdata\strings_en.xml] by genstringh
+ * Do not modify this file. It was generated from [client\clientdata\strings_en.xml] by genstringh
  */
 
 /*
 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 */
 
+#define STR_MAINWINDOW_TITLE	                   "MAINWINDOW_TITLE"
 #define STR_LOAD_SEPERATOR	                     "LOAD_SEPERATOR"
 #define STR_LOAD_START	                         "LOAD_START"
 #define STR_LOAD_TEXT	                          "LOAD_TEXT"
