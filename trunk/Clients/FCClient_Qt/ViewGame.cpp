@@ -20,11 +20,15 @@
 #ifdef _USE_STDAFX_H_
   #include "stdafx.h"
 #endif//_USE_STDAFX_H_
+#include <QPainter>
 #include "ViewGame.h"
 #include "FCApp.h"
 
+#define APPBAR_HEIGHT   25
+
 ViewGame::ViewGame(QWidget* parent)
 : ViewBase(parent)
+, m_appBar(NULL)
 {
   setAttribute(Qt::WA_OpaquePaintEvent);
   if ( !m_background.load(FCAPP->getResourceFolder() + "desktop.jpg") )
@@ -43,6 +47,9 @@ ViewGame::~ViewGame(void)
 
 void ViewGame::setupView()
 {
+  m_appBar = new DesktopAppBar(this);
+  m_appBar->setGeometry(0, 0, width(), APPBAR_HEIGHT);
+  m_appBar->show();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -57,4 +64,11 @@ void ViewGame::paintEvent(QPaintEvent* event)
     painter.fillRect( dest, QColor( 0, 0, 0 ) );
   else
     painter.drawPixmap(dest, m_background, source);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewGame::resizeEvent(QResizeEvent* event)
+{
+  m_appBar->setGeometry(0, 0, width(), APPBAR_HEIGHT);
 }

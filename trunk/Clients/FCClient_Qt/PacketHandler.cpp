@@ -278,7 +278,8 @@ bool PacketHandler::onResponseCharacterAssetsRequest(PEPacket* pPkt)
   comp.SetNetworkSpeed(d.computer.networkSpeed);
 
   // update the player's processor details
-  comp.GetProcessor().SetItemInfo( d.computer.processor.item_id, d.computer.processor.name, d.computer.processor.itemtype_id,
+  const std::string procName = d.computer.processor.name;
+  comp.GetProcessor().SetItemInfo( d.computer.processor.item_id, procName, d.computer.processor.itemtype_id,
                                    d.computer.processor.min_level, d.computer.processor.max_level, d.computer.processor.npc_value );
   comp.GetProcessor().SetCoreCount( d.computer.processor.core_count );
   comp.GetProcessor().SetCoreSpeed( d.computer.processor.core_speed );

@@ -17,8 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "StdAfx.h"
+#ifdef _USE_STDAFX_H_
+  #include "StdAfx.h"
+#endif//_USE_STDAFX_H_
 #include "clientstrings.h"
+#include "ResourceManager.h"
 #include "ViewLoading.h"
 #include "FCApp.h"
 #include "fcmainwindow.h"

@@ -4,6 +4,7 @@
 #ifdef _USE_STDAFX_H_
   #include "StdAfx.h"
 #endif//_USE_STDAFX_H_
+#include <QString>
 #include "../../../common/fctypes.h"
 #include "../../../common/game_objects/ComputerBase.h"
 #include "../../../common/game_objects/InGameIPAddress.h"
