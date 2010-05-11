@@ -26,27 +26,32 @@
 #include "desktopappbar.h"
 #include "ResourceManager.h"
 
+#define APPBAR_ITEM_PADDING_X 30
+
 DesktopAppBar::DesktopAppBar(QWidget *parent) : QWidget(parent)
 {
+  m_fontItems = new QFont("Arial", 10, QFont::Normal, false);
+  QFontMetrics fm(*m_fontItems, NULL);
+
   // create the default AppBar System Menu Item
-	AppBarOption abo;
+  AppBarOption abo;
 
   abo.id = 0;
-	abo.bAppOption = false;
-	abo.bHighlight = false;
-	abo.str = ResourceManager::instance().getClientString( STR_APP_APPBAR_SYSTEM );
-	abo.rect = geometry();
-//	dimension2d<s32> txtExtents = pFont->getDimension( abo.str.c_str() );
-//	abo.rect.LowerRightCorner.X = abo.rect.UpperLeftCorner.X + txtExtents.Width + 30;
-	
-	m_appBarOptions.push_back(abo);
+  abo.bAppOption = false;
+  abo.bHighlight = false;
+  abo.str = ResourceManager::instance().getClientString( STR_APP_APPBAR_SYSTEM );
+  abo.rect = geometry();
+  abo.rect.setRight( abo.rect.left() + fm.width( abo.str ) + APPBAR_ITEM_PADDING_X );
+
+  m_appBarOptions.push_back(abo);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void DesktopAppBar::addMenuItem(QString itemText)
 {
-
+  if ( m_fontItems )
+    delete m_fontItems;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -77,4 +82,5 @@ void DesktopAppBar::drawBackground(QPainter& painter, QRectF area)
 
 void DesktopAppBar::drawMenuItems(QPainter& painter, QRectF area)
 {
+  // TODO: Render the menu items
 }
