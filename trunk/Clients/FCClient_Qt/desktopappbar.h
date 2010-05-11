@@ -26,7 +26,7 @@ protected:
 
 private:
 
-  QFont     m_fontItems;
+  QFont*        m_fontItems;
   struct AppBarOption
 	{
 		FCULONG id;
@@ -36,7 +36,7 @@ private:
 		QString str;
 	};
   typedef std::vector<AppBarOption> AppBarOptionVector;
-	AppBarOptionVector	m_appBarOptions;
+  AppBarOptionVector	m_appBarOptions;
 };
 
 #endif // DESKTOPAPPBAR_H
