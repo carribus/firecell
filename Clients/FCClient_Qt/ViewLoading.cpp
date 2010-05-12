@@ -49,10 +49,6 @@ ViewLoading::~ViewLoading(void)
 
 void ViewLoading::setupView()
 {
-  FCModel& model = FCAPP->model();
-  FCNet& net = FCAPP->network();
-  FCMainWindow* wnd = FCAPP->mainWindow();
-
   // connect to the model
   connect( qApp, SIGNAL(appStateChanged(FCApp::StateInfo, FCApp::StateInfo)), SLOT(onAppStateChanged(FCApp::StateInfo, FCApp::StateInfo)) );
 }
@@ -76,6 +72,9 @@ void ViewLoading::onAppStateChanged(FCApp::StateInfo state, FCApp::StateInfo old
       {
         openLoginDialog();
       }
+      break;
+
+    default:
       break;
     }
   }
@@ -125,6 +124,9 @@ void ViewLoading::handleSubStateChange(FCApp::StateInfo state)
 
       case  AppState_Loading_Sounds:
         addLogItem( ResourceManager::instance().getClientString( STR_LOAD_AUDIO ) );
+        break;
+
+      default:
         break;
       }
     }
@@ -177,6 +179,8 @@ void ViewLoading::handleSubStateChange(FCApp::StateInfo state)
     }
     break;
 
+  default:
+    break;
   }
 }
 

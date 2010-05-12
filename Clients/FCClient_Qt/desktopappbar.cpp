@@ -33,6 +33,7 @@ DesktopAppBar::DesktopAppBar(QWidget *parent) : QWidget(parent)
 {
   setMouseTracking(true);
 
+  // create the font and prepare the QFontMetrics object for calculating the length of the default 'System' string
   m_fontItems = new QFont("Arial", 13, QFont::Normal, false);
   QFontMetrics fm(*m_fontItems, NULL);
 
@@ -61,6 +62,8 @@ DesktopAppBar::~DesktopAppBar()
 
 void DesktopAppBar::addMenuItem(QString itemText)
 {
+  AppBarOption abo;
+  Q_UNUSED(abo);
 }
 
 ///////////////////////////////////////////////////////////////////////
