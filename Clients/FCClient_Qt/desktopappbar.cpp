@@ -20,6 +20,7 @@
 #ifdef _USE_STDAFX_H_
   #include "StdAfx.h"
 #endif//_USE_STDAFX_H_
+#include <QDebug>
 #include <QFont>
 #include <QMouseEvent>
 #include <QPainter>
@@ -160,6 +161,23 @@ void DesktopAppBar::mouseMoveEvent(QMouseEvent* event)
 
 ///////////////////////////////////////////////////////////////////////
 
+void DesktopAppBar::mousePressEvent(QMouseEvent* event)
+{
+  AppBarOption abo;
+
+  if ( menuItemFromPt(event->pos(), &abo) )
+  {
+    emit appBarOptionClicked( abo.id );
+  }
+  else
+  {
+    qDebug() << "Could not find AppBarOption object at xy " << event->pos();
+    // TODO: we will eventually be checking if the click was within the system tray icon area
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void DesktopAppBar::leaveEvent(QEvent* event)
 {
   AppBarOptionVector::iterator it = m_appBarOptions.begin();
@@ -170,4 +188,24 @@ void DesktopAppBar::leaveEvent(QEvent* event)
     (*it).bHighlight = false;
   }
   this->update();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool DesktopAppBar::menuItemFromPt(const QPoint& pt, DesktopAppBar::AppBarOption* dest)
+{
+  AppBarOptionVector::iterator it = m_appBarOptions.begin();
+  AppBarOptionVector::iterator limit = m_appBarOptions.end();
+  bool bResult = false;
+
+  for ( ; it != limit; ++it )
+  {
+    if ( (*it).rect.contains(pt) )
+    {
+      *dest = *it;
+      bResult = true;
+    }
+  }
+
+  return bResult;
 }

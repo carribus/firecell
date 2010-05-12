@@ -34,6 +34,10 @@ public:
    */
   void setupView();
 
+protected slots:
+
+  void onAppBarOptionClicked(FCULONG id);
+
 protected:
 
   void paintEvent(QPaintEvent* event);
