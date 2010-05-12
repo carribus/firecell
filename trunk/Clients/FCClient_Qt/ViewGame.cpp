@@ -52,6 +52,14 @@ void ViewGame::setupView()
   m_appBar = new DesktopAppBar(this);
   m_appBar->setGeometry(0, 0, width(), APPBAR_HEIGHT);
   m_appBar->show();
+
+  connect( m_appBar, SIGNAL(appBarOptionClicked(ulong)), SLOT(onAppBarOptionClicked(FCULONG)));
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewGame::onAppBarOptionClicked(FCULONG id)
+{
 }
 
 ///////////////////////////////////////////////////////////////////////
