@@ -21,6 +21,7 @@
   #include "StdAfx.h"
 #endif//_USE_STDAFX_H_
 #include <QFont>
+#include <QMouseEvent>
 #include <QPainter>
 #include "clientstrings.h"
 #include "desktopappbar.h"
@@ -30,7 +31,9 @@
 
 DesktopAppBar::DesktopAppBar(QWidget *parent) : QWidget(parent)
 {
-  m_fontItems = new QFont("Arial", 10, QFont::Normal, false);
+  setMouseTracking(true);
+
+  m_fontItems = new QFont("Arial", 13, QFont::Normal, false);
   QFontMetrics fm(*m_fontItems, NULL);
 
   // create the default AppBar System Menu Item
@@ -48,10 +51,16 @@ DesktopAppBar::DesktopAppBar(QWidget *parent) : QWidget(parent)
 
 ///////////////////////////////////////////////////////////////////////
 
-void DesktopAppBar::addMenuItem(QString itemText)
+DesktopAppBar::~DesktopAppBar()
 {
   if ( m_fontItems )
     delete m_fontItems;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void DesktopAppBar::addMenuItem(QString itemText)
+{
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -62,6 +71,7 @@ void DesktopAppBar::paintEvent(QPaintEvent* event)
   QRectF area(0, 0, width(), height());
 
   drawBackground(painter, area);
+  drawSystemMenuItem(painter, area);
   drawMenuItems(painter, area);
 }
 
@@ -80,7 +90,81 @@ void DesktopAppBar::drawBackground(QPainter& painter, QRectF area)
 
 ///////////////////////////////////////////////////////////////////////
 
+void DesktopAppBar::drawSystemMenuItem(QPainter& painter, QRectF area)
+{
+  QPen pen( QColor(64,64,64,194) );
+  QPen pen2( QColor(255,255,255,64));
+  AppBarOption abo = m_appBarOptions[0];
+  QRectF r = abo.rect;
+
+  if ( !m_fontItems )
+    return;
+
+  painter.setFont(*m_fontItems);
+  abo.rect.setBottom(area.bottom());
+
+  // shade the background
+  painter.fillRect(r, abo.bHighlight ? QColor(0, 0, 194, 128) : QColor(0, 0, 0, 128));
+
+  // draw the seperator
+  painter.setPen(pen);
+  painter.drawLine( r.right()-1, r.top(), r.right()-1, r.bottom() );
+  painter.setPen(pen2);
+  painter.drawLine( r.right(), r.top(), r.right(), r.bottom() );
+
+  pen.setColor(QColor(255,255,255, abo.bHighlight ? 255 : 128));
+  painter.setPen(pen);
+  painter.drawText( abo.rect, Qt::AlignHCenter | Qt::AlignVCenter, abo.str );
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void DesktopAppBar::drawMenuItems(QPainter& painter, QRectF area)
 {
-  // TODO: Render the menu items
+  AppBarOptionVector::iterator it = m_appBarOptions.begin();
+  AppBarOptionVector::iterator limit = m_appBarOptions.end();
+  AppBarOption abo;
+
+  for ( ; it != limit; ++it )
+  {
+    abo = *it;
+    if ( !abo.bAppOption )
+    {
+
+    }
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void DesktopAppBar::mouseMoveEvent(QMouseEvent* event)
+{
+  QPoint mousePt = event->pos();
+  QRect area = this->geometry();
+
+  if ( area.contains(mousePt) )
+  {
+    AppBarOptionVector::iterator it = m_appBarOptions.begin();
+    AppBarOptionVector::iterator limit = m_appBarOptions.end();
+
+    for ( ; it != limit; ++it )
+    {
+      (*it).bHighlight = (*it).rect.contains(mousePt);
+    }
+    this->update();
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void DesktopAppBar::leaveEvent(QEvent* event)
+{
+  AppBarOptionVector::iterator it = m_appBarOptions.begin();
+  AppBarOptionVector::iterator limit = m_appBarOptions.end();
+
+  for ( ; it != limit; ++it )
+  {
+    (*it).bHighlight = false;
+  }
+  this->update();
 }
