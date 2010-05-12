@@ -11,6 +11,7 @@ class DesktopAppBar : public QWidget
 
 public:
   DesktopAppBar(QWidget *parent = 0);
+  ~DesktopAppBar();
 
   void addMenuItem(QString itemText);
 
@@ -22,7 +23,11 @@ protected:
 
   void paintEvent(QPaintEvent* event);
     void drawBackground(QPainter& painter, QRectF area);
+    void drawSystemMenuItem(QPainter& painter, QRectF area);
     void drawMenuItems(QPainter& painter, QRectF area);
+
+  void mouseMoveEvent(QMouseEvent* event);
+  void leaveEvent(QEvent* event);
 
 private:
 
