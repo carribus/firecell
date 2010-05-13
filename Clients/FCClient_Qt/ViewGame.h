@@ -40,12 +40,22 @@ protected slots:
 
   void onAppBarOptionClicked(FCULONG id);
 
+  // menu item slots
+  void onOpenSoftwareMgr();
+  void onOpenItemMgr();
+  void onOpenCharacterInfo();
+  void onOpenSystemInfo();
+  void onAbout();
+  void onQuit();
+
 protected:
 
   void paintEvent(QPaintEvent* event);
   void resizeEvent(QResizeEvent* event);
 
 private:
+
+  void showSystemMenu();
 
   QPixmap         m_background;
   DesktopAppBar*  m_appBar;

@@ -20,10 +20,12 @@
 #ifdef _USE_STDAFX_H_
   #include "stdafx.h"
 #endif//_USE_STDAFX_H_
+#include <QMenu>
 #include <QPainter>
 #include "clientstrings.h"
 #include "ViewGame.h"
 #include "FCApp.h"
+#include "FCMainWindow.h"
 
 #define APPBAR_HEIGHT   25
 
@@ -63,10 +65,49 @@ void ViewGame::onAppBarOptionClicked(FCULONG id)
   if ( 0 == id )      // System menu item
   {
     // Popup the System menu
+    showSystemMenu();
   }
   else                // app specific menu item
   {
   }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewGame::onOpenSoftwareMgr()
+{
+  qDebug() << "onOpenSoftwareMgr()";
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewGame::onOpenItemMgr()
+{
+  qDebug() << "onOpenItemMgr()";
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewGame::onOpenCharacterInfo()
+{
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewGame::onOpenSystemInfo()
+{
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewGame::onAbout()
+{
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewGame::onQuit()
+{
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -91,4 +132,23 @@ void ViewGame::resizeEvent(QResizeEvent* event)
 {
   Q_UNUSED(event);
   m_appBar->setGeometry(0, 0, width(), APPBAR_HEIGHT);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewGame::showSystemMenu()
+{
+  QRect cRect = FCAPP->mainWindow()->geometry();
+  QMenu menu(this);
+
+  menu.addAction( ResourceManager::instance().getClientString( STR_APP_APPBAR_SYSTEM_MENU_SOFTWAREMGR), this, SLOT(onOpenSoftwareMgr()) );
+  menu.addAction( ResourceManager::instance().getClientString( STR_APP_APPBAR_SYSTEM_MENU_ITEMMGR), this, SLOT(onOpenItemMgr()) );
+  menu.addSeparator();
+  menu.addAction( ResourceManager::instance().getClientString( STR_APP_APPBAR_SYSTEM_MENU_CHARINFO), this, SLOT(onOpenCharacterInfo()) );
+  menu.addAction( ResourceManager::instance().getClientString( STR_APP_APPBAR_SYSTEM_MENU_SYSTEMINFO), this, SLOT(onOpenSystemInfo()) );
+  menu.addSeparator();
+  menu.addAction( ResourceManager::instance().getClientString( STR_APP_APPBAR_SYSTEM_MENU_ABOUT), this, SLOT(onAbout()) );
+  menu.addAction( ResourceManager::instance().getClientString( STR_APP_APPBAR_SYSTEM_MENU_EXIT), this, SLOT(onQuit()) );
+
+  menu.exec(QPoint(cRect.left(), cRect.top() + APPBAR_HEIGHT));
 }
