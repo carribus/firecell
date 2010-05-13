@@ -138,6 +138,7 @@ void FCMainWindow::onModelStateChanged(FCModel::e_ModelState newState, FCModel::
 
 void FCMainWindow::resizeEvent(QResizeEvent* event)
 {
+  Q_UNUSED(event);
   // resize the current view to fill up the main window
   if ( m_currentView )
   {

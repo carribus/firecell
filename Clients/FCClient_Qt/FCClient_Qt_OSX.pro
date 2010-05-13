@@ -17,12 +17,9 @@ INCLUDEPATH += ./GeneratedFiles \
     ./GeneratedFiles/Debug \
     . \
     ./ui
-win32:LIBS += -L"./../../common/pthreads-win32/lib" \
-    -lpthreadVSE2
 DEPENDPATH += .
 MOC_DIR += ./GeneratedFiles/debug
 OBJECTS_DIR += debug
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(FCClient_Qt.pri)
-win32:RC_FILE = FCClient_Qt.rc

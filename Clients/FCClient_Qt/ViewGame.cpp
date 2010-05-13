@@ -53,19 +53,28 @@ void ViewGame::setupView()
   m_appBar->setGeometry(0, 0, width(), APPBAR_HEIGHT);
   m_appBar->show();
 
-  connect( m_appBar, SIGNAL(appBarOptionClicked(ulong)), SLOT(onAppBarOptionClicked(FCULONG)));
+  QObject::connect( m_appBar, SIGNAL(appBarOptionClicked(FCULONG)), this, SLOT(onAppBarOptionClicked(FCULONG)));
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void ViewGame::onAppBarOptionClicked(FCULONG id)
 {
+  if ( 0 == id )      // System menu item
+  {
+    // Popup the System menu
+  }
+  else                // app specific menu item
+  {
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 void ViewGame::paintEvent(QPaintEvent* event)
 {
+  Q_UNUSED(event);
+
   QPainter painter(this);
   QRectF dest(0.0, 0.0, width(), height());
   QRectF source(0.0, 0.0, m_background.width(), m_background.height());
@@ -80,5 +89,6 @@ void ViewGame::paintEvent(QPaintEvent* event)
 
 void ViewGame::resizeEvent(QResizeEvent* event)
 {
+  Q_UNUSED(event);
   m_appBar->setGeometry(0, 0, width(), APPBAR_HEIGHT);
 }

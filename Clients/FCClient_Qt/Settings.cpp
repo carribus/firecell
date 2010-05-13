@@ -106,11 +106,13 @@ bool Settings::LoadSettings(QString filename)
         currentPath.remove( (pos > 0 ? pos-1 : pos) , currentPath.length() );
       }
       break;
+
+    default:
+      break;
     }
   }
   if ( xml.hasError() )
   {
-    int nLine = xml.lineNumber();
     QMessageBox::critical(NULL, 
                         "Settings", 
                         xml.errorString(), 
@@ -118,54 +120,8 @@ bool Settings::LoadSettings(QString filename)
   }
 
   file.close();
-/*
-	std::string elemName, currentPath, key, value, attrName;
-	IrrXMLReader* pXML = createIrrXMLReader(filename.c_str());
 
-	if ( pXML )
-	{
-		while ( pXML->read() )
-		{
-			switch ( pXML->getNodeType() )
-			{
-			case	EXN_ELEMENT:
-				{
-					elemName = pXML->getNodeName();
-					if ( currentPath.length() )
-						currentPath += "/";
-					currentPath += elemName;
-
-					unsigned int attrCount = pXML->getAttributeCount();
-
-					for ( unsigned int i = 0; i < attrCount; i++ )
-					{
-						attrName = pXML->getAttributeName(i);
-						value = pXML->getAttributeValue(i);
-
-						key = currentPath + ":" + attrName;
-						m_mapKeyToValue[ key ] = value;
-					}
-
-					if ( pXML->isEmptyElement() )
-					{
-						size_t pos = currentPath.rfind( elemName );
-						currentPath.erase( (pos > 0 ? pos-1 : pos) , currentPath.length() );
-					}
-				}
-				break;
-
-			case	EXN_ELEMENT_END:
-				{
-					elemName = pXML->getNodeName();
-					size_t pos = currentPath.rfind( elemName );
-					currentPath.erase( (pos > 0 ? pos-1 : pos) , currentPath.length() );
-				}
-				break;
-			}
-		}
-	}
-*/
-	return true;
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
