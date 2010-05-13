@@ -2,6 +2,7 @@
 #define DESKTOPAPPBAR_H
 
 #include <QWidget>
+#include <QTimer>
 #include "../../common/fctypes.h"
 #include <vector>
 
@@ -30,12 +31,15 @@ signals:
 
 public slots:
 
+  void onClockTimer();
+
 protected:
 
   void paintEvent(QPaintEvent* event);
     void drawBackground(QPainter& painter, QRectF area);
     void drawSystemMenuItem(QPainter& painter, QRectF area);
     void drawMenuItems(QPainter& painter, QRectF area);
+    void drawClock(QPainter& painter, QRectF area);
 
   void mouseMoveEvent(QMouseEvent* event);
   void mousePressEvent(QMouseEvent* event);
@@ -48,6 +52,8 @@ private:
   QFont*        m_fontItems;
   typedef std::vector<AppBarOption> AppBarOptionVector;
   AppBarOptionVector	m_appBarOptions;
+
+  QTimer*       m_timerClock;
 };
 
 #endif // DESKTOPAPPBAR_H

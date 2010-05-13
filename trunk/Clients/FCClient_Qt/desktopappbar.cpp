@@ -24,13 +24,16 @@
 #include <QFont>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QTime>
 #include "clientstrings.h"
 #include "desktopappbar.h"
 #include "ResourceManager.h"
 
 #define APPBAR_ITEM_PADDING_X 30
 
-DesktopAppBar::DesktopAppBar(QWidget *parent) : QWidget(parent)
+DesktopAppBar::DesktopAppBar(QWidget *parent)
+: QWidget(parent)
+, m_timerClock(NULL)
 {
   setMouseTracking(true);
 
@@ -49,6 +52,11 @@ DesktopAppBar::DesktopAppBar(QWidget *parent) : QWidget(parent)
   abo.rect.setRight( abo.rect.left() + fm.width( abo.str ) + APPBAR_ITEM_PADDING_X );
 
   m_appBarOptions.push_back(abo);
+
+  // kick off the timer for the clock
+  m_timerClock = new QTimer(this);
+  connect(m_timerClock, SIGNAL(timeout()), SLOT(onClockTimer()));
+  m_timerClock->start(1000);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -69,6 +77,15 @@ void DesktopAppBar::addMenuItem(QString itemText)
 
 ///////////////////////////////////////////////////////////////////////
 
+void DesktopAppBar::onClockTimer()
+{
+  QRect area(width()/2, 0, width(), height());
+
+  update(area);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void DesktopAppBar::paintEvent(QPaintEvent* event)
 {
   QPainter painter(this);
@@ -77,6 +94,7 @@ void DesktopAppBar::paintEvent(QPaintEvent* event)
   drawBackground(painter, area);
   drawSystemMenuItem(painter, area);
   drawMenuItems(painter, area);
+  drawClock(painter, area);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -137,6 +155,34 @@ void DesktopAppBar::drawMenuItems(QPainter& painter, QRectF area)
 
     }
   }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void DesktopAppBar::drawClock(QPainter& painter, QRectF area)
+{
+  QTime         t = QTime::currentTime();
+  QString       str = t.toString("hh:mm:ss");
+  QFontMetrics  fm(*m_fontItems);
+  int           nWidth = fm.width(str);
+  QPen          pen( QColor(64,64,64,194) );
+  QPen          pen2( QColor(255,255,255,64));
+
+  // render the background
+  area.setLeft( area.right() - 75 );
+  painter.fillRect(area, QColor(0, 0, 0, 128));
+
+  // render the seperator
+  painter.setPen(pen);
+  painter.drawLine( area.left(), area.top(), area.left(), area.bottom() );
+  painter.setPen(pen2);
+  painter.drawLine( area.left() + 1, area.top(), area.left() + 1, area.bottom() );
+
+  // render the clock area
+  pen.setColor(QColor(255,255,255,128));
+  painter.setPen(pen);
+  painter.setFont(*m_fontItems);
+  painter.drawText( area, Qt::AlignHCenter | Qt::AlignVCenter, str );
 }
 
 ///////////////////////////////////////////////////////////////////////
