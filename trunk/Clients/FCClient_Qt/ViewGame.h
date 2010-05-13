@@ -20,11 +20,13 @@
 #ifndef _VIEWGAME_H_
 #define _VIEWGAME_H_
 
-#include "ViewBase.h"
 #include "desktopappbar.h"
+#include "ViewBase.h"
 
 class ViewGame : public ViewBase
 {
+  Q_OBJECT
+
 public:
   ViewGame(QWidget* parent);
   ~ViewGame(void);

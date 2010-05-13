@@ -71,7 +71,7 @@ Character* FCPlayerModel::getCharacter(int nIndex)
   QReadLocker lock(&m_lockChars);
   Character* pChar = NULL;
 
-  if ( nIndex >= 0 && nIndex < m_characters.size() )
+  if ( nIndex >= 0 && nIndex < (int)m_characters.size() )
   {
     pChar = m_characters[nIndex];
   }
@@ -84,7 +84,6 @@ Character* FCPlayerModel::getCharacter(int nIndex)
 bool FCPlayerModel::selectCharacter(FCUINT characterID)
 {
   QReadLocker lock(&m_lockChars);
-  Character* pChar = NULL;
   std::vector<Character*>::iterator it = m_characters.begin();
   std::vector<Character*>::iterator limit = m_characters.end();
 
