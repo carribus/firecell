@@ -82,6 +82,8 @@ void ViewGame::onOpenSoftwareMgr()
 
   bar->setGeometry(100,100,300,120);
   bar->show();
+  bar->setBlockSeperatorWidth(5);
+  bar->setNumBars(10);
 }
 
 ///////////////////////////////////////////////////////////////////////
