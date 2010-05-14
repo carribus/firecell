@@ -73,10 +73,15 @@ void ViewGame::onAppBarOptionClicked(FCULONG id)
 }
 
 ///////////////////////////////////////////////////////////////////////
-
+#include "VUBarWidget.h"
 void ViewGame::onOpenSoftwareMgr()
 {
   qDebug() << "onOpenSoftwareMgr()";
+
+  VUBarWidget* bar = new VUBarWidget(this);
+
+  bar->setGeometry(100,100,300,120);
+  bar->show();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -108,6 +113,7 @@ void ViewGame::onAbout()
 
 void ViewGame::onQuit()
 {
+  FCAPP->quit();
 }
 
 ///////////////////////////////////////////////////////////////////////
