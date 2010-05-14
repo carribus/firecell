@@ -38,6 +38,7 @@ DesktopAppBar::DesktopAppBar(QWidget *parent)
   setMouseTracking(true);
 
   // create the font and prepare the QFontMetrics object for calculating the length of the default 'System' string
+  // TODO: You need to create an 'appearance server' object that can be queried for fonts, colours etc of different UI elements
   m_fontItems = new QFont("Arial", 13, QFont::Normal, false);
   QFontMetrics fm(*m_fontItems, NULL);
 
