@@ -26,6 +26,7 @@
 #include "ViewGame.h"
 #include "FCApp.h"
 #include "FCMainWindow.h"
+#include "DlgSoftwareMgr.h"
 
 #define APPBAR_HEIGHT   25
 
@@ -73,17 +74,13 @@ void ViewGame::onAppBarOptionClicked(FCULONG id)
 }
 
 ///////////////////////////////////////////////////////////////////////
-#include "VUBarWidget.h"
+
 void ViewGame::onOpenSoftwareMgr()
 {
   qDebug() << "onOpenSoftwareMgr()";
+  DlgSoftwareMgr* dlg = new DlgSoftwareMgr(this);
 
-  VUBarWidget* bar = new VUBarWidget(this);
-
-  bar->setGeometry(100,100,300,120);
-  bar->show();
-  bar->setBlockSeperatorWidth(5);
-  bar->setNumBars(10);
+  dlg->show();
 }
 
 ///////////////////////////////////////////////////////////////////////
