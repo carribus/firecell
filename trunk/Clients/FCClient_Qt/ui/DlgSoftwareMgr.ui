@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>553</width>
-    <height>300</height>
+    <height>320</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,6 +44,12 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>30</height>
+        </size>
+       </property>
       </widget>
      </item>
     </layout>
@@ -71,7 +77,14 @@
       </widget>
      </item>
      <item>
-      <widget class="HealthMeterWidget" name="healthBar1" native="true"/>
+      <widget class="HealthMeterWidget" name="healthBar1" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>30</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -98,7 +111,14 @@
       </widget>
      </item>
      <item>
-      <widget class="HealthMeterWidget" name="healthBar2" native="true"/>
+      <widget class="HealthMeterWidget" name="healthBar2" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>30</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -125,7 +145,14 @@
       </widget>
      </item>
      <item>
-      <widget class="HealthMeterWidget" name="healthBar3" native="true"/>
+      <widget class="HealthMeterWidget" name="healthBar3" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>30</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -152,7 +179,14 @@
       </widget>
      </item>
      <item>
-      <widget class="HealthMeterWidget" name="healthBar4" native="true"/>
+      <widget class="HealthMeterWidget" name="healthBar4" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>30</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -179,7 +213,14 @@
       </widget>
      </item>
      <item>
-      <widget class="HealthMeterWidget" name="healthBar5" native="true"/>
+      <widget class="HealthMeterWidget" name="healthBar5" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>30</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -206,7 +247,14 @@
       </widget>
      </item>
      <item>
-      <widget class="HealthMeterWidget" name="healthBar6" native="true"/>
+      <widget class="HealthMeterWidget" name="healthBar6" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>30</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -236,7 +284,14 @@
       </widget>
      </item>
      <item>
-      <widget class="HealthMeterWidget" name="healthBar7" native="true"/>
+      <widget class="HealthMeterWidget" name="healthBar7" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>30</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
