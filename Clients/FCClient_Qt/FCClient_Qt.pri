@@ -40,7 +40,9 @@ HEADERS += ./CharacterSelectionWidget.h \
     ../../common/game_objects/swtypes.h \
     ../../common/pthreads-win32/include/pthread.h \
     ../../common/PThreadRWLock.h \
-    VUBarWidget.h
+    VUBarWidget.h \
+    DlgSoftwareMgr.h \
+    HealthMeterWidget.h
 SOURCES += ./CharacterSelectionWidget.cpp \
     ./desktopappbar.cpp \
     ./DlgLogin.cpp \
@@ -75,7 +77,9 @@ SOURCES += ./CharacterSelectionWidget.cpp \
     ../../common/game_objects/ItemSoftware.cpp \
     ../../common/game_objects/NetworkPorts.cpp \
     ../../common/PThreadRWLock.cpp \
-    VUBarWidget.cpp
+    VUBarWidget.cpp \
+    DlgSoftwareMgr.cpp \
+    HealthMeterWidget.cpp
 FORMS += ./ui/CharacterSelectionWidget.ui \
     ./ui/DlgLogin.ui \
     ./ui/fcmainwindow.ui \
