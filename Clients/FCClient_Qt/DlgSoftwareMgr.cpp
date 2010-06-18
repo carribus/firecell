@@ -57,7 +57,7 @@ void DlgSoftwareMgr::updateUIFromModel()
     {
       // if its not disabled, lets update the port information
       ports.getSoftwareInfo(i, itemID, softwareType);
-      setPortInfo( i, itemID, softwareType, ports.isPortEnabled(i), ports.getPortMaxHealth(i), ports.getPortHealth(i) - (5*i) );
+      setPortInfo( i, itemID, softwareType, ports.isPortEnabled(i), ports.getPortMaxHealth(i), ports.getPortHealth(i) );
     }
   }
 }
@@ -101,7 +101,7 @@ void DlgSoftwareMgr::setPortInfo(FCSHORT port, FCULONG itemID, FCULONG softwareT
   QLabel* pLabel = findChild<QLabel*>( QString("lblSoftware%1").arg(port) );
   if ( pLabel )
   {
-    pLabel->setText( QString("<a href=\"showSoftware%1\">%2</a>").arg(port).arg(str) );
+    pLabel->setText( QString("<a href=\"showSoftware:%1\">%2</a>").arg(port).arg(str) );
   }
   // update the health bar
   HealthMeterWidget* pHealth = findChild<HealthMeterWidget*>( QString("healthBar%1").arg(port) );
