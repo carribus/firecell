@@ -35,6 +35,15 @@ void DlgSoftwareMgr::onLinkActivated(const QString& link)
 {
   // decide what to do when the software link is activated
   qDebug() << link;
+  QStringList linkArgs = link.split(':');
+  QString cmd = linkArgs[0];
+
+  if ( cmd.compare("showSoftware") == 0 )
+  {
+    QMenu menu(this);
+
+
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////
