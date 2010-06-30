@@ -4,6 +4,7 @@
 #include "FCApp.h"
 #include "clientstrings.h"
 #include "ResourceManager.h"
+#include "../../common/game_objects/ItemSoftware.h"
 #include "FCPlayerModel.h"
 #include "DlgSoftwareMgr.h"
 
@@ -16,7 +17,7 @@ DlgSoftwareMgr::DlgSoftwareMgr(QWidget* parent)
   // connect the signals
   for ( int i = 0; i < 8; i++ )
   {
-    QLabel* pLabel = findChild<QLabel*>( QString("lblSoftware%1").arg(i) );
+    QLabel* pLabel = findChild<QLabel*>( QString("lnkSoftware%1").arg(i) );
     connect( pLabel, SIGNAL(linkActivated(const QString&)), SLOT(onLinkActivated(const QString&)) );
   }
 
@@ -33,16 +34,25 @@ DlgSoftwareMgr::~DlgSoftwareMgr(void)
 
 void DlgSoftwareMgr::onLinkActivated(const QString& link)
 {
-  // decide what to do when the software link is activated
   qDebug() << link;
-  QStringList linkArgs = link.split(':');
-  QString cmd = linkArgs[0];
 
-  if ( cmd.compare("showSoftware") == 0 )
+  ItemMgr& itemMgr = FCAPP->playerModel()->itemMgr();
+  NetworkPorts& ports = player->getCurrentCharacter()->GetComputer().GetNetworkPorts();
+  std::vector<ItemMgr::GameItem> services;
+  FCULONG itemID, softwareType;
+  FCSHORT port = 0;
+  QString theLink = link;
+  
+  // figure out which port this is
+  if ( theLink.indexOf("showSoftware") == 0 )
   {
-    QMenu menu(this);
+    theLink.remove("showSoftware");
+    port = theLink.toUShort();
+    // get all the services available to the player
+    itemMgr.getServices(services);
 
-
+    // get information on the port
+    ports.getSoftwareInfo(portNum, itemID, softwareType);
   }
 }
 
@@ -107,7 +117,7 @@ void DlgSoftwareMgr::setPortInfo(FCSHORT port, FCULONG itemID, FCULONG softwareT
     pCB->setChecked( bEnabled );
   }
   // update the software link
-  QLabel* pLabel = findChild<QLabel*>( QString("lblSoftware%1").arg(port) );
+  QLabel* pLabel = findChild<QLabel*>( QString("lnkSoftware%1").arg(port) );
   if ( pLabel )
   {
     pLabel->setText( QString("<a href=\"showSoftware:%1\">%2</a>").arg(port).arg(str) );
