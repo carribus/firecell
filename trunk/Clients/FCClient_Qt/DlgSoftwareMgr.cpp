@@ -1,6 +1,7 @@
 #ifdef _USE_STDAFX_H_
   #include "StdAfx.h"
 #endif
+#include <QMenu>
 #include "FCApp.h"
 #include "clientstrings.h"
 #include "ResourceManager.h"
@@ -36,7 +37,8 @@ void DlgSoftwareMgr::onLinkActivated(const QString& link)
 {
   qDebug() << link;
 
-  ItemMgr& itemMgr = FCAPP->playerModel()->itemMgr();
+  FCPlayerModel* player = FCAPP->playerModel();
+  ItemMgr& itemMgr = player->itemMgr();
   NetworkPorts& ports = player->getCurrentCharacter()->GetComputer().GetNetworkPorts();
   std::vector<ItemMgr::GameItem> services;
   FCULONG itemID, softwareType;
@@ -52,7 +54,30 @@ void DlgSoftwareMgr::onLinkActivated(const QString& link)
     itemMgr.getServices(services);
 
     // get information on the port
-    ports.getSoftwareInfo(portNum, itemID, softwareType);
+    ports.getSoftwareInfo(port, itemID, softwareType);
+
+    QMenu menu(this);
+    QMenu* pSubMenu = menu.addMenu( ResourceManager::instance().getClientString(STR_SWM_INSTALL_SOFTWARE) );
+
+    menu.addAction( ResourceManager::instance().getClientString( STR_SWM_UNINSTALL_SOFTWARE ) );
+    
+    // create the sub menu for software that can be installed
+    if ( pSubMenu )
+    {
+      std::vector<ItemMgr::GameItem>::iterator it = services.begin();
+      std::vector<ItemMgr::GameItem>::iterator limit = services.end();
+
+      for ( ; it != limit; ++it )
+      {
+        if ( it->getCount() > 0 )
+        {
+          Item* pItem = it->getItem();
+          pSubMenu->addAction( QString(pItem->GetName().c_str()) );
+        }
+      }
+    }
+
+    menu.exec(QCursor::pos());
   }
 }
 

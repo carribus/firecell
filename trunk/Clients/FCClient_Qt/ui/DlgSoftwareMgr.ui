@@ -7,11 +7,18 @@
     <x>0</x>
     <y>0</y>
     <width>553</width>
-    <height>320</height>
+    <height>347</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QLabel
+{
+color: rgb(0, 0, 255);
+text-decoration: underline;
+}</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -30,6 +37,10 @@
       </widget>
      </item>
      <item>
+      <widget class="QLabel" name="lnkSoftware0">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
        <property name="text">
         <string>Software Name</string>
        </property>
@@ -69,6 +80,7 @@
       </widget>
      </item>
      <item>
+      <widget class="QLabel" name="lnkSoftware1">
        <property name="text">
         <string>Software Name</string>
        </property>
