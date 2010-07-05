@@ -72,12 +72,35 @@ void DlgSoftwareMgr::onLinkActivated(const QString& link)
         if ( it->getCount() > 0 )
         {
           Item* pItem = it->getItem();
-          pSubMenu->addAction( QString(pItem->GetName().c_str()) );
+          QAction* pAction = pSubMenu->addAction( QString(pItem->GetName().c_str()) /*, this, SLOT(onInstallSoftware */ );
+
+          if ( pAction )
+          {
+            QVariant v( (qulonglong) pItem->GetID() );
+            pAction->setData( v );
+          }
         }
       }
     }
 
-    menu.exec(QCursor::pos());
+    QAction* pSelAction = menu.exec(QCursor::pos());
+
+    // if the user chose to install software...
+    if ( pSelAction )
+    {
+      QVariant v = pSelAction->data();
+      FCULONG itemID = v.value<FCULONG>();
+      Item* pItem = NULL;
+      ItemMgr::GameItem item;
+
+      if ( v.type() != QVariant::Invalid )
+      {
+        itemMgr.getItem( itemID, item );
+        qDebug() << item.getItem()->GetName().c_str();
+      }
+
+    }
+
   }
 }
 
