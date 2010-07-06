@@ -13,6 +13,10 @@ public:
   DlgSoftwareMgr(QWidget* parent);
   ~DlgSoftwareMgr(void);
 
+signals:
+  void installSoftware(short portNum, FCULONG itemID);
+  void uninstallSoftware(short portNum);
+
 protected slots:
 
   void onLinkActivated(const QString& link);

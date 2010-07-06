@@ -46,9 +46,9 @@ void DlgSoftwareMgr::onLinkActivated(const QString& link)
   QString theLink = link;
   
   // figure out which port this is
-  if ( theLink.indexOf("showSoftware") == 0 )
+  if ( theLink.indexOf("showSoftware:") == 0 )
   {
-    theLink.remove("showSoftware");
+    theLink.remove("showSoftware:");
     port = theLink.toUShort();
     // get all the services available to the player
     itemMgr.getServices(services);
@@ -59,7 +59,11 @@ void DlgSoftwareMgr::onLinkActivated(const QString& link)
     QMenu menu(this);
     QMenu* pSubMenu = menu.addMenu( ResourceManager::instance().getClientString(STR_SWM_INSTALL_SOFTWARE) );
 
-    menu.addAction( ResourceManager::instance().getClientString( STR_SWM_UNINSTALL_SOFTWARE ) );
+    QAction* pUninstAction = menu.addAction( ResourceManager::instance().getClientString( STR_SWM_UNINSTALL_SOFTWARE ) );
+    if ( pUninstAction )
+    {
+      pUninstAction->setEnabled( itemID != 0 );
+    }
     
     // create the sub menu for software that can be installed
     if ( pSubMenu )
@@ -72,7 +76,7 @@ void DlgSoftwareMgr::onLinkActivated(const QString& link)
         if ( it->getCount() > 0 )
         {
           Item* pItem = it->getItem();
-          QAction* pAction = pSubMenu->addAction( QString(pItem->GetName().c_str()) /*, this, SLOT(onInstallSoftware */ );
+          QAction* pAction = pSubMenu->addAction( QString(pItem->GetName().c_str()) );
 
           if ( pAction )
           {
@@ -89,16 +93,18 @@ void DlgSoftwareMgr::onLinkActivated(const QString& link)
     if ( pSelAction )
     {
       QVariant v = pSelAction->data();
-      FCULONG itemID = v.value<FCULONG>();
-      Item* pItem = NULL;
-      ItemMgr::GameItem item;
 
       if ( v.type() != QVariant::Invalid )
       {
-        itemMgr.getItem( itemID, item );
-        qDebug() << item.getItem()->GetName().c_str();
-      }
+        FCULONG itemID = v.value<FCULONG>();
 
+        emit installSoftware(port, itemID);
+      }
+      else
+      {
+        // this is the uninstall handler (since the uninstall option is the only option that has a invalid, 0 value data variant)
+        emit uninstallSoftware(port);
+      }
     }
 
   }

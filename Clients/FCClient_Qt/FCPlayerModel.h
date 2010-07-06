@@ -27,6 +27,8 @@ protected slots:
   
   void onLogin(QString username, QString password);
   void onCharacterSelected(FCUINT charID);
+  void onInstallSoftware(short portNum, FCULONG itemID);
+  void onUninstallSoftware(short portNum);
 
 private:
 
