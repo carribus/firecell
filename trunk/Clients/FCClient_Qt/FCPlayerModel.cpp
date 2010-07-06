@@ -55,6 +55,26 @@ void FCPlayerModel::onCharacterSelected(FCUINT charID)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCPlayerModel::onInstallSoftware(short portNum, FCULONG itemID)
+{
+  FCPlayerModel* player = FCAPP->playerModel();
+  ItemMgr& itemMgr = player->itemMgr();
+  Item* pItem = NULL;
+  ItemMgr::GameItem item;
+
+  itemMgr.getItem( itemID, item );
+  qDebug() << item.getItem()->GetName().c_str();
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCPlayerModel::onUninstallSoftware(short portNum)
+{
+  qDebug() << "Uninstall software on port " << portNum;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 int FCPlayerModel::addCharacter(Character* character)
 {
   QReadLocker lock(&m_lockChars);
