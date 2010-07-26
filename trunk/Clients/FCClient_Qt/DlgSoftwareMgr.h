@@ -13,9 +13,15 @@ public:
   DlgSoftwareMgr(QWidget* parent);
   ~DlgSoftwareMgr(void);
 
+protected:
+
+  bool eventFilter(QObject* obj, QEvent* event);
+  bool onPortCheckboxClicked(QObject* obj);
+
 signals:
   void installSoftware(short portNum, FCULONG itemID);
   void uninstallSoftware(short portNum);
+  void enableSoftwarePort(FCSHORT port, bool bEnable);
 
 protected slots:
 
@@ -28,6 +34,7 @@ private:
   void setPortInfo(FCSHORT port, FCULONG itemID, FCULONG softwareType, bool bEnabled, quint32 maxHealth, quint32 health);
 
   Ui::DlgSoftwareMgr    ui;
+  QList<QCheckBox*>     m_lstCheckboxes;
 
 };
 
