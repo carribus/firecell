@@ -19,16 +19,91 @@ DlgSoftwareMgr::DlgSoftwareMgr(QWidget* parent)
   for ( int i = 0; i < 8; i++ )
   {
     QLabel* pLabel = findChild<QLabel*>( QString("lnkSoftware%1").arg(i) );
-    connect( pLabel, SIGNAL(linkActivated(const QString&)), SLOT(onLinkActivated(const QString&)) );
+    if ( pLabel )
+      connect( pLabel, SIGNAL(linkActivated(const QString&)), SLOT(onLinkActivated(const QString&)) );
+
+
+    QCheckBox* pCB = findChild<QCheckBox*>( QString("cbPort%1").arg(i) );
+    if ( pCB )
+    {
+      m_lstCheckboxes << pCB;
+      pCB->installEventFilter(this);
+    }
   }
 
   updateUIFromModel();
+
+  // connect the player to the signals emitted from this dialog
+  FCPlayerModel* player = FCAPP->playerModel();
+  connect(this, SIGNAL(installSoftware(short, FCULONG)), player, SLOT(onInstallSoftware(short, FCULONG)));
+  connect(this, SIGNAL(uninstallSoftware(short)), player, SLOT(onUninstallSoftware(short)));
 }
 
 ///////////////////////////////////////////////////////////////////////
 
 DlgSoftwareMgr::~DlgSoftwareMgr(void)
 {
+  // disconnect the FCPlayerModel slots
+  FCPlayerModel* player = FCAPP->playerModel();
+  disconnect(this, SIGNAL(installSoftware(short, FCULONG)), player, SLOT(onInstallSoftware(short, FCULONG)));
+  disconnect(this, SIGNAL(uninstallSoftware(short)), player, SLOT(onUninstallSoftware(short)));
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool DlgSoftwareMgr::eventFilter(QObject* obj, QEvent* event)
+{
+  // we're monitoring for the user clicking the checkboxes to enable/disable ports...
+  // first check the event type -- we're only interested in the QEvent::MouseButtonRelease event
+  if ( event->type() == QEvent::MouseButtonRelease )
+  {
+    // check if this event was from one of our checkboxes
+    if ( m_lstCheckboxes.contains( reinterpret_cast<QCheckBox*&>(obj) ) )
+    {
+      obj->event(event);
+      return onPortCheckboxClicked(obj);
+    }
+  }
+
+  return QObject::eventFilter(obj, event);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool DlgSoftwareMgr::onPortCheckboxClicked(QObject* obj)
+{
+  bool bResult = false;
+
+  QCheckBox* pCB = static_cast<QCheckBox*>(obj);
+  QString objName;
+
+  if ( pCB )
+  {
+    objName = pCB->objectName();
+    if ( objName.indexOf("cbPort") == 0 )
+    {
+      objName.remove(0, 6);
+      short port = objName.toUShort();
+      if ( port >= 0 && port <= 7 )
+      {
+        switch ( pCB->checkState() )
+        {
+        case  Qt::Checked:
+          emit enableSoftwarePort(port, true);
+          break;
+
+        case  Qt::Unchecked:
+          emit enableSoftwarePort(port, false);
+          break;
+
+        default:
+          break;
+        }
+      }
+    }
+  }
+
+  return bResult;
 }
 
 ///////////////////////////////////////////////////////////////////////

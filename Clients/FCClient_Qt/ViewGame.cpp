@@ -26,13 +26,13 @@
 #include "ViewGame.h"
 #include "FCApp.h"
 #include "FCMainWindow.h"
-#include "DlgSoftwareMgr.h"
 
 #define APPBAR_HEIGHT   25
 
 ViewGame::ViewGame(QWidget* parent)
 : ViewBase(parent)
 , m_appBar(NULL)
+, m_pDlgSoftwareMgr(NULL)
 {
   setAttribute(Qt::WA_OpaquePaintEvent);
   if ( !m_background.load(FCAPP->getResourceFolder() + "desktop.jpg") )
@@ -78,9 +78,12 @@ void ViewGame::onAppBarOptionClicked(FCULONG id)
 void ViewGame::onOpenSoftwareMgr()
 {
   qDebug() << "onOpenSoftwareMgr()";
-  DlgSoftwareMgr* dlg = new DlgSoftwareMgr(this);
+  
+  if ( !m_pDlgSoftwareMgr )
+    m_pDlgSoftwareMgr = new DlgSoftwareMgr(this);
 
-  dlg->show();
+  if ( m_pDlgSoftwareMgr )
+    m_pDlgSoftwareMgr->show();
 }
 
 ///////////////////////////////////////////////////////////////////////
