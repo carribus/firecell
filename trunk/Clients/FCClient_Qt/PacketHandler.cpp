@@ -103,6 +103,24 @@ void PacketHandler::onResponse(PEPacket* pPkt)
     }
     break;
 
+  case  FCMSG_SOFTWARE_INSTALL:
+    {
+      bHandled = onResponseSoftwareInstallRequest(pPkt);
+    }
+    break;
+
+  case  FCMSG_SOFTWARE_UNINSTALL:
+    {
+      bHandled = onResponseSoftwareUninstallRequest(pPkt);
+    }
+    break;
+
+  case  FCMSG_SOFTWARE_NETWORK_PORT_ENABLE:
+    {
+      bHandled = onResponseSoftwareNetworkPortEnableRequest(pPkt);
+    }
+    break;
+
   default:
     qDebug() << "PacketHandler::onResponse -- Unknown Response message (" << msgID << ")";
     break;
@@ -326,7 +344,7 @@ bool PacketHandler::onResponseCharacterAssetsRequest(PEPacket* pPkt)
 bool PacketHandler::onResponseCharacterMissionsRequest(PEPacket* pPkt)
 {
   __FCPKT_CHARACTER_MISSIONS_REQUEST_RESP* d = NULL;
-  FCMissionMgr& missionMgr = FCAPP->missionMgr();
+  FCMissionMgr& missionMgr = m_pApp->missionMgr();
 
   getDynamicPacketData<__FCPKT_CHARACTER_MISSIONS_REQUEST_RESP>(pPkt, d);
 
@@ -339,6 +357,63 @@ bool PacketHandler::onResponseCharacterMissionsRequest(PEPacket* pPkt)
 
   // update the state of the model
   FCAPP->setState( AppStatePlaying );
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool PacketHandler::onResponseSoftwareInstallRequest(PEPacket* pPkt)
+{
+  __FCPKT_SOFTWARE_INSTALL_RESP d;
+  FCPlayerModel* pPlayer = m_pApp->playerModel();
+
+  getPacketData<__FCPKT_SOFTWARE_INSTALL_RESP>(pPkt, d);
+
+
+  QMetaObject::invokeMethod(pPlayer, 
+                            "onSoftwareInstallResult", 
+                            Qt::QueuedConnection, 
+                            Q_ARG(bool, d.bResult),
+                            Q_ARG(FCSHORT, d.portNum),
+                            Q_ARG(FCULONG, d.itemID));
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool PacketHandler::onResponseSoftwareUninstallRequest(PEPacket* pPkt)
+{
+  __FCPKT_SOFTWARE_UNINSTALL_RESP d;
+  FCPlayerModel* pPlayer = m_pApp->playerModel();
+
+  getPacketData<__FCPKT_SOFTWARE_UNINSTALL_RESP>(pPkt, d);
+
+  QMetaObject::invokeMethod(pPlayer, 
+                            "onSoftwareUninstallResult", 
+                            Qt::QueuedConnection, 
+                            Q_ARG(bool, d.bResult),
+                            Q_ARG(FCSHORT, d.portNum));
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool PacketHandler::onResponseSoftwareNetworkPortEnableRequest(PEPacket* pPkt)
+{
+  __FCPKT_SOFTWARE_NETWORK_PORT_ENABLE_RESP d;
+  FCPlayerModel* pPlayer = m_pApp->playerModel();
+
+  getPacketData<__FCPKT_SOFTWARE_NETWORK_PORT_ENABLE_RESP>(pPkt, d);
+
+  QMetaObject::invokeMethod(pPlayer,
+                            "onNetworkPortStatusChangeResult",
+                            Qt::QueuedConnection,
+                            Q_ARG(FCSHORT, d.result),
+                            Q_ARG(bool, d.bEnabled),
+                            Q_ARG(FCSHORT, d.portNum));
 
   return true;
 }

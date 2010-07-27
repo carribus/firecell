@@ -19,8 +19,8 @@ protected:
   bool onPortCheckboxClicked(QObject* obj);
 
 signals:
-  void installSoftware(short portNum, FCULONG itemID);
-  void uninstallSoftware(short portNum);
+  void installSoftware(FCSHORT portNum, FCULONG itemID);
+  void uninstallSoftware(FCSHORT portNum);
   void enableSoftwarePort(FCSHORT port, bool bEnable);
 
 protected slots:

@@ -53,6 +53,9 @@ public:
   void requestCharacterItems(size_t character_id);
   void requestCharacterAssets(size_t character_id);
   void requestCharacterMissions(size_t character_id);
+  void sendInstallSoftwareRequest(FCSHORT portNum, FCULONG itemID);
+  void sendUninstallSoftwareRequest(FCSHORT portNum);
+  void sendNetworkPortEnableRequest(FCSHORT portNum, bool bEnable);
 
 signals:
   void connectAttemptStarted(QString hostName, quint16 port);
