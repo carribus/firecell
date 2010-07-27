@@ -25,6 +25,9 @@ int main(int argc, char *argv[])
 {
   FCApp app(argc, argv);
 
+  qRegisterMetaType<FCSHORT>("FCSHORT");
+  qRegisterMetaType<FCULONG>("FCULONG");
+
   if ( app.initialise() )
   {
     QMetaObject::invokeMethod (&app, "bootUp", Qt::QueuedConnection);

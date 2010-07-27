@@ -35,8 +35,17 @@ DlgSoftwareMgr::DlgSoftwareMgr(QWidget* parent)
 
   // connect the player to the signals emitted from this dialog
   FCPlayerModel* player = FCAPP->playerModel();
-  connect(this, SIGNAL(installSoftware(short, FCULONG)), player, SLOT(onInstallSoftware(short, FCULONG)));
-  connect(this, SIGNAL(uninstallSoftware(short)), player, SLOT(onUninstallSoftware(short)));
+  connect(this, SIGNAL(installSoftware(FCSHORT, FCULONG)), player, SLOT(onInstallSoftware(FCSHORT, FCULONG)));
+  connect(this, SIGNAL(uninstallSoftware(FCSHORT)), player, SLOT(onUninstallSoftware(FCSHORT)));
+  connect(this, SIGNAL(enableSoftwarePort(FCSHORT, bool)), player, SLOT(onEnableSoftwarePort(FCSHORT, bool)));
+
+  // connect to software signals emited by the player model
+  connect(player, SIGNAL(softwareInstallSucceeded(FCSHORT, FCULONG)), this, SLOT(updateUIFromModel()));
+  connect(player, SIGNAL(softwareInstallFailed(FCSHORT, FCULONG)), this, SLOT(updateUIFromModel()));
+  connect(player, SIGNAL(softwareUninstallSucceeded(FCSHORT)), this, SLOT(updateUIFromModel()));
+  connect(player, SIGNAL(softwareUninstallFailed(FCSHORT)), this, SLOT(updateUIFromModel()));
+  connect(player, SIGNAL(networkPortStatusChangeSucceeded(bool, FCSHORT)), this, SLOT(updateUIFromModel()));
+  connect(player, SIGNAL(networkPortStatusChangeFailed(FCSHORT, bool, FCSHORT)), this, SLOT(updateUIFromModel()));
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -47,6 +56,14 @@ DlgSoftwareMgr::~DlgSoftwareMgr(void)
   FCPlayerModel* player = FCAPP->playerModel();
   disconnect(this, SIGNAL(installSoftware(short, FCULONG)), player, SLOT(onInstallSoftware(short, FCULONG)));
   disconnect(this, SIGNAL(uninstallSoftware(short)), player, SLOT(onUninstallSoftware(short)));
+  disconnect(this, SIGNAL(enableSoftwarePort(FCSHORT, bool)), player, SLOT(onEnableSoftwarePort(FCSHORT, bool)));
+
+  disconnect(player, SIGNAL(softwareInstallSucceeded(FCSHORT, FCULONG)), this, SLOT(updateUIFromModel()));
+  disconnect(player, SIGNAL(softwareInstallFailed(FCSHORT, FCULONG)), this, SLOT(updateUIFromModel()));
+  disconnect(player, SIGNAL(softwareUninstallSucceeded(FCSHORT)), this, SLOT(updateUIFromModel()));
+  disconnect(player, SIGNAL(softwareUninstallFailed(FCSHORT)), this, SLOT(updateUIFromModel()));
+  disconnect(player, SIGNAL(networkPortStatusChangeSucceeded(bool, FCSHORT)), this, SLOT(updateUIFromModel()));
+  disconnect(player, SIGNAL(networkPortStatusChangeFailed(FCSHORT, bool, FCSHORT)), this, SLOT(updateUIFromModel()));
 }
 
 ///////////////////////////////////////////////////////////////////////

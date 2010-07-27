@@ -24,6 +24,9 @@ public:
     bool onResponseCharacterItemsRequest(PEPacket* pPkt);
     bool onResponseCharacterAssetsRequest(PEPacket* pPkt);
     bool onResponseCharacterMissionsRequest(PEPacket* pPkt);
+    bool onResponseSoftwareInstallRequest(PEPacket* pPkt);
+    bool onResponseSoftwareUninstallRequest(PEPacket* pPkt);
+    bool onResponseSoftwareNetworkPortEnableRequest(PEPacket* pPkt);
 
   void onError(PEPacket* pPkt);
 

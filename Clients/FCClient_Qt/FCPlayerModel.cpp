@@ -55,22 +55,109 @@ void FCPlayerModel::onCharacterSelected(FCUINT charID)
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCPlayerModel::onInstallSoftware(short portNum, FCULONG itemID)
+void FCPlayerModel::onInstallSoftware(FCSHORT portNum, FCULONG itemID)
 {
-  FCPlayerModel* player = FCAPP->playerModel();
-  ItemMgr& itemMgr = player->itemMgr();
-  Item* pItem = NULL;
-  ItemMgr::GameItem item;
-
-  itemMgr.getItem( itemID, item );
-  qDebug() << item.getItem()->GetName().c_str();
+  FCAPP->network().sendInstallSoftwareRequest(portNum, itemID);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-void FCPlayerModel::onUninstallSoftware(short portNum)
+void FCPlayerModel::onUninstallSoftware(FCSHORT portNum)
 {
-  qDebug() << "Uninstall software on port " << portNum;
+  FCAPP->network().sendUninstallSoftwareRequest(portNum);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCPlayerModel::onEnableSoftwarePort(FCSHORT port, bool bEnable)
+{
+  FCAPP->network().sendNetworkPortEnableRequest(port, bEnable);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCPlayerModel::onSoftwareInstallResult(bool bResult, FCSHORT portNum, FCULONG itemID)
+{
+  ItemMgr::GameItem item;
+
+  if ( bResult )
+  {
+    if ( m_itemMgr.getItem(itemID, item) )
+    {
+      ItemSoftware* pItem = (ItemSoftware*)item.getItem();
+
+      if ( pItem )
+      {
+        NetworkPorts& ports = m_currentChar->GetComputer().GetNetworkPorts();
+
+        m_itemMgr.setItemCount( itemID, item.getCount()-1 );
+        ports.installPort(portNum, pItem->GetSoftwareType(), itemID);
+
+        emit softwareInstallSucceeded(portNum, itemID);
+      }
+    }
+  }
+  else
+  {
+    emit softwareInstallFailed(portNum, itemID);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCPlayerModel::onSoftwareUninstallResult(bool bResult, FCSHORT portNum)
+{
+  ItemMgr::GameItem item;
+  FCULONG itemID, softwareType;
+  NetworkPorts& ports = m_currentChar->GetComputer().GetNetworkPorts();
+
+  if ( bResult )
+  {
+    ports.getSoftwareInfo(portNum, itemID, softwareType);
+    ports.uninstallPort(portNum);
+    if ( m_itemMgr.getItem(itemID, item) )
+    {
+      m_itemMgr.setItemCount( itemID, item.getCount()+1 );
+    }
+    else
+    {
+      // the item doesn't exist in the item manager
+    }
+    
+    emit softwareUninstallSucceeded(portNum);
+  }
+  else
+  {
+    emit softwareUninstallFailed(portNum);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCPlayerModel::onNetworkPortStatusChangeResult(FCSHORT result, bool bEnabled, FCSHORT portNum)
+{
+  NetworkPorts& ports = m_currentChar->GetComputer().GetNetworkPorts();
+
+  ports.lockForWrite();
+  // updated the enabled status of the port
+  ports.enablePort( portNum, bEnabled );
+
+  switch ( result )
+  {
+  case  NPE_OK:
+    emit networkPortStatusChangeSucceeded(bEnabled, portNum);
+    break;
+
+  case  NPE_NO_SERVICE_ASSIGNED:
+  case  NPE_NO_SOFTWARETYPE:
+  case  NPE_PORT_DOESNT_EXIST:
+    emit networkPortStatusChangeFailed(result, bEnabled, portNum);
+    break;
+  
+  default:
+    break;
+  }
+  ports.unlock();
 }
 
 ///////////////////////////////////////////////////////////////////////

@@ -127,6 +127,7 @@ void FCNet::sendCharacterSelection(size_t character_id)
   __FCPKT_SELECT_CHARACTER d;
 
   d.character_id = (FCUINT)character_id;
+
   PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_SELECT_CHARACTER, ST_Auth);
   PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
 
@@ -141,6 +142,7 @@ void FCNet::requestCharacterItems(size_t character_id)
 	__FCPKT_CHARACTER_ITEMS_REQUEST d;
 
 	d.character_id = (unsigned int)character_id;
+
   PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_CHARACTER_ITEMS_REQUEST, ST_World);
   PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
 
@@ -155,6 +157,7 @@ void FCNet::requestCharacterAssets(size_t character_id)
   __FCPKT_CHARACTER_ASSET_REQUEST d;
 
   d.character_id = (FCUINT)character_id;
+
   PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_CHARACTER_ASSET_REQUEST, ST_World);
   PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
 
@@ -169,7 +172,55 @@ void FCNet::requestCharacterMissions(size_t character_id)
 	__FCPKT_CHARACTER_MISSIONS_REQUEST d;
 
 	d.character_id = (unsigned int)character_id;
+
   PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_CHARACTER_MISSIONS_REQUEST, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCNet::sendInstallSoftwareRequest(FCSHORT portNum, FCULONG itemID)
+{
+  PEPacket pkt;
+  __FCPKT_SOFTWARE_INSTALL d;
+
+  d.portNum = portNum;
+  d.itemID = itemID;
+
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_SOFTWARE_INSTALL, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCNet::sendUninstallSoftwareRequest(FCSHORT portNum)
+{
+  PEPacket pkt;
+  __FCPKT_SOFTWARE_UNINSTALL d;
+
+  d.portNum = portNum;
+
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_SOFTWARE_UNINSTALL, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCNet::sendNetworkPortEnableRequest(FCSHORT portNum, bool bEnable)
+{
+  PEPacket pkt;
+  __FCPKT_SOFTWARE_NETWORK_PORT_ENABLE d;
+
+  d.portNum = portNum;
+  d.bEnable = bEnable;
+
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_SOFTWARE_NETWORK_PORT_ENABLE, ST_World);
   PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
 
   SendPacket(pkt);
