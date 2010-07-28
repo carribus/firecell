@@ -25,6 +25,9 @@
 #include <QXmlStreamReader>
 #include "../../common/fctypes.h"
 
+#define FETCH_STRING(strID) \
+  ResourceManager::instance().getClientString( STR_##strID )
+
 class ResourceManager
 {
   ResourceManager();

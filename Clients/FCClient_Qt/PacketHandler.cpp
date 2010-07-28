@@ -256,7 +256,7 @@ bool PacketHandler::onResponseCharacterAssetsRequest(PEPacket* pPkt)
   InGameIPAddress& ip = pCharacter->GetIP();
   ComputerBase& comp = pCharacter->GetComputer();
   ItemMgr& itemMgr = FCAPP->playerModel()->itemMgr();
-
+ 
   getPacketData<__FCPKT_CHARACTER_ASSET_REQUEST_RESP>(pPkt, d);
 
   // set the player's IP address
