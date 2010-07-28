@@ -52,6 +52,7 @@
 	<!-- APP BAR -->
 	<String id="APP_APPBAR_SYSTEM">System</String>
 	<!-- APP BAR: System Menu -->
+	<String id="APP_APPBAR_SYSTEM_MENU_APPLICATIONS">Applications</String>
 	<String id="APP_APPBAR_SYSTEM_MENU_SOFTWAREMGR">Software Manager</String>
 	<String id="APP_APPBAR_SYSTEM_MENU_ITEMMGR">Item Manager</String>
 	<String id="APP_APPBAR_SYSTEM_MENU_CHARINFO">Character Info</String>
