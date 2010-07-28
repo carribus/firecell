@@ -251,11 +251,7 @@ bool PacketHandler::onResponseCharacterItemsRequest(PEPacket* pPkt)
       pSoftware->SetMemCost( d->software[i].mem_cost );
 			itemMgr.setItemCount( pItem->GetID(), d->software[i].itemCount );
 
-      //
-      // NOTE: Not sure what this was supposed to be doing in here from the old code... but I think it was some sort of hack.
-      //       Will check it out later and remove if its useless.
-      //
-
+#error you left off here -- Need to signal to the view that a new application icon is available
       // if the software is not a service, then notify the desktop that a new program is available.
       if ( !pSoftware->IsService() && d->software[i].desktop_icon_flag )
       {
