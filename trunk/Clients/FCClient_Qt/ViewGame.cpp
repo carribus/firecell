@@ -26,6 +26,9 @@
 #include "ViewGame.h"
 #include "FCApp.h"
 #include "FCMainWindow.h"
+#include "FCPlayerModel.h"
+#include "ItemMgr.h"
+#include "../../common/game_objects/ItemType.h"
 
 #define APPBAR_HEIGHT   25
 
@@ -51,12 +54,20 @@ ViewGame::~ViewGame(void)
 
 void ViewGame::setupView()
 {
+  FCPlayerModel* player = FCAPP->playerModel();
+
   // create the app bar
   m_appBar = new DesktopAppBar(this);
   m_appBar->setGeometry(0, 0, width(), APPBAR_HEIGHT);
   m_appBar->show();
 
-  QObject::connect( m_appBar, SIGNAL(appBarOptionClicked(FCULONG)), this, SLOT(onAppBarOptionClicked(FCULONG)));
+  connect(m_appBar, SIGNAL(appBarOptionClicked(FCULONG)),                     this,     SLOT(onAppBarOptionClicked(FCULONG)));
+
+  connect(player,   SIGNAL(softwareApplicationAdded(FCULONG)),                this,     SLOT(onSoftwareApplicationAdded(FCULONG)));
+  connect(player,   SIGNAL(softwareActivationSucceeded(FCULONG)),             this,     SLOT(onSoftwareActivationSucceeded(FCULONG)));
+  connect(player,   SIGNAL(softwareActivationFailed(FCULONG, FCULONG)),       this,     SLOT(onSoftwareActivationFailed(FCULONG, FCULONG)));
+
+  connect(this,     SIGNAL(softwareApplicationActivated(FCULONG)),            player,   SLOT(onSoftwareApplicationActivated(FCULONG)));
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -71,6 +82,27 @@ void ViewGame::onAppBarOptionClicked(FCULONG id)
   else                // app specific menu item
   {
   }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewGame::onSoftwareApplicationAdded(FCULONG itemID)
+{
+  qDebug() << "onSoftwareApplicationAdded(" << itemID << ")";
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewGame::onSoftwareActivationSucceeded(FCULONG itemID)
+{
+  qDebug() << "onSoftwareActivationSucceeded(" << itemID << ")";
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void ViewGame::onSoftwareActivationFailed(FCULONG itemID, FCULONG result)
+{
+  qDebug() << "onSoftwareActivationFailed(" << itemID << ", " << result << ")";
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -149,6 +181,8 @@ void ViewGame::showSystemMenu()
   QRect cRect = FCAPP->mainWindow()->geometry();
   QMenu menu(this);
 
+  QMenu* pSubMenu = menu.addMenu( ResourceManager::instance().getClientString( STR_APP_APPBAR_SYSTEM_MENU_APPLICATIONS) );
+  menu.addSeparator();
   menu.addAction( ResourceManager::instance().getClientString( STR_APP_APPBAR_SYSTEM_MENU_SOFTWAREMGR), this, SLOT(onOpenSoftwareMgr()) );
   menu.addAction( ResourceManager::instance().getClientString( STR_APP_APPBAR_SYSTEM_MENU_ITEMMGR), this, SLOT(onOpenItemMgr()) );
   menu.addSeparator();
@@ -158,5 +192,46 @@ void ViewGame::showSystemMenu()
   menu.addAction( ResourceManager::instance().getClientString( STR_APP_APPBAR_SYSTEM_MENU_ABOUT), this, SLOT(onAbout()) );
   menu.addAction( ResourceManager::instance().getClientString( STR_APP_APPBAR_SYSTEM_MENU_EXIT), this, SLOT(onQuit()) );
 
-  menu.exec(QPoint(cRect.left(), cRect.top() + APPBAR_HEIGHT));
+  // add the applications to the applications sub-menu
+  FCPlayerModel* player = FCAPP->playerModel();
+  ItemMgr& itemMgr = player->itemMgr();
+  std::vector<ItemMgr::GameItem> items;
+  Item* pItem = NULL;
+  ItemSoftware* pSoftware = NULL;
+
+  itemMgr.getItems(items);
+
+  std::vector<ItemMgr::GameItem>::iterator it = items.begin();
+  std::vector<ItemMgr::GameItem>::iterator limit = items.end();
+
+  for ( ; it != limit; ++it )
+  {
+    pItem = it->getItem();
+    if ( pItem && pItem->GetTypeID() == ItemType::Software )
+    {
+      pSoftware = static_cast<ItemSoftware*>(pItem);
+      if ( !pSoftware->IsService() && pSoftware->GetDesktopIconFlag() )
+      {
+        QAction* pAction = pSubMenu->addAction( QString("%1").arg(pItem->GetName().c_str()) );
+        QVariant v( (qulonglong) pItem->GetID() );
+        pAction->setData(v);
+      }
+    }
+  }
+
+  // show the menu
+  QAction* pSelAction = menu.exec(QPoint(cRect.left(), cRect.top() + APPBAR_HEIGHT));
+
+  // check what the selection was, and if the user chose to launch an application, deal with it
+  if ( pSelAction )
+  {
+    QVariant v = pSelAction->data();
+
+    if ( v.type() != QVariant::Invalid )
+    {
+      FCULONG itemID = v.value<FCULONG>();
+
+      emit softwareApplicationActivated(itemID);
+    }
+  }
 }
