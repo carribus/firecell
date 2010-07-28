@@ -22,6 +22,7 @@
 #endif//_USE_STDAFX_H_
 #include <QMenu>
 #include <QPainter>
+#include <QMessageBox>
 #include "clientstrings.h"
 #include "ViewGame.h"
 #include "FCApp.h"
@@ -102,7 +103,63 @@ void ViewGame::onSoftwareActivationSucceeded(FCULONG itemID)
 
 void ViewGame::onSoftwareActivationFailed(FCULONG itemID, FCULONG result)
 {
-  qDebug() << "onSoftwareActivationFailed(" << itemID << ", " << result << ")";
+  QString strError;
+  QString strTemp;
+  QString strID = QString("ITEM_SOFTWARE_%1").arg(itemID);
+
+  // prepare the error message  
+  strError = QString( FETCH_STRING( ERROR_SWACTIVATE_INTRO ) )
+                      .arg( ResourceManager::instance().getClientString( strID ) );
+
+  switch ( result )
+  {
+  case  ACTIVATERESULT_NOT_ENOUGH_MEM:
+    strTemp = FETCH_STRING( ERROR_SWACTIVATE_MEM );
+    break;
+
+  case  ACTIVATERESULT_NOT_ENOUGH_CPU:
+    strTemp = FETCH_STRING( ERROR_SWACTIVATE_CPU );
+    break;
+
+  case  ACTIVATERESULT_NEED_HTTP:
+    strTemp = QString( FETCH_STRING( ERROR_SWACTIVATE_SERVICE_MISSING ) )
+                       .arg( FETCH_STRING( ITEM_SOFTWARE_20 ) );
+    break;
+
+  case  ACTIVATERESULT_NEED_FTP:
+    strTemp = QString( FETCH_STRING( ERROR_SWACTIVATE_SERVICE_MISSING ) )
+                       .arg( FETCH_STRING( ITEM_SOFTWARE_21 ) );
+    break;
+
+  case  ACTIVATERESULT_NEED_SSH:
+    strTemp = QString( FETCH_STRING( ERROR_SWACTIVATE_SERVICE_MISSING ) )
+                       .arg( FETCH_STRING( ITEM_SOFTWARE_22 ) );
+    break;
+
+  case  ACTIVATERESULT_NEED_BANK:
+    strTemp = QString( FETCH_STRING( ERROR_SWACTIVATE_SERVICE_MISSING ) )
+                       .arg( FETCH_STRING( ITEM_SOFTWARE_23 ) );
+    break;
+
+  case  ACTIVATERESULT_NEED_DB:
+    strTemp = QString( FETCH_STRING( ERROR_SWACTIVATE_SERVICE_MISSING ) )
+                       .arg( FETCH_STRING( ITEM_SOFTWARE_24 ) );
+    break;
+
+  case  ACTIVATERESULT_NEED_MAIL:
+    strTemp = QString( FETCH_STRING( ERROR_SWACTIVATE_SERVICE_MISSING ) )
+                       .arg( FETCH_STRING( ITEM_SOFTWARE_25 ) );
+    break;
+
+  default:
+    break;
+  }
+
+  strError += strTemp;
+
+  QMessageBox::warning(this,
+                       FETCH_STRING( ERROR_SWACTIVATE_TITLE ),
+                       strError);
 }
 
 ///////////////////////////////////////////////////////////////////////
