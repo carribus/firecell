@@ -228,6 +228,21 @@ void FCNet::sendNetworkPortEnableRequest(FCSHORT portNum, bool bEnable)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCNet::sendSoftwareActivationRequest(FCULONG itemID)
+{
+  PEPacket pkt;
+  __FCPKT_ACTIVATE_SOFTWARE d;
+
+  d.itemID = itemID;
+
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_ACTIVATE_SOFTWARE, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void FCNet::onConnected()
 {
   qDebug() << "Connection established!\n\thost: " << m_sock->peerAddress().toString() << "\n\tport: " << m_sock->peerPort();

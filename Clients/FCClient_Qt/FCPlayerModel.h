@@ -6,6 +6,8 @@
 #include "dataobjects/Character.h"
 #include "ItemMgr.h"
 
+struct __FCPKT_CHARACTER_ITEMS_REQUEST_RESP;
+
 class FCPlayerModel : public QObject
 {
   Q_OBJECT
@@ -20,7 +22,7 @@ public:
   int characterCount()                            { return m_characters.size(); }
   Character* getCurrentCharacter()                { return m_currentChar; }
 
-  Item* addItem();
+  Item* addItems(__FCPKT_CHARACTER_ITEMS_REQUEST_RESP* d);
   ItemMgr& itemMgr()                              { return m_itemMgr; }
 
 signals:
@@ -29,8 +31,11 @@ signals:
   void softwareInstallFailed(FCSHORT portNum, FCULONG itemID);
   void softwareUninstallSucceeded(FCSHORT portNum);
   void softwareUninstallFailed(FCSHORT portNum);
+  void softwareApplicationAdded(FCULONG itemID);
   void networkPortStatusChangeSucceeded(bool bEnabled, FCSHORT portNum);
   void networkPortStatusChangeFailed(FCSHORT result, bool bEnabled, FCSHORT portNum);
+  void softwareActivationSucceeded(FCULONG itemID);
+  void softwareActivationFailed(FCULONG itemID, FCULONG result);
 
 protected slots:
   
@@ -39,11 +44,13 @@ protected slots:
   void onInstallSoftware(FCSHORT portNum, FCULONG itemID);
   void onUninstallSoftware(FCSHORT portNum);
   void onEnableSoftwarePort(FCSHORT port, bool bEnable);
+  void onSoftwareApplicationActivated(FCULONG itemID);
 
   // invokable methods
   Q_INVOKABLE void onSoftwareInstallResult(bool bResult, FCSHORT portNum, FCULONG itemID);
   Q_INVOKABLE void onSoftwareUninstallResult(bool bResult, FCSHORT portNum);
   Q_INVOKABLE void onNetworkPortStatusChangeResult(FCSHORT result, bool bEnabled, FCSHORT portNum);
+  Q_INVOKABLE void onActivateSoftwareResult(FCULONG result, FCULONG itemID, FCSHORT cpuCost, FCULONG memCost);
 
 private:
 

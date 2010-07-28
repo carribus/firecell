@@ -22,8 +22,6 @@
 #endif//_USE_STDAFX_H_
 #include "PacketHandler.h"
 #include "../../common/protocol/fcprotocol.h"
-#include "../../common/game_objects/ItemSoftware.h"
-#include "../../common/game_objects/ItemType.h"
 #include "FCApp.h"
 #include "FCPlayerModel.h"
 #include "ItemMgr.h"
@@ -118,6 +116,12 @@ void PacketHandler::onResponse(PEPacket* pPkt)
   case  FCMSG_SOFTWARE_NETWORK_PORT_ENABLE:
     {
       bHandled = onResponseSoftwareNetworkPortEnableRequest(pPkt);
+    }
+    break;
+
+  case  FCMSG_ACTIVATE_SOFTWARE:
+    {
+      bHandled = onResponseActivateSoftware(pPkt);
     }
     break;
 
@@ -225,40 +229,13 @@ bool PacketHandler::onResponseSelectCharacter(PEPacket* pPkt)
 bool PacketHandler::onResponseCharacterItemsRequest(PEPacket* pPkt)
 {
 	__FCPKT_CHARACTER_ITEMS_REQUEST_RESP* d = NULL;
-	Item* pItem = NULL;
-	ItemSoftware* pSoftware = NULL;
-  ItemMgr& itemMgr = m_pApp->playerModel()->itemMgr();
 
   getDynamicPacketData<__FCPKT_CHARACTER_ITEMS_REQUEST_RESP>(pPkt, d);
 
   if ( !d )
     return false;
 
-	for (FCULONG i = 0; i < d->itemCount; i++ )
-	{
-		pItem = itemMgr.addItem( d->software[i].item_id,
-						  							 d->software[i].name,
-														 d->software[i].itemtype_id,
-														 d->software[i].min_level,
-														 d->software[i].max_level,
-														 d->software[i].npc_value );
-		if ( pItem && pItem->GetTypeID() == ItemType::Software )
-		{
-			pSoftware = (ItemSoftware*)pItem;
-			pSoftware->SetSoftwareType( d->software[i].softwareTypeID );
-			pSoftware->IsService( d->software[i].is_service );
-      pSoftware->SetCPUCost( d->software[i].cpu_cost );
-      pSoftware->SetMemCost( d->software[i].mem_cost );
-			itemMgr.setItemCount( pItem->GetID(), d->software[i].itemCount );
-
-#error you left off here -- Need to signal to the view that a new application icon is available
-      // if the software is not a service, then notify the desktop that a new program is available.
-      if ( !pSoftware->IsService() && d->software[i].desktop_icon_flag )
-      {
-//        FireEvent( FCME_ApplicationAdded, pSoftware );
-      }
-		}
-	}
+  m_pApp->playerModel()->addItems(d);
 
   m_pApp->network().requestCharacterAssets( m_pApp->playerModel()->getCurrentCharacter()->GetID() );
 
@@ -366,7 +343,6 @@ bool PacketHandler::onResponseSoftwareInstallRequest(PEPacket* pPkt)
 
   getPacketData<__FCPKT_SOFTWARE_INSTALL_RESP>(pPkt, d);
 
-
   QMetaObject::invokeMethod(pPlayer, 
                             "onSoftwareInstallResult", 
                             Qt::QueuedConnection, 
@@ -410,6 +386,27 @@ bool PacketHandler::onResponseSoftwareNetworkPortEnableRequest(PEPacket* pPkt)
                             Q_ARG(FCSHORT, d.result),
                             Q_ARG(bool, d.bEnabled),
                             Q_ARG(FCSHORT, d.portNum));
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool PacketHandler::onResponseActivateSoftware(PEPacket* pPkt)
+{
+  __FCPKT_ACTIVATE_SOFTWARE_RESP d;
+  FCPlayerModel* pPlayer = m_pApp->playerModel();
+
+  getPacketData<__FCPKT_ACTIVATE_SOFTWARE_RESP>(pPkt, d);
+
+  QMetaObject::invokeMethod(pPlayer,
+                            "onActivateSoftwareResult",
+                            Qt::QueuedConnection,
+                            Q_ARG(FCULONG, d.result),
+                            Q_ARG(FCULONG, d.itemID),
+                            Q_ARG(FCSHORT, d.cpu_cost),
+                            Q_ARG(FCULONG, d.mem_cost));
+
 
   return true;
 }

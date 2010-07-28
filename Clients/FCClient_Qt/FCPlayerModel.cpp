@@ -20,6 +20,9 @@
 #ifdef _USE_STDAFX_H_
   #include "StdAfx.h"
 #endif//_USE_STDAFX_H_
+#include "../../common/protocol/fcprotocol.h"
+#include "../../common/game_objects/ItemSoftware.h"
+#include "../../common/game_objects/ItemType.h"
 #include "FCPlayerModel.h"
 #include "FCApp.h"
 
@@ -72,6 +75,13 @@ void FCPlayerModel::onUninstallSoftware(FCSHORT portNum)
 void FCPlayerModel::onEnableSoftwarePort(FCSHORT port, bool bEnable)
 {
   FCAPP->network().sendNetworkPortEnableRequest(port, bEnable);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void FCPlayerModel::onSoftwareApplicationActivated(FCULONG itemID)
+{
+  FCAPP->network().sendSoftwareActivationRequest(itemID);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -162,6 +172,28 @@ void FCPlayerModel::onNetworkPortStatusChangeResult(FCSHORT result, bool bEnable
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCPlayerModel::onActivateSoftwareResult(FCULONG result, FCULONG itemID, FCSHORT cpuCost, FCULONG memCost)
+{
+  ComputerBase& comp = m_currentChar->GetComputer();
+
+  // update the cpu/mem usage if we are opening the app
+  if ( result == ACTIVATERESULT_OK )
+  {
+    ItemMgr::GameItem gi;
+
+    if ( m_itemMgr.getItem( itemID, gi ) )
+    {
+      comp.AddProcess( static_cast<ItemSoftware*>(gi.getItem()) );
+    }
+
+    emit softwareActivationSucceeded(itemID);
+  }
+  else
+    emit softwareActivationFailed(itemID, result);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 int FCPlayerModel::addCharacter(Character* character)
 {
   QReadLocker lock(&m_lockChars);
@@ -204,4 +236,44 @@ bool FCPlayerModel::selectCharacter(FCUINT characterID)
   }
 
   return (m_currentChar != NULL);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+Item* FCPlayerModel::addItems(__FCPKT_CHARACTER_ITEMS_REQUEST_RESP* d)
+{
+  if ( !d )
+    return NULL;
+
+	Item* pItem = NULL;
+	ItemSoftware* pSoftware = NULL;
+
+	for (FCULONG i = 0; i < d->itemCount; i++ )
+	{
+		pItem = m_itemMgr.addItem( d->software[i].item_id,
+						    							 d->software[i].name,
+								  						 d->software[i].itemtype_id,
+									  					 d->software[i].min_level,
+										  				 d->software[i].max_level,
+											  			 d->software[i].npc_value );
+
+	  if ( pItem && pItem->GetTypeID() == ItemType::Software )
+	  {
+		  pSoftware = (ItemSoftware*)pItem;
+		  pSoftware->SetSoftwareType( d->software[i].softwareTypeID );
+		  pSoftware->IsService( d->software[i].is_service );
+      pSoftware->SetCPUCost( d->software[i].cpu_cost );
+      pSoftware->SetMemCost( d->software[i].mem_cost );
+      pSoftware->SetDesktopIconFlag( d->software[i].desktop_icon_flag );
+		  m_itemMgr.setItemCount( pItem->GetID(), d->software[i].itemCount );
+
+      // if the software is not a service, then notify the desktop that a new program is available.
+      if ( !pSoftware->IsService() && pSoftware->GetDesktopIconFlag() )
+      {
+        emit softwareApplicationAdded(pItem->GetID());
+      }
+	  }
+  }
+
+  return pItem;
 }

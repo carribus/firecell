@@ -27,6 +27,7 @@ public:
     bool onResponseSoftwareInstallRequest(PEPacket* pPkt);
     bool onResponseSoftwareUninstallRequest(PEPacket* pPkt);
     bool onResponseSoftwareNetworkPortEnableRequest(PEPacket* pPkt);
+    bool onResponseActivateSoftware(PEPacket* pPkt);
 
   void onError(PEPacket* pPkt);
 

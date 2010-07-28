@@ -37,9 +37,16 @@ public:
    */
   void setupView();
 
+signals:
+
+  void softwareApplicationActivated(FCULONG itemID);
+
 protected slots:
 
   void onAppBarOptionClicked(FCULONG id);
+  void onSoftwareApplicationAdded(FCULONG itemID);
+  void onSoftwareActivationSucceeded(FCULONG itemID);
+  void onSoftwareActivationFailed(FCULONG itemID, FCULONG result);
 
   // menu item slots
   void onOpenSoftwareMgr();

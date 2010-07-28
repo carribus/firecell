@@ -56,6 +56,7 @@ public:
   void sendInstallSoftwareRequest(FCSHORT portNum, FCULONG itemID);
   void sendUninstallSoftwareRequest(FCSHORT portNum);
   void sendNetworkPortEnableRequest(FCSHORT portNum, bool bEnable);
+  void sendSoftwareActivationRequest(FCULONG itemID);
 
 signals:
   void connectAttemptStarted(QString hostName, quint16 port);

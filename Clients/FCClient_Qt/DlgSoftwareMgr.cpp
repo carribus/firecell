@@ -33,6 +33,8 @@ DlgSoftwareMgr::DlgSoftwareMgr(QWidget* parent)
 
   updateUIFromModel();
 
+  connect(ui.pushButton, SIGNAL(clicked()), this, SLOT(accept()));
+
   // connect the player to the signals emitted from this dialog
   FCPlayerModel* player = FCAPP->playerModel();
   connect(this, SIGNAL(installSoftware(FCSHORT, FCULONG)), player, SLOT(onInstallSoftware(FCSHORT, FCULONG)));
@@ -107,10 +109,12 @@ bool DlgSoftwareMgr::onPortCheckboxClicked(QObject* obj)
         {
         case  Qt::Checked:
           emit enableSoftwarePort(port, true);
+          bResult = true;
           break;
 
         case  Qt::Unchecked:
           emit enableSoftwarePort(port, false);
+          bResult = true;
           break;
 
         default:
