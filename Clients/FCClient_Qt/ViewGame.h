@@ -23,6 +23,7 @@
 #include "desktopappbar.h"
 #include "DlgSoftwareMgr.h"
 #include "ViewBase.h"
+#include "AppWindowMgr.h"
 
 class ViewGame : public ViewBase
 {
@@ -68,6 +69,7 @@ private:
   QPixmap         m_background;
   DesktopAppBar*  m_appBar;
   DlgSoftwareMgr* m_pDlgSoftwareMgr;
+  AppWindowMgr*   m_windowMgr;
 };
 
 #endif//_VIEWGAME_H_

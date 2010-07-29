@@ -1,6 +1,6 @@
 <FCStrings lang="en">
 	<!-- STARTUP STRINGS -->
-  <String id="MAINWINDOW_TITLE">FireCell</String>
+	<String id="MAINWINDOW_TITLE">FireCell</String>
 	<String id="LOAD_SEPERATOR">------------------------\n</String>
 	<String id="LOAD_START">FireCell initializing...\n</String>
 	<String id="LOAD_TEXT">Loading Textual data...\n</String>
@@ -68,11 +68,11 @@
 	<String id="MISSION_NEWMISSION">New Mission Accepted:</String>
 	<String id="MISSION_CONGRATULATIONS">Congratulations!</String>
 	<String id="MISSION_COMPLETE">You have completed the mission:</String>
-  <!-- CHAT STRINGS -->
-  <String id="CHAT_MSGBOX_ERROR_TITLE">Online Chat Error</String>
-  <String id="CHAT_MSGBOX_ERROR_UNAVAILABLE_PREAMBLE">Online Chat is not available to you due to the following reason:</String>
-  <String id="CHAT_MSGBOX_ERROR_UNAVAILABLE_CHATREVOKED">Your chat has been revoked by a system administrator</String>
-  <String id="CHAT_MSGBOX_ERROR_UNAVAILABLE_SERVERDOWN">The chat server is currently down</String>
+	<!-- CHAT STRINGS -->
+	<String id="CHAT_MSGBOX_ERROR_TITLE">Online Chat Error</String>
+	<String id="CHAT_MSGBOX_ERROR_UNAVAILABLE_PREAMBLE">Online Chat is not available to you due to the following reason:</String>
+	<String id="CHAT_MSGBOX_ERROR_UNAVAILABLE_CHATREVOKED">Your chat has been revoked by a system administrator</String>
+	<String id="CHAT_MSGBOX_ERROR_UNAVAILABLE_SERVERDOWN">The chat server is currently down</String>
   
 	<!-- ITEMS -->
 	<!-- SOFTWARE -->
@@ -89,4 +89,11 @@
 	<String id="ITEM_SOFTWARE_30">Banking</String>
 	<String id="ITEM_SOFTWARE_31">Online Chat</String>
 	<String id="ITEM_SOFTWARE_32">Port Scanner</String>
+	
+	<!-- ERRORS -->
+	<String id="ERROR_SWACTIVATE_TITLE">Application could not be started</String>
+	<String id="ERROR_SWACTIVATE_INTRO">Failed to start the %1 application because </String>
+		<String id="ERROR_SWACTIVATE_MEM">you do not have enough available memory\n</String>
+		<String id="ERROR_SWACTIVATE_CPU">your CPU does not have the capacity to run this application\n</String>
+		<String id="ERROR_SWACTIVATE_SERVICE_MISSING">you need the %1 service running\n</String>
 </FCStrings>

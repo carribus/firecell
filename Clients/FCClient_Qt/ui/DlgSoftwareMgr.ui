@@ -38,11 +38,17 @@ text-decoration: underline;
      </item>
      <item>
       <widget class="QLabel" name="lnkSoftware0">
+       <property name="contextMenuPolicy">
+        <enum>Qt::NoContextMenu</enum>
+       </property>
        <property name="styleSheet">
         <string notr="true"/>
        </property>
        <property name="text">
         <string>Software Name</string>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::LinksAccessibleByMouse</set>
        </property>
       </widget>
      </item>
@@ -81,6 +87,9 @@ text-decoration: underline;
      </item>
      <item>
       <widget class="QLabel" name="lnkSoftware1">
+       <property name="contextMenuPolicy">
+        <enum>Qt::NoContextMenu</enum>
+       </property>
        <property name="text">
         <string>Software Name</string>
        </property>
@@ -115,6 +124,9 @@ text-decoration: underline;
      </item>
      <item>
       <widget class="QLabel" name="lnkSoftware2">
+       <property name="contextMenuPolicy">
+        <enum>Qt::NoContextMenu</enum>
+       </property>
        <property name="text">
         <string>Software Name</string>
        </property>
@@ -149,6 +161,9 @@ text-decoration: underline;
      </item>
      <item>
       <widget class="QLabel" name="lnkSoftware3">
+       <property name="contextMenuPolicy">
+        <enum>Qt::NoContextMenu</enum>
+       </property>
        <property name="text">
         <string>Software Name</string>
        </property>
@@ -183,6 +198,9 @@ text-decoration: underline;
      </item>
      <item>
       <widget class="QLabel" name="lnkSoftware4">
+       <property name="contextMenuPolicy">
+        <enum>Qt::NoContextMenu</enum>
+       </property>
        <property name="text">
         <string>Software Name</string>
        </property>
@@ -217,6 +235,9 @@ text-decoration: underline;
      </item>
      <item>
       <widget class="QLabel" name="lnkSoftware5">
+       <property name="contextMenuPolicy">
+        <enum>Qt::NoContextMenu</enum>
+       </property>
        <property name="text">
         <string>Software Name</string>
        </property>
@@ -251,6 +272,9 @@ text-decoration: underline;
      </item>
      <item>
       <widget class="QLabel" name="lnkSoftware6">
+       <property name="contextMenuPolicy">
+        <enum>Qt::NoContextMenu</enum>
+       </property>
        <property name="text">
         <string>Software Name</string>
        </property>
@@ -288,6 +312,9 @@ text-decoration: underline;
      </item>
      <item>
       <widget class="QLabel" name="lnkSoftware7">
+       <property name="contextMenuPolicy">
+        <enum>Qt::NoContextMenu</enum>
+       </property>
        <property name="text">
         <string>Software Name</string>
        </property>
