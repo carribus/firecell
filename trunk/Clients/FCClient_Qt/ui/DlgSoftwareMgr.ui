@@ -93,6 +93,9 @@ text-decoration: underline;
        <property name="text">
         <string>Software Name</string>
        </property>
+       <property name="textInteractionFlags">
+        <set>Qt::LinksAccessibleByMouse</set>
+       </property>
       </widget>
      </item>
      <item>
@@ -129,6 +132,9 @@ text-decoration: underline;
        </property>
        <property name="text">
         <string>Software Name</string>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::LinksAccessibleByMouse</set>
        </property>
       </widget>
      </item>
@@ -167,6 +173,9 @@ text-decoration: underline;
        <property name="text">
         <string>Software Name</string>
        </property>
+       <property name="textInteractionFlags">
+        <set>Qt::LinksAccessibleByMouse</set>
+       </property>
       </widget>
      </item>
      <item>
@@ -203,6 +212,9 @@ text-decoration: underline;
        </property>
        <property name="text">
         <string>Software Name</string>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::LinksAccessibleByMouse</set>
        </property>
       </widget>
      </item>
@@ -241,6 +253,9 @@ text-decoration: underline;
        <property name="text">
         <string>Software Name</string>
        </property>
+       <property name="textInteractionFlags">
+        <set>Qt::LinksAccessibleByMouse</set>
+       </property>
       </widget>
      </item>
      <item>
@@ -277,6 +292,9 @@ text-decoration: underline;
        </property>
        <property name="text">
         <string>Software Name</string>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::LinksAccessibleByMouse</set>
        </property>
       </widget>
      </item>
@@ -317,6 +335,9 @@ text-decoration: underline;
        </property>
        <property name="text">
         <string>Software Name</string>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::LinksAccessibleByMouse</set>
        </property>
       </widget>
      </item>
