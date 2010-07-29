@@ -37,12 +37,15 @@ ViewGame::ViewGame(QWidget* parent)
 : ViewBase(parent)
 , m_appBar(NULL)
 , m_pDlgSoftwareMgr(NULL)
+, m_windowMgr(NULL)
 {
   setAttribute(Qt::WA_OpaquePaintEvent);
   if ( !m_background.load(FCAPP->getResourceFolder() + "desktop.jpg") )
   {
     qDebug() << "Failed to load " + FCAPP->getResourceFolder() + "desktop.jpg";
   }
+
+  m_windowMgr = new AppWindowMgr(this);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -97,6 +100,7 @@ void ViewGame::onSoftwareApplicationAdded(FCULONG itemID)
 void ViewGame::onSoftwareActivationSucceeded(FCULONG itemID)
 {
   qDebug() << "onSoftwareActivationSucceeded(" << itemID << ")";
+  m_windowMgr->openApplicationWindow(itemID, this);
 }
 
 ///////////////////////////////////////////////////////////////////////
