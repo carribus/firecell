@@ -48,6 +48,7 @@ public:
 
   FCModel& model()                        { return *m_model; }
   FCPlayerModel* playerModel()            { return m_playerModel; }
+  FCForumModel* forumModel()              { return m_forumModel; }
   FCNet& network()                        { return *m_net; }
   FCMissionMgr& missionMgr()              { return *m_missionMgr; }
   FCMainWindow* mainWindow()              { return m_mainWindow; }
@@ -86,6 +87,7 @@ private:
 
   FCModel*            m_model;
   FCPlayerModel*      m_playerModel;
+  FCForumModel*       m_forumModel;
   FCNet*              m_net;
   FCMainWindow*       m_mainWindow;
   FCMissionMgr*       m_missionMgr;

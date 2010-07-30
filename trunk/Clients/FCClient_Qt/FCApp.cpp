@@ -46,6 +46,8 @@ FCApp::~FCApp(void)
     delete m_model;
   if ( m_playerModel )
     delete m_playerModel;
+  if ( m_forumModel )
+    delete m_forumModel;
   if ( m_net )
     delete m_net;
   if ( m_pktHandler )
@@ -61,6 +63,7 @@ bool FCApp::initialise()
   // create the model and network objects
   m_model = new FCModel(this);
   m_playerModel = new FCPlayerModel(this);
+  m_forumModel = new FCForumModel(this);
   m_net = new FCNet(this);
   m_net->start(QThread::NormalPriority);
   m_missionMgr = new FCMissionMgr;
