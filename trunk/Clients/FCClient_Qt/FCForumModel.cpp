@@ -40,7 +40,7 @@ ForumCategory* FCForumModel::addCategory(FCULONG category_id, FCULONG parent_id,
 			if ( !pParent )
 				pParent = m_rootItem;
 
-      pIdx = createParentModelIndex(pParent);
+      pIdx = parent( createIndex( pParent->childCount(), 0, pCat ) );
 
       beginInsertRows( pIdx, pParent->childCount(), pParent->childCount() );
 			pParent->addChild(pCat);
@@ -89,9 +89,9 @@ QModelIndex FCForumModel::parent(const QModelIndex& index) const
     return QModelIndex();
 
   ForumCategory* childItem = static_cast<ForumCategory*>(index.internalPointer());
-  ForumCategory* parentItem = childItem->getParent();
+  ForumCategory* parentItem = getCategoryByID( childItem->getParentID() ); // childItem->getParent();
 
-  if ( parentItem == m_rootItem )
+  if ( !parentItem || parentItem == m_rootItem )
     return QModelIndex();
 
   return createIndex(parentItem->currentIndex(), 0, parentItem);
@@ -152,47 +152,10 @@ QVariant FCForumModel::data(const QModelIndex& index, int role) const
 }
 
 ///////////////////////////////////////////////////////////////////////
-/*
- * insertRows() and removeRows() are not needed for this model since it will not be editable
- * from the UI
- *
 
-bool FCForumModel::insertRows(int position, int count, const QModelIndex& parent)
+ForumCategory* FCForumModel::getCategoryByID(FCULONG catID) const
 {
-  if ( !parent.isValid() )
-    return false;
-
-  ForumCategory* parentItem = NULL;
-
-  if ( !parent.isValid() )
-    parentItem = m_rootItem;
-  else
-    parentItem = static_cast<ForumCategory*>(parent.internalPointer());
-  
-  beginInsertRows(parent, position, position + count - 1);
-  for ( int i = 0; i < count; i++ )
-  {
-    parentItem->addChild( new ForumCategory(0, parentItem->getID(), 0, 0, "", "", parentItem) );
-  }
-
-  endRemoveRows();
-
-  return true;
-}
-
-///////////////////////////////////////////////////////////////////////
-
-bool FCForumModel::removeRows(int row, int count, const QModelIndex& parent)
-{
-  return false;
-}
-*/
-
-///////////////////////////////////////////////////////////////////////
-
-ForumCategory* FCForumModel::getCategoryByID(FCULONG catID)
-{
-	ForumCategoryMap::iterator it = m_mapForumCategories.find(catID);
+	ForumCategoryMap::const_iterator it = m_mapForumCategories.find(catID);
 
 	if ( it == m_mapForumCategories.end() )
 		return NULL;
@@ -200,14 +163,3 @@ ForumCategory* FCForumModel::getCategoryByID(FCULONG catID)
 	return it->second;
 }
 
-///////////////////////////////////////////////////////////////////////
-
-QModelIndex FCForumModel::createParentModelIndex(ForumCategory* pCat)
-{
-  if ( !pCat )
-    return QModelIndex();
-
-  ForumCategory* pParent = pCat->getParent();
-
-  return index( pCat->currentIndex(), 0, pParent ? createParentModelIndex(pCat->getParent()) : index(0, 0, QModelIndex()) );
-}
