@@ -408,35 +408,47 @@ bool FCLogicWorld::OnCommandCharacterLoggedIn(PEPacket* pPkt, RouterSocket* pRou
   pPkt->GetField("dataLen", &dataLen, sizeof(size_t));
   pPkt->GetField("data", (void*)&d, dataLen);
 
-  // create the player's character
-  Player* pPlayer = PlayerManager::instance().CreatePlayer(d.account_id, d.character_id, d.name, d.xp, d.level, d.fame_scale, d.country_id, d.city_id, d.clientSocket);
-
-  // if we fail to create or locate an existing player object, then something went terribly wrong...
-  // we need to notify the player of the problem, as well as the auth service
+  Player* pPlayer = NULL;
+  
+  // check if the player object already exists in the game world...
+  pPlayer = PlayerManager::instance().GetPlayerByID(d.character_id);
   if ( !pPlayer )
   {
-    SendCharacterLoginStatus(d.account_id, d.character_id, CharacterSelectFailedInWorld, pRouter, d.clientSocket);
+    // if not, then we can create the player's character
+    pPlayer = PlayerManager::instance().CreatePlayer(d.account_id, d.character_id, d.name, d.xp, d.level, d.fame_scale, d.country_id, d.city_id, d.clientSocket);
+
+    // if we fail to create or locate an existing player object, then something went terribly wrong...
+    // we need to notify the player of the problem, as well as the auth service
+    if ( !pPlayer )
+    {
+      SendCharacterLoginStatus(d.account_id, d.character_id, CharacterSelectFailedInWorld, pRouter, d.clientSocket);
+    }
+    else
+    {
+      // set the router socket to the player
+      pPlayer->SetRouterSocket(pRouter);
+      // generate an IP address for the player
+      bool bAddedToNetwork = false;
+      do
+      {
+        worldMgr.GenerateIPAddress(pPlayer->GetCountryID(), pPlayer->GetCityID(), pPlayer->GetIP());
+        bAddedToNetwork = worldMgr.AddToNetwork( pPlayer->GetIP(), WorldManager::NetConnection::Player, pPlayer->GetID() );
+      } while ( !bAddedToNetwork );
+
+      // now that we have the player object, we need to load the player's facilities, items etc
+      DBJobContext* pCtx = new DBJobContext;
+      pCtx->pThis = this;
+      pCtx->clientSocket = d.clientSocket;
+      pCtx->pRouter = pRouter;
+      pCtx->pData = (void*)pPlayer;
+
+      GetDatabase().ExecuteJob(DBQ_LOAD_CHARACTER_COMPUTER, (void*)pCtx, d.character_id);
+    }
   }
   else
   {
-    // set the router socket to the player
+    // player already exists, so we can simply update his socket and carry on
     pPlayer->SetRouterSocket(pRouter);
-    // generate an IP address for the player
-    bool bAddedToNetwork = false;
-    do
-    {
-      worldMgr.GenerateIPAddress(pPlayer->GetCountryID(), pPlayer->GetCityID(), pPlayer->GetIP());
-      bAddedToNetwork = worldMgr.AddToNetwork( pPlayer->GetIP(), WorldManager::NetConnection::Player, pPlayer->GetID() );
-    } while ( !bAddedToNetwork );
-
-    // now that we have the player object, we need to load the player's facilities, items etc
-    DBJobContext* pCtx = new DBJobContext;
-    pCtx->pThis = this;
-    pCtx->clientSocket = d.clientSocket;
-    pCtx->pRouter = pRouter;
-    pCtx->pData = (void*)pPlayer;
-
-    GetDatabase().ExecuteJob(DBQ_LOAD_CHARACTER_COMPUTER, (void*)pCtx, d.character_id);
   }
 
   return true;
