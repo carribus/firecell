@@ -1,3 +1,6 @@
+#ifdef _USE_STDAFX_H_
+  #include "StdAfx.h"
+#endif
 #include "ForumCategory.h"
 
 ForumCategory::ForumCategory(FCULONG id, FCULONG parent_id, FCULONG order, FCULONG thread_count, const std::string& name, const std::string& desc)
