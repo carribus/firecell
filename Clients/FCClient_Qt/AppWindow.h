@@ -11,9 +11,6 @@ public:
   AppWindow(QWidget *parent);
   ~AppWindow();
 
-private:
-
-
 };
 
 #endif // APPWINDOW_H

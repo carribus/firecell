@@ -1,6 +1,7 @@
 #ifdef _USE_STDAFX_H_
   #include "StdAfx.h"
 #endif
+#include <QLayout>
 #include "ItemHelper.h"
 #include "AppWindowMgr.h"
 
@@ -23,7 +24,10 @@ bool AppWindowMgr::openApplicationWindow(FCULONG itemID, QWidget* parent)
 
   if ( !pWnd )
   {
-    pWnd = createApplicationWindow(itemID, parent);
+    if ( (pWnd = createApplicationWindow(itemID, parent)) )
+    {
+      pWnd->show();
+    }
   }
   else
   {
@@ -51,22 +55,27 @@ AppWindow* AppWindowMgr::getWindowForApp(FCULONG itemID)
 
 AppWindow* AppWindowMgr::createApplicationWindow(FCULONG itemID, QWidget* parent)
 {
-  AppWindow* pWnd = new AppWindow(parent);
+  ItemSoftware* pSoftware = ItemHelper::getSoftwareItem(itemID);
+  AppWindow* pWnd = NULL;
 
-  if ( pWnd )
+  if ( pSoftware )
   {
-    ItemSoftware* pSoftware = ItemHelper::getSoftwareItem(itemID);
+    pWnd = new AppWindow(parent);
 
-    if ( pSoftware )
+    if ( pWnd )
     {
       IGameAppLogic* pLogic = m_logicFactory.createLogicForApp(pSoftware);
 
       if ( pLogic )
       {
-        pLogic->create(pWnd);
+        pLogic->create(NULL);
+        QWidget* pChildWnd = pLogic->getWidget();
+        pWnd->layout()->addWidget(pChildWnd);
         // finally, assign the new window to our map
         m_mapWindows[itemID] = pWnd;
       }
+
+      pWnd->setWindowFlags( Qt::Window );
     }
   }
 
