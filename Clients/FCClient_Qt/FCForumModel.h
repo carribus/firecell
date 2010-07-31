@@ -25,27 +25,9 @@ public:
   int rowCount(const QModelIndex& parent = QModelIndex()) const;
   int columnCount(const QModelIndex& parent = QModelIndex()) const;
   QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
-/*
-  bool insertRows(int row, int count, const QModelIndex& parent = QModelIndex());
-  bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex());
-*/
 private:
 
-	ForumCategory* getCategoryByID(FCULONG catID);
-
-	/**
-	 *	@brief Recursive QModelIndex generator for parents
-	 *	
-	 *	This function is used to generate a valid QModelIndex for any item within the tree hierarchy.
-   *  QModelIndex objects need to have the correct parent set at all times. This function recursively creates
-   *  valid QModelIndex objects for the parent of prior QModelIndex objects.
-   *
-   *  Eg, if a model function requires you to pass a QModelIndex object for a parent, use the function as follows:
-   *
-   *    ForumCategory* pCategoryOfInterest;
-   *    QModelIndex validIndexForCategory = index( pCategoryOfInterest->currentIndex(), 0, createParentModelIndex(pCategoryOfInterest) );
-	 */
-  QModelIndex createParentModelIndex(ForumCategory* pCat);
+	ForumCategory* getCategoryByID(FCULONG catID) const;
 
   ForumCategory*          m_rootItem;
 
