@@ -58,6 +58,8 @@ public:
   void sendNetworkPortEnableRequest(FCSHORT portNum, bool bEnable);
   void sendSoftwareActivationRequest(FCULONG itemID);
 
+  void sendForumCategoriesRequest(FCULONG character_id);
+
 signals:
   void connectAttemptStarted(QString hostName, quint16 port);
   void connected(QString hostName, quint16 port);

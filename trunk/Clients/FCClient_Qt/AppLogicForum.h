@@ -2,6 +2,8 @@
 #define APPLOGICFORUM_H
 
 #include <QObject>
+#include <QTreeView>
+#include "FCForumModel.h"
 #include "IGameAppLogic.h"
 
 class AppLogicForum : public QObject
@@ -20,9 +22,10 @@ public:
   virtual QWidget* getWidget();
 
 private:
-#error You need to create the following two classes
+
   FCForumModel*       m_model;
-  ForumView*          m_view;
+  QTreeView*          m_view;
+//  ForumView*          m_view;
     
 };
 

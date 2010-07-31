@@ -24,6 +24,7 @@
 #include "../../common/protocol/fcprotocol.h"
 #include "FCApp.h"
 #include "FCPlayerModel.h"
+#include "FCForumModel.h"
 #include "ItemMgr.h"
 #include "FCMissionMgr.h"
 
@@ -122,6 +123,12 @@ void PacketHandler::onResponse(PEPacket* pPkt)
   case  FCMSG_ACTIVATE_SOFTWARE:
     {
       bHandled = onResponseActivateSoftware(pPkt);
+    }
+    break;
+
+  case  FCMSG_FORUM_GET_CATEGORIES:
+    {
+      bHandled = onResponseForumCategories(pPkt);
     }
     break;
 
@@ -407,6 +414,33 @@ bool PacketHandler::onResponseActivateSoftware(PEPacket* pPkt)
                             Q_ARG(FCSHORT, d.cpu_cost),
                             Q_ARG(FCULONG, d.mem_cost));
 
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool PacketHandler::onResponseForumCategories(PEPacket* pPkt)
+{
+  __FCPKT_FORUM_GET_CATEGORIES_RESP* d = NULL;
+  FCForumModel* forumModel = FCAPP->forumModel();
+
+  getDynamicPacketData<__FCPKT_FORUM_GET_CATEGORIES_RESP>(pPkt, d);
+
+  if ( !d )
+    return false;
+
+  for ( FCSHORT i = 0; i < d->category_count; i++ )
+  {
+    forumModel->addCategory( d->categories[i].category_id,
+                             d->categories[i].parent_id,
+                             d->categories[i].order,
+                             d->categories[i].thread_count,
+                             d->categories[i].name,
+                             d->categories[i].desc );
+  }
+
+  delete [] (FCBYTE*)d;
 
   return true;
 }

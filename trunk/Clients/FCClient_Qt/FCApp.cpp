@@ -26,6 +26,7 @@
 #include "FCPlayerModel.h"
 #include "FCApp.h"
 #include "FCMissionMgr.h"
+#include "FCForumModel.h"
 
 FCApp::FCApp(int& argc, char** argv)
 : QApplication(argc, argv)

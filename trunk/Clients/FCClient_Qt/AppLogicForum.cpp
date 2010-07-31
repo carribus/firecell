@@ -1,3 +1,6 @@
+#include "dataobjects\Character.h"
+#include "FCApp.h"
+#include "FCPlayerModel.h"
 #include "AppLogicForum.h"
 
 AppLogicForum::AppLogicForum(QObject *parent)
@@ -5,7 +8,7 @@ AppLogicForum::AppLogicForum(QObject *parent)
 , m_model(NULL)
 , m_view(NULL)
 {
-
+  m_model = FCAPP->forumModel();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -19,6 +22,12 @@ AppLogicForum::~AppLogicForum()
 
 void AppLogicForum::create(QWidget* parent)
 {
+  m_view = new QTreeView(parent);
+  m_view->setModel(m_model);
+  m_view->show();
+
+  // send a request for forum information
+  FCAPP->network().sendForumCategoriesRequest( FCAPP->playerModel()->getCurrentCharacter()->GetID() );
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -31,5 +40,5 @@ void AppLogicForum::destroy()
 
 QWidget* AppLogicForum::getWidget()
 {
-  return NULL;
+  return m_view;
 }

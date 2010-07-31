@@ -226,6 +226,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ForumCategory.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\HealthMeterWidget.cpp"
 				>
 			</File>
@@ -668,6 +672,10 @@
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ForumCategory.h"
+				>
 			</File>
 			<File
 				RelativePath=".\HealthMeterWidget.h"

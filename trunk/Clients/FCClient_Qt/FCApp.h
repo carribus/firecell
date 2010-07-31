@@ -29,6 +29,7 @@
 class FCMainWindow;
 class FCModel;
 class FCPlayerModel;
+class FCForumModel;
 class FCMissionMgr;
 
 #define FCAPP static_cast<FCApp*>(qApp)
