@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QTreeView>
 #include "FCForumModel.h"
+#include "ForumView.h"
 #include "IGameAppLogic.h"
 
 class AppLogicForum : public QObject
@@ -24,8 +25,8 @@ public:
 private:
 
   FCForumModel*       m_model;
-  QTreeView*          m_view;
-//  ForumView*          m_view;
+//  QTreeView*          m_view;
+  ForumView*          m_view;
     
 };
 

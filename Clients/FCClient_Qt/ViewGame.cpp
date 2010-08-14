@@ -72,8 +72,6 @@ void ViewGame::setupView()
   connect(player,   SIGNAL(softwareActivationFailed(FCULONG, FCULONG)),       this,     SLOT(onSoftwareActivationFailed(FCULONG, FCULONG)));
 
   connect(this,     SIGNAL(softwareApplicationActivated(FCULONG)),            player,   SLOT(onSoftwareApplicationActivated(FCULONG)));
-
-//  FCAPP->network().sendForumCategoriesRequest( player->getCurrentCharacter()->GetID() );
 }
 
 ///////////////////////////////////////////////////////////////////////

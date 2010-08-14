@@ -1,9 +1,10 @@
 #ifdef _USE_STDAFX_H_
   #include "StdAfx.h"
 #endif
+#include "FCApp.h"
 #include "FCForumModel.h"
 
-#define CATEGORY_DATACOL_COUNT        3;
+#define CATEGORY_DATACOL_COUNT        2;
 
 FCForumModel::FCForumModel(QObject *parent)
 : QAbstractItemModel(parent)
@@ -24,22 +25,27 @@ FCForumModel::~FCForumModel()
 
 ForumCategory* FCForumModel::addCategory(FCULONG category_id, FCULONG parent_id, FCULONG order, FCULONG threadCount, const QString& name, const QString& desc)
 {
-	ForumCategoryMap::iterator it = m_mapForumCategories.find(category_id);
-	ForumCategory* pCat = NULL, *pParent = m_rootItem;
+	ForumCategory* pCat = getCategoryByID(category_id), *pParent = m_rootItem;
 
 	// check if we already have the category
-	if ( it == m_mapForumCategories.end() )		
+	if ( !pCat )		
 	{
 		// we need to create the category
 		if ( (pCat = new ForumCategory(category_id, parent_id, order, threadCount, name, desc, NULL)) )
 		{
       QModelIndex pIdx;
 
-			m_mapForumCategories[category_id] = pCat;
+      // add the category to the map
+      m_lockForums.lockForWrite();
+		  m_mapForumCategories[category_id] = pCat;
+      m_lockForums.unlock();
+
+      // find the parent category
 			pParent = getCategoryByID(parent_id);
 			if ( !pParent )
 				pParent = m_rootItem;
 
+      // get the QModelIndex for the parent
       pIdx = parent( createIndex( pParent->childCount(), 0, pCat ) );
 
       beginInsertRows( pIdx, pParent->childCount(), pParent->childCount() );
@@ -50,7 +56,6 @@ ForumCategory* FCForumModel::addCategory(FCULONG category_id, FCULONG parent_id,
 	else
 	{
 		// we have the category... 
-		pCat = it->second;
     pCat->setName(name);
     pCat->setDesc(desc);
     pCat->setOrder(order);
@@ -139,9 +144,6 @@ QVariant FCForumModel::data(const QModelIndex& index, int role) const
     return pItem->getName();
 
   case  1:
-    return pItem->getDesc();
-
-  case  2:
     return (qulonglong)pItem->getThreadCount();
 
   default:
@@ -153,8 +155,58 @@ QVariant FCForumModel::data(const QModelIndex& index, int role) const
 
 ///////////////////////////////////////////////////////////////////////
 
+Qt::ItemFlags FCForumModel::flags(const QModelIndex& index) const
+{
+  return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+QVariant FCForumModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+  QVariant v;
+
+  switch ( role )
+  {
+  case  Qt::DisplayRole:
+    {
+      switch ( section )
+      {
+      case  0:
+        v = QString("Category");
+        break;
+
+      case  1:
+        v = QString("Thread Count");
+        break;
+      }
+    }
+    break;
+
+  case  Qt::SizeHintRole:
+    {
+      switch ( section )
+      {
+      case  0:
+        v = QSize(300, 20);
+        break;
+
+      case  1:
+        v = QSize(100, 20);
+        break;
+      }
+    }
+    break;
+  }
+
+  return v;
+}
+
+///////////////////////////////////////////////////////////////////////
+
 ForumCategory* FCForumModel::getCategoryByID(FCULONG catID) const
 {
+  QReadLocker l(&m_lockForums);
 	ForumCategoryMap::const_iterator it = m_mapForumCategories.find(catID);
 
 	if ( it == m_mapForumCategories.end() )
