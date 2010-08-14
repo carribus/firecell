@@ -17,7 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "StdAfx.h"
+#ifdef _USE_STDAFX_H_
+# include "StdAfx.h"
+#endif
+#ifdef _DEBUG
+# include <QLibraryInfo>
+#endif//_DEBUG
+
 #include "../../common/protocol/fcprotocol.h"
 #include "Settings.h"
 #include "ResourceManager.h"
@@ -60,6 +66,16 @@ FCApp::~FCApp(void)
 bool FCApp::initialise()
 {
   Settings& settings = Settings::instance();
+
+#ifdef _DEBUG
+  qDebug() << "QT LIB INFO:";
+  qDebug() << "\tBuild Date:" << QLibraryInfo::buildDate();
+  qDebug() << "\tBuild Key:" << QLibraryInfo::buildKey();
+  qDebug() << "\tHeaders Path:" << QLibraryInfo::location(QLibraryInfo::HeadersPath);
+  qDebug() << "\tLibraries Path:" << QLibraryInfo::location(QLibraryInfo::LibrariesPath);
+  qDebug() << "\tPlugins Path:" << QLibraryInfo::location(QLibraryInfo::PluginsPath);
+  qDebug() << "\tSettings Path:" << QLibraryInfo::location(QLibraryInfo::SettingsPath);
+#endif//_DEBUG
 
   // create the model and network objects
   m_model = new FCModel(this);

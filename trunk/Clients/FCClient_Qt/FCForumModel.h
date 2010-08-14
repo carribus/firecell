@@ -2,6 +2,7 @@
 #define FCFORUMMODEL_H
 
 #include <QAbstractItemModel>
+#include <QReadWriteLock>
 #include <map>
 #include "ForumCategory.h"
 
@@ -25,6 +26,9 @@ public:
   int rowCount(const QModelIndex& parent = QModelIndex()) const;
   int columnCount(const QModelIndex& parent = QModelIndex()) const;
   QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+  Qt::ItemFlags flags(const QModelIndex& index) const;
+  QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+
 private:
 
 	ForumCategory* getCategoryByID(FCULONG catID) const;
@@ -33,7 +37,7 @@ private:
 
   typedef std::map<FCULONG, ForumCategory*> ForumCategoryMap;
 	ForumCategoryMap m_mapForumCategories;
-
+  mutable QReadWriteLock m_lockForums;
 };
 
 #endif // FCFORUMMODEL_H

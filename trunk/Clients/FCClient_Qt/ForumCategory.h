@@ -3,6 +3,7 @@
 
 #include "../../common/fctypes.h"
 #include <QList>
+#include <QString>
 
 class ForumCategory
 {
