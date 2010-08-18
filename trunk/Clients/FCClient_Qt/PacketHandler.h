@@ -29,6 +29,7 @@ public:
     bool onResponseSoftwareNetworkPortEnableRequest(PEPacket* pPkt);
     bool onResponseActivateSoftware(PEPacket* pPkt);
     bool onResponseForumCategories(PEPacket* pPkt);
+    bool onResponseForumThreads(PEPacket* pPkt);
 
   void onError(PEPacket* pPkt);
 

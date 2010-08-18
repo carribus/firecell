@@ -132,6 +132,11 @@ void PacketHandler::onResponse(PEPacket* pPkt)
     }
     break;
 
+  case  FCMSG_FORUM_GET_THREADS:
+    {
+      bHandled = onResponseForumThreads(pPkt);
+    }
+
   default:
     qDebug() << "PacketHandler::onResponse -- Unknown Response message (" << msgID << ")";
     break;
@@ -443,6 +448,25 @@ bool PacketHandler::onResponseForumCategories(PEPacket* pPkt)
   delete [] (FCBYTE*)d;
 
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+bool PacketHandler::onResponseForumThreads(PEPacket* pPkt)
+{
+  __FCPKT_FORUM_GET_THREADS_RESP* d = NULL;
+
+  // TODO: Need to create a new class call FCForumThreadModel to act as the model for the data that we receive on this response.
+
+  getDynamicPacketData<__FCPKT_FORUM_GET_THREADS_RESP>(pPkt, d);
+
+  if ( !d )
+    return false;
+
+  for ( FCULONG i = 0; i < d->thread_count; i++ )
+  {
+    // populate the FCForumThreadModel object
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////

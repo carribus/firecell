@@ -68,12 +68,13 @@ public:
     else
     {
       // player already exists in the manager... just pass this object out
-
+/*
       // update the socket mapping 
       m_mapClientSockets.erase( pPlayer->GetClientSocket() );
       m_mapClientSockets[clientSocket] = pPlayer;
       // update the client socket in the player object
       pPlayer->SetClientSocket(clientSocket);
+*/
     }
 
     return pPlayer;

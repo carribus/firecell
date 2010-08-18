@@ -22,10 +22,13 @@ public:
   virtual void destroy();
   virtual QWidget* getWidget();
 
+protected slots:
+
+  void ForumView_onForumCategoryOpened(const ForumCategory& cat);
+
 private:
 
   FCForumModel*       m_model;
-//  QTreeView*          m_view;
   ForumView*          m_view;
     
 };
