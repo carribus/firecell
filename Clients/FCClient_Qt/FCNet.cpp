@@ -257,6 +257,20 @@ void FCNet::sendForumCategoriesRequest(FCULONG character_id)
 
 ///////////////////////////////////////////////////////////////////////
 
+void FCNet::sendForumThreadsRequest(FCULONG category_id)
+{
+  PEPacket pkt;
+  __FCPKT_FORUM_GET_THREADS d;
+
+  d.category_id = category_id;
+  PEPacketHelper::CreatePacket(pkt, FCPKT_COMMAND, FCMSG_FORUM_GET_THREADS, ST_World);
+  PEPacketHelper::SetPacketData(pkt, (void*)&d, sizeof(d));
+
+  SendPacket(pkt);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 void FCNet::onConnected()
 {
   qDebug() << "Connection established!\n\thost: " << m_sock->peerAddress().toString() << "\n\tport: " << m_sock->peerPort();

@@ -49,11 +49,11 @@ void DelegateForumCategories::paint(QPainter* painter, const QStyleOptionViewIte
       painter->drawRect( r );
       painter->setFont( m_fntHeader );
       r.setTopLeft( QPoint( r.left() + 5, r.top() + 2 ) );
-      painter->drawText( r, pCat->getName() );
+      painter->drawText( r, Qt::TextSingleLine, pCat->getName() );
       painter->setFont( m_fntDesc );
       r.setTop( r.top() + 18 );
       r.setLeft( r.left() + 10 );
-      painter->drawText( r, pCat->getDesc() );
+      painter->drawText( r, Qt::TextSingleLine, pCat->getDesc() );
     }
     break;
 

@@ -59,6 +59,7 @@ public:
   void sendSoftwareActivationRequest(FCULONG itemID);
 
   void sendForumCategoriesRequest(FCULONG character_id);
+  void sendForumThreadsRequest(FCULONG category_id);
 
 signals:
   void connectAttemptStarted(QString hostName, quint16 port);
