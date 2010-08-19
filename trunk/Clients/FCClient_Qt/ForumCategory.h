@@ -16,12 +16,12 @@ public:
   int currentIndex();
   int childCount()                                { return m_children.count(); }
 
-	FCULONG getID()																	{ return m_id; }
-	FCULONG getParentID()														{ return m_parentID; }
-	FCULONG getOrder()															{ return m_order; }
-  FCULONG getThreadCount()                        { return m_threadCount; }
-	QString getName()														    { return m_name; }
-	QString getDesc()														    { return m_desc; }
+	FCULONG getID()	const 													{ return m_id; }
+	FCULONG getParentID()	const											{ return m_parentID; }
+	FCULONG getOrder() const												{ return m_order; }
+  FCULONG getThreadCount() const                  { return m_threadCount; }
+	QString getName() const											    { return m_name; }
+	QString getDesc()	const 										    { return m_desc; }
 	ForumCategory* getParent()											{ return m_parent; }
 
   void setOrder(FCULONG order)                    { m_order = order; }
