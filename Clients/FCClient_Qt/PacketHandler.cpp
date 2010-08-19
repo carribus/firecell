@@ -467,6 +467,10 @@ bool PacketHandler::onResponseForumThreads(PEPacket* pPkt)
   {
     // populate the FCForumThreadModel object
   }
+
+  delete [] (FCBYTE*)d;
+
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
