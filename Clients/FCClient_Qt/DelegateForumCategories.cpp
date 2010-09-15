@@ -88,7 +88,7 @@ void DelegateForumCategories::paint(QPainter* painter, const QStyleOptionViewIte
 
 QSize DelegateForumCategories::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-  ForumCategory* pCat = static_cast<ForumCategory*>(index.internalPointer());
-
+  Q_UNUSED(option);
+  Q_UNUSED(index);
   return QSize(400, 45);
 }
