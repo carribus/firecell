@@ -123,6 +123,7 @@ int FCForumModel::rowCount(const QModelIndex& parent) const
 
 int FCForumModel::columnCount(const QModelIndex& parent) const
 {
+  Q_UNUSED(parent);
   return CATEGORY_DATACOL_COUNT;
 }
 
@@ -157,6 +158,7 @@ QVariant FCForumModel::data(const QModelIndex& index, int role) const
 
 Qt::ItemFlags FCForumModel::flags(const QModelIndex& index) const
 {
+  Q_UNUSED(index)
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
@@ -164,6 +166,7 @@ Qt::ItemFlags FCForumModel::flags(const QModelIndex& index) const
 
 QVariant FCForumModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
+  Q_UNUSED(orientation);
   QVariant v;
 
   switch ( role )

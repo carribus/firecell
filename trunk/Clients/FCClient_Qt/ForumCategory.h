@@ -32,6 +32,7 @@ public:
 
 private:
 
+  ForumCategory*                m_parent;
   FCULONG                       m_id;
   FCULONG                       m_parentID;
   FCULONG                       m_order;
@@ -39,7 +40,6 @@ private:
   QString                       m_name;
   QString                       m_desc;
   QList<ForumCategory*>         m_children;
-  ForumCategory*                m_parent;
 };
 
 #endif//_FORUMCATEGORY_H_
